@@ -12,3 +12,4 @@ tsconfig.tsbuildinfo
 
 # Local TLS material for the https dev server.
 certificates
+.next-build
