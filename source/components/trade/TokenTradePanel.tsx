@@ -288,10 +288,12 @@ export function TokenTradePanel() {
      is not offered on a buy, and a strategy left selected from the sell
      side falls back rather than sitting there unreachable. */
   const strategy = side === 'buy' && strat === 'trail' ? 'dev' : strat;
-  /* Token Info folds away. Nine readings is the tallest block on the
-     rail, and once you have looked at them they are the thing standing
-     between you and the addresses under them. */
-  const [infoOpen, setInfoOpen] = useState(true);
+  /* Token Info folds away, and it starts folded. Nine readings is the
+     tallest block on the rail, and once you have looked at them they are
+     the thing standing between you and the addresses under them. Most
+     visits to this panel are to trade, not to read the readings, so the
+     rail opens with them out of the way and one click brings them back. */
+  const [infoOpen, setInfoOpen] = useState(false);
   const [infoSpin, setInfoSpin] = useState(false);
   const [bannerOpen, setBannerOpen] = useState(true);
   const [similarOpen, setSimilarOpen] = useState(false);
