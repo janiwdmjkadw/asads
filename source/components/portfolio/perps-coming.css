@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * PERPETUALS, COMING SOON
+ *
+ * The word, in the middle of the tab, and a ticker of mint bars rising
+ * and falling along the bottom. Nothing else: no caption, no date, no
+ * feature list, no button.
+ *
+ * It replaces `<EmptyTab title="Perpetuals" caption="Coming soon" />` —
+ * two lines of grey type centred in a panel, which read like a 404 on
+ * the one screen whose job is to make somebody want to come back.
+ *
+ * ── IT DOES NOT USE THE PAGE'S GRID ──────────────────────────────────
+ *
+ * Deliberately. The Spot tab is a label, a figure, a chart and a rule,
+ * all left aligned; borrowing that here made earlier attempts read as a
+ * BROKEN page rather than a held one, because every slot was empty. An
+ * empty tab is allowed to be a different shape.
+ *
+ * What it keeps: black, sentence case, one ink scale, no plate, no
+ * glow, no gradient. Mint appears exactly twice — the full stop and
+ * the bars — and nowhere else.
+ *
+ * ── WHICH GREEN ──────────────────────────────────────────────────────
+ *
+ * `--up`, #34d399. The same token the portfolio's gain figures use, so
+ * this screen is the app's own green and follows it if it ever moves.
+ *
+ * It was briefly `--accent-secondary` instead, which was wrong in a way
+ * that only shows on somebody else's machine: that is a THEME variable
+ * `ThemeProvider` rewrites inline on `.listen-root` per theme. On
+ * arctic it happens to be a mint; on the terminal default it is the
+ * violet #9d5cff, and the screen came out purple.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.pc {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Takes the pane, and carries a floor of its own so the band is never
+     a percentage of nothing. */
+  flex: 1;
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  background: #000000;
+  color: var(--ink-0);
+  font-family: var(--sans);
+}
+
+/*
+ * Sits a little above centre. Optically centred rather than
+ * mathematically: the ticker carries weight along the bottom, so a
+ * word at true centre reads low against it.
+ */
+.pc-mid {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 5vh;
+  text-align: center;
+}
+
+.pc-big {
+  font-size: clamp(32px, 5.2vw, 68px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.pc-big s { text-decoration: none; color: var(--up); }
+
+/*
+ * The note under the word. Sentence case, one size, no track, and set
+ * back far enough that the word is still the only thing you read from
+ * across the room.
+ */
+/* Its full stop is the word's full stop: same token, same job. */
+.pc-soon s { text-decoration: none; color: var(--up); }
+
+.pc-soon {
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+/* ── the ticker ───────────────────────────────────────────────────── */
+
+/*
+ * A band, not a strip, but a quiet one: 15% of the pane. At 22% it was
+ * the loudest thing on a screen whose subject is a word.
+ *
+ * The bars are flex children with no fixed width, so the count is a
+ * density decision rather than a layout one and the band fills any
+ * pane.
+ */
+.pc-ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 15%;
+  min-height: 56px;
+  max-height: 110px;
+  padding: 0 2px;
+  pointer-events: none;
+}
+
+.pc-ticker > i {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  border-radius: 2px 2px 0 0;
+  background: color-mix(in srgb, var(--up) 62%, transparent);
+  transform-origin: bottom center;
+  animation: pc-rise 2.6s ease-in-out infinite;
+}
+
+/*
+ * Never reaches zero and never reaches full: a bar that bottoms out
+ * looks like it dropped, and a band that all hits the ceiling together
+ * looks like a loading bar. This breathes between the two.
+ */
+@keyframes pc-rise {
+  0%, 100% { transform: scaleY(0.14); opacity: 0.5; }
+  50%      { transform: scaleY(0.9);  opacity: 0.95; }
+}
+
+/* The hairline the band stands on, so the bars are rooted rather than
+   floating. */
+.pc-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-ticker > i { animation: none; transform: scaleY(0.42); opacity: 0.75; }
+}

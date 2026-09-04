@@ -1,0 +1,44 @@
+/*
+ * THE ROW HEADER ON A NARROW SCREEN.
+ *
+ * The rows-mode lane header lays out a label slot, the quick-buy panel,
+ * whatever header controls the lane carries, and a search field, and it
+ * does that on one line with no provision for running out of room. On a
+ * 375 wide screen that line wants about 750px, and `.section-shell` is
+ * `overflow: hidden`, so everything past the halfway point is not merely
+ * cramped — it is invisible and unreachable.
+ *
+ * Below this width the row scrolls instead of being cut. Same answer the
+ * sub-header already gives its token tape, and the same hidden scrollbar,
+ * so the treatment is one the product already uses rather than a new
+ * idea about what a full header does.
+ *
+ * Nothing here applies on a desktop width.
+ */
+
+@media (max-width: 720px) {
+  .discover-row-header {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .discover-row-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * The search field is sized to a desktop lane. Inside a scroller it
+   * would otherwise hold its full width and push everything else further
+   * out of reach, so it gives up its growth and keeps a usable minimum.
+   */
+  /* `!important` because the width it is overriding is a Tailwind
+     utility, and a layered rule outranks an unlayered one of equal
+     specificity. */
+  .discover-row-header .section-search {
+    flex: 0 0 auto !important;
+    width: 160px !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+}

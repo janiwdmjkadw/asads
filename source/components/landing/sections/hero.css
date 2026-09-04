@@ -1,0 +1,25 @@
+/*
+ * THE HERO'S ONE KEYFRAME.
+ *
+ * `motion-safe:animate-[heroact_...]` in Hero.tsx names this. Tailwind
+ * will happily generate the animation shorthand from an arbitrary value
+ * but it cannot invent the keyframes behind it, so without this file the
+ * class resolves to an animation with no definition and every act simply
+ * appears with no entrance at all. It fails silently, which is why it is
+ * written down here rather than left to be rediscovered.
+ *
+ * `motion-safe` is the guard in the markup; the component also stops the
+ * whole run under reduced motion, so this only ever plays for somebody
+ * who has not asked for less of it.
+ */
+
+@keyframes heroact {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,121 @@
+/*
+ * THE GROUPS DROPDOWN — "bare", off the `/whatever` sheet.
+ *
+ * ── THE IDEA ─────────────────────────────────────────────────────────
+ *
+ * No plate anywhere. Selected is simply the WHITE row and the rest sit
+ * back at 55%, which is what the balances popover and the wallet
+ * dropdown both settled on. The only drawn thing in the panel is the
+ * rule above "Manage groups".
+ *
+ * ── AND THE COUNTS ARE WHITE ─────────────────────────────────────────
+ *
+ * With no plate under the selected row, the names were the only ink on
+ * the surface and the counts sat at `--ink-3`, close enough to the
+ * background that the right hand column read as empty. They are the one
+ * figure in this list — how many wallets a group will put into the trade
+ * — so they take white at full weight.
+ *
+ * ── WHAT IT REPLACES ─────────────────────────────────────────────────
+ *
+ * The selected row shipped as `--accent-soft` inside a border mixed 35%
+ * from `--accent-primary`: accent on accent, the shape every other
+ * surface in the product has dropped. The count was set in `--mono`,
+ * which is a THEME AXIS the user picks rather than a typeface anyone
+ * chose. And an empty group dimmed the whole row to 55% opacity without
+ * saying why, with the reason hidden in a `title` attribute.
+ *
+ * ── HOW IT IS APPLIED ────────────────────────────────────────────────
+ *
+ * `GroupRowButton` sets its surface, its border and its type INLINE, and
+ * an inline style beats any selector, so everything here needs
+ * `!important`. The popover is reached by its own aria-label rather than
+ * by a new class, because `ChipPopover` is shared with the wallet chip
+ * and only the groups list is being moved.
+ */
+
+/*
+ * #111111, NOT #000.
+ *
+ * A popover floats ABOVE the surface that opened it, and the board it
+ * covers is already near black — a pure black panel over it has nothing
+ * to separate itself from, so the only thing saying where the popover
+ * starts was its 1px edge and the shadow under it. A step UP in tone is
+ * how a raised surface says it is raised.
+ *
+ * The first attempt at that was #16191f — r22 g25 b31, with the blue
+ * channel nine points above the red — which is a blue grey, and it read
+ * as blue against a board that is neutral. Equal channels, so the lift
+ * is tone and nothing else.
+ */
+[aria-label='Select a wallet group'] {
+  background: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  box-shadow:
+    0 24px 80px #0000008c,
+    0 0 60px #ffffff0a !important;
+}
+
+/* ── the rows ─────────────────────────────────────────────────────── */
+
+[aria-label='Select a wallet group'] button {
+  border-color: transparent !important;
+  background: transparent !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 12.5px !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  transition: color 130ms ease !important;
+}
+
+[aria-label='Select a wallet group'] button:hover:not(:disabled) {
+  color: #ffffff !important;
+}
+
+/*
+ * Selected is the white row and nothing else. `GroupRowButton` has no
+ * pressed attribute, so the active row is found by the one thing that
+ * distinguishes it inline — the accent wash it is about to lose.
+ */
+[aria-label='Select a wallet group'] button[style*='accent-soft'] {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/*
+ * Disabled SAYS SO rather than dimming. 55% opacity on a whole row reads
+ * as a rendering fault, and the reason it cannot be picked lived in a
+ * `title` nobody hovers long enough to see.
+ */
+[aria-label='Select a wallet group'] button:disabled {
+  opacity: 1 !important;
+  color: #4b4f5b !important;
+}
+
+/* ── the counts ───────────────────────────────────────────────────── */
+
+/*
+ * The count is the last child of each row. White, tabular Geist, full
+ * weight — it was 10.5px in `--mono` at `--ink-3`.
+ */
+[aria-label='Select a wallet group'] button > span:last-child {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+/* A group with nothing in it has no figure worth stating. */
+[aria-label='Select a wallet group'] button:disabled > span:last-child {
+  color: #4b4f5b !important;
+  font-weight: 500 !important;
+}
+
+/* The empty-state line, when there are no groups at all. */
+[aria-label='Select a wallet group'] > div > div:not([style*='flex']) {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  color: #4b4f5b !important;
+}

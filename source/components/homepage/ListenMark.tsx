@@ -1,0 +1,67 @@
+import type { CSSProperties } from 'react';
+
+/**
+ * Listen brand mark — the four-stroke "listening" glyph with the brand
+ * ice-blue → mint gradient (`#bae6fd → #5eead4`). Inlined as a component
+ * (rather than an <img>) so it can be recolored / filtered per placement
+ * (top bar, hero, trust node, footer) without extra network requests.
+ *
+ * Decorative by default (`aria-hidden`). Pass a `title` to expose it to
+ * assistive tech (e.g. the hero logo).
+ */
+export function ListenMark({
+  className,
+  style,
+  title,
+}: {
+  className?: string;
+  style?: CSSProperties;
+  title?: string;
+}) {
+  // A single shared gradient id keeps the markup small; every instance is
+  // visually identical, so cross-instance `url(#…)` resolution is a no-op.
+  const gradId = 'lhListenMarkGrad';
+  return (
+    <svg
+      viewBox="0 0 1024 1024"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+      role={title ? 'img' : undefined}
+      aria-hidden={title ? undefined : true}
+      aria-label={title}
+    >
+      {title ? <title>{title}</title> : null}
+      <path
+        d="M317.5 452C307.5 403.2 329.333 376 341.5 368.5C381.5 362.5 423.667 432.833 438 469.5C439.2 518.7 395.667 523.167 374.5 518.5C339.3 513.7 321.833 472.167 317.5 452Z"
+        fill={`url(#${gradId})`}
+      />
+      <path
+        d="M699.5 466C715.9 405.2 694.333 375.333 681.5 368C652.7 361.6 618.167 407.667 604.5 431.5C565.3 486.3 593.167 511 612 516.5C664.8 531.3 692.333 489 699.5 466Z"
+        fill={`url(#${gradId})`}
+      />
+      <path
+        d="M541.5 585C535.9 589.4 512 748.5 512 748.5C488.4 596.5 450.833 484.167 435 447C400.2 377 299.167 300.167 253 270.5C329.4 290.1 380.5 332 396.5 350.5C420.9 375.3 445.667 404.833 455 416.5C477.4 454.1 502.333 513.5 512 538.5C516.4 516.9 546.833 458.167 561.5 431.5C605.5 374.5 602.5 373.5 655 332C697 298.8 745.167 290.833 764 291C728 301.5 716.5 320.5 712.5 319.5C708.5 318.5 654 355.5 620.5 399C587 442.5 590 444.5 568 493.5C546 542.5 548.5 579.5 541.5 585Z"
+        fill={`url(#${gradId})`}
+      />
+      <path
+        d="M562 880L573.5 935.5L297 710C138.6 585.6 132 422.167 148.5 356C206.1 124.4 429.833 79.8333 534.5 86.4999C710.9 105.7 801 214.167 824 266C699.6 82.8 491.167 108 402.5 143.5C189.3 219.5 180.333 399.167 202.5 479.5C246.5 622.7 429.167 757.167 515 806.5L645 710C756.6 624.8 802.833 520.833 812 479.5C854.4 283.1 753.667 264.333 698 279.5C843.2 205.1 882.833 362.5 884.5 450.5C880.1 590.9 695.333 758.333 603.5 824.5C565.9 847.7 560.167 871.167 562 880Z"
+        fill={`url(#${gradId})`}
+      />
+      <defs>
+        <linearGradient
+          id={gradId}
+          x1="200"
+          y1="120"
+          x2="850"
+          y2="900"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#BAE6FD" />
+          <stop offset="1" stopColor="#5EEAD4" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

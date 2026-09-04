@@ -1,0 +1,101 @@
+@import '../../tracker/scrollbars.css';
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE GRIP ON A SNAPPED EDGE
+ *
+ * A docked panel's resize edge was an 8px strip of nothing: the cursor
+ * changed if you found it, and there was no way to know it was there
+ * without sweeping the seam. Floating, the panel at least has corners
+ * and edges you already expect to drag.
+ *
+ * ── WHAT THE FIRST TRY GOT WRONG ─────────────────────────────────────
+ *
+ * Six bare dots straddling the hairline, at 24% white. Nothing held
+ * them, so they read as debris that had landed on the seam rather than
+ * as a control: no edge, no ground, nothing saying where the thing you
+ * are meant to grab starts and stops. And two columns of dots is the
+ * shape of a HORIZONTAL grab — it is what the instant trade box wears
+ * on its top edge, turned sideways and still reading sideways.
+ *
+ * ── WHAT IT IS NOW ───────────────────────────────────────────────────
+ *
+ * A bar down the WHOLE edge. 3px wide, floor to ceiling, one flat white,
+ * and nothing else — no ground, no border, no corner, no dots.
+ *
+ * It went through two wrong shapes first. A plate: a 10 by 46 tab on
+ * `--surface-3` with a hairline round it and three dots inside, which
+ * was a little object bolted to an edge. Then the same bar as now but
+ * 44px tall, floating at the middle of the edge — which says only the
+ * middle of the edge does anything, when the entire edge resizes.
+ *
+ * The whole edge is the control, so the whole edge is the mark. That is
+ * also what makes it findable without a hover: there is nothing to
+ * hunt for, it is the side of the panel.
+ *
+ * ── IT STRADDLES THE SEAM, FROM OUTSIDE THE PANEL ────────────────────
+ *
+ * The bar is centred ON the line, half over the panel and half over the
+ * page, because that is what it is for: the join, not either side.
+ *
+ * Which is why the strip is `position: fixed` and renders as the
+ * panel's SIBLING rather than inside it. The shell is `overflow:
+ * hidden`; a child hung off its edge loses the outer half, and this
+ * shipped once as half a mark with one edge shaved flat.
+ *
+ * `--dk-w` is the panel's live width, so the grip is positioned from the
+ * same number the panel's edge is and cannot drift off it.
+ *
+ * ── ONE STATE ────────────────────────────────────────────────────────
+ *
+ * It had a hover and a drag step, each brightening the ground, the edge
+ * and the dots together. Both are gone. The mark looks the same at rest,
+ * under the pointer and mid-drag.
+ *
+ * There is nothing left for a lit state to tell you. The cursor becomes
+ * a resize arrow the moment you are over the strip, and once you are
+ * dragging, the entire panel is moving with your hand — the bar
+ * changing shade is not information next to that, it is a flicker down
+ * the side of a page you are trying to read.
+ *
+ * The hit strip stays far wider than the bar: 16px of grab for a 3px
+ * mark, at every height.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.dk-grip {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/*
+ * `data-side` is the side the PANEL is docked to, so the seam is on its
+ * opposite edge: a right dock is grabbed on its left. `--dk-w` is that
+ * panel's width, and half the strip is taken back off it so the strip's
+ * centre line lands exactly on the seam — bar half in, half out.
+ *
+ * The strip is far wider than the bar on purpose: 16px of grab for a 3px
+ * mark, so the target is easy to hit and quiet to look at.
+ */
+.dk-grip[data-side='right'] { right: calc(var(--dk-w) - 8px); }
+.dk-grip[data-side='left'] { left: calc(var(--dk-w) - 8px); }
+
+.dk-bar {
+  width: 3px;
+  /* The full height of the strip, which is the full height of the edge
+     it grabs. No radius: a rounded cap on a line that runs to both ends
+     of the panel would be rounding nothing. */
+  align-self: stretch;
+  /*
+   * 13%, not the 28% it wore at 44px tall. The same value that reads as
+   * a small mark reads as a lit rule when it runs the height of the
+   * page, and this sits beside a chart people are trying to read. It is
+   * still four times the `--hairline` on either side of it, so it is
+   * plainly a thing rather than a border.
+   */
+  background: rgba(255, 255, 255, 0.13);
+  pointer-events: none;
+}

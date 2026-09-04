@@ -1,0 +1,217 @@
+/*
+ * THE FRENS BOARD.
+ *
+ * The podium and the list under it. Colour is decided in Frens.tsx; this
+ * file lays them out and decides what a phone gives up.
+ */
+
+/*
+ * ── THE PODIUM IS THREE ACROSS AT EVERY WIDTH ────────────────────────
+ *
+ * It used to stack below `lg`, and stacking cost the band the only thing
+ * that made it a podium: three people beside each other, comparable at a
+ * glance. A phone got three identical blocks in a column, which is the
+ * list underneath with bigger type.
+ *
+ * WHAT GIVES INSTEAD IS THE CONTENT. At 375 each column is about 105px,
+ * and a bio set in it runs five lines of two words. So below 640 the bio
+ * and the best call line are dropped and the three keep their rank,
+ * their name and their PnL — which is what a podium is for. They come
+ * back the moment there is room for them.
+ */
+[data-lp-frens] .frens-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--lp-hairline);
+}
+
+/*
+ * NO BOTTOM BORDER ON THESE, EVER.
+ *
+ * They used to carry one, which met the top border of the list below and
+ * drew the pair of lines that made the join look broken. The list owns
+ * that rule; the podium is divided vertically and never horizontally.
+ */
+[data-lp-frens] .frens-podium > div {
+  padding: 22px 12px 26px 0;
+}
+
+[data-lp-frens] .frens-podium > div + div {
+  padding-left: 12px;
+  border-left: 1px solid var(--lp-hairline);
+}
+
+[data-lp-frens] .frens-prank {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--lp-ink-3);
+}
+
+[data-lp-frens] .frens-pname {
+  margin: 8px 0 0;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--lp-ink-1);
+}
+
+[data-lp-frens] .frens-ppnl {
+  margin: 8px 0 0;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Dropped where the column is too narrow to set them. */
+[data-lp-frens] .frens-pbio,
+[data-lp-frens] .frens-pbest {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  [data-lp-frens] .frens-podium > div {
+    padding: 28px 24px 30px 0;
+  }
+
+  [data-lp-frens] .frens-podium > div + div {
+    padding-left: 24px;
+  }
+
+  [data-lp-frens] .frens-pname {
+    font-size: 24px;
+  }
+
+  [data-lp-frens] .frens-ppnl {
+    font-size: 28px;
+    letter-spacing: -0.035em;
+  }
+
+  [data-lp-frens] .frens-pbio {
+    display: block;
+    margin: 14px 0 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--lp-ink-2);
+  }
+
+  [data-lp-frens] .frens-pbest {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--lp-ink-3);
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-lp-frens] .frens-podium > div {
+    padding: 34px 44px 36px 0;
+  }
+
+  [data-lp-frens] .frens-podium > div + div {
+    padding-left: 44px;
+  }
+
+  [data-lp-frens] .frens-pname {
+    font-size: 34px;
+    letter-spacing: -0.032em;
+  }
+
+  [data-lp-frens] .frens-ppnl {
+    margin-top: 14px;
+    font-size: 44px;
+    letter-spacing: -0.04em;
+  }
+
+  [data-lp-frens] .frens-pbio {
+    margin-top: 16px;
+    font-size: 15.5px;
+  }
+
+  [data-lp-frens] .frens-pbest {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
+
+/*
+ * ── THE REST ─────────────────────────────────────────────────────────
+ *
+ * One line each. This owns the rule between itself and the podium, which
+ * is why the podium has none.
+ *
+ * The name column is the only flexible one: rank, best call and PnL are
+ * all fixed, so the figures hold a straight edge down the band however
+ * long a name is. That alignment is most of what makes a column of
+ * numbers read as a table without being one.
+ */
+[data-lp-frens] .frens-rest {
+  border-top: 1px solid var(--lp-hairline);
+}
+
+[data-lp-frens] .frens-rest > div {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 108px;
+  align-items: baseline;
+  gap: 3px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--lp-hairline);
+}
+
+@media (min-width: 640px) {
+  [data-lp-frens] .frens-rest > div {
+    grid-template-columns: 44px minmax(0, 1fr) 170px 150px;
+    gap: 20px;
+    padding: 15px 0;
+  }
+}
+
+[data-lp-frens] .frens-rest i {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--lp-ink-3);
+}
+
+[data-lp-frens] .frens-rest b {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--lp-ink-1);
+}
+
+/* On a phone the best call drops under the name rather than fighting the
+   PnL for the right edge. */
+[data-lp-frens] .frens-rest span {
+  grid-column: 2;
+  font-size: 13px;
+  color: var(--lp-ink-3);
+}
+
+[data-lp-frens] .frens-rest em {
+  grid-column: 3;
+  grid-row: 1;
+  font-style: normal;
+  font-size: 16px;
+  text-align: right;
+}
+
+@media (min-width: 640px) {
+  [data-lp-frens] .frens-rest b {
+    font-size: 18px;
+  }
+
+  [data-lp-frens] .frens-rest span {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 15px;
+    text-align: right;
+  }
+
+  [data-lp-frens] .frens-rest em {
+    grid-column: 4;
+    font-size: 17px;
+  }
+}

@@ -1,0 +1,275 @@
+/*
+ * THE TOP OF A COLUMN, COPIED. Mockup only — nothing in `source/` reads
+ * this file.
+ *
+ * ── EVERY VALUE BELOW IS MEASURED, NOT EYEBALLED ─────────────────────
+ *
+ * Sampled from the reference screenshot pixel by pixel (734x70 for one
+ * head). Earlier passes guessed and were wrong on nearly every count:
+ *
+ *   band ground     MEASURED #18181b     I had #0d0d0d — far too dark
+ *   band edge       MEASURED #2a2a2e     top AND bottom, not just bottom
+ *   page behind     MEASURED #0f0f12
+ *   band height     MEASURED 48px        I had 42, and 33 before that
+ *   name            x=26, cap 12px       so ~16px/600, not 13px
+ *   search pill     x=334, w=158, h=28   I had 170x30 pushed too far right
+ *   right inset     25px
+ *   tool gaps       ~20px                I had 12
+ *   SOL mark        MEASURED #8e4df7     purple. I had swapped it to blue
+ *                                        and teal, which was invented
+ *
+ * The one deliberate difference: the reference carries an audio control
+ * between the chart glyph and the funnel. It is not here, on request.
+ *
+ * Rules kept: nothing underlined, no hover changes a colour, nothing
+ * moves on hover, nothing borrowed from a terminal.
+ */
+
+.tp-wrap {
+  /* The reference crop's own width, so the two can be held side by side
+     at 1:1 instead of one being a squashed copy of the other. */
+  width: 734px;
+  background: #0f0f12;
+}
+
+.tp {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  /*
+   * 20px between every item in the right hand cluster, measured off the
+   * reference (bolt to amount 29, amount to P1 22, P1 to chart 18). The
+   * funnel is a sibling of the tools group, so without a gap here it sat
+   * flush against the chart glyph. 16, measured: pill ends 492, box
+   * starts 508.
+   */
+  gap: 16px;
+  padding: 0 25px 0 26px;
+  background: #18181b;
+  border-top: 1px solid #2a2a2e;
+  border-bottom: 1px solid #2a2a2e;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.tp-title {
+  flex: 0 0 auto;
+  font-size: 16px;
+  /*
+   * 500, not 600. Measured: the "N" stem on the reference is 3px on a
+   * 12px cap. 600 rendered visibly heavier than that at the same size.
+   */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/*
+ * ONE spacer, and it goes between the name and the pill.
+ *
+ * Measured on the reference: the name ends at x=60, the pill starts at
+ * 334, the pill ends at 492 and the tools start at 517. So the gap on
+ * the left is 274px and the gap on the right is 25 — the field is NOT
+ * floating between two equal gaps, it is part of the right hand cluster
+ * with one big empty run before it. An earlier pass put a spacer on both
+ * sides, which pulled the pill into the middle of the bar.
+ */
+.tp-grow {
+  flex: 1 1 auto;
+}
+
+.tp-search {
+  display: flex;
+  align-items: center;
+  flex: 0 0 158px;
+  /*
+   * `min-width: 0` is load bearing. A flex item defaults to
+   * `min-width: auto`, which refuses to go below its CONTENT width — and
+   * the content is an `<input>`, whose intrinsic width is about 177px.
+   * So `flex: 0 0 158px` was being ignored and the pill measured 213.
+   */
+  min-width: 0;
+  box-sizing: border-box;
+  height: 28px;
+  /*
+   * NO margin. Measured on the reference the pill ends at 492 and the
+   * tools box starts at 508 — a 16px gap, which the head's own `gap`
+   * already provides. The extra 25 here was stacking on top of it and
+   * pushing the field 42px away, which is why the search read as
+   * stranded out on its own.
+   */
+  padding: 0 13px;
+  border: 1px solid #2a2a2e;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.tp-search input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.tp-search input::placeholder {
+  color: #6e7178;
+}
+
+/* ── the tools ────────────────────────────────────────────────────── */
+
+/*
+ * ── ALL FIVE ARE IN ONE BORDERED BOX ─────────────────────────────────
+ *
+ * This is the thing every earlier pass missed, and it is the single
+ * biggest difference between the copy and the reference.
+ *
+ * Scanned off the screenshot: there is a continuous horizontal edge at
+ * y=22 and again at y=49 running from x=515 to x=646, with corner arcs
+ * at x=510 (y 25,26,27 and 44,45,46) and x=650 (y 24,25,26 and 45,46,47),
+ * and clean vertical sides at x=585..595 showing pixels at y=22 and y=49
+ * only. That is a rounded rectangle, x 508..652, y 22..49 — 144x28 —
+ * and the bolt, the amount, the SOL mark, P1 AND the chart glyph are all
+ * inside it.
+ *
+ * Only the funnel sits outside. 28px tall, the same height as the search
+ * pill, so the two objects in the strip match.
+ */
+.tp-tools {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  /*
+   * 17 and 9, tuned against the measured box. The reference box is
+   * 508..652 — 144px — and 19/10 rendered 152. Internal item gaps on the
+   * reference read 22 (SOL to P1) and 18 (P1 to chart); 17 with a 9px
+   * inset lands the whole box on 144.
+   */
+  /*
+   * NO uniform gap. The reference's spacing inside this box is not even,
+   * and averaging it is what made the box 20px too wide:
+   *
+   *   bolt -> 0        29px      0 -> SOL          5px
+   *   SOL  -> divider  12px      divider -> P1     9px
+   *   P1   -> chart    18px
+   *
+   * Each is set on the item itself below.
+   */
+  gap: 0;
+  height: 28px;
+  padding: 0 9px;
+  border: 1px solid #2a2a2e;
+  /*
+   * 10, measured. The corner arc on the reference runs about 8px
+   * horizontally (the border is at y=22 by x=515 and has fallen to
+   * y=27..30 by x=508), which is a radius near 10, not the 8 I had.
+   */
+  border-radius: 10px;
+}
+
+.tp-amt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  color: #ffffff;
+}
+
+/*
+ * 12, down from 29.
+ *
+ * 29 was measured off the reference as bolt-ink to figure-ink, but the
+ * reference's bolt is a ~15px mark and mine was 11 — so I was pairing
+ * their gap with a smaller glyph and the segment came out visibly wider
+ * than theirs. With the bolt at its real size the gap closes.
+ */
+.tp-amt > svg:first-child { margin-right: 12px; }
+
+/* And the SOL mark sits tight against it, because together they are one
+   reading — the amount and its unit. */
+.tp-size { margin-right: 5px; }
+
+.tp-size {
+  width: 9px;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: right;
+}
+
+.tp-preset {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  margin-right: 18px;
+}
+
+/* Bare. The pill is the only outlined object in the strip. */
+.tp-chart,
+.tp-funnel {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/*
+ * ── THE DIVIDER INSIDE THE BOX ───────────────────────────────────────
+ *
+ * There IS one, and I said there was not.
+ *
+ * Scanned column by column between the SOL mark (ends x=579) and P1
+ * (starts x=601): x=591 carries 24 interior pixels top to bottom, and
+ * every other column in that run carries none. That is a full height
+ * 1px rule splitting the box into the quick buy on the left and the
+ * preset on the right.
+ */
+.tp-div {
+  width: 1px;
+  align-self: stretch;
+  background: #2a2a2e;
+  margin: 0 9px 0 12px;
+}
+
+/* ── the sheet's own furniture ────────────────────────────────────── */
+
+.tp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.tp-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 7px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+}
+
+.tp-label b {
+  color: #4b5563;
+  font-weight: 400;
+}
+
+.tp-label span {
+  color: #ffffff;
+  font-weight: 400;
+}

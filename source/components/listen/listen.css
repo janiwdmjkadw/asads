@@ -1,0 +1,1655 @@
+/* ==========================================================================
+   Trade-page local CSS — design tokens and chrome
+   ==========================================================================
+   All tokens here are scoped to `.listen-root`. Mirrors the Discover page's
+   aurora palette so the two pages feel like the same product. Kept
+   independent (no shared base) on purpose — if a third aurora page lands,
+   extract a shared `.aurora-root` block then.
+
+   The class is named `.listen-root` (the page is branded "Listen") rather
+   than `.trade-root` so palette/font CSS-vars injected by ThemeProvider
+   make semantic sense.
+
+   Imported once from TradePage.tsx.
+   ========================================================================== */
+
+.listen-root {
+  /* ---- Surfaces (cool blue-gray obsidian — aurora preset) -------------- */
+  --surface:     hsl(220, 12%, 3%);
+  --surface-1:   hsl(220, 12%, 7%);
+  --surface-2:   hsl(220, 12%, 10%);
+  --surface-3:   hsl(220, 12%, 15%);
+  --hairline:    rgba(255, 255, 255, 0.06);
+  --hairline-2:  rgba(255, 255, 255, 0.14);
+
+  /* ---- Ink ------------------------------------------------------------- */
+  --ink-0: #ffffff;  /* max-contrast numerals, hero values */
+  --ink-1: #e4e7ee;  /* body text, primary data */
+  --ink-2: #a8aeba;  /* secondary labels, muted data */
+  --ink-3: #6b7180;  /* tertiary labels, UPPERCASE captions */
+  --ink-4: #2a2d36;  /* disabled, placeholder */
+
+  /* ---- Accents (default aurora preset; overridden per theme by JS) ----- */
+  --accent-primary:   #38e1ff;
+  --accent-secondary: #9d5cff;
+  --accent-cyan:      #ff7a45; /* legacy alias used by a few callers */
+  --accent-soft:      rgba(56, 225, 255, 0.14);
+  --accent-glow:      rgba(56, 225, 255, 0.45);
+  --accent-wash:      rgba(56, 225, 255, 0.06);
+
+  /* Back-compat aliases — same value as accent-* */
+  --flame:      var(--accent-primary);
+  --flame-soft: var(--accent-soft);
+  --flame-glow: var(--accent-glow);
+  --flame-wash: var(--accent-wash);
+
+  /* ---- Data colors (green/red/amber, tuned to the aurora family) ------- */
+  --up:     #34d399;
+  --down:   #fb5374;
+  --hold:   #ffcf5c;
+  --up-2:   #22d3ee;   /* Buy CTA gradient partner */
+  --down-2: #e11d48;   /* Sell CTA gradient partner */
+
+  /* ---- Fonts ----------------------------------------------------------- */
+  /* Default font stacks. ThemeProvider overrides these inline on the root
+     element when the user picks a different family from the switcher. */
+  /* The literal 'Geist'/'Instrument Serif' names never resolved — nothing
+     registers those families; next/font (app/layout.tsx) self-hosts them
+     under hashed names exposed via --font-geist-* / --font-instrument-*. */
+  --display: var(--font-instrument-serif, ui-serif), 'Tiempos Headline', ui-serif, Georgia, serif;
+  --sans:    var(--font-geist-sans, system-ui), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono:    var(--font-geist-mono, ui-monospace), 'JetBrains Mono', ui-monospace, monospace;
+  /* Mirrors so consumers can write either form */
+  --font-display: var(--display);
+  --font-sans:    var(--sans);
+  --font-mono:    var(--mono);
+
+  /* ---- Type scale (semantic; consumed by .t-* helpers) ----------------- */
+  --t-hero-size:        40px;
+  --t-hero-line:        1;
+  --t-hero-tracking:    -0.02em;
+
+  --t-display-size:     26px;
+  --t-display-line:     1;
+  --t-display-tracking: -0.01em;
+
+  --t-title-size:       18px;
+  --t-title-line:       1;
+  --t-title-tracking:   -0.01em;
+
+  --t-body-size:        13px;
+  --t-body-line:        1.45;
+
+  --t-label-size:       11px;
+  --t-label-line:       1;
+
+  --t-caption-size:     10px;
+  --t-caption-line:     1;
+  --t-caption-tracking: 0.14em;
+
+  --t-caption-lg-size:     11px;
+  --t-caption-lg-tracking: 0.16em;
+
+  --t-num-hero-size:    26px;
+  --t-num-size:         17px;
+  --t-num-sm-size:      13px;
+  --t-num-xs-size:      11px;
+
+  /* ---- Spacing (4px base) --------------------------------------------- */
+  --sp-0: 0;
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 6px;
+  --sp-4: 8px;
+  --sp-5: 12px;
+  --sp-6: 16px;
+  --sp-7: 20px;
+  --sp-8: 24px;
+  --sp-9: 32px;
+  --sp-10: 48px;
+
+  /* ---- Radii ---------------------------------------------------------- */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:   8px;
+  --r-lg:   10px;
+  --r-xl:   12px;
+  --r-2xl:  16px;
+  --r-chip: 999px;
+
+  /* ---- Motion --------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:   120ms;
+  --dur-normal: 160ms;
+  --dur-slow:   220ms;
+
+  /* ---- Layout sizes (load-bearing — referenced by components) --------
+     Centralized here so Buy CTA height, rail width, chart height etc. can
+     be retuned in one spot. Components reference via `h-[var(--h-cta)]`,
+     `w-[var(--w-rail)]`, etc. Decorative sizes (icon glyphs at 12-16px
+     etc.) stay literal at the call site — tokenizing those adds noise. */
+  --h-topnav:    56px;
+  /* Global app chrome strips: a thin sub-header under the navbar and a thin
+     status footer pinned to the bottom (both full-bleed). --h-app-content is
+     the height left for a page once all chrome is subtracted; viewport-locked
+     pages use it so they fill the gap exactly and never scroll. */
+  /*
+   * 40, up from 30.
+   *
+   * The strip's contents are 22px chips, which left FOUR pixels of air
+   * above and below them — the controls sat hard against the navbar's
+   * bottom hairline and against the board's first row, so the bar read as
+   * crammed between two things rather than as its own strip. 9px a side
+   * gives it room to be a strip.
+   *
+   * `--h-app-content` below subtracts this, so the board and every
+   * viewport-locked page give the pixels back automatically; the dock and
+   * the agent window offset off the same token.
+   */
+  --h-subnav:    40px;
+  /*
+   * The page bar under the watchlist nav: the page's name on the left,
+   * the wallet cluster on the right. 38, which is the cluster's 26px
+   * controls with 6px of air either side — the same relationship the
+   * sub-header's 22px chips have to its 40.
+   *
+   * Subtracted from `--h-app-content` below, so every viewport-locked
+   * page gives the pixels back on its own and nothing has to know this
+   * bar exists.
+   */
+  --h-pagebar:   38px;
+  --h-footer:    30px;
+  /* 100dvh is divided by --ui-scale (globals.css): CSS zoom scales px sizes
+     but NOT dvh units, so under the low-DPI UI auto-scale the raw viewport
+     height would overflow the screen by the scale factor. At scale 1 the
+     division is a no-op. */
+  --h-app-content: calc(100dvh / var(--ui-scale, 1) - var(--h-topnav) - var(--h-subnav) - var(--h-pagebar) - var(--h-footer));
+  /* Footer strip background: the theme's floor, nudged DOWN a touch so the bar
+     sits under the page rather than on top of it. The edge-lit rail on its top
+     border is the only lit thing in the strip, and that only reads against a
+     dark bar — this used to be surface-2 nudged UP toward mid-grey ink, which
+     lit the bar and flattened the rail. Derived from --surface-1, so every
+     theme follows (dark floor stays near-black, zen's rice paper becomes a
+     soft warm strip). The sub-header instead shares the navbar treatment so it
+     blends as one header unit (see AppSubHeader). */
+  --chrome-footer-bg: color-mix(in srgb, var(--surface-1) 90%, #000);
+  --h-toolbar:   40px;
+  --h-input:     44px;
+  --h-cta:       42px;
+  --h-icon-btn:  28px;
+  --h-pill:      22px;
+  --h-pill-md:   26px;
+  --h-chip:      32px;
+  --h-row:       32px;
+  --h-row-head:  28px;
+  --h-readout:   26px;
+  --h-tab-bar:   40px;
+
+  --w-rail:      320px;   /* xl+ */
+  --w-rail-md:   280px;   /* lg → xl */
+
+  --chart-h:     370px;   /* xl+ */
+  --chart-h-min: 320px;   /* clamp floor on smaller viewports */
+
+  --gap-page:    12px;
+  --gap-cluster: 16px;
+
+  /* Page-edge padding rhythm — fluid like Discover (these live in
+     discover.css too, but that sheet isn't loaded on the trade route,
+     so the trade page needs its own copy here). */
+  --section-pad-x: clamp(12px, calc(6px + 0.5vw), 20px);
+  --section-pad-y: 8px;
+
+  /* TradesTable horizontal-scroll floors + the bottom-row min height so
+     the dense 6-column grid stays readable and the table never collapses
+     below a usable height on a short viewport. */
+  --table-min-w:      680px;
+  --table-min-w-wide: 1120px;
+  --table-min-h:      240px;
+
+  /* ---- Composed surfaces --------------------------------------------- */
+  --section-bg:
+    radial-gradient(1200px 200px at 0% 0%, rgba(157, 92, 255, 0.05), transparent 60%),
+    radial-gradient(800px 200px at 100% 100%, rgba(56, 225, 255, 0.04), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+    #10131a;
+  --section-border: rgba(255, 255, 255, 0.07);
+  --section-shadow:
+    0 1px 0 rgba(255,255,255,0.04) inset,
+    0 24px 40px -24px rgba(0,0,0,0.7);
+
+  --card-bg:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)),
+    hsl(220, 12%, 8%);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.015),
+    0 12px 28px -14px rgba(0,0,0,0.7);
+
+  /*
+   * ── THE CONTROL PLATE, DOUBLED, EVERYWHERE ────────────────────────
+   *
+   * `f-05` from the `/whatever` sheet, applied at the token rather than
+   * on one strip. These two are the fill under every field, chip, quick
+   * buy box, protocol filter, section search and icon button in the
+   * product, and at 0.025 and 0.02 they resolved to about #060606 over
+   * the black ground — near enough to invisible that the hairline border
+   * was carrying every one of those controls on its own.
+   *
+   * Doubling is the whole change. The borders, radii and hover steps are
+   * untouched, so nothing moves and nothing is restyled; the plates just
+   * stop being a rounding error away from the page behind them.
+   *
+   * The zen light palette overrides both further down and is unaffected:
+   * on a parchment ground a white wash means something different and its
+   * own value was tuned there.
+   */
+  --input-bg:     rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.08);
+  --chip-bg:      rgba(255, 255, 255, 0.045);
+  --chip-border:  rgba(255, 255, 255, 0.10);
+
+  /*
+   * NEUTRAL, AND OPAQUE. This was
+   * `linear-gradient(180deg, rgba(12,14,19,0.88), rgba(12,14,19,0.72))` —
+   * a blue-grey at 88% falling to 72%, which over a black page reads as
+   * a tinted band across the top of every screen. Two separate problems:
+   * the hue (12,14,19 is blue-cast) and the alpha (the gradient let the
+   * ground through unevenly, so the bar shaded top to bottom).
+   *
+   * Flat black. The bar is still separated from the page by its bottom
+   * hairline, which is what was doing that work anyway.
+   */
+  --nav-bg: transparent;
+  --tabs-bg: rgba(255, 255, 255, 0.02);
+
+  /* ---- Top-nav etched control system ----------------------------------
+     One rhythm for every control on the bar: 28px tall, 8px radius, a
+     black-tinted recessed fill, ONE hairline (with exactly one step up
+     for open/active), and an inner top shadow so the control reads as cut
+     INTO the bar rather than sat on it. Consumed by `.hdr-ctl` and the
+     nav rail below (see "Top nav — etched control system"), and by the
+     arbitrary-value utilities in TerminalTopNav / NotificationBell /
+     AuthControls. Changing a value here retunes the whole header. */
+  --hdr-h:         28px;   /* every control */
+  --hdr-h-in:      22px;   /* nested nav pill, and the thumb */
+  --hdr-r:         8px;    /* every control */
+  --hdr-r-in:      6px;    /* --hdr-r minus the rail's 2px padding */
+  --hdr-r-micro:   5px;    /* the ⌘K cap */
+  --hdr-pad:       10px;   /* symmetric, every control with text */
+  --hdr-edge:      rgba(255, 255, 255, 0.12);   /* the ONE hairline */
+  --hdr-edge-on:   rgba(255, 255, 255, 0.18);   /* its one step up */
+  --hdr-fill:      rgba(0, 0, 0, 0.28);         /* recessed plate */
+  --hdr-etch:      inset 0 1px 2px rgba(0, 0, 0, 0.55);
+  --hdr-ico:       14px;
+  /* The inverse of the etch — the nav thumb is the ONE raised object, so
+     its surface is a token too and a light theme can re-point it. */
+  --hdr-raise:      linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.045));
+  --hdr-raise-lip:  rgba(255, 255, 255, 0.16);
+  --hdr-raise-drop: 0 1px 3px rgba(0, 0, 0, 0.55);
+  --hdr-field-min: 320px;  /* the agent field never shrinks past this */
+  --hdr-field-max: 480px;
+  --hdr-bar-edge:  rgba(255, 255, 255, 0.10);   /* was a cyan scanline */
+
+  /* ---- Thumb sweep presets --------------------------------------------
+     The accent's only spend in the nav, and the only one on the bar that
+     is motion rather than paint. Four presets, each a (dur, grad, glint)
+     triple; the three ACTIVE assignments at the end of this block pick
+     one. To switch, rewrite one preset name in those three lines.
+
+     `loop` additionally needs the rule + keyframe kept commented at the
+     end of the thumb section — it is not slide-gated, so it costs a
+     standing compositor pass and puts moving accent directly above live
+     P&L. That is why the shipped default is one 700ms pass per slide. */
+  --sw-standard-dur:   700ms;
+  --sw-standard-grad:  linear-gradient(100deg,
+                         transparent 14%,
+                         rgba(56, 225, 255, 0.42) 40%,
+                         rgba(200, 247, 255, 0.95) 50%,
+                         rgba(56, 225, 255, 0.42) 60%,
+                         transparent 86%);
+  --sw-standard-glint: rgba(224, 251, 255, 0.95);
+
+  --sw-subtle-dur:     620ms;
+  --sw-subtle-grad:    linear-gradient(100deg,
+                         transparent 18%,
+                         rgba(56, 225, 255, 0.22) 48%,
+                         transparent 78%);
+  --sw-subtle-glint:   transparent;   /* no top-edge glint */
+
+  --sw-loud-dur:       760ms;
+  --sw-loud-grad:      linear-gradient(100deg,
+                         transparent 10%,
+                         rgba(56, 225, 255, 0.58) 38%,
+                         rgba(224, 251, 255, 1) 50%,
+                         rgba(56, 225, 255, 0.58) 62%,
+                         transparent 90%);
+  --sw-loud-glint:     rgba(235, 253, 255, 1);
+
+  --sw-loop-dur:       3.4s;
+  --sw-loop-grad:      linear-gradient(100deg,
+                         transparent 20%,
+                         rgba(56, 225, 255, 0.30) 48%,
+                         transparent 76%);
+  --sw-loop-glint:     transparent;   /* the prototype had no edge glint */
+
+  /* ── ACTIVE PRESET: standard ──────────────────────────────────────── */
+  --sw-dur:   var(--sw-standard-dur);
+  --sw-grad:  var(--sw-standard-grad);
+  --sw-glint: var(--sw-standard-glint);
+
+  /* ---- Semantic accent + data aliases ---------------------------------
+     Many older call sites use `var(--accent, #...)` / `var(--accent-up,
+     #...)` / `var(--accent-down, #...)`. None of those tokens existed,
+     so the inline hex fallback always won and the surfaces were not
+     theme-agnostic. We alias them to the canonical theme tokens so a
+     theme change actually propagates everywhere. */
+  --accent:      var(--accent-primary);
+  --accent-up:   var(--up);
+  --accent-down: var(--down);
+
+  /* ---- Overlay + elevation tokens ------------------------------------
+     Pulled out of inline `style` so every modal / dropdown / popover /
+     toast composes from the SAME design surface. Changing one of these
+     here updates every overlay on the trade page. */
+  --modal-backdrop:   rgba(2, 4, 8, 0.7);
+  --modal-blur:       blur(3px);
+  --shadow-modal:     0 24px 60px rgba(0, 0, 0, 0.45);
+  --shadow-dropdown:  0 16px 32px rgba(0, 0, 0, 0.45);
+  --shadow-popover:   0 16px 32px rgba(0, 0, 0, 0.45);
+  --shadow-toast:     0 12px 32px rgba(0, 0, 0, 0.45);
+
+  /* Tooltip surface — chart crosshair tooltips, hover previews, the
+     instant-trade box's quote tooltip, etc. Opaque enough to be
+     readable over any theme surface. */
+  --tooltip-bg:       rgba(8, 10, 14, 0.96);
+  --tooltip-border:   var(--hairline);
+  --tooltip-shadow:   0 10px 26px rgba(0, 0, 0, 0.38);
+
+  /* QR code paint — the QR algorithm requires a high-contrast pair,
+     but expose them as tokens so a future light theme can switch the
+     dark/light pair without editing component code. */
+  --qr-dark:  #0b0d12;
+  --qr-light: #ffffff;
+
+  --shadow-glow-cyan: 0 0 14px var(--accent-glow);
+
+  /* ─── shadcn-compatible aliases ───────────────────────────────────────
+     These map shadcn's semantic color tokens onto the existing theme
+     tokens above. Because they point at our own theme variables
+     (which `[data-theme-id="zen"]` and other theme overrides already
+     re-target), every shadcn component (Dialog, Slider, …) follows
+     the active theme automatically with no per-component override.
+
+     Naming-conflict note: our existing `--accent` is the BRAND CTA
+     color, but in shadcn semantics `--accent` is a subtle highlight
+     (e.g. menu-item hover bg). We keep `--accent` untouched and
+     expose the CTA via `--primary`; shadcn's `accent` utility is
+     bridged to `--accent-soft` through `tailwind.config.js`. */
+  --background:             var(--surface);
+  --foreground:             var(--ink-1);
+  --card:                   var(--surface-1);
+  --card-foreground:        var(--ink-0);
+  --popover:                var(--surface-1);
+  --popover-foreground:     var(--ink-0);
+  --primary:                var(--accent);
+  --primary-foreground:     var(--ink-0);
+  --secondary:              var(--chip-bg, var(--surface-2));
+  --secondary-foreground:   var(--ink-0);
+  --muted:                  var(--input-bg);
+  --muted-foreground:       var(--ink-3);
+  --destructive:            var(--down);
+  --destructive-foreground: var(--ink-0);
+  --border:                 var(--hairline);
+  --input:                  var(--input-border, var(--hairline));
+  --ring:                   var(--accent-primary);
+  /* 0.75rem == 12px, chosen so the shadcn-driven `rounded-lg/md/sm`
+     keys keep their previous numeric values (lg 12 / md 10 / sm 8)
+     and existing call sites don't pick up an off-by-2 radius shift. */
+  --radius:                 0.75rem;
+
+  /* shadcn Sidebar tokens — bridged to the theme palette (not the
+     CLI's stock HSL values) so the Sidebar primitive follows the
+     active theme like every other shadcn surface. */
+  --sidebar:                    var(--surface-1);
+  --sidebar-foreground:         var(--ink-1);
+  --sidebar-primary:            var(--accent);
+  --sidebar-primary-foreground: var(--ink-0);
+  --sidebar-accent:             var(--accent-soft);
+  --sidebar-accent-foreground:  var(--ink-0);
+  --sidebar-border:             var(--hairline);
+  --sidebar-ring:               var(--accent-primary);
+
+  font-family: var(--sans);
+  /*
+   * BLACK, not `--surface`. The token is hsl(220 12% 3%) — near black
+   * with a blue cast that every theme re-tints, so the page ground
+   * drifted with the accent. The ground is now a fixed black and only
+   * the surfaces ON it (cards, chips, docks) carry the theme.
+   */
+  background: #000;
+  color: var(--ink-1);
+}
+
+/* ==========================================================================
+   Semantic typography helpers — apply as className on a <span>/<div>
+   Each variant pulls font-family/size/weight from tokens so theme switches
+   propagate without component edits.
+   ========================================================================== */
+.listen-root .t-hero {
+  font-family: var(--display);
+  font-size: var(--t-hero-size);
+  line-height: var(--t-hero-line);
+  letter-spacing: var(--t-hero-tracking);
+  font-weight: 400;
+  color: var(--ink-0);
+}
+.listen-root .t-display {
+  font-family: var(--sans);
+  font-size: var(--t-display-size);
+  line-height: var(--t-display-line);
+  letter-spacing: var(--t-display-tracking);
+  font-weight: 600;
+  color: var(--ink-0);
+}
+.listen-root .t-title {
+  font-family: var(--sans);
+  font-size: var(--t-title-size);
+  line-height: var(--t-title-line);
+  letter-spacing: var(--t-title-tracking);
+  font-weight: 600;
+  color: var(--ink-0);
+}
+.listen-root .t-body {
+  font-family: var(--sans);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-line);
+  font-weight: 400;
+  color: var(--ink-1);
+}
+.listen-root .t-label {
+  font-family: var(--sans);
+  font-size: var(--t-label-size);
+  line-height: var(--t-label-line);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.listen-root .t-caption {
+  font-family: var(--sans);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-line);
+  letter-spacing: var(--t-caption-tracking);
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.listen-root .t-caption-lg {
+  font-family: var(--sans);
+  font-size: var(--t-caption-lg-size);
+  line-height: var(--t-caption-line);
+  letter-spacing: var(--t-caption-lg-tracking);
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.listen-root .t-flourish {
+  font-family: var(--display);
+  font-style: italic;
+  color: var(--accent-primary);
+}
+
+.listen-root .t-num-hero {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-num-hero-size);
+  line-height: 1;
+  font-weight: 600;
+  color: var(--ink-0);
+}
+.listen-root .t-num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-num-size);
+  line-height: 1;
+  font-weight: 500;
+  color: var(--ink-1);
+}
+.listen-root .t-num-sm {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-num-sm-size);
+  line-height: 1;
+  font-weight: 500;
+  color: var(--ink-1);
+}
+.listen-root .t-num-xs {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-num-xs-size);
+  line-height: 1;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* ==========================================================================
+   App footer chrome
+   ==========================================================================
+   The status bar's surface, kept here rather than as an inline style on the
+   element: it is a static three-part paint (floor + rail + lift) and a
+   multi-layer background-image is the case Tailwind arbitrary values handle
+   worst — the escaped one-liner would be unreadable and could carry no
+   variants. Layout (flex, height, padding) stays in utilities on the
+   element; only the paint lives here. */
+.listen-root .app-footer {
+  background-color: var(--chrome-footer-bg);
+  /* 1. the top edge: a neutral 2px rail, brightest at the left and decaying
+        to the ordinary hairline by mid-bar, separating chrome from app
+        without spending colour. Derived from --ink-2, not a literal white,
+        so it inverts with the theme (light line on the dark floor, dark
+        line on zen's paper).
+     2. a slight lift at the top so the strip reads as lit from above
+        rather than as a flat block of ink. */
+  background-image:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--ink-2) 26%, transparent) 0%,
+      color-mix(in srgb, var(--ink-2) 13%, transparent) 26%,
+      var(--hairline) 55%,
+      var(--hairline) 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-2) 60%, transparent) 0%,
+      transparent 58%
+    );
+  background-size: 100% 2px, 100% 100%;
+  background-repeat: no-repeat;
+  background-position: top left;
+  font-family: var(--mono);
+}
+
+/* ==========================================================================
+   NO AMBIENT BACKGROUND
+
+   The page used to paint two fixed full-viewport layers under everything:
+   an `aurora-layer` of three drifting accent radials and a `grid-layer`
+   of 48px white rules under a radial mask. Both are deleted, along with
+   the `page-bg` box that held them and the `listen-drift` animation that
+   moved the aurora — the ground is flat black and nothing floats on it.
+   ========================================================================== */
+
+/* ==========================================================================
+   Zen palette — overrides the dark obsidian tokens with the parchment +
+   sumi-ink set. Page background stays the image (set inline by
+   ThemeProvider), so `--surface` itself is transparent here; the
+   surface-1/2/3 stops are warm tints used for cards, chips, and
+   topnav glass.
+   ========================================================================== */
+.listen-root[data-theme-id="zen"] {
+  /* Surfaces */
+  --surface:     transparent;
+  --surface-1:   #F5F1EB;  /* warm rice paper */
+  --surface-2:   #F3EEE8;  /* ivory parchment */
+  --surface-3:   #F0EBE5;  /* aged cream vellum */
+
+  /* Hairlines — sumi ink at low alpha (renders as smoked beige over
+     parchment, misty taupe at the lower stop). */
+  --hairline:    rgba(30, 30, 33, 0.10);
+  --hairline-2:  rgba(30, 30, 33, 0.20);
+
+  /* Ink — homepage parchment palette (warm dark browns on cream)
+     so all text remains readable against the paper-grain texture.
+     The homepage itself only uses two ink levels (`#1c1814` ink for
+     primary copy and `#4a4036` sub for secondary), so we slide the
+     lower stops up to keep tertiary text equally readable instead
+     of letting it fade out the way the original gray scale did. */
+  --ink-0:       #1c1814;  /* homepage-ink — hero numerals, logo, primary */
+  --ink-1:       #2a221c;  /* near-ink — body / row labels */
+  --ink-2:       #4a4036;  /* homepage-sub — secondary metadata */
+  --ink-3:       #4a4036;  /* homepage-sub — tertiary captions stay readable */
+  --ink-4:       #7a6e62;  /* slightly lighter — placeholder / disabled only */
+
+  /* Data — moss green / burnt coral / aged ochre. Earthier than the
+     default jade/rose/amber so the green-up / red-down semantics feel
+     woodblock-printed instead of LED. `--up-2` pulls darker so the
+     BUY CTA gradient stays in the moss family. */
+  --up:          #5a7a3a;  /* moss green */
+  --up-2:        #3d5226;
+  --down:        #C86152;  /* burnt coral red */
+  --down-2:      #B84838;
+  --hold:        #D7A76A;  /* aged ochre gold */
+
+  /* Composed surfaces */
+  --section-bg:
+    linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25)),
+    #F3EEE8;
+  --section-border: rgba(30, 30, 33, 0.10);
+  --section-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 24px 40px -24px rgba(30, 30, 33, 0.18);
+
+  --card-bg:
+    linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.18)),
+    #F7F4EE;
+  --card-border: rgba(30, 30, 33, 0.10);
+  --card-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.65),
+    inset 0 0 0 1px rgba(255,255,255,0.10),
+    0 12px 28px -14px rgba(30, 30, 33, 0.18);
+
+  --input-bg:     rgba(247, 244, 238, 0.65);
+  --input-border: rgba(30, 30, 33, 0.10);
+  --chip-bg:      rgba(247, 244, 238, 0.55);
+  --chip-border:  rgba(30, 30, 33, 0.10);
+
+  /* Zen lets the parchment show through everywhere — the nav and the
+     tabs pill both go fully transparent so the page art reads as one
+     continuous wash from edge to edge. */
+  --nav-bg:       transparent;
+  --tabs-bg:      transparent;
+
+  /* The etched header in the sumi-ink family. The dark-theme values are
+     black-on-black by construction (`--hdr-fill` is 28% black), which
+     would punch holes in the parchment — same reason the hairline and
+     input tokens above are re-pointed rather than inherited. Geometry
+     (heights, radii, padding) is theme-independent and stays inherited. */
+  --hdr-edge:      rgba(30, 30, 33, 0.14);
+  --hdr-edge-on:   rgba(30, 30, 33, 0.26);
+  --hdr-fill:      rgba(30, 30, 33, 0.045);
+  --hdr-etch:      inset 0 1px 2px rgba(30, 30, 33, 0.10);
+  --hdr-bar-edge:  rgba(30, 30, 33, 0.10);
+  /* The active tab has no chrome of its own any more, so the thumb IS the
+     indicator — a white-on-white gradient would erase it on parchment. */
+  --hdr-raise:      linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.62));
+  --hdr-raise-lip:  rgba(255, 255, 255, 0.9);
+  --hdr-raise-drop: 0 1px 3px rgba(30, 30, 33, 0.16);
+
+  /* Overlay + elevation under the zen palette — softer backdrops and
+     warmer shadows that don't punch a black hole into the parchment. */
+  --modal-backdrop:  rgba(30, 30, 33, 0.32);
+  --modal-blur:      blur(6px);
+  --shadow-modal:    0 24px 60px rgba(30, 30, 33, 0.18);
+  --shadow-dropdown: 0 16px 32px rgba(30, 30, 33, 0.14);
+  --shadow-popover:  0 16px 32px rgba(30, 30, 33, 0.14);
+  --shadow-toast:    0 12px 32px rgba(30, 30, 33, 0.14);
+
+  /* Tooltip surface — inverted under zen: dark inkstone tooltip on
+     parchment looks deliberate, the dark default would be invisible
+     against the watercolour page art. */
+  --tooltip-bg:      rgba(46, 40, 35, 0.94);
+  --tooltip-border:  rgba(30, 30, 33, 0.18);
+  --tooltip-shadow:  0 10px 26px rgba(30, 30, 33, 0.22);
+}
+
+/* The topnav element has `background: var(--nav-bg)`, an inline
+   `border-bottom`, a `backdrop-filter: blur(14px)`, and a `::after`
+   accent scanline. Under zen we want a clean wash, so:
+     - kill the bottom hairline (inline → needs `!important`)
+     - drop the blur (no-op when nav is transparent, but the GPU layer
+       it spawns still affects child painting on some browsers)
+     - hide the cinnabar scanline beneath the nav */
+.listen-root[data-theme-id="zen"] .topnav {
+  border-bottom-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.listen-root[data-theme-id="zen"] .topnav::after {
+  display: none;
+}
+
+/*
+ * Zen is the one theme on a PALE ground, so it needs its own selection:
+ * the translucent white the dark themes use is invisible on parchment.
+ *
+ * Same rule as everywhere else though — a neutral wash, no foreground.
+ * This used to be the accent behind sumi black type, which is the
+ * treatment that has just been taken off the dark themes.
+ */
+.listen-root[data-theme-id="zen"] ::selection {
+  background: rgba(30, 30, 33, 0.16);
+}
+
+/* The gradient account-avatar circle in the top-right is replaced by a
+   watercolor ink-wash sun under zen, matching the brush motif of the
+   parchment background. We re-purpose the existing `<span>` slot
+   (rather than mounting a separate element) so layout, alignment, and
+   focus order stay identical across themes — only the visual swaps.
+   `!important` is needed because the gradient background, border, and
+   glow box-shadow are set inline on the span. */
+.listen-root[data-theme-id="zen"] .topnav-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  background: url('../discover/moon.png') center/contain no-repeat !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+@keyframes listen-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* ==========================================================================
+   Top nav bottom edge
+   ==========================================================================
+   Same geometry as the cyan scanline it replaces, but a plain hairline: the
+   accent budget on this bar is three spends (the brand mark, the thumb's
+   sweep, the account tile) and the edge is not one of them. */
+.listen-root .topnav { position: relative; }
+.listen-root .topnav::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--hdr-bar-edge);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Top nav — etched control system
+   ==========================================================================
+   Every control on the bar reads as cut INTO it: recessed fill, one
+   hairline, inner top shadow (`--hdr-*`, defined with the theme tokens at
+   the top of this file). The single exception is the nav thumb — the one
+   RAISED object — and that contrast is what makes the active tab legible
+   with no pill chrome of its own.
+
+   Everything here is scoped under `.topnav` on purpose. `.tab-pill` is
+   shared with the chart range tabs and the Spot header (see
+   primitives/Pill.tsx), and those rails have no thumb to carry active
+   state, so they keep the filled-pill treatment defined further down. */
+
+/* One frame, five controls (agent field, token search, wallet plate, bell,
+   settings). Consumers add layout utilities only — never a value. */
+.listen-root .topnav .hdr-ctl {
+  height: var(--hdr-h);
+  border: 1px solid var(--hdr-edge);
+  border-radius: var(--hdr-r);
+  background: var(--hdr-fill);
+  box-shadow: var(--hdr-etch);
+  color: var(--ink-2);
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+.listen-root .topnav .hdr-ctl:hover { color: var(--ink-1); }
+/* The hairline's one step up. `data-state` covers the Radix-driven
+   controls (the bell); `.is-on` the plain buttons. */
+.listen-root .topnav .hdr-ctl.is-on,
+.listen-root .topnav .hdr-ctl[data-state='open'] {
+  border-color: var(--hdr-edge-on);
+  color: var(--ink-0);
+}
+/* ---- The wallet cluster: the bar's one GLASS group -------------------
+   Every other control on this bar is etched — recessed fill, inner top
+   shadow, reading as cut INTO the bar. The wallet controls invert that
+   and sit ON it as translucent glass: a lit body, a specular top lip,
+   and a small floor shadow.
+
+   Why break the one-rhythm rule here, deliberately: this pair is the
+   only chrome on the bar that carries MONEY — your balance, and the
+   action that adds to it. Making them the raised objects in a field of
+   recessed plates is what gives them hierarchy without resorting to
+   colour, which the bar reserves for the nav thumb's accent sweep.
+   Deposit and the pill take it TOGETHER so the cluster reads as one
+   group rather than one odd control beside a normal one.
+
+   Cost: one small blurred region (~28px tall) whose backdrop is the
+   nav bar. It is not on any scroll or stream hot path. */
+.listen-root .topnav .hdr-ctl--glass {
+  /* Radius stays the base .hdr-ctl var(--hdr-r) — the Deposit CTA beside
+     this plate moved from full pill to the shared token (owner,
+     2026-08-20), so the pair matches the bar's one rhythm again. The
+     glass treatment alone carries the money-cluster hierarchy. */
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.05) 48%,
+    rgba(255, 255, 255, 0.022) 100%
+  );
+  -webkit-backdrop-filter: blur(16px) saturate(1.45);
+  backdrop-filter: blur(16px) saturate(1.45);
+  border-color: rgba(255, 255, 255, 0.17);
+  /* Replaces --hdr-etch outright: a control cannot be both cut in and
+     raised, and keeping the inner top shadow under a specular lip is
+     what makes fake glass look like a sticker. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.24),
+    0 7px 18px -10px rgba(0, 0, 0, 0.9);
+  color: var(--ink-0);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .listen-root .topnav .hdr-ctl--glass { background: rgba(255, 255, 255, 0.07); }
+}
+.listen-root .topnav .hdr-ctl--glass:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.165) 0%,
+    rgba(255, 255, 255, 0.065) 48%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  color: var(--ink-0);
+}
+/* Open (the pill, while its balances popover is up): the glass takes
+   the accent so the trigger stays visibly bound to the panel below it. */
+.listen-root .topnav .hdr-ctl--glass.is-on,
+.listen-root .topnav .hdr-ctl--glass[data-state='open'] {
+  border-color: color-mix(in srgb, var(--accent-primary) 42%, rgba(255, 255, 255, 0.14));
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--accent-primary) 22%, rgba(255, 255, 255, 0.07)) 0%,
+    color-mix(in srgb, var(--accent-primary) 8%, rgba(255, 255, 255, 0.03)) 55%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 18px -6px color-mix(in srgb, var(--accent-primary) 65%, transparent),
+    0 6px 16px -10px rgba(0, 0, 0, 0.85);
+}
+/* The pill's internal divider rides the glass, not the etched hairline. */
+.listen-root .topnav .hdr-ctl--glass .hdr-ctl-rule {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Icon-only controls are square on the same 28px rhythm; the ones with
+   text carry --hdr-pad instead. */
+.listen-root .topnav .hdr-ctl-sq {
+  width: var(--hdr-h);
+  justify-content: center;
+  padding: 0;
+}
+
+/* The rail is a channel: no border box, so the thumb's `left: 0` and the
+   pill's offsetLeft measure from the same edge and the thumb lands exact.
+   `display` stays with the Tailwind `hidden sm:flex` on the element. */
+.listen-root .topnav .tabs {
+  height: var(--hdr-h);
+  padding: 0 2px;
+  border: 0;
+  border-radius: var(--hdr-r);
+  background: var(--hdr-fill);
+  box-shadow: inset 0 0 0 1px var(--hdr-edge), var(--hdr-etch);
+}
+.listen-root .topnav .tab-pill {
+  /* Above the thumb, so the label stays legible on top of it. */
+  position: relative;
+  z-index: 1;
+  height: var(--hdr-h-in);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--hdr-r-in);
+  background: transparent;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  box-shadow: none;
+  transition: color 160ms var(--ease-out);
+}
+.listen-root .topnav .tab-pill:hover { color: var(--ink-1); }
+/* No chrome of its own — the thumb carries it. */
+.listen-root .topnav .tab-pill.active {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--ink-0);
+}
+
+/* The one raised object in a recessed system. Decoration only: it sits
+   behind the pills, takes no pointer events, and never touches the
+   anchors' native link behaviour. Width/transform are measured and set
+   from TerminalTopNav (see placeThumb). */
+.listen-root .topnav .tab-thumb {
+  position: absolute;
+  left: 0;
+  top: 3px;
+  width: 0;
+  height: var(--hdr-h-in);
+  border-radius: var(--hdr-r-in);
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--hdr-raise);
+  box-shadow:
+    inset 0 1px 0 var(--hdr-raise-lip),
+    inset 0 0 0 1px var(--hdr-edge-on),
+    var(--hdr-raise-drop);
+  transform: translateX(0);
+  transition: transform 340ms var(--ease-out), width 340ms var(--ease-out);
+}
+/* The sweep is feedback, not ambience: one pass per slide, nothing loops.
+   Two layers on one keyframe — the band across the face, and a 1.5px
+   glint along the top-edge highlight. The glint is what survives
+   downscaling. */
+.listen-root .topnav .tab-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: var(--sw-grad);
+}
+.listen-root .topnav .tab-thumb::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0; height: 1.5px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent 34%, var(--sw-glint) 50%, transparent 66%);
+}
+.listen-root .topnav .tabs.is-sliding .tab-thumb::after,
+.listen-root .topnav .tabs.is-sliding .tab-thumb::before {
+  animation: thumb-sweep var(--sw-dur) var(--ease-out) 1 both;
+}
+@keyframes thumb-sweep {
+  0%   { opacity: 0; transform: translateX(-120%); }
+  18%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(120%); }
+}
+/* Reduced motion: the thumb jumps, and neither sweep layer runs. */
+@media (prefers-reduced-motion: reduce) {
+  .listen-root .topnav .tab-thumb { transition: none; }
+  .listen-root .topnav .tabs.is-sliding .tab-thumb::after,
+  .listen-root .topnav .tabs.is-sliding .tab-thumb::before { animation: none; }
+}
+
+/* The `loop` preset needs these two on top of its token triple — it is not
+   slide-gated and its layer never fades, it only travels. Kept here,
+   inert, so switching to `loop` is a token swap plus uncommenting this.
+   .listen-root .topnav .tab-thumb::after,
+   .listen-root .topnav .tabs.is-sliding .tab-thumb::after {
+     animation: thumb-loop var(--sw-dur) linear infinite;
+   }
+   .listen-root .topnav .tab-thumb::before { animation: none; opacity: 0; }
+   @keyframes thumb-loop {
+     0%   { opacity: 1; transform: translateX(-120%); }
+     100% { opacity: 1; transform: translateX(120%); }
+   }
+   @media (prefers-reduced-motion: reduce) {
+     .listen-root .topnav .tab-thumb::after { animation: none; opacity: 0; }
+   } */
+
+/* The field is the only flexible child on the bar. Every control beside it
+   is flex-shrink: 0, so slack always lands here and pressure never does —
+   and the field's own floor is what stops the pressure.
+   The bar's three top-level children already declare `shrink-0` in
+   markup, except the centring wrapper the field sits in: that one keeps
+   `min-w-0` deliberately, because a rigid wrapper is what would push the
+   bar into overflow. The 320px floor below is the actual guarantee. */
+.listen-root .topnav .bar-l > *,
+.listen-root .topnav .bar-r > * {
+  flex-shrink: 0;
+}
+.listen-root .topnav .agent-field {
+  flex: 1 1 auto;
+  min-width: var(--hdr-field-min);
+  max-width: var(--hdr-field-max);
+}
+
+/* The ladder, steps 1-2. Both are presentational — no control loses a
+   function and the field is never touched. Steps 3-5 (USDC abbreviation,
+   nav overflow, USDC off the bar) are behaviour, not styling, and are
+   deliberately NOT implemented here: they need their own sign-off. */
+@media (max-width: 1440px) {
+  .listen-root .topnav { gap: 12px; }
+  .listen-root .topnav .bar-l { gap: 16px; }
+}
+@media (max-width: 1400px) {
+  .listen-root .topnav .tab-pill { padding: 0 10px; letter-spacing: 0.10em; }
+}
+
+/* ==========================================================================
+   Panel chrome
+   ========================================================================== */
+.listen-root .panel {
+  background: var(--section-bg);
+  border: 1px solid var(--section-border);
+  box-shadow: var(--section-shadow);
+  border-radius: var(--r-2xl);
+  position: relative;
+  overflow: hidden;
+}
+.listen-root .panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(700px 160px at 8% -8%, color-mix(in srgb, var(--accent-primary) 14%, transparent), transparent 55%),
+    radial-gradient(500px 140px at 95% 110%, color-mix(in srgb, var(--accent-secondary) 10%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), transparent 40%);
+  z-index: 0;
+}
+.listen-root .panel::after {
+  content: '';
+  position: absolute;
+  left: 12px; right: 12px; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-primary) 60%, white), transparent);
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 0;
+}
+.listen-root .panel > * { position: relative; z-index: 1; }
+
+/* Portfolio panel — under zen (the parchment theme) the page itself
+   carries the paper-texture background, so the panel goes transparent
+   to let it show through. The `.panel` border + shadow + ::before
+   accent-wash overlay still render, so the panel keeps its "framed
+   card on paper" feel without the parchment fill blocking the
+   underlying texture.
+
+   We also bump the local `--hairline*` and `--section-border` values
+   so the panel border + the inner card / row hairlines actually
+   read against the low-contrast paper grain (the default 10% alpha
+   borders disappear against the texture). The values stay in the
+   sumi-ink family so they feel hand-drawn rather than CAD-precise.
+
+   Non-zen themes keep the defaults. */
+.listen-root[data-theme-id="zen"] .portfolio-panel {
+  background: transparent;
+  --hairline:      rgba(28, 24, 20, 0.22);
+  --hairline-2:    rgba(28, 24, 20, 0.32);
+  --section-border: rgba(28, 24, 20, 0.28);
+}
+
+/* ==========================================================================
+   Segmented control — Buy/Sell, Market/Limit/Adv, USD/SOL, MC/Price
+   ========================================================================== */
+.listen-root .seg {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: var(--r-md);
+  background: var(--tabs-bg);
+  border: 1px solid var(--hairline);
+  gap: 2px;
+}
+.listen-root .seg__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 60ms linear;
+  white-space: nowrap;
+}
+.listen-root .seg__btn:hover { color: var(--ink-1); }
+.listen-root .seg__btn:active { transform: translateY(0.5px); }
+.listen-root .seg__btn.active {
+  color: var(--ink-0);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border-color: var(--hairline-2);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.listen-root .seg__btn--buy.active {
+  color: var(--up);
+  background: color-mix(in srgb, var(--up) 14%, transparent);
+  border-color: color-mix(in srgb, var(--up) 35%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 14px -4px color-mix(in srgb, var(--up) 60%, transparent);
+}
+.listen-root .seg__btn--sell.active {
+  color: var(--down);
+  background: color-mix(in srgb, var(--down) 14%, transparent);
+  border-color: color-mix(in srgb, var(--down) 35%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 14px -4px color-mix(in srgb, var(--down) 60%, transparent);
+}
+
+/* ==========================================================================
+   Icon button — 28px ghost square used in toolbars
+   ========================================================================== */
+.listen-root .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--h-icon-btn);
+  height: var(--h-icon-btn);
+  border-radius: var(--r-sm);
+  background: var(--input-bg);
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.listen-root .icon-btn:hover {
+  color: var(--ink-0);
+  border-color: var(--hairline-2);
+  background: rgba(255,255,255,0.04);
+}
+
+/* ==========================================================================
+   Quick-amount chip — Buy/Sell quick amounts (0.3 / 0.5 / 1 / 10)
+   ========================================================================== */
+.listen-root .amt-chip {
+  /* Per-chip accent. Defaults to the theme primary (Buy); the `--sell`
+     modifier swaps it to the down/red color so Sell chips read red. */
+  --chip-accent: var(--accent-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 12px;
+  /* line-height: 1 removes the font's asymmetric line box so the digits
+     sit on the true optical center of the flex box. */
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--chip-accent) 30%, #ffffff);
+  background: color-mix(in srgb, var(--chip-accent) 8%, rgba(255,255,255,0.025));
+  border: 1px solid color-mix(in srgb, var(--chip-accent) 30%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 10px -6px color-mix(in srgb, var(--chip-accent) 50%, transparent);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background 160ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+.listen-root .amt-chip--sell {
+  --chip-accent: var(--down);
+}
+.listen-root .amt-chip:hover {
+  color: #ffffff;
+  border-color: color-mix(in srgb, var(--chip-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--chip-accent) 14%, rgba(255,255,255,0.03));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 0 14px -2px color-mix(in srgb, var(--chip-accent) 70%, transparent);
+  transform: translateY(-1px);
+}
+.listen-root .amt-chip:active { transform: translateY(0); }
+
+/* ==========================================================================
+   Buy / Sell CTA — emerald → cyan / rose → crimson gradients (42px tall)
+   ========================================================================== */
+.listen-root .buy-cta,
+.listen-root .sell-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--h-cta);
+  border-radius: var(--r-xl);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    filter 160ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+.listen-root .buy-cta {
+  color: #04231c;
+  background: linear-gradient(135deg, var(--up) 0%, var(--up-2) 100%);
+  border: 1px solid color-mix(in srgb, var(--up) 60%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 0 rgba(0,0,0,0.18),
+    0 10px 28px -12px color-mix(in srgb, var(--up) 55%, transparent),
+    0 6px 20px -12px color-mix(in srgb, var(--up-2) 45%, transparent);
+}
+.listen-root .sell-cta {
+  color: #2b0611;
+  background: linear-gradient(135deg, var(--down) 0%, var(--down-2) 100%);
+  border: 1px solid color-mix(in srgb, var(--down) 60%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 0 rgba(0,0,0,0.18),
+    0 10px 28px -12px color-mix(in srgb, var(--down) 55%, transparent),
+    0 6px 20px -12px color-mix(in srgb, var(--down-2) 45%, transparent);
+}
+.listen-root .buy-cta::before,
+.listen-root .sell-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0) 45%);
+}
+.listen-root .buy-cta > *,
+.listen-root .sell-cta > * { position: relative; z-index: 1; }
+.listen-root .buy-cta:hover,
+.listen-root .sell-cta:hover { filter: brightness(1.05) saturate(1.05); }
+.listen-root .buy-cta:active,
+.listen-root .sell-cta:active { transform: translateY(0.5px); filter: brightness(0.95); }
+
+/* ==========================================================================
+   Token avatar — metallic inset + tinted halo
+   ========================================================================== */
+.listen-root .token-avatar {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 4px 14px -6px rgba(0,0,0,0.9),
+    0 0 18px -6px color-mix(in srgb, var(--accent-primary) 45%, transparent);
+}
+.listen-root .token-avatar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.22), transparent 50%),
+    linear-gradient(220deg, transparent 60%, color-mix(in srgb, var(--accent-primary) 25%, transparent));
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ==========================================================================
+   Trades table rows
+   ========================================================================== */
+.listen-root .trow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1.3fr;
+  column-gap: 24px;
+  align-items: center;
+  height: var(--h-row);
+  padding: 0 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-1);
+  transition: background 120ms var(--ease-out);
+}
+.listen-root .trow:hover { background: rgba(255,255,255,0.02); }
+/* Live trades rows (up to 250 mounted): skip style/layout/paint for rows
+   scrolled out of view. Rows have a fixed --h-row height, so the intrinsic
+   size placeholder is exact — no scroll-anchor jumps — and the sticky head
+   row is a sibling, unaffected. The row's own border/background still paint;
+   only its cells are skipped while offscreen. */
+.listen-root .trow--cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--h-row);
+}
+.listen-root .trow--head {
+  color: var(--ink-3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  height: var(--h-row-head);
+  /* Opaque so the sticky header overlaps (occludes) rows scrolling beneath
+     it, but lifted ~2% over the bare panel base so it matches the rows'
+     apparent brightness (the panel paints a subtle light wash the bare
+     base lacks, which made a plain --section-bg fill read too dark). */
+  --trow-head-bg:
+    linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
+    var(--section-bg);
+  background: var(--trow-head-bg);
+}
+/* Keep the fill constant on hover — the generic .trow:hover would swap it
+   for a translucent tint and let rows bleed through again. */
+.listen-root .trow--head:hover {
+  background: var(--trow-head-bg);
+}
+
+/* ==========================================================================
+   Tab underline — clean Axiom-style tabs
+   ========================================================================== */
+.listen-root .tab-underline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  height: var(--h-tab-bar);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 160ms var(--ease-out);
+}
+.listen-root .tab-underline:hover { color: var(--ink-1); }
+.listen-root .tab-underline.active { color: var(--ink-0); font-weight: 600; }
+.listen-root .tab-underline.active::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ==========================================================================
+   Amount input — focus ring matches section-search pattern
+   ========================================================================== */
+.listen-root .amt-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--h-input);
+  padding: 0 14px;
+  border-radius: var(--r-lg);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.listen-root .amt-input:focus-within {
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 10%, transparent);
+}
+
+/* ==========================================================================
+   Tab pill — UPPERCASE pill used in nav and TradesTable
+   ========================================================================== */
+.listen-root .tab-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  border-radius: var(--r-chip);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 140ms var(--ease-out), background 140ms var(--ease-out), border-color 140ms var(--ease-out);
+  white-space: nowrap;
+}
+.listen-root .tab-pill:hover { color: var(--ink-1); }
+.listen-root .tab-pill.active {
+  color: var(--ink-0);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border-color: var(--hairline-2);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 12px var(--accent-glow);
+}
+
+/* Mini confetti mosaic on the FRENS pill (see FrensPillMosaic in
+   TerminalTopNav). Each pixel breathes on a slow stagger; on the idle
+   pill they sit dimmed, waking fully when the tab is active/hovered. */
+.listen-root .frens-pill-px {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 0.5px;
+  opacity: 0.55;
+  animation: frens-pill-twinkle 4.6s ease-in-out infinite;
+}
+.listen-root .tab-pill.active .frens-pill-px,
+.listen-root .tab-pill:hover .frens-pill-px {
+  opacity: 0.9;
+}
+@keyframes frens-pill-twinkle {
+  0%, 100% { transform: scale(1); filter: brightness(0.85); }
+  50% { transform: scale(1.25); filter: brightness(1.35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .listen-root .frens-pill-px { animation: none; }
+}
+
+/* ==========================================================================
+   Theme switcher popover
+   ========================================================================== */
+.listen-root .ts-popover {
+  position: absolute;
+  z-index: 50;
+  width: 320px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  background: rgba(15, 18, 24, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--r-xl);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--sans);
+  color: rgba(255,255,255,0.9);
+  animation: listen-popover-in 140ms var(--ease-out);
+}
+@keyframes listen-popover-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.listen-root .ts-section {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  padding: 12px 14px 6px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+.listen-root .ts-row { padding: 4px 14px; }
+.listen-root .ts-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.listen-root .ts-select {
+  width: 100%;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+.listen-root .ts-select:focus { border-color: var(--accent-primary); }
+.listen-root .ts-select option { background: #0f1218; color: #fff; }
+.listen-root .ts-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 4px 14px 8px;
+}
+.listen-root .ts-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 140ms var(--ease-out), border-color 140ms var(--ease-out);
+  text-align: left;
+}
+.listen-root .ts-swatch:hover { background: rgba(255,255,255,0.05); }
+.listen-root .ts-swatch.active { background: rgba(255,255,255,0.08); }
+.listen-root .ts-swatch-fill { height: 18px; border-radius: 3px; }
+.listen-root .ts-swatch-name {
+  font-size: 9px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.listen-root .ts-swatch.active .ts-swatch-name { color: #fff; }
+.listen-root .ts-preview {
+  margin: 4px 14px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.listen-root .ts-reset {
+  margin: 4px 14px 14px;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--r-sm);
+  color: var(--ink-2);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.listen-root .ts-reset:hover {
+  color: var(--ink-0);
+  border-color: var(--hairline-2);
+  background: rgba(255,255,255,0.04);
+}
+
+/* ==========================================================================
+   Thesis bubbles — coin-call markers on the trade chart
+   ==========================================================================
+   HTML overlay pills (not lightweight-charts series markers): the flashy
+   chrome — gradient ring, pulsing accent glow, anchor stem — needs real
+   CSS, and the pill must be clickable (opens the thesis popover).
+   Positioning transforms are written imperatively by PriceChart's rAF
+   loop; these rules own everything else. */
+.listen-root .thesis-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+  cursor: pointer;
+  /* Gradient ring: opaque fill on padding-box, accent gradient on the
+     1px border-box ring. */
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--tooltip-bg), var(--tooltip-bg)) padding-box,
+    linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) border-box;
+  box-shadow: 0 0 12px -2px var(--accent-glow), 0 6px 16px -8px rgba(0, 0, 0, 0.8);
+  animation: thesis-bubble-pulse 2.4s var(--ease-out) infinite;
+  will-change: transform;
+}
+.listen-root .thesis-bubble:hover,
+.listen-root .thesis-bubble[aria-expanded="true"] {
+  animation: none;
+  box-shadow: 0 0 22px 0 var(--accent-glow), 0 6px 16px -8px rgba(0, 0, 0, 0.8);
+}
+/* Anchor stem: drops from the pill to the exact (call time, MC-at-call)
+   point on the chart the rAF loop anchors the pill above. */
+.listen-root .thesis-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 9px;
+  background: linear-gradient(to bottom, var(--accent-primary), transparent);
+}
+@keyframes thesis-bubble-pulse {
+  0%, 100% { box-shadow: 0 0 8px -3px var(--accent-glow), 0 6px 16px -8px rgba(0, 0, 0, 0.8); }
+  50%      { box-shadow: 0 0 18px 0 var(--accent-glow), 0 6px 16px -8px rgba(0, 0, 0, 0.8); }
+}
+.listen-root .thesis-popover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 264px;
+  border-radius: var(--r-lg);
+  padding: 10px 12px;
+  color: var(--ink-0);
+  background: var(--tooltip-bg);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, var(--tooltip-border));
+  box-shadow: var(--tooltip-shadow), 0 0 18px -6px var(--accent-glow);
+  font-family: var(--mono);
+  animation: listen-popover-in 140ms var(--ease-out);
+}
+
+/* ==========================================================================
+   Listen holders — toggle pill + holder cards (ListenHolders.tsx)
+   ========================================================================== */
+.listen-root .lh-toggle:hover { filter: brightness(1.18); }
+/* Off state: quiet ghost chip that still answers hover — the core fills
+   and the wordmark ink lifts (mirrors .tab-underline:hover). */
+.listen-root .lh-toggle-core--off { background-color: var(--input-bg); }
+.listen-root .lh-toggle:hover .lh-toggle-core--off { background-color: var(--hairline-2); }
+.listen-root .lh-wordmark { transition: color 160ms var(--ease-out); }
+.listen-root .lh-wordmark--off { color: var(--ink-3); }
+.listen-root .lh-toggle:hover .lh-wordmark--off { color: var(--ink-1); }
+
+/* The toggle wears the FRENS pill's confetti mosaic (ListenPillMosaic
+   reuses .frens-pill-px). Same wake contract as the nav pill: pixels sit
+   dimmed on the idle toggle and brighten on hover or while the Listen
+   view is on. */
+.listen-root .lh-toggle[aria-checked='true'] .frens-pill-px,
+.listen-root .lh-toggle:hover .frens-pill-px {
+  opacity: 0.9;
+}
+
+/* Three-bar "listening" equalizer; breathes only while the view is on. */
+@keyframes lh-eq {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.45); }
+}
+.listen-root .lh-eq-bar { transform-origin: bottom; animation: lh-eq 1.3s ease-in-out infinite; }
+
+/* Holder card hover: the hairline upgrades toward the holder's identity
+   color (--fc, set inline per card — !important outranks the inline
+   border) and casts its glow. No translateY lift — the card itself is
+   not clickable; only the username inside is. */
+.listen-root .lh-card { transition: border-color 180ms ease, box-shadow 180ms ease; }
+.listen-root .lh-card:hover {
+  border-color: color-mix(in srgb, var(--fc) 55%, var(--hairline)) !important;
+  box-shadow: 0 14px 32px -20px color-mix(in srgb, var(--fc) 50%, transparent);
+}
+.listen-root .lh-name { transition: color 160ms var(--ease-out); }
+.listen-root .lh-name:hover { color: var(--accent-primary); }
+
+/* Loading skeleton pulse; per-block stagger stays inline (animation-delay). */
+.listen-root .lh-skel { animation: listen-pulse 1.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .listen-root .lh-eq-bar,
+  .listen-root .lh-skel { animation: none; }
+  .listen-root .lh-card { transition: none; }
+}
+
+/* ── the agent card's live reveal ──────────────────────────────────────
+   A proposal card that lands at the end of a streaming turn is anchored
+   by its TOP (components/agent/proposal/reveal.ts) and wipes in from
+   there, so the reveal reads as the card drawing itself downward into
+   the space its skeleton was holding.
+
+   opacity / clip-path / transform ONLY. The conversation's stick-to-
+   bottom watches its content box for resizes, so anything that changed
+   height here would feed the animation straight back into the scroll
+   position the reveal just set.
+
+   FILL IS `backwards`, deliberately not `both`: a forwards fill would
+   leave `clip-path: inset(0)` on the wrapper for the life of the card,
+   and the Approve button's hover glow paints outside the card's box. */
+@keyframes agent-card-reveal {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(-4px); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0);    transform: translateY(0); }
+}
+.agent-card-reveal { animation: agent-card-reveal var(--medium) var(--ease-out) backwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-card-reveal { animation: none; }
+}

@@ -1,0 +1,374 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * CASHBACK · THE CLIMB, FIVE WAYS
+ *
+ * Black, one ink scale, sentence case, no hues. The old ladder ran on a
+ * colour per tier under a 96px ghost word of the tier's name in that
+ * colour, with a coin at the summit — five hues means the page teaches
+ * a code before it tells you a number.
+ *
+ * Where you stand is said with BRIGHTNESS instead: reached is half lit,
+ * current is white, ahead is an outline.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tv {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.tv h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.tv-note { margin: 0 0 12px; max-width: 700px; font-size: 11.5px; line-height: 1.55; color: #4b4e55; }
+.tv-note:last-of-type { margin-bottom: 24px; }
+
+.tv-stack { display: flex; flex-direction: column; gap: 28px; }
+.tv-slot { display: flex; flex-direction: column; gap: 10px; }
+
+.tv-cap { display: flex; align-items: baseline; gap: 8px; }
+.tv-cap > b { font-size: 11.5px; font-weight: 600; color: #e6e7ea; }
+.tv-cap > small { font-size: 10.5px; line-height: 1.4; color: #4b4e55; }
+
+.tv-frame {
+  padding: 22px;
+  border: 1px solid #1c1c20;
+  border-radius: 8px;
+  background: #000;
+  font-variant-numeric: tabular-nums;
+}
+
+/* shared ink */
+.tv-lab { display: block; font-size: 11.5px; font-weight: 500; color: #6e7178; }
+.tv-dim { font-size: 12px; color: #6e7178; }
+.tv-nm { font-size: 13px; font-weight: 500; color: #fff; }
+.tv-num { font-size: 13px; font-weight: 500; color: #fff; }
+.tv-say { margin: 16px 0 0; font-size: 12.5px; color: #6e7178; }
+.tv-say b { font-weight: 500; color: #fff; }
+
+/* ── 1 · RAIL ─────────────────────────────────────────────────────
+ * The fill runs to where you stand INSIDE your own band. Scaled across
+ * the whole ladder instead, the first four tiers would sit in the first
+ * quarter of the bar, because the bands are 250, 750, 1,500 and 7,500
+ * SOL wide. */
+
+.tv-rail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+
+.tv-rail-bar {
+  height: 6px;
+  margin: 14px 0 12px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.tv-rail-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: #fff;
+  transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tv-rail-ticks { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.tv-rail-ticks > span { display: flex; flex-direction: column; gap: 3px; }
+.tv-rail-ticks b { font-size: 11.5px; font-weight: 500; color: #4b4e55; }
+.tv-rail-ticks u { text-decoration: none; font-size: 11px; color: #3a3d43; }
+.tv-rail-ticks > span[data-done] b { color: #6e7178; }
+.tv-rail-ticks > span[data-on] b { color: #fff; }
+.tv-rail-ticks > span[data-on] u { color: #9a9ea8; }
+
+/* ── 2 · STEPS ────────────────────────────────────────────────────
+ * Height is the RATE, not the threshold: the thresholds span 0 to
+ * 10,000 and would draw four stubs and a tower. */
+
+.tv-steps { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; gap: 10px; }
+
+.tv-step { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tv-step > i {
+  display: block;
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.tv-step-p { font-size: 11px; color: #3a3d43; }
+.tv-step-k { font-size: 11.5px; font-weight: 500; color: #4b4e55; }
+
+.tv-step[data-done] > i { background: rgba(255, 255, 255, 0.14); box-shadow: none; }
+.tv-step[data-done] .tv-step-k,
+.tv-step[data-done] .tv-step-p { color: #6e7178; }
+
+.tv-step[data-on] > i { background: #fff; box-shadow: none; }
+.tv-step[data-on] .tv-step-k { color: #fff; }
+.tv-step[data-on] .tv-step-p { color: #9a9ea8; }
+
+/* ── 3 · ROWS ─────────────────────────────────────────────────────
+ * The only one where platinum's rate and its price are both readable
+ * without hovering anything. */
+
+.tv-rows { display: flex; flex-direction: column; gap: 2px; }
+
+.tv-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 96px 92px minmax(0, 1fr) 132px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 7px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.tv-row > :last-child { text-align: right; }
+
+.tv-row-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 7px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+}
+
+.tv-row-k { font-size: 13px; font-weight: 500; color: #4b4e55; }
+.tv-row-p,
+.tv-row-v,
+.tv-row-s { font-size: 12px; color: #3a3d43; }
+
+.tv-row[data-done] .tv-row-k { color: #9a9ea8; }
+.tv-row[data-done] .tv-row-p,
+.tv-row[data-done] .tv-row-v,
+.tv-row[data-done] .tv-row-s { color: #4b4e55; }
+
+.tv-row[data-on] .tv-row-k { color: #fff; }
+.tv-row[data-on] .tv-row-p { color: #fff; font-weight: 500; }
+.tv-row[data-on] .tv-row-v,
+.tv-row[data-on] .tv-row-s { color: #9a9ea8; }
+
+/* ── 4 · FOCUS ────────────────────────────────────────────────────
+ * Two tiers. The other three are not decisions: you cannot go back to
+ * bronze, and platinum is four times away. */
+
+.tv-focus-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.tv-focus-r { text-align: right; }
+
+.tv-focus-k {
+  margin: 8px 0 4px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: #fff;
+}
+/* The rung you have not reached is set back, so the pair reads as here
+   and then there rather than as two equal options. */
+.tv-focus-next { color: rgba(255, 255, 255, 0.42); }
+
+.tv-focus-bar { margin: 20px 0 12px; height: 8px; }
+.tv-focus-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+
+/* ── 5 · METER ────────────────────────────────────────────────────
+ * A tier system is a rate and a distance, and both are sentences. */
+
+.tv-meter-e {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-size: 46px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #fff;
+}
+.tv-meter-u { font-size: 14px; font-weight: 500; letter-spacing: 0; color: rgba(255, 255, 255, 0.4); }
+
+.tv-meter-bar {
+  height: 4px;
+  max-width: 320px;
+  margin-top: 18px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.tv-meter-bar > i { display: block; height: 100%; border-radius: 2px; background: #fff; }
+
+/* ── everything under the climb ───────────────────────────────────── */
+
+.tv-figs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 18px 40px;
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.tv-figs > span { display: inline-flex; flex-direction: column; gap: 5px; }
+.tv-figs i { font-style: normal; font-size: 11px; font-weight: 500; color: #6e7178; }
+.tv-figs b { font-size: 17px; font-weight: 500; line-height: 1.1; color: #fff; }
+.tv-figs u { text-decoration: none; margin-top: 1px; font-size: 11px; color: #4b4e55; }
+.tv-figs-go { margin-left: auto; margin-top: 15px; }
+
+.tv-go {
+  height: 28px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: #000;
+  font: 600 11.5px/1 var(--sans);
+  cursor: pointer;
+}
+.tv-go:hover { background: #dcdde0; }
+
+.tv-sec { margin: 34px 0 16px; font-size: 14px; font-weight: 500; color: #fff; }
+.tv-sec > small { margin-left: 8px; font-size: 11.5px; font-weight: 400; color: #4b4e55; }
+
+.tv-th,
+.tv-tr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px 128px 72px;
+  align-items: center;
+  gap: 14px;
+}
+.tv-th > :not(:first-child),
+.tv-tr > :not(:first-child) { text-align: right; }
+
+.tv-th {
+  padding-bottom: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4b4e55;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tv-tape { display: flex; flex-direction: column; }
+.tv-tr { padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+.tv-tr:last-child { border-bottom: 0; }
+
+@media (max-width: 780px) {
+  .tv-frame { padding: 16px; }
+  .tv-rail-ticks { grid-template-columns: repeat(3, 1fr); gap: 10px 8px; }
+  .tv-steps { gap: 6px; }
+  .tv-row { grid-template-columns: 84px minmax(0, 1fr) 110px; }
+  .tv-row-v { display: none; }
+  .tv-focus-k { font-size: 22px; }
+  .tv-meter-e { font-size: 34px; }
+  .tv-figs-go { margin-left: 0; width: 100%; }
+  .tv-figs-go .tv-go { width: 100%; height: 34px; }
+  .tv-th,
+  .tv-tr { grid-template-columns: minmax(0, 1fr) 104px 64px; }
+  .tv-th > :nth-child(2),
+  .tv-tr > :nth-child(2) { display: none; }
+}
+
+/* ── the owl ─────────────────────────────────────────────────────────
+ *
+ * The real logo, masked. `BrandMark.tsx` does the same thing for the
+ * nav — it applies `/assets/logo.svg` as a mask and lets a background
+ * show through — so the crest and the logo are one file.
+ *
+ * A first pass used the CREATURE's `BODY_PATH`, which is the round head
+ * and ear tufts the animated owl is rigged on. Different drawing,
+ * different job, and not the mark anybody recognises.
+ * ─────────────────────────────────────────────────────────────────── */
+
+.tv-owl {
+  display: block;
+  flex: none;
+  -webkit-mask-image: url('/assets/logo.svg');
+  mask-image: url('/assets/logo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.tv-crest { display: flex; align-items: center; gap: 26px; }
+.tv-crest-k { margin: 8px 0 4px; font-size: 26px; font-weight: 600; letter-spacing: -0.025em; line-height: 1; color: #fff; }
+.tv-crest-big { font-size: 34px; }
+.tv-crest-d { display: flex; flex-direction: column; gap: 20px; }
+.tv-crest-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+
+.tv-ring { position: relative; display: grid; place-items: center; flex: none; }
+.tv-ring > svg { display: block; }
+.tv-ring-in { position: absolute; inset: 0; display: grid; place-items: center; }
+
+.tv-roost-wrap { display: flex; flex-direction: column; }
+.tv-roost { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; gap: 10px; }
+.tv-roost-c { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.tv-roost-k { font-size: 11.5px; font-weight: 500; color: #4b4e55; }
+.tv-roost-p { font-size: 11px; color: #3a3d43; }
+.tv-roost-c[data-on] .tv-roost-k { color: #fff; }
+.tv-roost-c[data-on] .tv-roost-p { color: #9a9ea8; }
+
+@media (max-width: 780px) {
+  .tv-crest { gap: 18px; }
+  .tv-crest-big { font-size: 26px; }
+  .tv-roost { gap: 6px; }
+}
+
+/* All five at size, nothing dimmed, so the ramps can be judged against
+   each other rather than through the ladder's opacity. */
+.tv-swatch {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: end;
+  gap: 16px;
+  padding: 8px 0 4px;
+}
+.tv-roost-lit { color: #fff !important; }
+
+/* ── progress treatments ─────────────────────────────────────────── */
+
+/* 1 · the segmented rail, inset half a column so its ends land on the
+   outer owls rather than on the edges of the section. */
+.tv-rail4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin: 16px calc((100% - 4 * 10px) / 10) 0;
+}
+.tv-rail4 > span { height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.tv-rail4 > span > i { display: block; height: 100%; border-radius: 2px; background: #fff; }
+.tv-rail4 > span[data-done] > i { background: rgba(255, 255, 255, 0.34); }
+
+/* 2 · one bar under the two owls it is about. The other three gaps were
+   drawing segments to say `done` and `not started`, which the metals
+   and the ghosting already say. Column 3 of 5 starts at 40% and column
+   4 ends at 80%, so the bar runs centre to centre between them. */
+.tv-span { margin-top: 16px; }
+.tv-span-b {
+  display: block;
+  height: 3px;
+  margin-left: 50%;
+  width: 20%;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.tv-span-b > i { display: block; height: 100%; border-radius: 2px; background: #fff; }
+
+/* 4 · the arc rides on the mark, so nothing is drawn across the row. */
+.tv-arc { position: relative; display: grid; place-items: center; }
+.tv-arc-in { position: absolute; inset: 0; display: grid; place-items: center; }
+
+/*
+ * The box keeps the logo mask; the two metal layers sit inside it and
+ * the fill is clipped from the top with `clip-path`.
+ *
+ * A `mask-image` on a child REPLACES the parent's rather than
+ * compositing with it, so the shape is cut once here and the level is a
+ * clip on the layer.
+ */
+.tv-owl { position: relative; }
+.tv-owl > i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: clip-path 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}

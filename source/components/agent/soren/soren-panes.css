@@ -1,0 +1,195 @@
+/* ─────────────────────────────────────────────────────────────────────
+ * SOREN · THE RESULT OBJECTS (spec/10-system.md §1.4.5–.6) — the list
+ * and compare panes under Soren's sentence. Owned by the result-objects
+ * build; nothing else styles here. Scoped under the soren tree; inert
+ * for flag-off users.
+ * ──────────────────────────────────────────────────────────────────── */
+
+/* The pane: §1.3's pearl, list padding (12/14). */
+.ag-pane {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #0e0d14c7;
+  background-image:
+    linear-gradient(
+      70deg,
+      transparent 22%,
+      oklab(79.6% 0.105 -0.021 / 12.8%) 40%,
+      oklab(87.4% -0.075 -0.021 / 14.4%) 52%,
+      oklab(92.4% -0.048 0.08 / 11.2%) 64%,
+      transparent 80%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 14px 36px rgba(0, 0, 0, 0.5);
+}
+/* Exactly five rows: 5×28 + 4×1 = 144, nothing hidden. Six or more:
+   159 — five rows and HALF the sixth at the 29px pitch; the cut edge is
+   the affordance and it stays at the bottom (top edge always flush). */
+.ag-pane-viewport { height: 144px; overflow: hidden; }
+.ag-pane-viewport--scroll {
+  height: 159px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.ag-pane-viewport--scroll::-webkit-scrollbar { display: none; }
+.ag-pane-rows { display: flex; flex-direction: column; }
+.ag-pane-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  flex: none;
+}
+.ag-pane-row + .ag-pane-row { border-top: 1px solid rgba(232, 232, 226, 0.08); }
+.ag-pane-row:hover { background: rgba(255, 255, 255, 0.04); }
+/* The holders tag slot: fixed 134px so the lanes align by construction. */
+.ag-pane-slot { width: 134px; flex: none; display: flex; }
+.ag-pane-wtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 4px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(232, 232, 226, 0.3);
+}
+.ag-pane-wtag-glyph { flex: none; }
+.ag-pane-wtag-moji { font-size: 13px; line-height: 1; flex: none; }
+.ag-pane-wtag-addr {
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  color: #e8e8e2;
+  white-space: pre;
+}
+.ag-pane-share {
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  color: #e8e8e2;
+  font-variant-numeric: tabular-nums;
+}
+.ag-pane-spacer { flex: 1; }
+.ag-pane-pnl {
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.ag-pane-pnl[data-tone='green'] { color: #7ed6a6; }
+.ag-pane-pnl[data-tone='red'] { color: #f08a9a; }
+/* The fold — the after-state: one quiet row, the mojis carrying the
+   tracked signal, the ▸ carrying the way back. */
+.ag-pane-fold {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  color: #8a8a85;
+}
+.ag-pane-fold:hover { color: #e8e8e2; }
+.ag-pane-fold:focus-visible {
+  outline: 1.5px solid rgba(232, 232, 226, 0.6);
+  outline-offset: 1px;
+}
+.ag-pane-fold-mojis { font-size: 13px; line-height: 1; }
+
+/* Trades / tokens lanes + the C06 compare. */
+.ag-pane-time {
+  width: 34px;
+  flex: none;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  color: #7ed6a6;
+  font-variant-numeric: tabular-nums;
+}
+.ag-pane-side {
+  width: 34px;
+  flex: none;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+}
+.ag-pane-side[data-tone='green'] { color: #4ac99b; }
+.ag-pane-side[data-tone='red'] { color: #ea667d; }
+.ag-pane-sol {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  color: #e8e8e2;
+  font-variant-numeric: tabular-nums;
+}
+.ag-pane-solmark { width: 14px; height: 14px; flex: none; }
+.ag-pane-mint {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  line-height: 16px;
+  color: #8a8a85;
+  white-space: pre;
+}
+.ag-pane-symslot { width: 96px; flex: none; display: flex; }
+.ag-pane-sym {
+  font-family: var(--font-geist-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #e8e8e2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ag-pane-vol {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  line-height: 16px;
+  color: #8a8a85;
+  font-variant-numeric: tabular-nums;
+}
+/* C06 — label 82 · lane A · one full-height divider · lane B; hairlines
+   between metric rows; no delta column, ever. */
+.ag-cmp-row {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  gap: 12px;
+}
+.ag-cmp-row + .ag-cmp-row { border-top: 1px solid rgba(232, 232, 226, 0.08); }
+.ag-cmp-row--head { min-height: 32px; }
+.ag-cmp-k {
+  width: 82px;
+  flex: none;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  line-height: 14px;
+  color: #8a8a85;
+}
+.ag-cmp-a { width: 122px; flex: none; display: flex; }
+.ag-cmp-b { flex: 1; display: flex; }
+.ag-cmp-div { width: 1px; align-self: stretch; background: rgba(232, 232, 226, 0.08); }
+.ag-cmp-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  color: #e8e8e2;
+  font-variant-numeric: tabular-nums;
+}
+.ag-cmp-v[data-tone='green'] { color: #7ed6a6; }
+.ag-cmp-v[data-tone='red'] { color: #f08a9a; }

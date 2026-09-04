@@ -1,0 +1,198 @@
+/*
+ * THE STANDALONE BAR.
+ *
+ * Rebuilt alongside `NavDesigns.tsx` after the nav sheet was cleared.
+ * Three numbers here are load bearing, because `account.css` positions a
+ * staged panel against them with `.am-stage-anchor { top: 69px; right:
+ * 22px }`:
+ *
+ *   the bar is 60px tall
+ *   over a 1px rule            → 61, and the popover's sideOffset is 8
+ *   its right padding is 22px  → the account tile's right edge
+ *
+ * Everything else is the shipped bar's own language, from
+ * `topnav-v2.css`: black, destinations lowercase at 13px, the active one
+ * marked by COLOUR ONLY, and every control on the right one height.
+ */
+
+.nd-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+  padding: 0 22px;
+  background: #000000;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+}
+
+.nd-logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  flex: 0 0 auto;
+  background: #ffffff;
+}
+
+.nd-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.nd-tab {
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 7px;
+  flex: 0 0 auto;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.nd-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Colour only. Weight would reflow the rail on every click. */
+.nd-tab.is-on {
+  color: #ffffff;
+}
+
+.nd-end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.nd-layout-spread .nd-end {
+  gap: 16px;
+}
+
+/* One height for every control on the right. */
+.nd-field,
+.nd-sq,
+.nd-action,
+.nd-wallet,
+.nd-account {
+  height: 26px;
+  flex: 0 0 auto;
+}
+
+.nd-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.nd-field.is-trail:hover {
+  color: #ffffff;
+}
+
+.nd-field.is-plate {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nd-kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.nd-sq {
+  width: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.nd-sq:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* The one white control on the bar. */
+.nd-action {
+  padding: 0 12px;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.nd-action:hover {
+  opacity: 0.86;
+}
+
+.nd-wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.nd-wallet.is-edge {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.nd-wallet.is-fill {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nd-wallet:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.nd-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.nd-div {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Last on the bar; `.am-stage-anchor` aligns to its right edge. */
+.nd-account {
+  width: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}

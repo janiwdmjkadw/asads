@@ -1,0 +1,387 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE INSTANT TRADE BOX
+ *
+ * A floating panel over the chart: presets and quote mode along the top,
+ * a grid of buy amounts, a grid of sell percentages, each with its own
+ * settings line, and the ledger across the bottom.
+ *
+ * Everything here is scoped under `.it-box`, so the shared classes it
+ * borrows — `.amt-chip` above all — keep their old look everywhere else
+ * they are used.
+ *
+ * ── WHAT CHANGED ─────────────────────────────────────────────────────
+ *
+ * It was dressed as a feature card: an accent gradient hairline across
+ * the top, two radial accent washes in opposite corners, chips with a
+ * tinted ground, an inset highlight, an outer glow and a 1px lift on
+ * hover. Six effects to say "this is a button you can press".
+ *
+ * What says a panel is floating is its edge and its shadow. What says a
+ * chip is pressable is that it lights when you reach for it. The rest
+ * was decoration on the one surface that sits over live prices.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.it-box {
+  /*
+   * ── NO CYAN IN HERE ──────────────────────────────────────────────
+   *
+   * The theme's `--accent-primary` is a cyan, and half this box read it:
+   * the active preset, the chosen quote currency, the ledger marks. On a
+   * surface floating over green and red candles it was a third signal
+   * colour that meant nothing — it was just "the theme".
+   *
+   * Rebound to white for the whole box. White is what the rest of the
+   * page uses to say "this one", and it leaves green and red free to
+   * mean buy and sell, which is what they mean everywhere else here.
+   */
+  --accent-primary: #ffffff;
+  --accent-secondary: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.25);
+
+  overflow: hidden;
+  /*
+   * ── IT HAS TO READ AGAINST THE CHART ─────────────────────────────
+   *
+   * At #08080a it was the same black as the pane behind it, so the only
+   * thing separating the panel from the candles was a 1px line and a
+   * shadow — and over a dark stretch of chart there was nothing to see
+   * at all.
+   *
+   * A step up in ground and a brighter edge. It is the one surface on
+   * this page that FLOATS, and the whole job of a floating surface is to
+   * look like it is in front of something.
+   */
+  border: 1px solid #33333a;
+  border-radius: 8px;
+  background: #131317;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  font-family: var(--sans);
+}
+
+/* ── the top bar ──────────────────────────────────────────────────── */
+
+.it-box .it-bar {
+  position: relative;
+  border-bottom: 1px solid #1e1e23;
+  background: transparent;
+}
+
+/* ── the bar's icon buttons ───────────────────────────────────────── */
+
+.it-box .it-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.it-box .it-ico:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+
+.it-box .it-ico > svg { width: 15px; height: 15px; }
+
+/* The grip is a mark in the top edge, not a button in the row. */
+.it-box .it-grip {
+  position: absolute;
+  left: 50%;
+  top: 1px;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+.it-box .it-grip > svg { width: 20px; height: 14px; }
+
+/*
+ * P1 / P2 / P3 and SOL / USDC. Two one-of-N choices sitting side by
+ * side, so they are the same object the rail uses everywhere else: type
+ * on a bordered track, the chosen one on a raised plate.
+ */
+.it-box .it-bar > div > button {
+  height: 20px;
+  min-width: 24px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.it-box .it-bar > div > button:hover { color: rgba(255, 255, 255, 0.85); }
+
+/*
+ * ── THE ACTIVE PRESET IS BLUE ────────────────────────────────────────
+ *
+ * The one place on this box that is not white-for-chosen. Three presets
+ * sit in a row of six other controls that all light white on hover, and
+ * a white-lit preset was indistinguishable from a hovered neighbour.
+ * The accent makes which one is loaded findable from anywhere in the
+ * panel without reading.
+ */
+.it-box .it-bar > div > button[data-active],
+.it-box .it-bar > div > button[aria-pressed='true'],
+.it-box .it-bar > div > button[aria-selected='true'] {
+  background: transparent;
+  font-weight: 600;
+  color: #4d8dfd;
+}
+
+/* The pencil, the wallet count and the close. Marks, not framed
+   buttons — the bar already has two tracks on it. */
+.it-box .it-bar > button {
+  height: 22px;
+  min-width: 22px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.it-box .it-bar > button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.it-box .it-bar > button > svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── the amount chips ─────────────────────────────────────────────── */
+
+/*
+ * ── A CHIP IS AN OUTLINE AND A NUMBER ────────────────────────────────
+ *
+ * These carried a tinted ground, a tinted border, an inset top
+ * highlight, an outer glow and a 1px rise on hover — five treatments on
+ * a control whose whole job is to say "0.05". Sixteen of them in a
+ * 300px box made the panel read as a keypad of lit buttons.
+ *
+ * The side still reads instantly, because the NUMBER takes the side's
+ * colour. That is the one thing the tint was doing that mattered.
+ */
+/*
+ * ── PILLS, OUTLINED IN THEIR OWN SIDE ────────────────────────────────
+ *
+ * Fully round and drawn in the side's colour — green above, red below —
+ * so which grid you are in is answered by the shape and the hue before
+ * either label is read. Sixteen small numbers in a 300px box need that:
+ * the two blocks are otherwise identical.
+ *
+ * Outline and type only. The ground stays the panel's, so the grid reads
+ * as sixteen marks on one surface rather than sixteen lit keys.
+ */
+.it-box .amt-chip {
+  --chip: #2fd18a;
+
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--chip) 45%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--chip);
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+}
+
+.it-box .amt-chip--sell { --chip: #f0567a; }
+
+.it-box .amt-chip:hover {
+  background: color-mix(in srgb, var(--chip) 12%, transparent);
+  border-color: color-mix(in srgb, var(--chip) 75%, transparent);
+  box-shadow: none;
+  color: #ffffff;
+  transform: none;
+}
+
+.it-box .amt-chip:active {
+  background: color-mix(in srgb, var(--chip) 20%, transparent);
+  transform: none;
+}
+
+/* ── the settings lines ───────────────────────────────────────────── */
+
+/*
+ * Slippage, priority and bribe, under each side's chips. The rail's own
+ * settings line: small figures parted by hairlines, no cell borders.
+ */
+.it-box .it-bar ~ div [class*='grid h-[26px]'] {
+  height: 22px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent;
+}
+
+.it-box [class*='grid h-[26px]'] > div {
+  border-color: #1d1d20 !important;
+  font-size: 10px;
+}
+
+/* ── the ledger ───────────────────────────────────────────────────── */
+
+/*
+ * Bought / sold / holding / PnL across the foot. Ruled between rather
+ * than boxed, the same band the rail uses for the same four figures.
+ */
+.it-box [class*='grid-cols-[1fr_1fr_1fr_2fr]'] {
+  padding-top: 8px;
+  border-top: 1px solid #1d1d20;
+}
+
+.it-box [class*='grid-cols-[1fr_1fr_1fr_2fr]'] > div {
+  border-color: #1d1d20 !important;
+}
+
+.it-box [class*='grid-cols-[1fr_1fr_1fr_2fr]'] svg {
+  width: 11px;
+  height: 11px;
+  opacity: 0.55;
+}
+
+/* ── the section heads ────────────────────────────────────────────── */
+
+/*
+ * ── NOT MONO ─────────────────────────────────────────────────────────
+ *
+ * `.t-num-xs` and `.t-num-sm` are mono, and they were on nearly every
+ * figure in here — the balances, the settings, the ledger. A monospaced
+ * face is for strings you compare CHARACTER BY CHARACTER: an address, a
+ * hash. None of these are that. They are amounts, and set in mono at
+ * 10px they came out mechanical and hard to read at once.
+ *
+ * Sans with tabular figures gives the one thing mono was actually
+ * providing — digits that line up in a column — without the typewriter.
+ *
+ * `.listen-root` prefixed, to outrank the same-specificity rule that
+ * declares them mono.
+ */
+.listen-root .it-box,
+.listen-root .it-box button,
+.listen-root .it-box input,
+.listen-root .it-box .t-num-xs,
+.listen-root .it-box .t-num-sm,
+.listen-root .it-box .t-flourish {
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+
+/* ── the quote toggle ─────────────────────────────────────────────── */
+
+/*
+ * SOL and USDC, each with its own mark. A pill apiece rather than two
+ * words that differ only by which is lit.
+ */
+.it-box .qm-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 21px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.it-box .qm-b:hover { color: rgba(255, 255, 255, 0.85); }
+
+/*
+ * Ringed and tinted in the preset's blue rather than plated in white.
+ * They are the same KIND of choice — which preset, which currency — so
+ * they read as one family, and neither can be confused with the green
+ * and red chips below.
+ */
+.it-box .qm-b[data-on] {
+  border: 1px solid rgba(77, 141, 253, 0.45);
+  background: rgba(77, 141, 253, 0.12);
+  color: #ffffff;
+}
+
+/* The marks keep their own colour — a token's logo is not tinted by the
+   state of the button it sits in. */
+/*
+ * 15, not 11. The whole panel renders through a `zoom` wrapper that
+ * takes it down by a third, so a mark specified at 11 lands at about
+ * seven physical pixels — which is where the SOL gradient stopped being
+ * a logo and became a smudge.
+ */
+.it-box .qm-b > img,
+.it-box .qm-b > svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  opacity: 0.75;
+  transition: opacity 130ms ease;
+}
+
+.it-box .qm-b[data-on] > img,
+.it-box .qm-b[data-on] > svg { opacity: 1; }
+
+/* ── the close ────────────────────────────────────────────────────── */
+
+/*
+ * ── BIG ENOUGH TO HIT ────────────────────────────────────────────────
+ *
+ * A 24px box carrying a 15px glyph, rendered through the box's own 0.77
+ * zoom — so the actual target was about 18 physical pixels with a
+ * multiplication sign in the middle of it. That is smaller than the
+ * pencil beside it and smaller than anything else on the bar.
+ *
+ * A proper square with a drawn cross in it, and a plate on hover so
+ * there is no doubt what you are about to close.
+ */
+.it-box .it-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.it-box .it-close > svg {
+  width: 15px;
+  height: 15px;
+}
+
+.it-box .it-close:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}

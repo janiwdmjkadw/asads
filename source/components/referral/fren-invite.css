@@ -1,0 +1,122 @@
+/*
+ * The invite headline: the sender's handle, and what they did, stacked.
+ *
+ * TWO SIZES, NOT ONE. Both lines sat at the panel's 40px headline size and
+ * the name did not read as the subject of the sentence — it read as the
+ * first half of a two line phrase. The handle carries the whole reason
+ * somebody opened this link, so it is set nearly twice the verb under it.
+ *
+ * These live in `referral/` rather than in the panel's own stylesheet.
+ * `welcome.module.css` is measured off the onboarding boards and this is
+ * an invite-only arrangement; putting it there would make every future
+ * change to the panel step around a rule that belongs to another page.
+ *
+ * `overflow-wrap: anywhere` is not decoration. A handle is user supplied
+ * and promised no length: at 58px a fifteen character one is already wider
+ * than the panel's 528 measure, and a headline that overflows its card is
+ * worse than one that wraps.
+ */
+
+.fi-name {
+  display: block;
+  font-size: 58px;
+  font-weight: 600;
+  line-height: 62px;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+  color: #0b0b0b;
+}
+
+.fi-verb {
+  display: block;
+  margin-top: 4px;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 42px;
+  letter-spacing: -0.02em;
+  color: #767676;
+}
+
+/* The board's desktop sizes do not fit a 375px screen: at 58px the name
+   alone is wider than the card's content box once its 24px padding is
+   taken off. */
+@media (max-width: 700px) {
+  .fi-name {
+    font-size: 38px;
+    line-height: 42px;
+  }
+
+  .fi-verb {
+    font-size: 23px;
+    line-height: 29px;
+  }
+}
+
+/*
+ * The way out, on the readings that have no sign up card.
+ *
+ * Black on white, the same weight the panel's own controls carry. It is
+ * not a button: nothing here is being submitted, and a filled control
+ * would outrank the sentence that is the actual content of those states.
+ */
+.fi-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.25);
+  padding-bottom: 3px;
+  transition: border-color 140ms ease, gap 140ms ease;
+}
+
+.fi-go:hover {
+  gap: 12px;
+  border-bottom-color: rgba(10, 10, 10, 0.7);
+}
+
+/*
+ * NO CARD, NO FLOOR.
+ *
+ * The panel carries a 560px minimum, which is the onboarding board's
+ * height and exactly right when a sign up card is sitting in it. The
+ * signed in and own link readings have three lines and a link, so that
+ * floor left 200px of blank card under them — which reads as content that
+ * failed to load rather than as a short message.
+ *
+ * Reached through the panel's test id because the panel's own height is a
+ * CSS module class this file cannot name. Scoped to the wrapper so it
+ * cannot touch the reading that does have a card.
+ */
+@media (min-width: 701px) {
+  .fi-short [data-testid='fren-invite'] {
+    min-height: 0;
+  }
+}
+
+/*
+ * THE PAGE GUTTER, on the panel's own breakpoint.
+ *
+ * 700px here because that is where `welcome.module.css` takes the panel
+ * full bleed and full height. This used to be Tailwind's `sm:` prefix,
+ * which is 640 — and the sixty pixels between the two were a real broken
+ * state, not a rounding difference: at 680 the card filled the width and
+ * the viewport height while the page still padded it 64px down, so the
+ * top was a black band and the bottom ran off the screen.
+ *
+ * Below the breakpoint there is no gutter at all. The card IS the page
+ * there, and a strip of ground too narrow to show a chip is not worth the
+ * width it costs the card.
+ */
+.fi-page {
+  padding: 0;
+}
+
+@media (min-width: 701px) {
+  .fi-page {
+    padding: 64px 24px;
+  }
+}

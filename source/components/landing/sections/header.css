@@ -1,0 +1,382 @@
+/*
+ * THE LANDING HEADER.
+ *
+ * Its own stylesheet rather than the `lp-*` Tailwind tokens, because
+ * those still describe the page that was cleared: `--lp-ground` is black
+ * and `--lp-ink-1` is white. The site is going light, and until the rest
+ * of the page follows, the header carries the light palette itself and
+ * nothing it does depends on a token that is about to change.
+ *
+ * ── THE PALETTE ──────────────────────────────────────────────────────
+ *
+ *   PAPER  #FFFFFF   the ground
+ *   GLASS  rgba(255,255,255,.72)  the bar itself, over whatever scrolls under it
+ *   INK    #0B0E14   the mark, the headline, the one filled control
+ *   BODY   #3E4A47   a destination at rest
+ *   FAINT  #8A9591   a chevron, a line of meta
+ *   LINE   #E9EDEB   the hairline under the bar
+ *   PANEL  #F4F7F6   the plate under a hovered control
+ *   RIM    #DDE3E1   the edge of the menu
+ *
+ * ── THE THREE DECISIONS ──────────────────────────────────────────────
+ *
+ * 1400, CENTRED. The bar and every band under it share one column, so the
+ * mark and the headline start on the same line and the button and the
+ * right edge of the text end on the same one. `min()` does the cap and
+ * the gutters in one rule, with no media query: 1400 when there is room,
+ * the viewport minus two 24px gutters when there is not, so the bar can
+ * never touch an edge.
+ *
+ * It is `100%`, not `100vw`. A percentage resolves against the parent;
+ * `vw` resolves against the layout viewport, which under device emulation
+ * and inside some embedded browser views is NOT the width the page is
+ * being laid out at, and the clamp silently fails.
+ *
+ * NO WORDMARK. The mark carries the corner alone. With the word beside
+ * it the lockup ran about 120px and the destinations started a fifth of
+ * the way into the bar; alone they start where the eye already is. The
+ * name stays in the DOM for anything that reads rather than looks.
+ *
+ * It is 32px, and it does not shrink anywhere. A mark carrying a corner
+ * by itself is the only piece of brand in the bar, and 26 was already
+ * small for that job before the phone step made it 22.
+ *
+ * THE HAIRLINE RUNS FULL BLEED while the row inside it is capped. That
+ * line is the bottom of the page's chrome, not the bottom of the column.
+ *
+ * ── GLASS ────────────────────────────────────────────────────────────
+ *
+ * The bar is not white. It is white at 72 percent over a blur of whatever
+ * is passing beneath it, so the page reads as one surface with the bar
+ * floating on it rather than two stacked panels that happen to share a
+ * colour. On a white band it is indistinguishable from paper, which is
+ * the point: it costs nothing where there is nothing to see, and the
+ * moment a card or a dark band slides under it the bar shows it.
+ *
+ * The blur carries a saturate, because a plain blur of colour on white
+ * goes chalky. 180 percent puts the colour back without letting anything
+ * legible through.
+ *
+ * NO `isolation: isolate` ON THIS ELEMENT, ever. It looks like the right
+ * hygiene and it is the exact opposite: isolation makes the bar its own
+ * backdrop root, so the filter samples a root with nothing in it and the
+ * whole thing paints BLACK the moment the page scrolls. Descendants are
+ * never sampled by an ancestor's backdrop-filter anyway, so the popover
+ * inside needs no protecting.
+ *
+ * There is a solid fallback under `@supports`. A browser with no
+ * backdrop-filter gets opaque paper rather than a bar you can read the
+ * page through.
+ *
+ * ── HOVER ────────────────────────────────────────────────────────────
+ *
+ * The ink comes up to full and a PANEL plate appears behind the word.
+ * Nothing is ever drawn underneath it. An underline on hover reads as a
+ * link in a paragraph, not as a control in a bar.
+ */
+
+[data-lp-header] {
+  --hd-paper: #ffffff;
+  --hd-glass: rgba(255, 255, 255, 0.72);
+  --hd-glass-moved: rgba(255, 255, 255, 0.82);
+  --hd-ink: #0b0e14;
+  --hd-body: #3e4a47;
+  --hd-faint: #8a9591;
+  --hd-line: #e9edeb;
+  --hd-panel: #f4f7f6;
+  --hd-rim: #dde3e1;
+  --hd-col: min(1400px, 100% - 48px);
+
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--hd-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--hd-line);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* No backdrop-filter, no glass. Opaque paper instead, rather than a bar
+   you can read the page straight through. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-lp-header] {
+    background: var(--hd-paper);
+  }
+}
+
+/*
+ * Once the page moves the hairline gives way to a soft lift, so the bar
+ * reads as floating over the content rather than as a seam in it. The
+ * class is set by the component from one scroll listener.
+ */
+[data-lp-header][data-moved='true'] {
+  background: var(--hd-glass-moved);
+  border-bottom-color: transparent;
+  box-shadow:
+    0 1px 0 rgba(11, 14, 20, 0.05),
+    0 10px 26px -14px rgba(11, 14, 20, 0.28);
+}
+
+[data-lp-header] .lph-row {
+  display: flex;
+  align-items: center;
+  width: var(--hd-col);
+  margin: 0 auto;
+  height: 72px;
+}
+
+[data-lp-header] .lph-gap {
+  flex: 1 1 auto;
+}
+
+/* ── the mark ─────────────────────────────────────────────────────── */
+
+/*
+ * `mark.svg` ships with a baked gradient, so it cannot take a colour as
+ * an `img`. The silhouette is punched out of a filled box with a mask,
+ * which is the same trick the previous header used and the only way this
+ * one can be ink on paper today and something else on another ground.
+ */
+[data-lp-header] .lph-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+[data-lp-header] .lph-mark {
+  display: block;
+  width: 32px;
+  height: 32px;
+  background: var(--hd-ink);
+  -webkit-mask-image: url(/landing/svg/mark.svg);
+  mask-image: url(/landing/svg/mark.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+[data-lp-header] .lph-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── the destinations ─────────────────────────────────────────────── */
+
+/*
+ * 30px between the mark and the first destination against 4px between
+ * the destinations themselves. That ratio is the whole reason the mark
+ * reads as the thing the nav belongs to rather than the first item in it.
+ */
+[data-lp-header] .lph-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  margin-left: 30px;
+}
+
+[data-lp-header] .lph-a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  font-family: inherit;
+  font-size: 15.5px;
+  letter-spacing: -0.012em;
+  color: var(--hd-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 150ms ease-in-out,
+    background-color 150ms ease-in-out;
+}
+
+[data-lp-header] .lph-a:hover,
+[data-lp-header] .lph-a[aria-expanded='true'] {
+  color: var(--hd-ink);
+  background: var(--hd-panel);
+}
+
+[data-lp-header] .lph-chev {
+  color: var(--hd-faint);
+  transition: transform 180ms ease-in-out;
+}
+
+[data-lp-header] .lph-a:hover .lph-chev,
+[data-lp-header] .lph-a[aria-expanded='true'] .lph-chev {
+  color: var(--hd-ink);
+}
+
+[data-lp-header] .lph-a[aria-expanded='true'] .lph-chev {
+  transform: rotate(180deg);
+}
+
+/* ── the community menu ───────────────────────────────────────────── */
+
+[data-lp-header] .lph-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+[data-lp-header] .lph-pop {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 9px);
+  z-index: 3;
+  width: 232px;
+  padding: 6px;
+  border-radius: 13px;
+  background: var(--hd-paper);
+  box-shadow:
+    0 0 0 1px var(--hd-rim),
+    0 18px 44px -12px rgba(11, 14, 20, 0.22);
+}
+
+[data-lp-header] .lph-pop a {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 11px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  color: var(--hd-ink);
+  text-decoration: none;
+  transition: background-color 150ms ease-in-out;
+}
+
+[data-lp-header] .lph-pop a:hover {
+  background: var(--hd-panel);
+}
+
+/* Filled brand paths, not strokes, so they take their colour from
+   `color` through `fill: currentColor` on the path itself. */
+[data-lp-header] .lph-pop a svg {
+  grid-row: 1 / span 2;
+  color: var(--hd-faint);
+  transition: color 150ms ease-in-out;
+}
+
+[data-lp-header] .lph-pop a:hover svg {
+  color: var(--hd-ink);
+}
+
+[data-lp-header] .lph-pop a span {
+  font-size: 11.5px;
+  color: var(--hd-faint);
+}
+
+/* ── the two actions ──────────────────────────────────────────────── */
+
+[data-lp-header] .lph-login {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  border: 0;
+  background: none;
+  padding: 9px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15.5px;
+  color: var(--hd-body);
+  transition:
+    color 150ms ease-in-out,
+    background-color 150ms ease-in-out;
+}
+
+[data-lp-header] .lph-login:hover {
+  color: var(--hd-ink);
+  background: var(--hd-panel);
+}
+
+/* The page's one filled control. It lifts a pixel on hover and presses
+   back down: an object responding, rather than a rectangle changing
+   shade. */
+[data-lp-header] .lph-cta {
+  flex: none;
+  border: 0;
+  cursor: pointer;
+  height: 38px;
+  margin-left: 10px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: var(--hd-ink);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  transform: translateZ(0);
+  transition: transform 180ms ease-in-out;
+}
+
+[data-lp-header] .lph-cta:hover {
+  transform: translateY(-1px);
+}
+
+[data-lp-header] .lph-cta:active {
+  transform: translateY(0);
+}
+
+/*
+ * NO BURGER, AT ANY WIDTH.
+ *
+ * This is a one page site. The destinations are anchors into the page
+ * already on screen, so putting two words behind a button costs a tap to
+ * reach something that fits anyway. The row keeps every destination at
+ * every size and gives up Log in below 900, which is the one control a
+ * new visitor does not need beside a Start Trading that leads to the same
+ * place.
+ */
+
+/* Blink paints an amber ring on anything focusable, and a bar is nothing
+   but focusable things. Keyboard focus keeps a real ring; the pointer
+   does not get one. */
+[data-lp-header] :focus {
+  outline: none;
+}
+
+[data-lp-header] :focus-visible {
+  outline: 2px solid var(--hd-ink);
+  outline-offset: 2px;
+}
+
+/*
+ * ── BELOW 900 ────────────────────────────────────────────────────────
+ *
+ * THE DESTINATIONS DO NOT APPEAR. Not smaller, not wrapped, not behind a
+ * button: gone. Three anchors into a page you are already scrolling are
+ * the first thing a phone can do without, and the previous attempt kept
+ * them by shrinking the type to 12.5px and the mark to 22px, which cost
+ * the two things in the bar that actually matter to make room for the
+ * one that does not.
+ *
+ * What survives is the mark, Log in and Start Trading, at full size.
+ */
+@media (max-width: 899px) {
+  [data-lp-header] {
+    --hd-col: min(1400px, 100% - 32px);
+  }
+
+  [data-lp-header] .lph-row {
+    height: 64px;
+  }
+
+  [data-lp-header] .lph-nav {
+    display: none;
+  }
+}

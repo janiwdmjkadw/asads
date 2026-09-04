@@ -1,0 +1,181 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * IMPORT ADDRESSES
+ *
+ * Rebuilt in the voice the tracker now speaks. What it was:
+ *
+ *   · the whole dialog set in `--mono`
+ *   · 4px corners on a card, a field and a button
+ *   · two text actions in 9.5px BOLD UPPERCASE on a 0.14em track, that
+ *     underlined on hover
+ *   · a paste box that lit the accent purple on focus
+ *   · a primary button filled with `--accent-primary`, and a disabled
+ *     state that was a different colour AND a different border
+ *
+ * What it is: the settings modal's card, the tracker's own recessed
+ * field, and the one white plate every panel's primary wears — the same
+ * numbers, not new ones.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.iw-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.iw {
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100%);
+  overflow: hidden;
+  border: 1px solid #272729;
+  border-radius: 12px;
+  background: #0c0c0d;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.7);
+  font-family: var(--sans);
+}
+
+.iw > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 9px 10px;
+  border-bottom: 1px solid #1c1c1f;
+}
+
+.iw > header > b {
+  flex: 1 1 auto;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.iw > header > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #6e7178;
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.iw > header > button:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.iw > header > button > svg { width: 14px; height: 14px; }
+
+.iw-body { padding: 10px; }
+
+.iw-note {
+  margin: 0 0 9px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #6e7178;
+}
+
+/*
+ * The same well every field on the tracker wears — one step darker than
+ * the card it sits in, ringed in a grey that is actually grey, and no
+ * ring on focus. The caret is already there.
+ */
+.iw-paste {
+  display: block;
+  width: 100%;
+  height: 168px;
+  padding: 9px 10px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #08080a;
+  outline: none;
+  resize: none;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.iw-paste::placeholder { color: #4b4e55; }
+
+.iw-say {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #868d97;
+}
+
+.iw-say[data-bad] { color: var(--down); }
+
+.iw > footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 10px;
+  border-top: 1px solid #1c1c1f;
+}
+
+.iw > footer > i { flex: 1 1 auto; }
+
+/* One height for every control in the footer, declared once. */
+.iw-go,
+.iw-alt,
+.iw-quiet {
+  --iw-h: 30px;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  height: var(--iw-h);
+  min-height: var(--iw-h);
+  max-height: var(--iw-h);
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease, box-shadow 130ms ease;
+}
+
+.iw-go > svg,
+.iw-alt > svg { width: 13px; height: 13px; flex: none; }
+
+/* The primary. Always the white plate — it does not grey out while it
+   waits for something to import, it simply does nothing until there is. */
+.iw-go {
+  min-width: 88px;
+  background: #ffffff;
+  color: #000000;
+}
+
+.iw-go:hover { background: #f4f4f5; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12); }
+.iw-go:active { background: #e4e4e7; box-shadow: none; }
+
+/* The secondary: the field's own ring, nothing filled. */
+.iw-alt {
+  min-width: 88px;
+  border: 1px solid #272729;
+  color: #868d97;
+}
+
+.iw-alt:hover { border-color: #3a4150; color: #ffffff; }
+
+/* Cancel. A word, not a control — it is the thing you do by pressing
+   Escape or clicking the scrim, and it should not compete with Import. */
+.iw-quiet { padding: 0 8px; color: #6e7178; }
+.iw-quiet:hover { color: #ffffff; }

@@ -1,0 +1,571 @@
+/*
+ * NOTIS, at the "bigger" scale.
+ *
+ * Picked off the `/whatever` sheet: the `legs` layout — every row
+ * carrying its plan's progress inline — at 380px rather than the 330 the
+ * panel inherited from the popover default.
+ *
+ * ── WHY IT GREW ──────────────────────────────────────────────────────
+ *
+ * 330px with a 12.5px title and a 40px bar of 2px segments is the
+ * narrowest surface in the product, and nothing about a notification
+ * list requires that. It hangs off a bell with the whole board
+ * underneath it, so it can take the room. Every dimension steps
+ * together — marks, gutters, token, header, body height — because
+ * scaling type alone is how a panel ends up looking stretched instead of
+ * bigger.
+ *
+ * ── THE MATERIAL CHANGES ─────────────────────────────────────────────
+ *
+ * 1 · Black surface, the invite card's shadow, one hairline weight.
+ *
+ * 2 · FIGURES ARE GEIST. The shipped times and counts carry `.t-num`,
+ *     which is `font-family: var(--mono)` — a THEME AXIS the user picks,
+ *     so the same number renders in two faces across the product.
+ *
+ * 3 · DAY HEADS take the board's own label: `discover.css` sets its
+ *     column heads at 9.5px, 0.13em, #4b4f5b.
+ *
+ * 4 · NO GLOW on the unread dot. Terminals do not glow. Filled is
+ *     unread, hollow is read, and the ring holds the column width either
+ *     way so titles never shift.
+ *
+ * 5 · THE OPEN HINT was `--accent-primary` text on every row that has a
+ *     link, which is most of them — the panel's only colour spent on a
+ *     repeated hint. It is a chevron that appears on hover.
+ *
+ * ── WHAT DID NOT CHANGE ──────────────────────────────────────────────
+ *
+ * Outcome colour: green it worked, amber it is waiting on you, red it
+ * failed, and the figure keeps the ledger's ink. That is information.
+ */
+
+/*
+ * ── WHITE, LIKE THE WALLET DROPDOWN ──────────────────────────────────
+ *
+ * The bell, the avatar and the balance pill are three buttons in one
+ * cluster, and the balance pill now opens a white panel. Two of the
+ * three opening black and one opening white is not a decision anybody
+ * made, it is what happens when surfaces are styled one at a time.
+ *
+ * The ink scale is remapped on this scope rather than every rule being
+ * chased: the rows read `--ink-3` in a dozen places, so moving the
+ * tokens repaints the panel.
+ */
+[data-notis] {
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+  --hairline: #e1e6e4;
+  --hairline-2: #d3dad8;
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f3f5f4;
+
+  width: 380px !important;
+  border-radius: 14px !important;
+  border: 0 !important;
+  padding: 6px !important;
+  overflow: hidden;
+  background: #ffffff !important;
+  color: #3e4a47 !important;
+  box-shadow:
+    0 0 0 1px #d3dad8,
+    0 24px 80px #00000066 !important;
+}
+
+/* ── header ───────────────────────────────────────────────────────── */
+
+/*
+ * `:not(.nps)` because the settings face is a single wrapper element, so
+ * without it the whole face IS the first child and gets clipped to the
+ * 44px this rule means for the list header.
+ */
+[data-notis] > div:first-child:not(.nps) {
+  height: 44px;
+  padding: 0 6px 0 10px !important;
+  border-bottom: 0 !important;
+}
+
+[data-notis] > div:first-child:not(.nps) > div:first-child {
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  color: #0b0e14 !important;
+}
+
+/* Clear and the gear: the ghost treatment the other panels use. */
+[data-notis] > div:first-child:not(.nps) button {
+  height: 26px;
+  border: 0 !important;
+  border-radius: 5px !important;
+  padding: 0 8px !important;
+  font-size: 11.5px !important;
+  font-weight: 500;
+  /*
+   * 0.68, up from 0.4. These are the panel's tabs and its "mark all
+   * read" — presses, not captions. 40% white on this ground is about
+   * 3.1:1, under the 4.5:1 an 11.5px word needs, so the unselected tabs
+   * read as unavailable rather than as unselected.
+   *
+   * Same value the nav, the sub header cluster and both dropdowns
+   * settled on, so "quiet" means one thing across the product.
+   */
+  color: #3e4a47 !important;
+  background: transparent !important;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+[data-notis] > div:first-child:not(.nps) button:hover {
+  color: #0b0e14 !important;
+  background: #e8ecea !important;
+}
+
+[data-notis] [data-testid='notification-settings'] {
+  width: 26px;
+  display: grid;
+  place-items: center;
+}
+
+/* ── day heads ────────────────────────────────────────────────────── */
+
+/* The board's column head, from `.ledger-head > span` in discover.css. */
+/*
+ * SENTENCE CASE. It was 10px uppercase at 0.13em, which is the loudest
+ * type treatment in the product spent on the quietest word on the panel:
+ * `TODAY` was shouting over the event under it. The word is a label, so
+ * it takes a label's size and none of the decoration.
+ */
+[data-notis] .noti-day {
+  padding: 12px 10px 4px !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: var(--ink-3) !important;
+  line-height: 1.2 !important;
+}
+
+/* ── rows ─────────────────────────────────────────────────────────── */
+
+/*
+ * ROWS ARE TARGETS, so they take a radius and a plate on hover rather
+ * than a hairline under every one. A rule between each of four rows is
+ * three lines drawn to separate things that space already separates.
+ */
+[data-notis] .group {
+  border-bottom: 0 !important;
+  border-radius: 9px;
+  transition: background-color 120ms ease;
+}
+
+[data-notis] .group:hover {
+  background: #e8ecea !important;
+}
+
+[data-notis] .group > div,
+[data-notis] .group > button {
+  gap: 11px !important;
+  padding: 9px 10px !important;
+  align-items: center;
+}
+
+/*
+ * THE UNREAD DOT. It ships at 8px with an 8px blur halo; the halo goes,
+ * the dot stays, and a read row keeps the column width with a ring.
+ */
+[data-notis] .group span[aria-hidden].rounded-full {
+  margin-top: 0 !important;
+  width: 7px !important;
+  height: 7px !important;
+  box-shadow: none !important;
+}
+
+/* The token image, one step up. */
+[data-notis] .group img,
+[data-notis] .group span[class*='rounded'] img {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 7px !important;
+}
+
+/* Two type sizes: the event, and one meta line under it. */
+/*
+ * READ AND UNREAD WERE THE SAME PICTURE. Every title sat at 95% white
+ * whether or not you had seen it, so the only thing separating them was
+ * a 7px dot — and a panel you open to find what is NEW should say which
+ * rows those are without you hunting for a dot.
+ *
+ * Unread holds full ink and goes semibold; read drops to ink-2. The dot
+ * stays, so the two signals agree.
+ */
+[data-notis] .noti-title {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em;
+  color: var(--ink-2) !important;
+}
+
+[data-notis] .group[data-unread='true'] .noti-title {
+  font-weight: 600 !important;
+  color: #0b0e14 !important;
+}
+
+[data-notis] .noti-body {
+  margin-top: 3px !important;
+  font-size: 11.5px !important;
+  color: var(--ink-3) !important;
+}
+
+/* ── the meta line, with the plan's progress in it ────────────────── */
+
+[data-notis] .noti-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: #4b4f5b;
+  white-space: nowrap;
+}
+
+/*
+ * The progress bar is the reason this layout won, so it is sized to be
+ * seen: 54px of 3px segments with a real gap, not a 40px hairline. A
+ * filled segment is full white — at 62% it reads as half done.
+ */
+[data-notis] .noti-segs {
+  display: inline-flex;
+  gap: 3px;
+  width: 54px;
+  flex: 0 0 auto;
+  margin-right: 9px;
+}
+
+[data-notis] .noti-segs > span {
+  flex: 1 1 0;
+  height: 3px;
+  border-radius: 1.5px;
+  background: #d3dad8;
+}
+
+[data-notis] .noti-segs > span.is-done {
+  background: #134e4a;
+}
+
+[data-notis] .noti-legtext {
+  flex: 0 0 auto;
+}
+
+/* ── figure, count, chevron ───────────────────────────────────────── */
+
+[data-notis] .group .t-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.005em;
+}
+
+[data-notis] .noti-go {
+  flex: 0 0 auto;
+  /* 0.62. It only shows on hover, so it never had to be faint as well as
+     hidden — at 35% it was invisible in the one state it exists for. */
+  color: #3e4a47;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+[data-notis] .group:hover .noti-go {
+  opacity: 1;
+}
+
+
+/* ── narrow screens: centred, 1rem gutters ────────────────────────── */
+
+/*
+ * EVERY POPUP IS CENTRED ON A PHONE AND NONE OF THEM TOUCH AN EDGE.
+ *
+ * A popover cannot do that from the content, because Radix leaves the
+ * content `position: static` inside a `position: fixed` popper wrapper
+ * and drives the placement with a transform on that wrapper. Anything
+ * set on the content — `left`, `right`, `margin` — is inert.
+ *
+ * So below 420 the wrapper stops being a popper: its transform is
+ * dropped, it spans the viewport under the nav, and it centres its one
+ * child. The panel then takes the width minus two 1rem gutters, which
+ * needs no `vw` — just as well, since `vw` resolves against the layout
+ * viewport and silently fails under device emulation and inside some
+ * embedded browser views.
+ */
+@media (max-width: 420px) {
+  [data-radix-popper-content-wrapper]:has([data-notis]) {
+    transform: none !important;
+    inset: 64px 0 auto 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  [data-notis] {
+    width: calc(100% - 2rem) !important;
+    max-width: none !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  /*
+   * The open animation zooms from `--radix-popper-transform-origin`,
+   * which the popper sets to the corner nearest its trigger — the right
+   * edge, for a bell in the top right. A sheet that is now centred must
+   * grow from its own top centre, or it visibly slides in from one side.
+   */
+  [data-notis] {
+    transform-origin: top center !important;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Touch targets, matching the 38px the nav settles on below 560. */
+  [data-notis] > div:first-child:not(.nps) {
+    height: 52px;
+    padding-right: 8px !important;
+  }
+
+  [data-notis] > div:first-child:not(.nps) button {
+    height: 34px;
+    padding: 0 11px !important;
+    font-size: 12.5px !important;
+  }
+
+  [data-notis] [data-testid='notification-settings'] {
+    width: 34px;
+  }
+
+  /* A row is a tap target on a phone, so it gets the height a tap needs
+     rather than the height a pointer needs. */
+  [data-notis] .group > div,
+  [data-notis] .group > button {
+    padding: 15px 16px !important;
+  }
+
+  /* The dismiss × only appears on hover, which a phone does not have.
+     It stays visible, and big enough to hit without hitting the row. */
+  [data-notis] .group [data-testid^='dismiss-'] {
+    opacity: 1 !important;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+  }
+
+  /* The chevron is a hover affordance too, and on a phone it is noise. */
+  [data-notis] .noti-go {
+    display: none;
+  }
+}
+
+/* ══ THE ROW GLYPHS AND THE TIMESTAMP ══════════════════════════════════
+ *
+ * The mark at the head of each notification is inked inline by the
+ * component, so the row's own `color` never reaches it and it kept the
+ * value it shipped with while the text around it was lifted.
+ *
+ * `.noti-body` stays on `--ink-3` deliberately: it is the second line of
+ * a two line row and it SHOULD sit under the title. `--ink-3` is the
+ * caption step and clears 4.5:1; it was never the problem here.
+ * ══════════════════════════════════════════════════════════════════ */
+
+[data-notis] .noti-row > svg:first-child,
+[data-notis] .noti-icon svg {
+  color: #8a9591 !important;
+  stroke-width: 1.8 !important;
+}
+
+[data-notis] .noti-row:hover > svg:first-child,
+[data-notis] .noti-row:hover .noti-icon svg {
+  color: #0b0e14 !important;
+}
+
+/*
+ * The unread row carried a 3.5% white wash. Inverted for this ground it
+ * became a grey film over the top half of the panel, and consecutive
+ * unread rows merged into one slab that read as a selection. Unread is
+ * carried by the dot and the weight of the title, which is enough, and
+ * it leaves hover as the only thing that ever plates a row.
+ */
+
+/* Blink paints its own amber ring on anything focusable. */
+[data-notis] :focus-visible,
+[data-notis] :focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ══ THE SETTINGS FACE ═══════════════════════════════════════════════
+ *
+ * Same panel, same palette, flipped in place. It reuses the ink scale
+ * remapped at the top of this file, so nothing here names a colour that
+ * the list face does not already use.
+ */
+
+[data-notis] .nps-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px 10px;
+}
+[data-notis] .nps-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background-color 160ms ease-in-out, color 160ms ease-in-out;
+}
+[data-notis] .nps-back:hover {
+  background: #e8ecea;
+  color: #0b0e14;
+}
+[data-notis] .nps-back svg {
+  width: 15px;
+  height: 15px;
+}
+[data-notis] .nps-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  color: #0b0e14;
+}
+
+[data-notis] .nps-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 2px 10px 12px;
+}
+
+[data-notis] .nps-tier-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+[data-notis] .nps-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  color: #0b0e14;
+}
+[data-notis] .nps-note {
+  margin: 5px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+
+/* One control with a position in it, not three buttons in a row. The
+   track is the palette's recessed grey, because the chosen mode is
+   plated white and white on almost white is not a position. */
+[data-notis] .nps-seg {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: #e8ecea;
+}
+[data-notis] .nps-seg button {
+  padding: 4px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.004em;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background-color 160ms ease-in-out, color 160ms ease-in-out;
+}
+[data-notis] .nps-seg button:hover {
+  color: #0b0e14;
+}
+[data-notis] .nps-seg button[data-on='true'] {
+  background: #ffffff;
+  font-weight: 600;
+  color: #0b0e14;
+}
+[data-notis] .nps-seg button:disabled {
+  cursor: default;
+}
+
+[data-notis] .nps-sound {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 13px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12.5px;
+  color: #0b0e14;
+  cursor: pointer;
+}
+/* The checkbox stays in the tree and keeps the label, the keyboard and
+   the tests; only the paint moves to the span beside it. */
+[data-notis] .nps-sound input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+[data-notis] .nps-switch {
+  position: relative;
+  flex: none;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: #d3dad8;
+  transition: background-color 180ms ease-in-out;
+}
+[data-notis] .nps-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  transition: transform 180ms ease-in-out;
+}
+[data-notis] .nps-sound input:checked ~ .nps-switch {
+  background: #134e4a;
+}
+[data-notis] .nps-sound input:checked ~ .nps-switch::after {
+  transform: translateX(14px);
+}
+
+/* ink-4 is a hairline colour. At 1.9:1 on white it is not a paragraph,
+   so the one paragraph on this face sits a step up. */
+[data-notis] .nps-foot {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}

@@ -1,0 +1,640 @@
+@import '../../source/components/discover/column/token-row.css';
+@import '../../source/components/trade/trade-header.css';
+
+
+/* ── the sheet's own furniture ────────────────────────────────────── */
+
+.ar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 26px 10px;
+  padding: 26px 22px;
+  background: #18181b;
+  border: 1px solid #2a2a2e;
+}
+
+/* ══ THE ART BLOCK ON A ROW ════════════════════════════════════════════
+ *
+ * The lane is the column's own ground and metrics, so the block is
+ * judged where it will live rather than on a page of its own.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arw {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: #1f1f23;
+}
+
+/*
+ * The mint is centred under the art on the sheet, where the block stands
+ * alone. On a row it reads as a caption belonging to the picture, so it
+ * aligns to the picture's left edge with everything else on the row.
+ */
+.arw .ar {
+  align-items: flex-start;
+}
+
+/*
+ * The five other treatments are deleted: `stack`, `caps`, `ticker`,
+ * `quiet` and `copy`. Inline is the one that was taken.
+ */
+
+/*
+ * Wide enough for the third line to be READABLE.
+ *
+ * At 560 the stat line had 325px for seven pills, which forced them
+ * down to 10px type and still clipped the last two. The pills were not
+ * too big — a terminal shows this line at about 430px and so does the
+ * reference. The column is what had to give.
+ *
+ * 700 rather than 680, which is 20px of slack. At 680 the widest row
+ * cleared by nothing, and a line that only just fits is a line that
+ * clips the first time a figure gains a digit.
+ */
+.arc-sheet {
+  width: 700px;
+}
+
+/*
+ * ── THE MARK SHEET ───────────────────────────────────────────────────
+ *
+ * A grid of the drawn launchpad marks, each at a size you can judge and
+ * again at the 13px it renders at on a badge.
+ */
+.ms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+  align-content: start;
+  padding: 14px;
+  background: #18181b;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+}
+
+.ms-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 4px 9px;
+  border: 1px solid #232327;
+  border-radius: 8px;
+}
+
+.ms-big {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+/*
+ * The label is the pad's NAME and nothing else. The point of a sheet
+ * like this is to check whether a mark says which launchpad it is
+ * without being told, so the name goes UNDER it — where you land after
+ * having already read the drawing, rather than beside it.
+ */
+.ms-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #8b9099;
+}
+
+.ms-pair {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+/* 13px: what the badge actually gives it. */
+.ms-small {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+
+/* The sheet is white because the row is white. */
+.ms-big,
+.ms-small {
+  color: #fff;
+}
+
+/* 17.5px: what the row actually gives it. */
+.ms-small {
+  width: 17.5px;
+  height: 17.5px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FEE PANEL ON A ROW — POSITION ONLY
+ *
+ * The panel's own look lives in the `.fp` rules below, shared with the
+ * sheet of states under the column so the two cannot drift. All this
+ * does is put it in the right place and open it.
+ *
+ * ── IT OPENS TO THE LEFT ─────────────────────────────────────────────
+ *
+ * Anchored by its RIGHT edge rather than centred. These marks sit near
+ * the end of the meta line, and a 264px panel centred on a 15px mark
+ * that close to the column's edge hangs off it. Opening leftwards it
+ * always has room, because there is always more line to the left of
+ * these marks than to the right.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-attr.has-pop {
+  position: relative;
+}
+
+/* ── the sheet of states, under the column ──────────────────────── */
+
+.fp-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: 22px;
+  padding: 20px;
+  background: #0d0d0e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.fp-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fp-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4b4f5b;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE THIRD LINE, FOUR WAYS
+ *
+ * Same five figures, same marks, four settings. Each is shown on three
+ * rows: a clean token, one with four of five in the red, and the mixed
+ * case — a treatment that separates green from red on an all-green row
+ * proves nothing, and the row that matters is the one where the eye has
+ * to hunt for the two that went red.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.pv-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 22px;
+  padding: 20px;
+  background: #0d0d0e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.pv-col {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.pv-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4b4f5b;
+  padding-bottom: 3px;
+}
+
+/* Each sample sits on the row's own ground, not the sheet's, or the
+   plates would be judged against a surface they never appear on. */
+.pv-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #18181b;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.pv-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pv-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: #34d399;
+}
+
+.pv-pill[data-tier='bad'] .pv-mark {
+  color: #ff6b6b;
+}
+
+/* The dev's age is the second half of a figure, not a second figure. */
+.pv-sub {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── A: round, mark coloured, figure white ──────────────────────── */
+
+.pv-row[data-v='a'] .pv-pill {
+  padding: 3px 7px 3px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.pv-row[data-v='a'] .pv-pill:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* ── B: the reference ───────────────────────────────────────────── */
+
+/*
+ * The FIGURE takes the colour too, which is what the screenshots
+ * actually do and what A argued its way out of. Both coloured, a 6px
+ * radius rather than a full round, and a solid ground rather than a
+ * white wash — a wash over the row's #18181b is a lighter grey, and the
+ * reference's chips are a flat, slightly warmer plate that reads as one
+ * material at any size.
+ */
+.pv-row[data-v='b'] .pv-pill {
+  padding: 3px 7px 3px 5px;
+  border-radius: 6px;
+  background: #232327;
+  color: #34d399;
+}
+
+.pv-row[data-v='b'] .pv-pill[data-tier='bad'] {
+  color: #ff6b6b;
+}
+
+.pv-row[data-v='b'] .pv-pill:hover {
+  background: #2b2b30;
+}
+
+/* The age stays neutral. It is not part of the verdict — a dev holding
+   nothing for a day is green because of the nothing, not the day. */
+.pv-row[data-v='b'] .pv-sub {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* ── C: no plate ────────────────────────────────────────────────── */
+
+/*
+ * The honest test of whether the plate is load-bearing. Five marks and
+ * five figures, coloured, with the same gap between pairs as within
+ * them — which is the problem: nothing says the "0%" belongs to the hat
+ * on its left rather than the crosshair on its right.
+ */
+.pv-row[data-v='c'] {
+  gap: 12px;
+}
+
+.pv-row[data-v='c'] .pv-pill {
+  color: #34d399;
+}
+
+.pv-row[data-v='c'] .pv-pill[data-tier='bad'] {
+  color: #ff6b6b;
+}
+
+/* ── D: a hairline instead of a fill ────────────────────────────── */
+
+/*
+ * The edge is the pill's own colour at low alpha, so a red chip is
+ * ringed red. It binds the pair like a fill does and costs less ink —
+ * but five outlined chips in a line is five more rectangles on a row
+ * that already has an art block and a badge.
+ */
+.pv-row[data-v='d'] .pv-pill {
+  padding: 3px 7px 3px 5px;
+  border-radius: 6px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+
+.pv-row[data-v='d'] .pv-pill[data-tier='bad'] {
+  border-color: rgba(255, 107, 107, 0.32);
+  color: #ff6b6b;
+}
+
+.pv-row[data-v='d'] .pv-pill:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── small: the 90x24 chip ──────────────────────────────────────── */
+
+.arc-wrap[data-buy='small'] .arc-row .arc-buy {
+  min-width: 90px;
+  height: 24px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+/* ── sharp: the same buttons, squared ───────────────────────────── */
+
+/*
+ * 5px, against the capsule's 999.
+ *
+ * Not 0. A hard corner on a 24px control looks like a clipping error
+ * rather than a decision, and the row it sits in has an 8px art block
+ * and 6px pills — a square button would be the only unrounded thing on
+ * the surface.
+ *
+ * Nothing else moves. Round and sharp have to differ by the corner
+ * alone or the comparison is worthless.
+ */
+.arc-wrap[data-buy='small-sharp'] .arc-row .arc-buy,
+.arc-wrap[data-buy='large-sharp'] .arc-row .arc-buy {
+  border-radius: 5px;
+}
+
+.arc-wrap[data-buy='small-sharp'] .arc-row .arc-buy {
+  min-width: 90px;
+  height: 24px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.arc-wrap[data-buy='large-sharp'] .arc-row .arc-buy {
+  min-width: 144px;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+/* ── large: twice the box, same control ─────────────────────────── */
+
+/*
+ * 144x36 against the small one's 90x24.
+ *
+ * It was 180x48, a straight doubling, and at that size it stopped being
+ * the same control given more room and started being a panel with a
+ * label — on a row 116px tall it took nearly half the height on its
+ * own. 36 is a step up that still sits inside the row's rhythm.
+ *
+ * The radius stays a capsule rather than squaring off. Small and large
+ * have to read as one control at two sizes, and a shape change is a
+ * second control.
+ */
+.arc-wrap[data-buy='large'] .arc-row .arc-buy {
+  min-width: 144px;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+/* ── the variants sheet ─────────────────────────────────────────── */
+
+/*
+ * Two bands stacked, round over sharp, so each sharp column sits
+ * directly under the round one it varies. The useful comparison here is
+ * straight DOWN a pair, not across five columns in a line.
+ */
+.bv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bv-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 22px;
+  padding: 20px;
+  background: #0d0d0e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.bv-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.bv-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4b4f5b;
+}
+
+/* The samples are narrower than the real column, so their stat line is
+   allowed to wrap here — the thing being judged is the corner. */
+.bv-col .arc-sheet {
+  width: 100%;
+}
+
+.bv-col .arc-pills {
+  flex-wrap: wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE QUOTE SHEET
+ *
+ * The badges a pair can be quoted in, grouped by what they are. It
+ * borrows `.ms` for the grid because it is answering the same question
+ * as the launchpad sheet — does this read at the size it renders at —
+ * and two grids that differ for no reason are two grids to keep in step.
+ *
+ * What it does NOT borrow is the mark styling. Those are drawn glyphs
+ * that take `currentColor`; these are the tokens' own artwork, so they
+ * are images, and they are ROUND because the badge on the row is round.
+ * Judging a square plate here and shipping a circle there would be
+ * judging the wrong thing.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.qs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/*
+ * The group title, not a heading. These are five buckets on one sheet,
+ * and a title that competes with the badges under it is a title doing
+ * the badges' job.
+ */
+.qs-title {
+  padding-bottom: 7px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b7076;
+}
+
+.qs-big,
+.qs-small {
+  display: block;
+  border-radius: 999px;
+  object-fit: cover;
+  /*
+   * The same hairline the row puts on the badge. Half of these are a
+   * white plate, and a white circle on a near black sheet with no edge
+   * bleeds into the ground at 15px — the ring is what gives it one.
+   */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.qs-big {
+  width: 34px;
+  height: 34px;
+}
+
+/* 15px: what the row actually gives it. */
+.qs-small {
+  width: 15px;
+  height: 15px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE COIN SHEET
+ *
+ * Each pad's art block twice, on curve and graduated, as a pair.
+ *
+ * The pair is the unit here, not the block — the two are read against
+ * each other, so they sit closer to one another than either sits to the
+ * next pad's pair, and the label belongs to both.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.cs-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 7px;
+}
+
+/* The key rides with the title rather than sitting over a column: the
+   pair is always in the same order, so it needs saying once. */
+.cs-key {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: #5c6166;
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 10px;
+  align-content: start;
+  padding: 14px;
+  background: #18181b;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+}
+
+.cs-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 4px 10px;
+  border: 1px solid #232327;
+  border-radius: 8px;
+}
+
+/*
+ * 18px between the two states — wide enough that the gold ring is not
+ * touching the coloured one, tight enough that they still read as one
+ * object shown twice rather than as two coins.
+ */
+.cs-pair {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* The block brings its own address line on a row; there is no address
+   here, so the space it reserves would be a hanging gap. */
+.cs-pair .ar {
+  gap: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE ROW MARKS SHEET
+ *
+ * The cells come from `.ms`; what is inside them is the row's own
+ * markup, wearing the row's own classes. So this block styles the
+ * BIG copy and nothing else — the small one must not be touched here,
+ * because it is the thing being checked.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.rm .ms-cell {
+  /* Wider than the launchpad cells: these carry a figure beside the
+     mark and a sentence under it, not a one word pad name. */
+  justify-content: space-between;
+  min-height: 96px;
+}
+
+/*
+ * The big copy inherits the mark's colour class, so it is green for
+ * cashback and gold for the crown — the same tone as the real one below
+ * it. Only the SIZE differs between the two, which is what makes the
+ * pair a fair comparison.
+ */
+.rm .rm-big {
+  display: inline-flex;
+  align-items: center;
+  /* The row's marks are hover targets; the sheet's big copy is not, so
+     it drops the pointer treatment and keeps the colour. */
+  pointer-events: none;
+}
+
+.rm .rm-big svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* A pill on this sheet has no line to sit in, so it centres itself
+   rather than inheriting the row's baseline alignment. */
+.rm .arc-pill {
+  align-self: center;
+}
+
+.rm .ms-label {
+  text-align: center;
+  line-height: 1.3;
+}
+
+/*
+ * ── THE PANEL LIVES IN THE PRODUCT NOW ───────────────────────────────
+ *
+ * Its styles moved to `@/components/trade/trade-panel.css`, which the
+ * component imports itself. The sheet reaches them through that import,
+ * so there is one copy and the sheet cannot drift from what ships.
+ */

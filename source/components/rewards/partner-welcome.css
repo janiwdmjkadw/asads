@@ -1,0 +1,551 @@
+/* ==========================================================================
+   Partner welcome modal — one-time gilded owl moment.
+   ==========================================================================
+   Performance posture:
+     - Every animation is transform/opacity ONLY (compositor-friendly, no
+       layout or paint storms), with `will-change` limited to the few
+       elements that actually animate.
+     - Kaomoji owl hover bubbles are pure CSS (:hover/:focus-visible) —
+       zero JS event handlers, zero re-renders.
+     - The whole card subtree is `contain`-ed so its animations can never
+       invalidate the page behind the overlay.
+     - Backdrop blur is applied once, on the scrim only.
+     - prefers-reduced-motion collapses everything to still states.
+   All classes are prefixed `pw-`.
+   ========================================================================== */
+
+@keyframes pw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: pw-fade-in 320ms ease both;
+}
+
+/* stage = card + surrounding owl flock */
+.pw-stage {
+  position: relative;
+  padding: 56px 64px;
+}
+@media (max-width: 720px) {
+  .pw-stage { padding: 48px 8px; }
+}
+
+@keyframes pw-card-in {
+  from { opacity: 0; transform: translateY(22px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.pw-card-enter {
+  animation: pw-card-in 560ms cubic-bezier(0.18, 1.1, 0.3, 1) 80ms both;
+}
+
+.pw-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 50% 40%, rgba(255, 215, 0, 0.08), transparent 70%),
+    rgba(5, 5, 9, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── Card ──────────────────────────────────────────────────────────── */
+
+.pw-card {
+  position: relative;
+  overflow: hidden; /* clips the collage, ghost word and mosaic scatter */
+  width: min(92vw, 560px);
+  border-radius: 26px;
+  padding: 44px 36px 30px;
+  text-align: center;
+  border: 1px solid color-mix(in srgb, #ffd700 28%, rgba(255, 255, 255, 0.08));
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, #ffd700 9%, transparent), transparent 55%),
+    linear-gradient(180deg, #131318, #0b0b0f);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 40px 120px -30px rgba(0, 0, 0, 0.9),
+    0 0 80px -30px rgba(255, 215, 0, 0.35);
+  contain: layout style;
+}
+
+/* ── Confetti layer: the listen hand on the gold card ──────────────── */
+
+/* Edition band: the five-color hairline crowning the partner's card. */
+.pw-edition {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #37d67a, #38bdf8, #8b5cf6, #f052d2, #fbbf24);
+  opacity: 0.9;
+}
+
+/* Gold collage bleeding off the top-left edge; block C is the wink. */
+.pw-collage { position: absolute; top: -16px; left: 26px; width: 150px; height: 48px; pointer-events: none; }
+.pw-collage-a { position: absolute; top: 0; left: 0; width: 92px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #ffe48a, #f4b942); opacity: 0.9; }
+.pw-collage-b { position: absolute; top: 14px; left: 74px; width: 38px; height: 17px; border-radius: 7px; background: #ffd700; opacity: 0.7; }
+.pw-collage-c { position: absolute; top: 26px; left: 52px; width: 15px; height: 9px; border-radius: 4px; background: #f052d2; opacity: 0.55; }
+
+/* Ghost signature — serif italic, barely there. */
+.pw-ghost {
+  position: absolute;
+  right: -10px;
+  bottom: -30px;
+  font-family: var(--display, ui-serif, Georgia, serif);
+  font-style: italic;
+  font-size: 110px;
+  line-height: 1;
+  color: #ffd700;
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* One-shot star glints during the entrance — pop, then hold as faint dust. */
+@keyframes pw-glint-pop {
+  0% { opacity: 0; transform: scale(0) rotate(-40deg); }
+  45% { opacity: 1; transform: scale(1.25) rotate(8deg); }
+  100% { opacity: 0.38; transform: scale(0.75) rotate(0deg); }
+}
+.pw-glint {
+  position: absolute;
+  font-size: 13px;
+  color: #ffe48a;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  pointer-events: none;
+  animation: pw-glint-pop 900ms cubic-bezier(0.34, 1.4, 0.5, 1) var(--gd, 700ms) both;
+}
+
+/* The gold mosaic: assembles once with the frens scatter physics. */
+.pw-mosaic { position: absolute; top: 22px; right: 22px; pointer-events: none; }
+@keyframes pw-scatter {
+  0% { transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(0.2); opacity: 0; filter: blur(3px); }
+  18% { opacity: 1; }
+  58% { transform: translate(calc(var(--dx) * -0.08), calc(var(--dy) * -0.08)) rotate(calc(var(--dr) * -0.12)) scale(1.12); filter: blur(0px); }
+  78% { transform: translate(calc(var(--dx) * 0.03), calc(var(--dy) * 0.03)) rotate(calc(var(--dr) * 0.04)) scale(0.96); }
+  100% { transform: none; opacity: 1; filter: none; }
+}
+@keyframes pw-land-spark {
+  0% { box-shadow: 0 0 0 0 transparent; }
+  30% { box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.9), 0 0 14px 4px currentColor; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.pw-pixel {
+  position: absolute;
+  border-radius: 3px;
+  animation:
+    pw-scatter var(--fd, 1.5s) cubic-bezier(0.16, 1, 0.3, 1) var(--fdel, 500ms) both,
+    pw-land-spark 550ms ease-out calc(var(--fdel, 500ms) + var(--fd, 1.5s) * 0.58) both;
+}
+
+/* The plate mark: hairline-flanked ticks + edition line. */
+.pw-plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.pw-plate-rule { width: 38px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 228, 138, 0.28)); }
+.pw-plate-rule-r { background: linear-gradient(90deg, rgba(255, 228, 138, 0.28), transparent); }
+.pw-plate-tick { width: 5px; height: 5px; border-radius: 2px; opacity: 0.75; }
+.pw-plate-line {
+  margin-top: 7px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: rgba(255, 228, 138, 0.32);
+  user-select: none;
+}
+
+@keyframes pw-card-glow {
+  0%, 100% { box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 40px 120px -30px rgba(0, 0, 0, 0.9),
+    0 0 70px -28px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 40px 120px -30px rgba(0, 0, 0, 0.9),
+    0 0 110px -22px rgba(255, 215, 0, 0.5); }
+}
+.pw-card { animation: pw-card-glow 4.5s ease-in-out infinite; }
+
+/* ── Owl crest ─────────────────────────────────────────────────────── */
+
+.pw-crest {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  margin: 0 auto;
+}
+
+@keyframes pw-halo-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.12); opacity: 0.85; }
+}
+.pw-crest-halo {
+  position: absolute;
+  inset: -26px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.32), rgba(255, 145, 60, 0.1) 55%, transparent 72%);
+  filter: blur(6px);
+  will-change: transform, opacity;
+  animation: pw-halo-breathe 3.6s ease-in-out infinite;
+}
+
+@keyframes pw-ring-spin { to { transform: rotate(360deg); } }
+.pw-crest-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 228, 138, 0.85) 60deg,
+    transparent 130deg,
+    transparent 220deg,
+    rgba(255, 215, 0, 0.5) 280deg,
+    transparent 340deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  will-change: transform;
+  animation: pw-ring-spin 9s linear infinite;
+}
+
+@keyframes pw-owl-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+.pw-crest-owl {
+  position: relative;
+  will-change: transform;
+  animation: pw-owl-bob 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 18px rgba(255, 196, 0, 0.45));
+}
+
+/* ── Copy ──────────────────────────────────────────────────────────── */
+
+.pw-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #ffd700 75%, #fff);
+}
+.pw-kicker-tick {
+  width: 12px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffe48a, #ffd700);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+/* The title speaks in the serif italic display voice — the listen hand. */
+.pw-title {
+  margin-top: 8px;
+  font-family: var(--display, ui-serif, Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 5.4vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  background: linear-gradient(100deg, #fff6d8 0%, #ffe48a 30%, #ffd700 55%, #f4b942 75%, #fff0c0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.pw-slug {
+  font-size: 1.14em;
+  text-shadow: 0 0 34px rgba(255, 215, 0, 0.4);
+}
+
+.pw-copy {
+  margin: 12px auto 0;
+  max-width: 400px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(228, 228, 235, 0.72);
+}
+.pw-copy strong { color: #ffe48a; font-weight: 600; }
+
+/* ── Rate tiles ────────────────────────────────────────────────────── */
+
+.pw-rates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.pw-rate {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding: 16px 12px 14px;
+  border: 1px solid color-mix(in srgb, #ffd700 24%, rgba(255, 255, 255, 0.06));
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255, 215, 0, 0.07), transparent 60%),
+    rgba(0, 0, 0, 0.35);
+}
+
+/* Identity strip: gold signs each tile's top edge, fading out. */
+.pw-rate-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 58%;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.65), transparent);
+  pointer-events: none;
+}
+
+.pw-rate-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(228, 228, 235, 0.55);
+}
+.pw-rate-tick {
+  width: 3px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ffd700;
+  opacity: 0.9;
+}
+
+.pw-rate-value {
+  margin-top: 6px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 650;
+  color: #ffe48a;
+  text-shadow: 0 0 24px rgba(255, 215, 0, 0.35);
+}
+
+.pw-rate-sub {
+  margin-top: 6px;
+  font-size: 10.5px;
+  color: rgba(228, 228, 235, 0.45);
+}
+
+/* one slow shared sheen across both tiles */
+@keyframes pw-sheen { 0% { transform: translateX(-130%); } 60%, 100% { transform: translateX(130%); } }
+.pw-rate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 244, 200, 0.1) 50%, transparent 60%);
+  will-change: transform;
+  animation: pw-sheen 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── CTAs ──────────────────────────────────────────────────────────── */
+
+.pw-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.pw-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #ffe48a, #ffd700 55%, #e8a93a);
+  color: #3a2c05;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 32px -10px rgba(255, 196, 0, 0.55);
+  transition: transform 140ms ease, filter 140ms ease;
+}
+.pw-cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.pw-cta:active { transform: translateY(0.5px); filter: brightness(0.97); }
+
+.pw-later {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(228, 228, 235, 0.55);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+.pw-later:hover { color: rgba(228, 228, 235, 0.9); border-color: rgba(255, 255, 255, 0.22); }
+
+/* ── Kaomoji owl flock ─────────────────────────────────────────────────
+   Each owl is three nested layers so transforms never fight:
+     .pw-owl       — absolute position + entrance animation (opacity/translate)
+     .pw-owl-float — infinite bob (translateY only)
+     .pw-owl-face  — hover scale (transition, not animation)
+   Bubbles are CSS-only; no JS runs on hover. */
+
+.pw-flock {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* only the owls themselves are interactive */
+}
+
+@keyframes pw-owl-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.8); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.pw-owl {
+  position: absolute;
+  pointer-events: auto;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  opacity: 0;
+  animation: pw-owl-in 600ms cubic-bezier(0.34, 1.4, 0.5, 1) both;
+  animation-delay: var(--in-delay, 0ms);
+}
+
+@keyframes pw-owl-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+.pw-owl-float {
+  display: inline-block;
+  will-change: transform;
+  animation: pw-owl-float var(--float-dur, 4s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+}
+
+/* Each owl wears its own confetti identity — the frens, in their own
+   colors, gathered around the gold card. */
+.pw-owl-face {
+  display: inline-block;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: var(--owl-size, 17px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: color-mix(in srgb, var(--owl-tint, #ffe48a) 72%, rgba(255, 255, 255, 0.5));
+  text-shadow: 0 0 16px color-mix(in srgb, var(--owl-tint, #ffc400) 35%, transparent);
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), color 180ms ease, text-shadow 180ms ease;
+}
+.pw-owl:hover .pw-owl-face,
+.pw-owl:focus-visible .pw-owl-face {
+  transform: scale(1.22) rotate(-3deg);
+  color: var(--owl-tint, #ffe48a);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--owl-tint, #ffd700) 70%, transparent);
+}
+
+/* speech bubble */
+.pw-bubble {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--owl-tint, #ffd700) 45%, rgba(255, 255, 255, 0.1));
+  background: rgba(12, 12, 16, 0.92);
+  color: color-mix(in srgb, var(--owl-tint, #ffe48a) 80%, #fff);
+  font-size: 11.5px;
+  font-weight: 600;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(0.34, 1.4, 0.5, 1), visibility 0s 160ms;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.8), 0 0 18px -6px color-mix(in srgb, var(--owl-tint, #ffd700) 50%, transparent);
+}
+.pw-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(12, 12, 16, 0.92);
+}
+.pw-owl:hover .pw-bubble,
+.pw-owl:focus-visible .pw-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(0.34, 1.4, 0.5, 1), visibility 0s;
+}
+
+/* owls below the card center flip their bubble underneath so it never
+   collides with the card */
+.pw-owl[data-bubble='below'] .pw-bubble {
+  bottom: auto;
+  top: calc(100% + 10px);
+  transform: translate(-50%, -4px);
+}
+.pw-owl[data-bubble='below'] .pw-bubble::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: rgba(12, 12, 16, 0.92);
+}
+.pw-owl[data-bubble='below']:hover .pw-bubble,
+.pw-owl[data-bubble='below']:focus-visible .pw-bubble {
+  transform: translate(-50%, 0);
+}
+
+/* mobile: keep only the four corner owls (less clutter + fewer animated
+   layers on weaker GPUs) */
+@media (max-width: 720px) {
+  .pw-owl[data-desktop-only='true'] { display: none; }
+}
+
+/* ── Reduced motion: everything settles, nothing moves ─────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-overlay,
+  .pw-card-enter,
+  .pw-card,
+  .pw-crest-halo,
+  .pw-crest-ring,
+  .pw-crest-owl,
+  .pw-owl-float,
+  .pw-pixel { animation: none; }
+  .pw-glint { animation: none; opacity: 0.38; transform: scale(0.75); }
+  .pw-rate::after { animation: none; opacity: 0; }
+  .pw-owl { animation: none; opacity: 1; }
+  .pw-owl-face,
+  .pw-bubble { transition: none; }
+}

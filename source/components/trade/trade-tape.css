@@ -1,0 +1,724 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TAPE
+ *
+ * Trades, positions, orders, holders, top traders, dev deploys — the six
+ * tabs under the chart.
+ *
+ * ── IT SITS ON A LIGHTER GROUND THAN THE CHART ───────────────────────
+ *
+ * Everything above this is black: the chart is a black field with
+ * candles on it, and the rail is black with hairlines. If the tape were
+ * black too, the page would be one continuous surface and the seam
+ * between "the coin" and "what is happening in it" would be a single
+ * hairline doing all the work.
+ *
+ * A step up in ground instead. It reads as a different KIND of thing —
+ * a ledger, a list of rows that keep arriving — the way an order book
+ * always does, and the chart above it stays the darkest surface on the
+ * page, which is where the eye should land first.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ── IT TAKES EVERYTHING THE CHART DOES NOT ───────────────────────────
+ *
+ * The chart is a fixed 600 and this takes the whole remainder of the
+ * page — however tall the window is, the tape ends exactly at the
+ * bottom of it. Its own table scrolls inside, so more rows than fit are
+ * reached by scrolling the LIST rather than the page.
+ *
+ * `min-height: 0` matters: without it a flex child refuses to shrink
+ * below its content, the tape pushes past the bottom of the window, and
+ * the last rows are cut off with no way to reach them — which is the
+ * exact thing this is supposed to prevent.
+ */
+.tt {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  border-top: 1px solid #26262a;
+  background: #0e0e11;
+  font-family: var(--sans);
+}
+
+.tt > * {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/*
+ * The tab strip. It is the top of the ledger, so it takes a shade above
+ * the rows it heads rather than a border of its own.
+ */
+.tt [role='tablist'],
+.tt [class*='tabs'] {
+  background: #0a0a0c;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE LEDGER, IN THE PAGE'S MATERIALS
+ *
+ * `TradesTable` is built on the shared `.panel`, `.tab-underline` and
+ * `.trow` classes, which carry the old skin: 2xl corners, accent radial
+ * washes, a gradient underline with a glow behind it, mono figures at
+ * 12px, 24px gutters.
+ *
+ * All of it is re-declared here, scoped under `.tt`, so those classes
+ * keep their look everywhere else they are used.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ── NOT A CARD ───────────────────────────────────────────────────────
+ *
+ * `.panel` gives this rounded corners, a section shadow and a `::before`
+ * with two accent radial gradients. The tape is not floating over
+ * anything — it is the bottom half of the page, edge to edge — and a
+ * card with rounded corners inside a full-width column leaves four
+ * slivers of the page showing through at the corners.
+ */
+.tt > .panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tt > .panel::before {
+  display: none;
+}
+
+/* ── the tab strip ────────────────────────────────────────────────── */
+
+/*
+ * ── THE STRIP WRAPS ──────────────────────────────────────────────────
+ *
+ * Six tabs and three filters need 593px. In the 435 this column actually
+ * has, the filters were simply gone — pushed past the right edge of a
+ * strip that scrolls sideways, so TRACKED, Listen and DEV existed but
+ * could not be reached.
+ *
+ * It wraps instead. A fixed `--h-tab-bar` height is what stopped it, so
+ * that becomes a floor rather than a cap: one row when everything fits,
+ * two when it does not.
+ */
+.tt [class*='h-[var(--h-tab-bar)]'] {
+  flex-wrap: wrap;
+  align-content: center;
+  height: auto;
+  min-height: var(--h-tab-bar);
+  /*
+   * The tabs are spaced by their own margin, so the strip's gap belongs
+   * to the FILTERS — Tracked, Listen and Dev are one cluster answering
+   * one question ("narrow this how?") and 20px between them read as
+   * three unrelated controls that happened to land together.
+   */
+  gap: 6px;
+  padding: 6px 14px;
+  border-bottom: 1px solid #26262a;
+  background: #0a0a0c;
+  overflow-x: visible;
+}
+
+.tt .tab-underline {
+  height: var(--h-tab-bar);
+  margin-right: 14px;
+}
+
+/* The last tab needs no trailing space — the flexible spacer after it
+   already parts the tabs from the filters. */
+.tt .tab-underline:last-of-type {
+  margin-right: 0;
+}
+
+.tt .tab-underline {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+  transition: color 130ms ease;
+}
+
+.tt .tab-underline:hover { color: rgba(255, 255, 255, 0.7); }
+
+/* The gap between 38% and white is what does the work now, so it is a
+   wide one. At 45% against white the two were close enough that on a
+   six-tab strip you had to look twice to find the live one. */
+.tt .tab-underline.active {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/*
+ * ── NO UNDERLINE AT ALL ──────────────────────────────────────────────
+ *
+ * It was an accent gradient with a bloom, then a white rule. The rule
+ * was better and still not right: a 1.5px line under one word, sitting
+ * on a strip that now WRAPS, meant the marker landed in a different
+ * place depending on how the tabs happened to break — and under a
+ * two-line label it hung off the descender of the second line.
+ *
+ * The tab itself carries the state. White against grey is the same
+ * "this one" the rest of the page states, it needs no geometry, and it
+ * survives the strip reflowing to any shape.
+ */
+.tt .tab-underline.active::after {
+  display: none;
+}
+
+/*
+ * ── TRACKED AND DEV ──────────────────────────────────────────────────
+ *
+ * Two filters that were wearing two different costumes: TRACKED an
+ * accent-tinted chip with a glow behind it, DEV a hold-coloured one with
+ * a caret. They do the same job — narrow the list — so they are the same
+ * object, and it is the rail's object: a bordered chip that lights when
+ * it is on.
+ *
+ * Both are `.tt-filter` now with NO inline style. The old ones set their
+ * colours inline from `color-mix` against theme vars, and an inline
+ * declaration cannot be overridden by a stylesheet rule the way a class
+ * can — which is why the lit state never showed however specific or
+ * `!important` the rule got. The markup reports the state; this decides
+ * what it looks like.
+ *
+ * The Listen toggle beside them is deliberately different. It is not a
+ * filter, it is another VIEW of the holders, and its mosaic is the one
+ * thing on this strip that should look like itself.
+ */
+.tt .tt-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+}
+
+.tt .tt-filter:hover {
+  border-color: #3a4150;
+  color: #ffffff;
+}
+
+/*
+ * ── ON IS `aria-checked` ─────────────────────────────────────────────
+ *
+ * These are `role="switch"`, so the state lands on `aria-checked` rather
+ * than `aria-pressed`. A lit plate AND a brighter edge: on a strip of
+ * three chips, one of them being slightly paler is not a state you can
+ * find at a glance.
+ */
+.tt .tt-filter[aria-checked='true'] {
+  border-color: #5a6272;
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+}
+
+.tt .tt-filter > svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+
+/* ── the rows ─────────────────────────────────────────────────────── */
+
+/*
+ * ── SANS, NOT MONO ───────────────────────────────────────────────────
+ *
+ * The tape was set in mono at 12px. A monospaced face is for strings you
+ * compare character by character; these are ages, prices and sizes —
+ * amounts. Sans with tabular figures keeps the columns lined up without
+ * the typewriter, exactly as on the rail.
+ */
+/*
+ * ── THE ROWS ARE READ IN BULK ────────────────────────────────────────
+ *
+ * Everything in a row was one weight and one brightness: the age, the
+ * cap, the size, the two supply percentages and the wallet all arriving
+ * at the same volume. Two hundred rows of that is a wall.
+ *
+ * Regular weight and a step down in brightness. The only things that
+ * stay loud are the ones the row exists to tell you — the SIZE, which
+ * carries the direction's colour, and the wallet, which is what you
+ * click. Everything else is context and reads as context.
+ */
+.tt .trow {
+  column-gap: 14px;
+  padding: 0 14px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid #1d1d20;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Nothing inside a row shouts either — the table sets its own weights
+   per cell and they were all at or above 500. */
+.tt .trow * {
+  font-weight: 400;
+}
+
+/* Except the two that matter: the size and the wallet. */
+.tt .trow--cv > *:nth-child(3),
+.tt .trow--cv > *:last-child {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tt .trow:hover { background: rgba(255, 255, 255, 0.035); }
+
+/* The head is the column names, so it sits on the strip's own ground and
+   is the quietest row in the table. */
+.tt .trow--head {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #868d97;
+  background: #0a0a0c;
+  border-bottom: 1px solid #26262a;
+}
+
+/*
+ * The chart-and-tape column does NOT scroll. It is exactly the height of
+ * the page, the chart takes its 600 off the top, and the tape takes the
+ * rest — so the two together always add up to the window and there is
+ * never a bottom edge below the fold.
+ */
+/*
+ * ── THIS PAGE HAS NO INSET, SO NEITHER DO ITS DOCKS ──────────────────
+ *
+ * A snapped panel's top and bottom are `DOCK_TOP` / `DOCK_BOTTOM` in
+ * `useDockablePanel.ts`, and both used to carry a hard 10 and 8 —
+ * Discover's numbers, matching the pad that board puts round its
+ * columns. This page has no such pad: `.tw-page` runs flush from the
+ * nav to the footer.
+ *
+ * So a docked tracker sat 12px below the page's own top edge and 10px
+ * above its bottom one, with black showing through on both. Zero here,
+ * and the panel lines up with the header and the tape beside it.
+ *
+ * These inherit to the panel and to its grip. Both are `position:
+ * fixed`, but both are DOM children of `.tw-page`, and custom
+ * properties do not care how a descendant is positioned.
+ */
+.tw-page {
+  --dock-inset-top: 0px;
+  /*
+   * Zero, not "the footer plus eight". A docked panel on this page runs
+   * to the BOTTOM OF THE WINDOW: the side it holds is entirely its own,
+   * top to bottom, with no radius and no shoulder of page showing above
+   * the footer.
+   *
+   * It does pass under the footer strip on that side. That is the point
+   * — the panel is the side now — and the controls that matter are not
+   * behind it: both dock toggles sit at the footer's LEFT end, so a
+   * right dock never covers the button that closes it.
+   */
+  --dock-bottom: 0px;
+}
+
+.tw-col {
+  overflow: hidden;
+  /*
+   * ── THE TAPE MEASURES THIS COLUMN, NOT THE WINDOW ──────────────────
+   *
+   * The rail is 300 wide, so this column is the window minus ~354. A
+   * viewport rule keyed at 700 therefore never fired anywhere between a
+   * 700px window (where the rail becomes a sheet and the column is
+   * full-width again) and about a 1050px one — and in that whole band
+   * the column is narrower than the 680 the table reserves, so the
+   * ledger scrolled sideways with no rule ever trimming it.
+   *
+   * That is the band the breakage sat in. A container fixes it for every
+   * width at once, because what was ever actually narrow is this column.
+   */
+  container-type: inline-size;
+  container-name: pane;
+}
+
+/*
+ * ── NO CYAN IN THE LEDGER ────────────────────────────────────────────
+ *
+ * `TradesTable` reads `--accent-primary` in nine places: the sort arrow,
+ * the TRACKED filter's lit state and its glow, the "Filtered" flag, a
+ * tracked wallet's label, and a gradient avatar fallback. All of it is
+ * the theme's cyan, which on a page that has settled on white-for-chosen
+ * and green/red-for-direction is a fourth colour meaning "on".
+ *
+ * Rebound for the whole tape, the same move the instant trade box takes.
+ * Green and red still come from `--up` and `--down`, so a buy row and a
+ * sell row are untouched.
+ */
+.tt {
+  --accent-primary: #ffffff;
+  --accent-secondary: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.28);
+}
+
+
+/* ── paused ───────────────────────────────────────────────────────── */
+
+/*
+ * ── IT IS A NOTE, NOT A BADGE ────────────────────────────────────────
+ *
+ * This has been two wrong things now: first "paused · +3 new" in bold
+ * tracked capitals in the hold colour, then a bordered pill with a
+ * breathing dot and a shadow. Both treated a passing state as an
+ * announcement.
+ *
+ * What it actually says is "your cursor is on the list, so it is holding
+ * still" — which you already know, because your cursor is on the list.
+ * It only needs to be findable, not noticed. So: one line of small grey
+ * type at the end of the header row, and the count in white because
+ * that is the only part you did not already know.
+ *
+ * It takes no pointer events. Nothing under it should light up because
+ * a label is floating over it, and nothing about the label is clickable.
+ */
+.tt-paused-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 14px;
+  pointer-events: none;
+}
+
+.tt .tt-paused {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: var(--h-row-head);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tt .tt-paused > b {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TAPE ON A PHONE — 700 AND UNDER
+ *
+ * Six columns wanting 680px in a 375px window. The table already
+ * scrolls sideways, but a ledger you have to drag left and right to
+ * read one row of is not readable — you lose the row you were on every
+ * time you look at another column.
+ *
+ * So the columns get narrower and the type gets smaller, which is what
+ * makes them fit rather than what makes them smaller: at 11.5px with a
+ * 14px gutter the table wanted 680; at 10.5 with 8 it wants about 430,
+ * and the remaining drag is one short pull rather than two screens.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * Two steps. At 760 the table stops reserving more than the column has;
+ * at 560 it goes to the phone's spacing. Both are the COLUMN's width, so
+ * they fire correctly whether the rail is beside it or not.
+ */
+@container pane (max-width: 760px) {
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w: 560px;
+  }
+
+  .tt .trow {
+    column-gap: 10px;
+    padding: 0 12px;
+    font-size: 11px;
+  }
+
+  .tt [class*='h-[var(--h-tab-bar)]'] {
+    gap: 5px;
+    padding: 6px 12px;
+  }
+
+  /* The tabs tighten with everything else; the gap between the FILTERS
+     stays the cluster's, not the strip's. */
+  .tt .tab-underline {
+    font-size: 11.5px;
+    margin-right: 11px;
+  }
+}
+
+
+
+@container pane (max-width: 560px) {
+  .tt .trow {
+    column-gap: 8px;
+    padding: 0 10px;
+    font-size: 10.5px;
+  }
+
+  .tt .trow--head { font-size: 9px; }
+
+  .tt [class*='h-[var(--h-tab-bar)]'] {
+    gap: 5px;
+    padding: 6px 10px;
+  }
+
+  .tt .tab-underline {
+    font-size: 11px;
+    margin-right: 9px;
+  }
+
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w: 430px;
+  }
+}
+
+/*
+ * ── AND A STEP WHERE IT SIMPLY FITS ──────────────────────────────────
+ *
+ * Every step above is still a fixed floor, so there is always some pane
+ * narrower than the smallest one — 414px against a 430 floor is 16px of
+ * sideways drag, which is the same breakage in miniature.
+ *
+ * Below 470 the floor becomes the pane itself. The columns compress
+ * instead of the table overflowing: six cells of about seventy pixels,
+ * which holds "14s", "$2.41K", "0.812", "1.24%" and a truncated wallet.
+ * Tight, and readable without dragging — which is the trade a phone
+ * wants.
+ */
+@container pane (max-width: 470px) {
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w: 100%;
+    --table-min-w-wide: 100%;
+    min-width: 100% !important;
+  }
+
+  .tt .trow {
+    column-gap: 6px;
+    padding: 0 8px;
+  }
+
+  .tt .trow > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 700px) {
+  /*
+   * Clear of the sheet's collapsed strip. The sheet is fixed to the
+   * bottom of the window and the page knows nothing about it, so the
+   * last rows of the tape sat under the handle even with the sheet all
+   * the way down. 34px is the sheet's `down` height — the strip only;
+   * pulling the sheet up still covers the tape, which is what a sheet is
+   * supposed to do.
+   */
+  .tt {
+    margin-bottom: 34px;
+  }
+
+}
+
+
+/* The placeholder body for a tab with nothing behind it yet. */
+.tt .tt-soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 120px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── the Listen toggle ────────────────────────────────────────────── */
+
+/*
+ * ── SENTENCE CASE, ONE COLOURED THING ────────────────────────────────
+ *
+ * It was LISTEN in tracked mono capitals with a gradient clipped through
+ * the letters, a gradient ring around the shell, a glow behind that, a
+ * tinted count badge and an equaliser — six devices on a button the size
+ * of a word.
+ *
+ * The mosaic is the one that earns its place: it is Listen's own mark,
+ * it is the only colour on the strip, and it already twinkles. So it
+ * leads, the word is set the way a word is written, and the shell is the
+ * same chip TRACKED and DEV wear.
+ */
+.tt .lh-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease;
+}
+
+.tt .lh-toggle:hover {
+  border-color: #3a4150;
+  filter: none;
+}
+
+.tt .lh-toggle[data-on],
+.tt .lh-toggle[aria-checked='true'] {
+  border-color: #5a6272;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.tt .lh-word {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 130ms ease;
+}
+
+.tt .lh-toggle:hover .lh-word,
+.tt .lh-toggle[data-on] .lh-word,
+.tt .lh-toggle[aria-checked='true'] .lh-word { color: #ffffff; }
+
+.tt .lh-count {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Inline, not perched in a corner. */
+.tt .lh-mosaic {
+  position: relative;
+  display: inline-block;
+  width: 11px;
+  height: 7px;
+  flex-shrink: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 150ms ease;
+}
+
+.tt .lh-toggle:hover .lh-mosaic,
+.tt .lh-toggle[data-on] .lh-mosaic,
+.tt .lh-toggle[aria-checked='true'] .lh-mosaic { opacity: 1; }
+
+/* ── TRACKED and DEV, finished ────────────────────────────────────── */
+
+/* The star is the only mark on TRACKED, so it takes the state rather
+   than the label doing it twice. */
+.tt .tt-star {
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 130ms ease;
+}
+
+/* No gold. The chip's own lit plate already says the filter is on; a
+   second colour on the mark inside it was the same fact twice. */
+.tt [aria-checked='true'] .tt-star { color: #ffffff; }
+
+/* The chef hat sits at the size of the word beside it. */
+.tt [class*='h-[var(--h-tab-bar)]'] > button:not(.tab-underline):not(.lh-toggle) > svg {
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * ON A PHONE, THE PAGE SCROLLS
+ *
+ * The desk layout locks the page to `--h-app-content` and lets each
+ * COLUMN own its overflow, so nothing ever falls below the window. That
+ * is right on a desk and wrong on a phone: at 700px tall, the chart
+ * takes 300, the tape's tabs and its column head take another 60, and
+ * the sheet's strip takes 34 — the ledger was left with about four rows
+ * and no way to reach the rest. Holders, top traders and the whole
+ * trades list sat under a bottom edge that could not be moved.
+ *
+ * So below 700 the page itself becomes the scroll container and every
+ * box inside it takes its natural height: the chart keeps its 300, the
+ * tape runs as long as its rows, and you scroll the page to the end of
+ * them. The trade sheet is `position: fixed`, so it stays put over all
+ * of it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  .tw-page {
+    overflow-y: auto;
+    /*
+     * `none`, not `contain`. Contain stops the scroll reaching the page
+     * behind it but still lets this box rubber-band past its own end,
+     * which is the "scrolling into black" — there is nothing down there,
+     * the box is just being dragged off its content.
+     */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Its row is no longer a fixed-height thing to divide up. */
+  .tw-page > div:last-child {
+    min-height: 0;
+    flex: 0 0 auto;
+  }
+
+  /*
+   * It still GROWS — it is the only column left once the rail becomes a
+   * sheet, and its parent is a row. `flex: 0 0 auto` here collapsed it
+   * to zero width and took the chart's canvas and the whole toolbar with
+   * it. What changes on a phone is only that it stops clipping.
+   */
+  .tw-col {
+    overflow: visible;
+    height: auto;
+  }
+
+  /* The tape is as tall as its rows, not as tall as what is left. */
+  .tt {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .tt-body {
+    overflow: visible;
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  /*
+   * NO PAD HERE. `.tt` already carries `margin-bottom: 34px` for exactly
+   * this — the strip the sheet leaves pinned across the bottom — so a
+   * second 34 on the column was 68px of nothing under the last row, and
+   * scrolling to the end landed on a band of black.
+   *
+   * The page is as long as what is in it: five trades scroll five trades
+   * worth, plus the one strip they are owed.
+   */
+}

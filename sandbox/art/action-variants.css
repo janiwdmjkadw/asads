@@ -1,0 +1,190 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WALLETS TAB'S TOP RIGHT — FOUR WAYS
+ *
+ * History, Import, Create. Three bordered capsules, then three plain
+ * words, then three plain words further apart. Respacing is not a
+ * fourth answer, so none of these is that.
+ *
+ *   1  Segmented   three cells in ONE object
+ *   2  Overflow    the action, plus a dot button holding the other two
+ *   3  Rail        no words at all, three glyph squares on one plate
+ *   4  Divided     two quiet words, a real hairline, then the action
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.av {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.av h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.av-note {
+  margin: 0 0 24px;
+  max-width: 680px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: #4b4e55;
+}
+
+.av-stack { display: flex; flex-direction: column; gap: 30px; }
+.av-slot { display: flex; flex-direction: column; gap: 10px; }
+
+.av-cap { display: flex; align-items: baseline; gap: 8px; }
+.av-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1, #e6e7ea); }
+.av-cap > small { font-size: 10.5px; line-height: 1.4; color: #4b4e55; }
+
+/* The tab's real header row, so each variant is judged against the
+   figure opposite it rather than on its own. */
+.av-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #1c1c20;
+  border-radius: 8px;
+  background: #000;
+}
+
+.av-left { display: flex; align-items: center; gap: 10px; }
+.av-count { font-size: 15px; font-weight: 500; color: var(--ink-1, #b9bcc4); white-space: nowrap; }
+.av-bal { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.av-bal > span {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-0, #fff);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 1 ── SEGMENTED ───────────────────────────────────────────────
+ * One bordered container cut into three. The border belongs to the
+ * GROUP, so the three read as one control with a live cell rather than
+ * as three things that happen to be near each other. */
+.av-seg {
+  display: inline-flex;
+  align-items: stretch;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.av-seg-c {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  font: 500 12px/1 var(--sans);
+  color: #8b8f98;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.av-seg-c:first-child { border-left: 0; }
+.av-seg-c:hover:not(:disabled) { color: #fff; background: rgba(255, 255, 255, 0.05); }
+.av-seg-c:disabled { color: #4b4e55; cursor: not-allowed; }
+
+/* The one cell that makes something. White type, not a white plate —
+   a filled cell inside a bordered group is two competing containers. */
+.av-seg-go { color: #fff; font-weight: 600; background: rgba(255, 255, 255, 0.06); }
+.av-seg-go:hover:not(:disabled) { background: rgba(255, 255, 255, 0.11); }
+
+/* ── 2 ── OVERFLOW ────────────────────────────────────────────────
+ * Two objects. The dots hold History and Import, which are a place to
+ * go rather than a thing to do, and neither is used twice a day. */
+.av-of { display: inline-flex; align-items: center; gap: 8px; }
+
+.av-dots {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: transparent;
+  color: #8b8f98;
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease, border-color 130ms ease;
+}
+.av-dots:hover { color: #fff; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); }
+
+/* The page is allowed exactly one filled button and this is it. */
+.av-solid {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  font: 600 12px/1 var(--sans);
+  cursor: pointer;
+  transition: background-color 130ms ease;
+}
+.av-solid:hover { background: #dcdde0; }
+
+/* ── 3 ── RAIL ────────────────────────────────────────────────────
+ * No words. Three squares sharing one plate, the way a toolbar in a
+ * tool does it. Costs the least width of the four and asks the most of
+ * the glyphs, which is the trade to look at. */
+.av-rail {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.av-sq {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #8b8f98;
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+.av-sq:hover:not(:disabled) { color: #fff; background: rgba(255, 255, 255, 0.09); }
+.av-sq:disabled { color: #43464d; cursor: not-allowed; }
+
+.av-sq-go { background: #fff; color: #000; }
+.av-sq-go:hover:not(:disabled) { background: #dcdde0; color: #000; }
+
+/* ── 4 ── DIVIDED ─────────────────────────────────────────────────
+ * The closest to what ships, with the one thing it was missing: a real
+ * rule saying the two on the left are a different kind of thing from
+ * the one on the right. Spacing was being asked to say that and could
+ * not. */
+.av-div { display: inline-flex; align-items: center; gap: 14px; }
+
+.av-quiet {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: #8b8f98;
+  font: 500 12px/1 var(--sans);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.av-quiet:hover:not(:disabled) { color: #fff; }
+.av-quiet:disabled { color: #4b4e55; cursor: not-allowed; }
+
+.av-rule {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.14);
+}

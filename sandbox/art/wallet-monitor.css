@@ -1,0 +1,317 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * SHEET 8 · THE WALLET TRACKER, SIX WAYS
+ *
+ * The SHELL is settled — Flat, and shared with the tweet popup, so
+ * every panel here wears the same one. What is open is the ROW: eight
+ * of the same trades, at the 340px the panel docks at, read six ways.
+ *
+ * A trade is five facts (when, who, what, how much, at what cap) and
+ * 340px of line. That is the whole argument. The shipped row spends it
+ * on a five column grid; the others buy space by dropping a column,
+ * stacking, or saying it as a sentence.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.wm {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.wm h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.wm p.wm-note {
+  margin: 0 0 20px;
+  max-width: 640px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.wm-rack { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 26px 20px; }
+
+.wm-slot { display: flex; flex-direction: column; gap: 8px; width: 340px; }
+
+.wm-cap { display: flex; align-items: baseline; gap: 7px; }
+.wm-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.wm-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+/* ── the shell, held constant: Flat, as shipped ──────────────────── */
+
+.wm-panel {
+  display: flex;
+  flex-direction: column;
+  height: 372px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--surface-1);
+}
+
+.wm-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 38px;
+  padding: 0 10px 0 13px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.wm-head > b { font-size: 13px; font-weight: 600; color: var(--ink-0); line-height: 1; }
+.wm-head > i {
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.wm-head > .wm-sp { flex: 1 1 auto; }
+
+.wm-head button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.wm-head button:hover { color: var(--ink-0); }
+.wm-head button > svg { width: 12px; height: 12px; }
+
+.wm-feed { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+
+/* ── shared parts ────────────────────────────────────────────────── */
+
+.wm-pfp {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.wm-shot {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: #17171a;
+}
+
+.wm-shot > img { display: block; width: 100%; height: 100%; border-radius: 4px; object-fit: cover; }
+
+.wm-shot > u {
+  position: absolute;
+  right: -2.5px;
+  bottom: -2.5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--surface-1);
+  background: #4ade80;
+}
+
+.wm-sol { display: inline-block; width: 8px; height: 7px; margin-right: 1px; vertical-align: -0.5px; }
+
+/* ══ 1 · TAPE ─ what ships ═════════════════════════════════════════
+ *
+ * Five columns and a coloured ground. The side is the ROW: buys wash
+ * green at 7%, sells pink at 6%, hard enough to read as two bands down
+ * a column you are scanning rather than reading.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * The trailing tracks are FIXED, not `auto` — here and in every other
+ * grid on this sheet. Each row is its own grid container, so an `auto`
+ * track sizes to that row's own content: `0.9` is narrower than `68.2`,
+ * the leftover lands differently on every line, and the tape drifts a
+ * few pixels a row. Reserving the width is what a tape wants anyway —
+ * these are figures in a column, and a column of figures that does not
+ * line up is not a column.
+ */
+.w1 {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.05fr) 60px 50px;
+  align-items: center;
+  column-gap: 8px;
+  padding: 0 10px;
+  height: 34px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 11.5px;
+  transition: background-color 130ms ease;
+}
+
+.w1[data-side='buy'] { background: color-mix(in srgb, var(--up) 7%, transparent); }
+.w1[data-side='sell'] { background: color-mix(in srgb, var(--down) 6%, transparent); }
+.w1[data-side='buy']:hover { background: color-mix(in srgb, var(--up) 14%, transparent); }
+.w1[data-side='sell']:hover { background: color-mix(in srgb, var(--down) 12%, transparent); }
+
+.w1-age { font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.w1-who, .w1-tok { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.w1-name, .w1-tick { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w1-tick { color: var(--ink-0); }
+.w1-size { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.w1-size, .w1-mc { overflow: hidden; }
+.w1-mc { text-align: right; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.92); white-space: nowrap; }
+
+/* ══ 2 · STACKED ═══════════════════════════════════════════════════
+ *
+ * Two lines, no columns. Who and when on the first, what and how much
+ * on the second — so nothing has to be truncated to fit beside anything
+ * else, and a long wallet name is simply a long wallet name.
+ *
+ * Costs height: 46px against 34, so a panel holds two thirds as many
+ * trades. Worth it if you read the tape; wasteful if you scan it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w2 {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 11.5px;
+  transition: background-color 130ms ease;
+}
+
+.w2[data-side='buy'] { background: color-mix(in srgb, var(--up) 7%, transparent); }
+.w2[data-side='sell'] { background: color-mix(in srgb, var(--down) 6%, transparent); }
+
+.w2-top, .w2-bot { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.w2-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w2-age { margin-left: auto; font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.w2-tick { color: var(--ink-0); }
+.w2-size { margin-left: auto; font-variant-numeric: tabular-nums; }
+.w2-mc { font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+
+/* ══ 3 · SENTENCE ══════════════════════════════════════════════════
+ *
+ * No grid at all. "dev wallet bought 1.74 PNUT at $56.4K" — the five
+ * facts as a line you read rather than five cells you assemble.
+ *
+ * The verb carries the side, so the ground can stay neutral: no wash,
+ * no two colours of band, nothing between the reader and the words.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w3 {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.86);
+  transition: background-color 130ms ease;
+}
+
+.w3:hover { background: rgba(255, 255, 255, 0.03); }
+
+.w3-body { min-width: 0; flex: 1 1 auto; }
+.w3-name { font-weight: 600; color: var(--ink-0); }
+.w3-verb[data-side='buy'] { color: var(--up); }
+.w3-verb[data-side='sell'] { color: var(--down); }
+.w3-num { font-variant-numeric: tabular-nums; color: var(--ink-0); }
+.w3-age { flex: none; font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+
+/* ══ 4 · EDGE ══════════════════════════════════════════════════════
+ *
+ * The shipped columns, with the wash replaced by a 2px rule down the
+ * left of the row. The side is still instant, and the panel stops
+ * being two colours of band — which matters here more than on the
+ * tracker page, because this one docks beside a chart that is already
+ * green and red.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w4 {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.05fr) 60px 50px;
+  align-items: center;
+  column-gap: 8px;
+  padding: 0 10px 0 12px;
+  height: 34px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 2px solid transparent;
+  font-size: 11.5px;
+  transition: background-color 130ms ease;
+}
+
+.w4[data-side='buy'] { border-left-color: var(--up); }
+.w4[data-side='sell'] { border-left-color: var(--down); }
+.w4:hover { background: rgba(255, 255, 255, 0.035); }
+
+/* ══ 5 · AMOUNT LED ════════════════════════════════════════════════
+ *
+ * The figure first, in the side's colour, at the size everything else
+ * gave up. What you actually watch a tracked wallet for is size; who
+ * and what follow it, quieter.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w5 {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 52px;
+  align-items: center;
+  column-gap: 9px;
+  padding: 0 11px;
+  height: 38px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background-color 130ms ease;
+}
+
+.w5:hover { background: rgba(255, 255, 255, 0.035); }
+
+.w5-size {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.w5-mid { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.w5-a { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 11.5px; }
+.w5-tick { color: var(--ink-0); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w5-b { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: 10.5px; color: var(--ink-3); }
+.w5-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w5-mc { text-align: right; font-size: 11.5px; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.92); white-space: nowrap; }
+
+/* ══ 6 · BARE ══════════════════════════════════════════════════════
+ *
+ * No wash, no rule, no face, no artwork. Who, what, how much, and the
+ * side carried by a sign in front of the figure — the way a ledger
+ * carries it. The quietest this row can get and still be five facts.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w6 {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) minmax(0, 0.8fr) 52px;
+  align-items: center;
+  column-gap: 9px;
+  padding: 0 12px;
+  height: 30px;
+  font-size: 11.5px;
+  transition: background-color 130ms ease;
+}
+
+.w6:hover { background: rgba(255, 255, 255, 0.035); }
+
+.w6-age { font-size: 10.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.w6-name, .w6-tick { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w6-name { color: rgba(255, 255, 255, 0.78); }
+.w6-tick { color: var(--ink-0); }
+.w6-size { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }

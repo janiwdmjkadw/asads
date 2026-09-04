@@ -1,0 +1,985 @@
+Listen — complete frontend UI export — file manifest
+Generated 2026-08-27
+
+TOTAL: 833 files, 28M
+
+== ROUTES (app/) ==
+  app/(terminal)/agent-wallet/page.tsx
+  app/(terminal)/agent/page.tsx
+  app/(terminal)/conditionals/[id]/page.tsx
+  app/(terminal)/conditionals/page.tsx
+  app/(terminal)/discover/evm/page.tsx
+  app/(terminal)/discover/page.tsx
+  app/(terminal)/frens/page.tsx
+  app/(terminal)/portfolio/page.tsx
+  app/(terminal)/rewards/page.tsx
+  app/(terminal)/tracker/page.tsx
+  app/(terminal)/trade/[mint]/[address]/page.tsx
+  app/(terminal)/trade/[mint]/page.tsx
+  app/(terminal)/trade/page.tsx
+  app/(terminal)/trade/proposals/[id]/page.tsx
+  app/fren/[slug]/page.tsx
+  app/globals.css
+  app/providers.tsx
+  app/sign-in/[[...sign-in]]/page.tsx
+  app/sign-up/[[...sign-up]]/page.tsx
+  app/signup/fren/[slug]/page.tsx
+
+== components/agent (12) ==
+  AgentBanner.tsx
+  AgentChatDock.tsx
+  AgentChatDockActive.tsx
+  AgentConversation.tsx
+  AgentMessageInput.tsx
+  AgentPage.tsx
+  AgentPageGate.tsx
+  AgentParts.tsx
+  AgentWindow.tsx
+  MentionPopover.tsx
+  agent-chat.css
+  conversationScroll.ts
+
+== components/agent-wallet (16) ==
+  AgentWalletCreateCard.tsx
+  AgentWalletDelegationCard.tsx
+  AgentWalletFundingCard.tsx
+  AgentWalletNonceCard.tsx
+  AgentWalletPanel.tsx
+  AgentWalletReadinessCard.tsx
+  AgentWalletSetupModal.tsx
+  AgentWalletSurface.tsx
+  Card.tsx
+  client.ts
+  format.ts
+  index.ts
+  parse.ts
+  setup-state.ts
+  test-fixtures.ts
+  types.ts
+
+== components/agent/cards (1) ==
+  TokenStateCard.tsx
+
+== components/agent/parts (6) ==
+  AgentActivityGroup.tsx
+  AgentMarkdown.tsx
+  AgentReasoning.tsx
+  AgentSnake.tsx
+  AgentToolView.tsx
+  Chip.tsx
+
+== components/agent/parts/atoms (1) ==
+  atoms.tsx
+
+== components/agent/proposal (13) ==
+  CardSkeleton.tsx
+  ProposalCard.tsx
+  ProposalPart.tsx
+  conditionalLive.ts
+  decision.ts
+  index.ts
+  model.ts
+  ref.ts
+  reveal.ts
+  stanza.ts
+  tokenSymbol.ts
+  useLiveReveal.ts
+  useProposalCard.ts
+
+== components/agent/proposal/v2 (12) ==
+  ConditionSlot.tsx
+  ProposalCardV2.tsx
+  card-classes.ts
+  card-model.ts
+  condition-tree.ts
+  ir-types.ts
+  kind-glyphs.tsx
+  marks.tsx
+  phase.ts
+  rails.ts
+  row-model.ts
+  soren-skin.ts
+
+== components/agent/soren (12) ==
+  SorenBuildSequence.tsx
+  SorenGapRow.tsx
+  TokenHoverCard.tsx
+  buildPhase.ts
+  buildSequence.ts
+  composerFocus.ts
+  hoverCard.ts
+  reducedMotion.ts
+  soren-hover.css
+  soren-panes.css
+  waitCycle.ts
+  words.ts
+
+== components/agent/soren/panes (1) ==
+  ResultListPane.tsx
+
+== components/agentic (8) ==
+  AgentRunSection.tsx
+  AgenticHero.tsx
+  AgenticTradingPage.tsx
+  ControlSection.tsx
+  HowItWorks.tsx
+  PromptGallery.tsx
+  agentSurfaces.tsx
+  prompts.ts
+
+== components/ai-elements (3) ==
+  conversation.tsx
+  reasoning.tsx
+  shimmer.tsx
+
+== components/auth (4) ==
+  ClerkSessionSync.tsx
+  RedeemedCookieSync.tsx
+  ReferralBindSync.tsx
+  TradingAuthorizationSync.tsx
+
+== components/conditionals (36) ==
+  ActivityFeed.tsx
+  CancelConfirm.tsx
+  ClassifierCandidatesModal.tsx
+  ClassifierCandidatesPanel.tsx
+  ConditionalDetail.tsx
+  ConditionalDetailGate.tsx
+  ConditionalDetailView.tsx
+  ConditionalsLedger.tsx
+  ConditionalsPageGate.tsx
+  ConditionalsPanel.tsx
+  FlowStrip.tsx
+  GuidanceNotice.tsx
+  LedgerRow.tsx
+  NotificationBellToggle.tsx
+  PlanActions.tsx
+  PositionsList.tsx
+  ProofList.tsx
+  TokenChip.tsx
+  TransactionsTab.tsx
+  chip-classes.ts
+  classifier-model.ts
+  controls.ts
+  detail-model.ts
+  event-feed.ts
+  feed-row.tsx
+  guidance.ts
+  ledger-model.ts
+  lineage.ts
+  play-line.ts
+  pnl.ts
+  positions-model.ts
+  proofs-model.ts
+  strip-model.ts
+  sync-model.ts
+  useConditionals.ts
+  views.ts
+
+== components/creature (8) ==
+  ListenCreature.tsx
+  engine.ts
+  expressions.ts
+  eyes.ts
+  rng.ts
+  spring.ts
+  svg.ts
+  types.ts
+
+== components/discover (73) ==
+  AlphaCard.tsx
+  CardMetaRows.tsx
+  CoinCard.tsx
+  DiscoverFeedProvider.tsx
+  DiscoverFiltersButton.tsx
+  DiscoverPage.tsx
+  EditThesisDialog.tsx
+  EvmDiscoverLanes.tsx
+  EvmLaunchpadBadge.tsx
+  EvmSparkline.tsx
+  FeeShareHoverCard.tsx
+  HideTokenButton.tsx
+  ImportWalletsModal.tsx
+  LedgerColumnHead.tsx
+  PersistentDiscoverPane.tsx
+  QuickBuyPanel.tsx
+  SectionChip.tsx
+  SectionSearch.tsx
+  ThesisText.tsx
+  TickerActionsPopover.tsx
+  TokenImagePreview.tsx
+  TrackedWalletsProvider.tsx
+  WalletActivityFeed.tsx
+  WalletFundingHoverCard.tsx
+  WalletNoticeToasts.tsx
+  WalletTrackerPopover.tsx
+  alphaLaneReconcile.ts
+  attentionSounds.ts
+  bonding.tsx
+  boundedUrlSet.ts
+  cardArming.tsx
+  cardLinkInteractions.tsx
+  cardLiveSlice.ts
+  cardPresentation.ts
+  chainBinding.ts
+  coinEquality.ts
+  deltaWire.ts
+  detachedCoinStore.ts
+  discover.css
+  discoverFeedStore.ts
+  discoverFilters.ts
+  discoverPaneVisibility.ts
+  discoverSearch.ts
+  discover_bg.jpg
+  evmLaneRows.ts
+  feedFlushCoordinator.ts
+  feedKillSwitches.ts
+  feedNavigationPause.ts
+  feedPerfStats.ts
+  fixtureNewPairs.ts
+  formatMc.ts
+  formatSol.ts
+  imagePreload.ts
+  laneScrollDamper.ts
+  laneStreamGate.ts
+  laneWheelIntent.ts
+  mcTone.ts
+  mockCoins.ts
+  moon.png
+  pausableRow.ts
+  stableRowKeys.ts
+  tokenIdentityCache.ts
+  trackedWallets.ts
+  useAlmostGraduated.ts
+  useAlphaLiveStats.ts
+  useGraduatedCache.ts
+  useHiddenTokens.ts
+  useHorizontalWheel.ts
+  useLiveNewPairs.ts
+  useQuickbuy.ts
+  useWalletActivity.ts
+  useWalletTokenTickers.ts
+  walletToastPresentation.ts
+
+== components/discover/dock (3) ==
+  DockChrome.tsx
+  TweetTrackerDock.tsx
+  useDockablePanel.ts
+
+== components/discover/layout (9) ==
+  CardLane.tsx
+  PanelStack.tsx
+  Section.tsx
+  cardVariants.tsx
+  cardVisibility.ts
+  laneVisibilityRegistry.ts
+  resolveLayout.ts
+  types.ts
+  visibilityGeometry.ts
+
+== components/flash (5) ==
+  FlashModal.tsx
+  FlashModalHost.tsx
+  FlashOfferPanel.tsx
+  flash-state.ts
+  useFlashWallets.ts
+
+== components/frens (4) ==
+  CallDetailModal.tsx
+  FrenProfileModal.tsx
+  FrensPage.tsx
+  solFormat.ts
+
+== components/homepage (5) ==
+  HomeAccessGate.tsx
+  HomeFooter.tsx
+  ListenMark.tsx
+  chrome.tsx
+  useHomeAuthRedirect.ts
+
+== components/landing (4) ==
+  DisclosuresDialog.tsx
+  LandingPage.tsx
+  shaders.ts
+  tokens.css
+
+== components/landing/art (10) ==
+  ChartsArt.tsx
+  ConditionalsArt.tsx
+  DiscoverArt.tsx
+  LineArt.tsx
+  RewardsArt.tsx
+  SocialGlyphs.tsx
+  TerminalArt.tsx
+  TrackingArt.tsx
+  index.ts
+  types.ts
+
+== components/landing/primitives (11) ==
+  AuthPill.tsx
+  Eyebrow.tsx
+  Headline.tsx
+  MeshGround.tsx
+  Pill.tsx
+  Section.tsx
+  SmokeGround.tsx
+  Video.tsx
+  index.ts
+  useNearViewport.ts
+  usePrefersReducedMotion.ts
+
+== components/landing/sections (10) ==
+  Agent.tsx
+  Close.tsx
+  Footer.tsx
+  Header.tsx
+  Hero.tsx
+  Infra.tsx
+  Mosaic.tsx
+  Rewards.tsx
+  Terminal.tsx
+  index.ts
+
+== components/landing/sections/rewards (1) ==
+  RewardIcon.tsx
+
+== components/listen (36) ==
+  AccountMenu.tsx
+  AppFooter.tsx
+  AppSubHeader.tsx
+  AuthControls.tsx
+  BrandMark.tsx
+  EnableTradingPanel.tsx
+  IngestionStatus.tsx
+  MoveSolPanel.tsx
+  MultiWalletSelector.tsx
+  NotificationBell.tsx
+  NotificationPrefsPanel.tsx
+  NotificationRows.tsx
+  PersistentTabPane.tsx
+  PixelAvatar.tsx
+  SettingsPanel.tsx
+  SolscanButton.tsx
+  SubHeaderWalletCluster.tsx
+  TerminalShell.tsx
+  TerminalTopNav.tsx
+  ThemeSwitcher.tsx
+  WalletBalanceProvider.tsx
+  WalletExportIframe.tsx
+  WalletPanel.tsx
+  WalletRecoveryKeyPanel.tsx
+  WalletSelector.tsx
+  WalletSettingsPanel.tsx
+  listen.css
+  logo.png
+  navigation.ts
+  notification-view.ts
+  pixel-avatar.ts
+  useFloatingBox.ts
+  useFps.ts
+  useMultiWalletSolBalance.ts
+  useUrlMint.ts
+  useWalletBalance.ts
+
+== components/listen/icons (1) ==
+  Icons.tsx
+
+== components/listen/primitives (12) ==
+  Caption.tsx
+  HairlineDivider.tsx
+  IconButton.tsx
+  LiveDot.tsx
+  Numeral.tsx
+  Pill.tsx
+  SegToggle.tsx
+  Stat.tsx
+  StatBox.tsx
+  StatusBadge.tsx
+  index.ts
+  tokens.ts
+
+== components/listen/theme (6) ==
+  ThemeContext.ts
+  ThemeProvider.tsx
+  fonts.ts
+  themes.ts
+  useFontLoader.ts
+  useTheme.ts
+
+== components/onboarding (4) ==
+  DepositCard.tsx
+  OnboardingModal.tsx
+  RecoveryKeyCard.tsx
+  SecuredByTurnkey.tsx
+
+== components/onboarding/welcome (8) ==
+  FundStep.tsx
+  RecoveryStep.tsx
+  WelcomeBackground.tsx
+  WelcomeFlow.tsx
+  WelcomePanel.tsx
+  flow.ts
+  useDepositWatch.ts
+  welcome.module.css
+
+== components/onboarding/welcome/art (2) ==
+  deposit-winner.tsx
+  key-mini.tsx
+
+== components/portfolio (23) ==
+  AgentBadge.tsx
+  AgentWalletModal.tsx
+  CreateGroupModal.tsx
+  CreateWalletModal.tsx
+  EditGroupModal.tsx
+  EmptyTab.tsx
+  EvmActivityHistory.tsx
+  EvmWalletsPanel.tsx
+  GroupRow.tsx
+  PortfolioPage.tsx
+  TransferModal.tsx
+  TransferRail.tsx
+  WalletRow.tsx
+  WalletSetupModal.tsx
+  WalletSetupModalHost.tsx
+  WalletsTab.header.tsx
+  WalletsTab.tsx
+  WalletsTable.tsx
+  agentWallet.ts
+  dnd.ts
+  partitionTransfer.ts
+  tableLayout.tsx
+  walletsTableFilter.ts
+
+== components/portfolio/spot (14) ==
+  BalanceBuckets.tsx
+  EvmPerformancePanel.tsx
+  EvmSpotTab.tsx
+  PerformanceChart.tsx
+  PnlMood.tsx
+  SpotEmpty.tsx
+  SpotHeader.tsx
+  SpotTab.tsx
+  TokenTreemap.tsx
+  TransactionsRail.tsx
+  WalletFilterStrip.tsx
+  format.ts
+  squarify.ts
+  useAnimatedNumber.ts
+
+== components/positions (6) ==
+  PositionsBar.tsx
+  evmPositionView.ts
+  useEvmPositions.ts
+  usePositionStrip.ts
+  usePositionsStream.ts
+  useSellAllPosition.ts
+
+== components/referral (1) ==
+  SignupFrenArt.tsx
+
+== components/rewards (9) ==
+  CashbackTab.tsx
+  PartnerWelcomeModal.tsx
+  PointsTab.tsx
+  ReferralTab.tsx
+  RewardsPage.tsx
+  icons.tsx
+  partner-welcome.css
+  primitives.tsx
+  rewards.css
+
+== components/search (2) ==
+  TokenSearchModal.tsx
+  searchTiming.ts
+
+== components/settings (2) ==
+  DiscoverFiltersModal.tsx
+  TradingSettingsModal.tsx
+
+== components/tracker (11) ==
+  AddTrackerField.tsx
+  TrackedChip.tsx
+  TrackerActivityRow.tsx
+  TrackerPage.tsx
+  TrackerPanel.tsx
+  TrackerToolbar.tsx
+  TrackerTweet.tsx
+  TweetsPanel.tsx
+  WalletsPanel.tsx
+  hooks.ts
+  panel-styles.ts
+
+== components/trade (85) ==
+  AnalyticsPanel.tsx
+  CallCoinButton.tsx
+  ChartAlertsWatcher.tsx
+  ChartSettingsModal.tsx
+  ChartToolbar.tsx
+  EvmDevTokensPanel.tsx
+  EvmHoldersPanel.tsx
+  EvmMyFills.tsx
+  EvmPriceChart.tsx
+  EvmTokenHeaderBar.tsx
+  EvmTopTradersPanel.tsx
+  EvmTradePage.tsx
+  EvmTradePanel.tsx
+  EvmTradesTable.tsx
+  ExchangeIcon.tsx
+  FundingCell.tsx
+  HoverPreview.tsx
+  InstantTradeBox.tsx
+  ListenHolders.tsx
+  PersistentEvmTradePane.tsx
+  PersistentTradePane.tsx
+  PriceChart.tsx
+  QuickChipsEditor.tsx
+  QuoteModeToggle.tsx
+  RailColumn.tsx
+  SettingsReadout.tsx
+  TokenHeaderBar.tsx
+  TokenMetaRow.tsx
+  TradePage.tsx
+  TradePanel.tsx
+  TradeToasts.tsx
+  TradeWalletActivity.tsx
+  TradesTable.tsx
+  WalletCountButton.tsx
+  amountInput.ts
+  appendOnlyRenderer.ts
+  balanceDisplayCache.ts
+  batchChildToasts.ts
+  candleHistoryPolicy.ts
+  formatTokenAmount.ts
+  holdersTopDelta.ts
+  instant-trade-styles.ts
+  ledgerOptimistic.ts
+  ledgerPnl.ts
+  listenHoldersView.ts
+  liveOverlay.ts
+  markerAnchoring.ts
+  mockTrade.ts
+  reauthMessage.ts
+  sellEstimate.ts
+  sellSizing.ts
+  snapshotAdapter.ts
+  stableChartEvents.ts
+  submitTiming.ts
+  timeframes.ts
+  tokenRebalance.ts
+  tokenSnapshotFetch.ts
+  tradeApi.ts
+  tradeBackfillPolicy.ts
+  tradeErrorCopy.ts
+  tradePaneVisibility.ts
+  tradeSound.ts
+  types.ts
+  useCandleHistory.ts
+  useCandleTrades.ts
+  useColorCycle.ts
+  useDevTokens.ts
+  useHistoryTrades.ts
+  useMintWalletTrades.ts
+  useMultiWalletTokenBalance.ts
+  useSelectedTokenStream.ts
+  useTokenSnapshot.ts
+  useTokenTradePrewarm.ts
+  useTopHolders.ts
+  useTopTraders.ts
+  useTrackedHolders.ts
+  useTradeCapabilities.ts
+  useTradeLedger.ts
+  useTradePresence.ts
+  useTradeStream.ts
+  useWalletClasses.ts
+  walletChartBubbles.ts
+  walletCountRoute.ts
+  walletRebalance.tsx
+  wire.ts
+
+== components/trade-activity (6) ==
+  TradeActivityProvider.tsx
+  TradeActivityToasts.tsx
+  TradeTimingPaintProbe.tsx
+  sseEventId.ts
+  terminalEventFlush.ts
+  usePendingOrderReconciliation.ts
+
+== components/trade/advanced (10) ==
+  AdvancedTabBody.tsx
+  ConfirmOrderModal.tsx
+  EvmAdvancedOrderForm.tsx
+  LimitTabBody.tsx
+  TokenPicker.tsx
+  bits.tsx
+  math.ts
+  useListenRootPortal.ts
+  useLiveBalanceOverlay.ts
+  useSpotHoldings.ts
+
+== components/trade/orders-tab (4) ==
+  EditOrderModal.tsx
+  OrdersTabBody.tsx
+  format.ts
+  useAdvancedOrders.ts
+
+== components/tweet (14) ==
+  Avatar.tsx
+  LinkCard.tsx
+  NestedTweet.tsx
+  TweetCard.tsx
+  TweetCardBody.tsx
+  TweetCardFooter.tsx
+  TweetCardHeader.tsx
+  TweetHoverCard.tsx
+  TweetMedia.tsx
+  icons.tsx
+  render-text.tsx
+  tweet-format.ts
+  tweet-styles.ts
+  useTweet.ts
+
+== components/ui (14) ==
+  button.tsx
+  card.tsx
+  collapsible.tsx
+  dialog.tsx
+  emoji-picker.tsx
+  hover-card.tsx
+  input.tsx
+  popover.tsx
+  resizable.tsx
+  select.tsx
+  slider.tsx
+  sonner.tsx
+  textarea.tsx
+  tooltip.tsx
+
+== components/wallet (3) ==
+  DepositAddress.tsx
+  WalletBalanceModal.tsx
+  WalletBalancePopover.tsx
+
+== components/wallet-profile (1) ==
+  WalletProfileModal.tsx
+
+== components/watchlist (3) ==
+  WatchlistBar.tsx
+  useWatchlist.ts
+  useWatchlistQuotes.ts
+
+== homepage/certificate-invite (5) ==
+  CertificateArcs.tsx
+  CertificateInviteModal.tsx
+  certificate-invite.module.css
+  index.ts
+  useDecodeScramble.ts
+
+== homepage/creator-pass-modal (3) ==
+  CreatorPassModal.tsx
+  creator-pass-modal.module.css
+  index.ts
+
+== hooks (2) ==
+  use-age-tick.ts
+  use-mobile.tsx
+
+== lib (9) ==
+  agent-wallet-setup-context.tsx
+  format.ts
+  navigation-events.ts
+  onboarding-context.tsx
+  page-zoom.ts
+  runtime-config.ts
+  token-image.ts
+  utils.ts
+  wallet-panel-context.tsx
+
+== lib/agent (13) ==
+  atoms.ts
+  chat-core.ts
+  chat-store.ts
+  contracts.ts
+  ghost-plan.ts
+  mentions.ts
+  mint-context.ts
+  mint-links.ts
+  transport.ts
+  useMentionCandidates.ts
+  useTrackedWalletSync.ts
+  view.ts
+  window-geometry.ts
+
+== lib/api (47) ==
+  advanced-orders.ts
+  alpha-calls-shared.ts
+  alpha-calls.ts
+  auth-prewarm.ts
+  cashback.ts
+  cold-boot-auth.ts
+  creator-coins.ts
+  evm-deposit-addresses.ts
+  evm-destination-check.ts
+  evm-performance.ts
+  evm-positions.ts
+  evm-wallet-balances.ts
+  frens.ts
+  hidden-tokens.ts
+  http.ts
+  ingestion.ts
+  invite.ts
+  listen-holders.ts
+  me.ts
+  notifications.ts
+  orders.ts
+  portfolio-performance.ts
+  portfolio-spot.ts
+  portfolio-transactions.ts
+  presence.ts
+  prewarm.ts
+  referral.ts
+  sensitive-action.ts
+  tracker.ts
+  trade-capabilities.ts
+  trade-fills.ts
+  trade-ledger.ts
+  trading.ts
+  tweet-fixture.ts
+  tweet.ts
+  user-settings.ts
+  wallet-auth.ts
+  wallet-backup.ts
+  wallet-balances.ts
+  wallet-export.ts
+  wallet-funding.ts
+  wallet-groups.ts
+  wallet-nonce-setup.ts
+  wallet-pnl.ts
+  wallets.ts
+  warm-mints.ts
+  watchlist.ts
+
+== lib/auth (7) ==
+  nonce-setup-surface.ts
+  onboarding-status.ts
+  orderAuthToken.ts
+  session-seed.ts
+  useRequireTradingReady.ts
+  useSeededAuth.ts
+  wallet-export.ts
+
+== lib/conditionals (6) ==
+  client.ts
+  index.ts
+  parse.ts
+  types.ts
+  useConditionalsEnabled.ts
+  useConditionalsGate.ts
+
+== lib/dev (2) ==
+  hotPathMetrics.ts
+  verboseLogs.ts
+
+== lib/evm (38) ==
+  amount.ts
+  batchOrderApi.ts
+  batchOrderStatus.ts
+  batchQuote.ts
+  cardAdapter.ts
+  chains.ts
+  chartAdapter.ts
+  creatorTokensApi.ts
+  discoverAdapter.ts
+  explorer.ts
+  fillsApi.ts
+  fillsFold.ts
+  holderShare.ts
+  laneState.ts
+  launchSelection.ts
+  liveRefetch.ts
+  maxBuy.ts
+  money.ts
+  orderApi.ts
+  orderEvents.ts
+  orderStatusApi.ts
+  quickbuy.ts
+  quote.ts
+  quoteApi.ts
+  readApi.ts
+  searchApi.ts
+  sizing.ts
+  sparkline.ts
+  stream.ts
+  tape.ts
+  tokenBalanceApi.ts
+  tradeApi.ts
+  useDiscoverChain.ts
+  useEvmEnabled.ts
+  useEvmWallets.ts
+  wireInteger.ts
+  withdrawalRecovery.ts
+  withdrawalReverification.ts
+
+== lib/flags (1) ==
+  useSorenChat.ts
+
+== lib/notifications (2) ==
+  useTradeToastV2.ts
+  useWalletNotificationV2.ts
+
+== lib/onboarding (3) ==
+  auto-open.ts
+  recovery-backup.ts
+  useFullscreenOnboarding.ts
+
+== lib/perf (4) ==
+  navActivity.ts
+  navTelemetry.ts
+  perfTelemetry.ts
+  scrollProfiler.ts
+
+== lib/query (4) ==
+  keys.ts
+  persist.ts
+  placeholder.ts
+  query-client.ts
+
+== lib/referral (1) ==
+  pending.ts
+
+== lib/sound (2) ==
+  inviteSounds.ts
+  mosaicChime.ts
+
+== lib/state (28) ==
+  activity-count-store.ts
+  alpha-calls-stream.ts
+  chart-alerts-store.ts
+  chart-prefs-store.ts
+  chart-style.ts
+  clerk-session-store.ts
+  coincard-prefs.ts
+  connection-store.ts
+  discover-store.ts
+  dock-store.ts
+  flash-store.ts
+  floating-panel-order.ts
+  notifications-stream.ts
+  selected-wallet-store.ts
+  sol-usd-hint.ts
+  stream-generation.ts
+  terminal-store.ts
+  token-search-store.ts
+  trade-activity-store.ts
+  trade-layout-store.ts
+  trade-store.ts
+  ui-scale.ts
+  viewers-store.ts
+  wallet-balance-stream.ts
+  wallet-groups-store.ts
+  wallet-profile-store.ts
+  wallet-setup-store.ts
+  wallet-toast-style.ts
+
+== lib/storage (1) ==
+  local-settings.ts
+
+== lib/telemetry (1) ==
+  tradeTiming.ts
+
+== lib/trade (1) ==
+  spend-currency.ts
+
+== lib/wallet-export (2) ==
+  documentReveal.ts
+  exportReverification.ts
+
+== ASSETS (public/) ==
+    public/assets/@_icon.svg                                     3561 bytes
+    public/assets/Coinbase Logo.svg                               406 bytes
+    public/assets/HITBTC.png                                     5952 bytes
+    public/assets/HTX.png                                        9173 bytes
+    public/assets/KuCoin.png                                     6256 bytes
+    public/assets/OKX.png                                        1611 bytes
+    public/assets/ROBINHOOD.png                                  1922 bytes
+    public/assets/RelayLink.png                                  3175 bytes
+    public/assets/Revoulut.png                                   3476 bytes
+    public/assets/SOL.svg                                        1367 bytes
+    public/assets/binance.svg                                    1165 bytes
+    public/assets/blue_dev_icon.svg                              1772 bytes
+    public/assets/blue_holder_icon.svg                            507 bytes
+    public/assets/blue_tweet_icon.svg                             612 bytes
+    public/assets/cashback_icon.svg                              1300 bytes
+    public/assets/charity_icon.svg                               1020 bytes
+    public/assets/dev_graduated_icon.svg                         1008 bytes
+    public/assets/dev_icon.svg                                   1707 bytes
+    public/assets/discord_logo.svg                               1434 bytes
+    public/assets/discover_bg.jpg                             1250353 bytes
+    public/assets/eye_icon.svg                                    792 bytes
+    public/assets/flash-bolt.svg                                 2502 bytes
+    public/assets/gas.svg                                         587 bytes
+    public/assets/green_sniper_icon.svg                           815 bytes
+    public/assets/icon.svg                                       1849 bytes
+    public/assets/insider_icon.svg                               1358 bytes
+    public/assets/logo.png                                      47610 bytes
+    public/assets/logo.svg                                       2676 bytes
+    public/assets/mayham_icon.svg                                 575 bytes
+    public/assets/moon.png                                     487964 bytes
+    public/assets/orange_tweet_icon.svg                           612 bytes
+    public/assets/pump_icon.svg                                  1819 bytes
+    public/assets/quickbuy.svg                                    665 bytes
+    public/assets/red_tweet_icon.svg                              612 bytes
+    public/assets/slip.svg                                       3138 bytes
+    public/assets/sniper_icon.svg                                 814 bytes
+    public/assets/tip.svg                                         901 bytes
+    public/assets/wallets.svg                                     954 bytes
+    public/assets/x_analytics_icon.svg                            370 bytes
+    public/assets/x_blue_check_icon.svg                          1341 bytes
+    public/assets/x_blue_glove_icon.svg                           630 bytes
+    public/assets/x_bookmark_icon.svg                             444 bytes
+    public/assets/x_comment_icon.svg                              604 bytes
+    public/assets/x_copy_icon.svg                                 489 bytes
+    public/assets/x_joined_icon.svg                               606 bytes
+    public/assets/x_like_button_icon.svg                          568 bytes
+    public/assets/x_logo.svg                                      433 bytes
+    public/assets/x_repost_icon.svg                               539 bytes
+    public/assets/youtube_icon.svg                                304 bytes
+    public/emojibase/en/data.json                              775157 bytes
+    public/emojibase/en/messages.json                            6499 bytes
+    public/homepage/creator-pass/backside.svg                   46392 bytes
+    public/homepage/creator-pass/frontside.svg                  46367 bytes
+    public/homepage/creator-pass/mobile-backside.svg            50620 bytes
+    public/homepage/creator-pass/mobile-frontside.svg           50620 bytes
+    public/homepage/creator-pass/mobile-ticket.svg               1064 bytes
+    public/homepage/creator-pass/shape.png                     228615 bytes
+    public/homepage/creator-pass/ticket.svg                       906 bytes
+    public/homepage/paper.png                                 1343823 bytes
+    public/invite/certificate-frame.png                       1480441 bytes
+    public/landing/img/conditional-card.png                     83484 bytes
+    public/landing/img/dash-plate-desktop.png                 2274506 bytes
+    public/landing/img/dash-plate-mobile.png                   657762 bytes
+    public/landing/img/hero2-desktop-poster.png                   207 bytes
+    public/landing/img/hero2-desktop-still.jpg                 100766 bytes
+    public/landing/img/hero2-mobile-poster.png                    157 bytes
+    public/landing/img/hero2-mobile-still.jpg                   72915 bytes
+    public/landing/img/keeper-plate.png                       1346374 bytes
+    public/landing/img/pyramid-mobile-poster.webp               17524 bytes
+    public/landing/img/pyramid-plate.webp                       28212 bytes
+    public/landing/img/terminal-capture-2-1240.webp             79332 bytes
+    public/landing/img/terminal-capture-2-1960.webp            146310 bytes
+    public/landing/svg/mark-gem.svg                              2676 bytes
+    public/landing/svg/mark.svg                                  2676 bytes
+    public/landing/video/dash-desktop.mp4                      536035 bytes
+    public/landing/video/dash-mobile.mp4                       521488 bytes
+    public/landing/video/hero2-desktop.mp4                    1748365 bytes
+    public/landing/video/hero2-mobile.mp4                     1419236 bytes
+    public/landing/video/pyramid-desktop.mp4                  1187368 bytes
+    public/landing/video/pyramid-mobile.mp4                   1189779 bytes
+    public/quickbuy-boot.js                                       580 bytes
+    public/sounds/chaching.m4a                                 118208 bytes
+    public/theme-boot.js                                         1235 bytes
+
+== ROOT CONFIG ==
+  components.json
+  postcss.config.mjs
+  tailwind.config.js

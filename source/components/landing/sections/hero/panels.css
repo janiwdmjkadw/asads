@@ -1,0 +1,100 @@
+/*
+ * THE HERO GROUND.
+ *
+ * Panels hanging in a room, drifting forward. Panels.tsx says what the
+ * thing is and why; this file is the room and the drift.
+ */
+
+.hero-panels {
+  position: absolute;
+  inset: 0;
+  /* Above the radial white wash the band lays over LightGround, or the
+     wash would bleach the panels back out of the page. */
+  z-index: -5;
+  overflow: hidden;
+  pointer-events: none;
+
+  /*
+   * THE TOP THIRD IS GONE. The header is glass and blurs whatever passes
+   * beneath it, so nothing is allowed to live up there. The bottom fades
+   * too, so the band does not seam into the Agent band under it.
+   */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.34) 18%,
+    #000 42%,
+    #000 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.34) 18%,
+    #000 42%,
+    #000 94%,
+    transparent 100%
+  );
+}
+
+/*
+ * THE ROOM.
+ *
+ * A shallow perspective with the vanishing point above centre, so panels
+ * arriving from the back come down and out toward the corners rather than
+ * straight through the type.
+ */
+.hero-room {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+  perspective-origin: 50% 34%;
+  transform-style: preserve-3d;
+}
+
+.hero-room > span {
+  position: absolute;
+  display: block;
+  border-radius: 14px;
+  animation-name: heropanel;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+/*
+ * THE DRIFT.
+ *
+ * Each panel comes forward the length of the room and starts again. A
+ * pass takes forty odd seconds, and at that speed nothing ever appears to
+ * be moving: the frame is simply never the same twice.
+ *
+ * translate3d only. Nothing here reflows or repaints.
+ */
+@keyframes heropanel {
+  0% {
+    transform: translate3d(-50%, -50%, -900px) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-50%, -46%, 260px) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+}
+
+/*
+ * Somebody who has asked for less motion gets the room and none of the
+ * drift: the panels hold still at the depth they start at.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hero-room > span {
+    animation: none;
+    transform: translate3d(-50%, -50%, -320px) rotate(var(--rot, 0deg));
+  }
+}

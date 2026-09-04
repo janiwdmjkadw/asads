@@ -1,0 +1,272 @@
+/*
+ * The invite ground: the conditions the agent holds, as chips, behind a
+ * stack receding under the card.
+ *
+ * TWO HALVES THAT EACH FAILED ALONE. The receding stack gave the panel
+ * real depth but left the frame empty. The conditions wall said what the
+ * app is but was unreadable at any density that filled the frame — a page
+ * of text behind a card of text.
+ *
+ * THE GRAMMAR IS GONE. Only the VALUES survive, each in the product's own
+ * chip. What is left is a rhythm of plates with words in them, which is
+ * what a rule looks like from far enough away to stop reading it — the
+ * wall reads as interface rather than as prose, and nothing on it competes
+ * with the card for reading.
+ *
+ * Held at 8% resting and 17% when a chip arms, against the stack's plates
+ * at 15%. The ORDER matters as much as the values: the stack has to read
+ * in front of the chips, or the composition inverts and the card appears
+ * to be floating on a paragraph. That is why the plates are opaque black
+ * rather than a translucent white.
+ *
+ * ARCTIC MINT, and only in two places: the ink, and a pool of light
+ * behind the card. The monochrome version read as dead — white chips at
+ * 8% on pure black is one value of one hue, and a field with no colour
+ * temperature has nothing for the eye to travel between.
+ *
+ * The corners stay black. The card sits in the warm part of a cold room,
+ * which is what keeps this from being a green page: the hue is in the
+ * LIGHT rather than on the surface, and it falls off before it reaches
+ * the frame.
+ *
+ * The values are the welcome page's own, so the two surfaces cannot
+ * drift. Mint at full strength on a dark screen reads as a 1987 terminal;
+ * the ink here is a white walked a few steps toward mint.
+ *
+ * No chart, no candle, no price line, no volume, no circles. Opacity and
+ * transform only, so sixty chips stay on the compositor — and the halo's
+ * gradient is painted once and only ever scaled.
+ */
+
+.ivg-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000000;
+  font-family: var(--font-geist-mono, ui-monospace, monospace);
+  pointer-events: none;
+  --ivg-card-w: 640px;
+  --ivg-card-h: 600px;
+}
+
+.ivg-wall {
+  /* Inset NEGATIVE, so the drift never pulls an edge into frame. */
+  position: absolute;
+  inset: -3%;
+  overflow: hidden;
+  animation: ivg-drift 90s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* A chip: the same object the product sets a chosen value in. */
+.ivg-chip {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  white-space: nowrap;
+  padding: 0.34em 0.72em;
+  border: 1px solid rgba(206, 240, 229, 0.45);
+  border-radius: 8px;
+  background: rgba(206, 240, 229, 0.05);
+  line-height: 1.2;
+  color: rgba(206, 240, 229, 1);
+  will-change: opacity;
+}
+
+/*
+ * A chip ARRIVES as the agent reaches it, holds, and settles back.
+ *
+ * It was an opacity change alone, which reads as a light being switched on
+ * — the wall blinked rather than moved. A chip that also rises and grows a
+ * little reads as something being picked up and put back, which is the
+ * gesture this wants: the agent touching a rule, not a bulb flickering.
+ *
+ * The rise is 5px and the growth 3%. Both are small on purpose: at this
+ * opacity a bigger move reads as drift, and forty chips drifting at once
+ * is a page that will not sit still behind a card someone is reading.
+ *
+ * WHICH chip arrives WHEN is a per-chip delay, not a per-chip animation,
+ * so the whole wall runs on one clock and none of it can fall out of step.
+ */
+@keyframes ivg-arm {
+  0%, 8% {
+    opacity: var(--ivg-base);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  18%, 38% {
+    /* A VARIABLE, because the faces arm harder than the chips do. It was
+       the literal 0.19, which meant a face resting at 0.16 travelled three
+       hundredths of an opacity and read as static while the wall around it
+       moved. */
+    opacity: var(--ivg-lit, 0.19);
+    transform: translate3d(0, -5px, 0) scale(1.03);
+  }
+  50%, 100% {
+    opacity: var(--ivg-base);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/*
+ * THE WHOLE WALL DRIFTS, very slowly, behind everything.
+ *
+ * Without it the only motion on the page is forty chips blinking on their
+ * own timers, which reads as noise rather than as a field. A single slow
+ * parallax under all of them turns the blinking into something happening
+ * ON a surface — and because it is one transform on one element, it costs
+ * nothing on top of the chips already animating.
+ *
+ * 90 seconds and under two percent of travel: at this size the movement
+ * should be something you notice only if you look for it.
+ */
+@keyframes ivg-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33%      { transform: translate3d(-1.6%, 0.9%, 0); }
+  66%      { transform: translate3d(1.2%, -1.3%, 0); }
+}
+
+/* ── the stack, in front ─────────────────────────────────────────────*/
+
+.ivg-plate {
+  position: absolute;
+  box-sizing: border-box;
+  left: 50%;
+  top: 50%;
+  width: var(--ivg-card-w);
+  height: var(--ivg-card-h);
+  margin-left: calc(var(--ivg-card-w) / -2);
+  margin-top: calc(var(--ivg-card-h) / -2);
+  border: 1px solid rgba(206, 240, 229, 0.16);
+  border-radius: 12px;
+  /* Opaque, and tinted to the ground rather than pure black: a plate that
+     is blacker than the room it is in reads as a hole cut in the page. */
+  background: rgba(4, 16, 15, 0.62);
+  will-change: transform, opacity;
+}
+
+/*
+ * The pool of light. Painted once and only ever scaled — an animated
+ * gradient repaints every frame on the main thread, a transform does not.
+ */
+.ivg-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  margin: -75% 0 0 -75%;
+  background: radial-gradient(
+    closest-side,
+    rgba(138, 226, 200, 0.13),
+    rgba(138, 226, 200, 0.04) 52%,
+    transparent 74%
+  );
+  will-change: transform;
+}
+
+@keyframes ivg-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+
+@keyframes ivg-recede {
+  0%, 100% { transform: translate3d(var(--ivg-dx), var(--ivg-dy), 0) scale(1); }
+  50%      { transform: translate3d(calc(var(--ivg-dx) * 1.55), calc(var(--ivg-dy) * 1.55), 0) scale(1.035); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ivg-root * {
+    animation: none !important;
+  }
+}
+
+/*
+ * ── NARROW WIDTHS ───────────────────────────────────────────────────
+ *
+ * Three things break below about 900px, and they compound:
+ *
+ *   THE CHIPS VANISH. Their size is in `vw` — which is what keeps the
+ *   packing honest, since widths are computed as a share of the frame —
+ *   but 13vw-at-1440 is 4px at 430. The wall was still there, rendering,
+ *   at a size nobody can see.
+ *
+ *   THE HALO IS SWALLOWED. It is sized off the root, and the card takes
+ *   almost the whole screen here, so the only part of the pool left
+ *   showing is its faintest outer edge.
+ *
+ *   THERE IS NO ROOM. The card is full width inside the page gutter, so
+ *   whatever survives has a few pixels at the sides and two bands above
+ *   and below to live in.
+ *
+ * THE FIX IS FEWER AND BIGGER, not smaller. Font size gets a floor, and
+ * because a floor breaks the packing — slots keep shrinking while the type
+ * stops — two chips in every three are dropped to make the room back. The
+ * survivors keep their positions, so the wall thins out rather than
+ * relaying out.
+ */
+/*
+ * A FACE: the same slot, none of the chip's chrome.
+ *
+ * No plate and no border, because the plate is what says "this is a value
+ * the product holds" and a face is not one. What is left is the ink, one
+ * step in from the chips toward the halo's own mint, so it reads as the
+ * lit part of the wall rather than as a second colour on it.
+ *
+ * `ivg-arm` still drives it, so a face arms on the same diagonal front as
+ * everything around it. It is part of the sweep, not an overlay on it.
+ */
+.ivg-face {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(138, 226, 200, 1);
+  /* Roughly the chips ratio of rest to lit, carried up: a face is the one
+     thing here that should visibly answer the front passing over it. */
+  --ivg-lit: 0.38;
+}
+
+@media (max-width: 900px) {
+  .ivg-chip {
+    /* The floor is the point. Everything else here exists to afford it. */
+    font-size: clamp(12px, 3.4vw, 17px) !important;
+    padding: 0.3em 0.6em;
+  }
+
+  /* Two in three dropped. `nth-child` rather than a different pack, so a
+     chip is in the same place at every width and only the density
+     changes.
+
+     `:not(.ivg-face)` because the faces are the part that still reads at
+     this size, and there are only about a dozen of them on the whole
+     wall: thinning those by two thirds would leave four. */
+  .ivg-chip:not(.ivg-face):not(:nth-child(3n + 1)) {
+    display: none;
+  }
+
+  /* Its own floor, well above the chips'. A face is drawn at 2.2x for a
+     reason, and clamping it to the chip's ceiling would undo that on the
+     one screen where it matters most. */
+  .ivg-face {
+    font-size: clamp(22px, 7vw, 38px) !important;
+  }
+
+  /* Brighter, because there is far less of it left to read. */
+  .ivg-chip {
+    --ivg-base: 0.13;
+  }
+
+  .ivg-halo {
+    /* Bigger and stronger: the card covers the middle of it here, so the
+       pool has to reach past the card's edges to show at all. */
+    width: 260%;
+    height: 200%;
+    margin: -100% 0 0 -130%;
+    background: radial-gradient(
+      closest-side,
+      rgba(138, 226, 200, 0.2),
+      rgba(138, 226, 200, 0.07) 50%,
+      transparent 76%
+    );
+  }
+}

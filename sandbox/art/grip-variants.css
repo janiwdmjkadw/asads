@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * SHEET 7 · THE GRIP ON A DOCKED SEAM
+ *
+ * Eight marks for the one place a snapped panel can be resized: the
+ * seam between it and the page.
+ *
+ * Each is drawn on a real seam rather than on a card — page ground on
+ * the left, panel ground on the right, the actual `--hairline` between
+ * them, at the sizes that ship. A grip judged on a swatch is judged
+ * against a contrast it will never have.
+ *
+ * Every tile shows the mark TWICE: at rest, and lit the way it looks
+ * under the pointer. Half of these say something completely different
+ * in the second state, and a grip that only works in one of them is not
+ * finished.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.gr {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.gr h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.gr p.gr-note {
+  margin: 0 0 20px;
+  max-width: 620px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.gr-rack { display: flex; flex-wrap: wrap; gap: 22px 18px; }
+
+.gr-tile { display: flex; flex-direction: column; gap: 8px; width: 236px; }
+
+.gr-cap { display: flex; align-items: baseline; gap: 6px; }
+.gr-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.gr-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+.gr-pair { display: flex; gap: 2px; }
+
+/* ── one seam ─────────────────────────────────────────────────────── */
+
+.gr-seam {
+  position: relative;
+  width: 117px;
+  height: 132px;
+  overflow: hidden;
+  /* Left half is the page, right half is the panel, and the line where
+     they meet is the seam a docked panel actually draws. */
+  /* The page side is a shade under `--surface-1` rather than level with
+     it. On the real trade page the two grounds are that close, which is
+     honest but leaves the seam invisible on a sheet whose whole subject
+     is the seam. Two points of separation, no more. */
+  background: linear-gradient(90deg, #0a0b0d 0 58px, var(--surface-1) 58px 100%);
+}
+
+.gr-seam::before {
+  content: '';
+  position: absolute;
+  left: 58px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--hairline);
+}
+
+.gr-seam > u {
+  position: absolute;
+  left: 6px;
+  bottom: 5px;
+  font-size: 9.5px;
+  font-style: normal;
+  text-decoration: none;
+  color: #43464d;
+}
+
+/* The strip is the hit area in the product; here it is only the box the
+   mark is centred in. 58 minus half of 15. */
+.g {
+  position: absolute;
+  left: 50.5px;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 130ms ease;
+}
+
+/* ── 1 · PLATE ─ what ships ──────────────────────────────────────── */
+
+.gr1 .g > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 46px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--ink-0) 10%, transparent);
+  background: var(--surface-3);
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/*
+ * Deliberately identical to rest. The plate that shipped has ONE state:
+ * the cursor already turns into a resize arrow over the strip, and once
+ * the drag starts the whole panel is moving with the hand, so a 10px tab
+ * changing shade is a flicker rather than information. The pair is left
+ * in place so this reads as a decision and not as a missing rule.
+ */
+.gr1[data-lit] .g > span {
+  border-color: color-mix(in srgb, var(--ink-0) 10%, transparent);
+  background: var(--surface-3);
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.gr1 .g svg { display: block; width: 4px; height: 18px; }
+
+/* ── 2 · DOTS ─ the first try, no housing ────────────────────────── */
+
+.gr2 .g { color: rgba(255, 255, 255, 0.24); }
+.gr2[data-lit] .g { color: rgba(255, 255, 255, 0.62); }
+.gr2 .g svg { display: block; width: 6px; height: 22px; }
+
+/* ── 3 · BAR ─ the scrollbar thumb read ─────────────────────────── */
+
+.gr3 .g > i {
+  width: 3px;
+  height: 44px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.gr3[data-lit] .g > i { background: rgba(255, 255, 255, 0.62); }
+
+/* ── 4 · NOTCH ─ the seam itself, thickened ─────────────────────── */
+
+/*
+ * Adds nothing. The hairline the panel already draws gets stronger for
+ * 60px at the middle, which is the one treatment here that cannot look
+ * bolted on: the thing you grab IS the line you were going to grab.
+ */
+.gr4 .g > i {
+  width: 2px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gr4[data-lit] .g > i { background: rgba(255, 255, 255, 0.75); }
+
+/* ── 5 · TAB ─ a pull on the page side ──────────────────────────── */
+
+/*
+ * Half a pill, flat against the panel and rounded into the page, so it
+ * reads as something sticking OUT of the panel rather than as a chip
+ * lying on the line. Sided: a left dock's tab rounds the other way.
+ */
+.gr5 .g {
+  justify-content: flex-start;
+  padding-left: 0.5px;
+}
+
+.gr5 .g > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7px;
+  height: 42px;
+  border-radius: 5px 0 0 5px;
+  background: color-mix(in srgb, var(--surface-3) 88%, var(--ink-0));
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.gr5[data-lit] .g > span {
+  background: color-mix(in srgb, var(--surface-3) 58%, var(--ink-0));
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.gr5 .g svg { display: block; width: 3px; height: 16px; }
+
+/* ── 6 · RUNG ─ ticks across the line ───────────────────────────── */
+
+.gr6 .g { flex-direction: column; gap: 5px; }
+
+.gr6 .g > i {
+  width: 11px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.gr6[data-lit] .g > i { background: rgba(255, 255, 255, 0.7); }
+
+/* ── 7 · ARROWS ─ says which way it goes ────────────────────────── */
+
+.gr7 .g { color: rgba(255, 255, 255, 0.26); }
+.gr7[data-lit] .g { color: rgba(255, 255, 255, 0.78); }
+.gr7 .g svg { display: block; width: 13px; height: 13px; }
+
+/* ── 8 · GHOST ─ nothing until you are on it ────────────────────── */
+
+/*
+ * The seam is clean until the pointer is in the strip, then the plate
+ * is simply there. It fades, it does not slide or grow — the target
+ * must not move under a pointer that is already on it.
+ *
+ * The cost is honest: a control nobody can see is a control nobody
+ * knows about, which is exactly the complaint that started this.
+ */
+.gr8 .g { opacity: 0; }
+.gr8[data-lit] .g { opacity: 1; }
+
+.gr8 .g > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 46px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--ink-0) 20%, transparent);
+  background: color-mix(in srgb, var(--surface-3) 70%, var(--ink-0));
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gr8 .g svg { display: block; width: 4px; height: 18px; }

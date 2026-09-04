@@ -1,0 +1,104 @@
+/* The hero's two families. Plain CSS, not `next/font`: nothing in this
+   page may depend on Next, and `next/font` is the one Next API with no
+   equivalent outside a Next app. Any React app gets these by shipping this
+   stylesheet and nothing else.
+
+   Must stay the FIRST rule in the file — a bare `@import` is only valid at
+   the top of a stylesheet. Self-host the two .woff2 files behind
+   `@font-face` if the request to fonts.googleapis.com is not acceptable;
+   still plain CSS, still no framework. */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap');
+
+/* Root font-size correction for the landing page.
+   The terminal's globals.css sets `html, body { font-size: 14px }`; the landing
+   design (and Tailwind's rem scale) is authored at a 16px root, so every rem
+   utility here would otherwise render at 0.875×. `:has()` scopes the rule to
+   the time a `.lp` tree is mounted, so it cannot leak into the terminal on
+   client-side navigation (a plain `html { … }` rule in this file would). */
+html:has(.lp) {
+  font-size: 16px;
+  /* globals.css also applies `zoom: var(--ui-scale, 1.18)` to <html> on
+     standard-density displays (max-resolution: 1.49dppx) for the terminal UI.
+     The landing is authored 1:1 — neutralise it while the landing is mounted,
+     otherwise px constants inflate 18% while %/vw values do not (distortion). */
+  zoom: 1;
+  /* The header nav and the footer links are in-page jumps between bands;
+     smooth is the designed behaviour, and `:has(.lp)` keeps it off every
+     other route. */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.lp) {
+    scroll-behavior: auto;
+  }
+}
+
+/* Landing page ("listen") design tokens — the arctic palette.
+   Scoped to the `.lp` wrapper on app/landing/layout.tsx so nothing here
+   can leak into the terminal's own themes. The Tailwind `lp-*` colour
+   namespace (tailwind.config.js) reads exactly these variables, so this
+   file is the single source of truth for the palette. */
+.lp {
+  /* Ground + ink */
+  --lp-ground: #000000;
+  --lp-ink-1: #f5f5f5;
+  --lp-ink-2: #9c9c9c;
+  --lp-ink-3: #6a6a6a;
+
+  /* Accent — MONO. There is no hue on this page. `--lp-accent` and
+     `--lp-mint` are the same white, which means the CTA gradient
+     (`bg-lp-cta`, accent → mint) resolves to a flat white fill wherever it
+     is used, and nothing has to be special-cased to stop it reading as a
+     gradient. Both tokens stay, and stay separate, so a two-stop palette
+     can come back by editing these two lines and nothing else.
+
+     The consequence, on purpose: hierarchy is now carried entirely by
+     weight, size and space. Nothing can be made important by colouring it. */
+  --lp-accent: #ffffff;
+  --lp-mint: #ffffff;
+  --lp-accent-ink: #000000;
+  --lp-hairline: rgba(245, 245, 245, 0.13);
+  /* The wash under a hovered control. Its own token because every hover in
+     the page chrome wants the same one, and hardcoding `white/6` in each
+     call site is how a palette quietly stops being a single source. */
+  --lp-hover: rgba(245, 245, 245, 0.07);
+
+  /* Light tiles — the same tiles, chroma removed. */
+  --lp-warm: #d8d8d8;
+  --lp-ice: #ededed;
+  --lp-tile-hairline: #bfbfbf;
+  --lp-dark-tile: #0a0a0a;
+  --lp-disclosure: #d9d9d9;
+  /* Footer ground. Was the owner's dark khaki (Paper "footer potential"
+     `ETX-1`) restated in display-p3; a neutral needs no wide-gamut
+     restatement, so the `@supports` block that used to follow this rule is
+     gone with it. Both the footer wrapper and the gem-smoke preset's
+     `back` read this token, so the pre-mount / reduced-motion ground still
+     matches whatever it is set to. */
+  --lp-footer-ground: #141414;
+  --lp-mint-band: #f2f2f2;
+
+  /* B3b mosaic ground — the owner's gradient (Paper `63S-1` desktop /
+     `7P4-1` mobile), kept in oklab with the chroma zeroed: mid grey to
+     black rather than mint to black. Same lightness stops as the original,
+     so the band's fade lands exactly where it was drawn to. Browsers
+     without oklab support drop the declaration and fall back to
+     `--lp-ground` underneath. */
+  --lp-mosaic-ground: linear-gradient(in oklab 180deg, oklab(70.1% 0 0) 0%, oklab(1.4% 0 0) 100%);
+
+  /* Layout — the desktop design anchor (Paper 1440 stack). Content is
+     capped here and centred; backgrounds stay full-bleed above it. */
+  --lp-container: 1440px;
+
+  /* app/layout.tsx exposes Geist as `--font-geist-sans`, while the
+     Tailwind `font-geist` family reads `--font-geist`. Alias it here
+     rather than editing the shared family, so the landing page gets
+     real Geist without touching any existing surface. */
+  --font-geist: var(--font-geist-sans);
+
+  /* The hero speaks in this; the rest of the page stays on Geist. A
+     neutral grotesk, not a display face — the headline of a trading
+     terminal has to read as institutional before it reads as designed. */
+  --font-instrument-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}

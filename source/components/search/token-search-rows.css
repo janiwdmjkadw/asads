@@ -1,0 +1,321 @@
+/*
+ * THE TOKEN SEARCH OVERLAY.
+ *
+ * ── WHY IT IS WHITE ──────────────────────────────────────────────────
+ *
+ * Every surface that hangs off the top bar has moved: the wallet
+ * dropdown, the deposit and withdraw sheets, the agent setup gate, the
+ * notifications panel and the account menu are all the Flash palette
+ * now. Search is the same class of thing. You open it, you find one
+ * token, it closes, and while it is open you are not reading the board
+ * behind it. A black overlay over a black board is also the one case
+ * where the panel has nothing but a shadow to say it is above the page.
+ *
+ * The palette, verbatim: #0B0E14 ink on #FFFFFF, #3E4A47 body, #8A9591
+ * quiet, #E8ECEA recessed, #E1E6E4 hairline, #D3DAD8 rim.
+ *
+ * ── THE INK SCALE IS REMAPPED, NOT CHASED ────────────────────────────
+ *
+ * The overlay's markup names `--ink-0…3` and `--hairline` in a hundred
+ * places. Redefining those five tokens on the panel root repaints all of
+ * it, and because they are defined ON the panel nothing outside it moves.
+ *
+ * ── TYPE ─────────────────────────────────────────────────────────────
+ *
+ * Figures are Geist Sans at tabular numerals. The contract tail is the
+ * one string read character by character, so it is the one monospaced
+ * thing here.
+ */
+
+.token-search-modal {
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+  --hairline: #e8ecea;
+  --hairline-2: #d3dad8;
+  --surface: #ffffff;
+  --input-bg: #f2f5f4;
+
+  /*
+   * The age on every row is `color: var(--up)` INLINE, so no selector can
+   * reach it, and #34d399 on white is under 2:1. The two market colours
+   * are redefined here to the palette's own settled and short, which is
+   * what the agent gate and the wallet sheets already use, and because
+   * they are defined on the panel the board keeps the greens it needs.
+   */
+  --up: #0f6d5f;
+  --down: #b4482e;
+
+  background: #ffffff !important;
+  color: var(--ink-2) !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 0 0 1px #d3dad8,
+    0 28px 90px #00000059 !important;
+}
+
+/* The dialog's own close control is drawn for a dark panel. */
+.token-search-modal > button[type='button']:last-child {
+  color: var(--ink-3) !important;
+  opacity: 1 !important;
+}
+
+.token-search-modal > button[type='button']:last-child:hover {
+  color: var(--ink-0) !important;
+}
+
+/* Blink paints an amber ring on anything focusable, and this panel is
+   nothing but focusable things. */
+.token-search-modal :focus,
+.token-search-modal :focus-visible {
+  outline: none !important;
+}
+
+/* ── the field ────────────────────────────────────────────────────── */
+
+/*
+ * One line, no box round it. It is the whole width of the panel and the
+ * only thing on its row, so a border would be a box inside a box. It is
+ * also FIRST now, which is why it can carry the largest type on the
+ * panel without competing with anything above it.
+ */
+.token-search-modal .tsm-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  /* The dialog's own close control is pinned to this corner, so the Esc
+     hint has to clear it rather than sit under it. */
+  padding: 0 46px 0 18px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-3);
+}
+
+.token-search-modal .tsm-field input {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 17px;
+  letter-spacing: -0.012em;
+  color: var(--ink-0);
+}
+
+.token-search-modal .tsm-field input::placeholder {
+  color: var(--ink-3);
+}
+
+.token-search-modal .tsm-pending {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.token-search-modal .tsm-esc {
+  flex: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--input-bg);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+/* ── the one control row ──────────────────────────────────────────── */
+
+.token-search-modal .tsm-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.token-search-modal .tsm-div {
+  flex: none;
+  width: 1px;
+  height: 15px;
+  background: var(--hairline-2);
+}
+
+/* Order lives at the far end of the same row that narrows the list.
+   The track is the palette's recessed grey rather than a 2% step off
+   white, because the chosen word is plated white and a white chip on an
+   almost white track is not a control, it is a rumour. */
+.token-search-modal .tsm-sort {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  border-radius: 8px;
+  background: #e8ecea;
+}
+
+.token-search-modal .tsm-sortbtn {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.004em;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background-color 160ms ease-in-out, color 160ms ease-in-out;
+}
+
+.token-search-modal .tsm-sortbtn:hover {
+  color: var(--ink-0);
+}
+
+.token-search-modal .tsm-sortbtn[data-on='true'] {
+  background: #ffffff;
+  font-weight: 600;
+  color: var(--ink-0);
+}
+
+/* ── the rows ─────────────────────────────────────────────────────── */
+
+/*
+ * The active row was a flat 6% white, which on this ground is nothing.
+ * It is the plate every other panel in this palette uses for the row
+ * under the pointer.
+ */
+.token-search-modal [data-row-index] {
+  background: transparent !important;
+}
+
+.token-search-modal [data-row-index]:hover,
+.token-search-modal [data-row-index][data-active='true'] {
+  background: #f2f5f4 !important;
+}
+
+/*
+ * THE TOKEN IS THE THING BEING FOUND.
+ *
+ * Its name shipped at 15px against 14px figures, which is barely a step
+ * on a list whose entire job is picking one token out of five.
+ */
+.token-search-modal [data-row-index] .text-\[15px\] {
+  font-size: 16px !important;
+  letter-spacing: -0.01em !important;
+}
+
+.token-search-modal [data-row-index] .text-\[11px\] {
+  font-size: 12px !important;
+}
+
+/* The contract tail is the one string read character by character. */
+.token-search-modal [data-row-index] [style*='--mono'] {
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+}
+
+/* ── the figures ──────────────────────────────────────────────────── */
+
+/*
+ * EVERY FIGURE IS INK, and emphasis is weight.
+ *
+ * Market cap carried a colour on the argument that it is the number
+ * being scanned, but the row already has the token art, a launchpad mark
+ * and a change figure competing. One more hue turns a list of five
+ * results into a paint chart.
+ */
+.token-search-modal .tsm-stat-v,
+.token-search-modal .tsm-stat-sub {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+  letter-spacing: -0.006em;
+}
+
+.token-search-modal .tsm-stat-v {
+  color: var(--ink-0);
+}
+
+.token-search-modal .tsm-stat-sub {
+  color: var(--ink-2);
+}
+
+/* MC, ATH, Vol, Fees, Liq. Abbreviations, so they keep their capitals;
+   they are not letter-tracked, because tracking is what the panel used
+   to do to every label on it. */
+.token-search-modal .tsm-stat-k {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+}
+
+.token-search-modal [data-row-index] .tabular-nums {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+}
+
+/* ── the caps that are left ───────────────────────────────────────── */
+
+/* The board's column head treatment, 9px letterspaced, was applied to
+   every quiet word in the overlay. Nothing on a dialog needs it. */
+.token-search-modal .text-\[9px\],
+.token-search-modal .text-\[11px\].uppercase {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0 !important;
+  color: var(--ink-3) !important;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * 10px each side, matching the settings panel and both popovers. The
+ * shipped rule is `w-[calc(100vw-2rem)]`, 16px a side, and in `vw`,
+ * which resolves against the layout viewport and fails silently under
+ * device emulation and inside embedded webviews.
+ */
+.token-search-modal.token-search-modal {
+  width: min(768px, calc(100% - 20px)) !important;
+  max-width: min(768px, calc(100% - 20px)) !important;
+}
+
+/* The control row is five chips and a three way sort. Below 640 it
+   stacks rather than squeezing the chips into initials. */
+@media (max-width: 640px) {
+  .token-search-modal .tsm-bar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .token-search-modal .tsm-sort {
+    margin-left: 0;
+  }
+
+  .token-search-modal .tsm-field {
+    height: 54px;
+    padding: 0 15px;
+  }
+
+  .token-search-modal .tsm-field input {
+    font-size: 16px;
+  }
+}
+
+/* The list scrollbar is drawn for a dark panel by the app's own rule. */
+.token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar {
+  width: 10px;
+}
+
+.token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar-thumb {
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  background: #cbd3d0;
+}
+
+.token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar-thumb:hover {
+  background: #b6bfbc;
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!--
+    HEAVEN — a halo.
+
+    The file that shipped for this pad was an app icon: a full bleed
+    square with its own background, 100% opaque, which is why it kept
+    turning the badge into a coloured tile. There is no mark inside it to
+    lift out, so this is a drawn one.
+
+    An ellipse rather than a circle, tilted a few degrees: a halo is a
+    ring seen from below, and a flat circle reads as a letter O. The
+    stroke is heavy enough to survive at 12px, which is the size this
+    actually renders at on a badge.
+  -->
+  <g transform="rotate(-8 64 64)">
+    <ellipse
+      cx="64"
+      cy="64"
+      rx="44"
+      ry="19"
+      fill="none"
+      stroke="#fb7185"
+      stroke-width="13"
+    />
+  </g>
+</svg>

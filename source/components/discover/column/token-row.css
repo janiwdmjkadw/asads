@@ -1,0 +1,1993 @@
+/*
+ * THE TOKEN ROW.
+ *
+ * Moved out of the `/whatever` sheet, unchanged. This file is the one
+ * copy: the sandbox column and the real Discover column both import it,
+ * so the surface being reviewed on the sheet is byte for byte the
+ * surface that ships.
+ *
+ * Sheet-only furniture — the mark grid, the fee and pill variant sheets,
+ * the buy-variant bands — stayed behind in `art.css`. None of it renders
+ * in the product.
+ */
+/*
+ * THE TOKEN ART BLOCK, COPIED. Mockup only — nothing in `source/` reads
+ * this file.
+ *
+ * ── MEASURED, NOT EYEBALLED ──────────────────────────────────────────
+ *
+ * Scanned off the reference crop. A horizontal slice through the middle
+ * of the art reads, left to right:
+ *
+ *   x=7   #17c671   the ring, ONE pixel
+ *   x=8   #131316   ground
+ *   x=9   #131316   ground
+ *   x=10  #131316   ground
+ *   x=11  the picture starts
+ *
+ * So the ring is a hairline belonging to a box a few pixels bigger than
+ * the picture, with the page's own ground showing between the two. The
+ * earlier pass had a 1.5px ring one pixel off the art, which read as a
+ * thick outline stuck to the image rather than a thin line held away
+ * from it.
+ *
+ * Scaled to the 44px art the board actually uses: 1px ring, 2px gap.
+ *
+ * `--pad` is the launchpad's colour and everything reads it. Nothing
+ * here hard codes a green or an orange.
+ *
+ * Rules: nothing underlined, no hover changes a colour, nothing moves on
+ * hover, no surface borrowed from a terminal.
+ */
+
+.ar {
+  /*
+   * 64, up from 44. The picture is the one thing on the row you
+   * recognise a token by before you have read anything, and at 44 it was
+   * smaller than the two words beside it.
+   */
+  /* 52, down from 64. The picture was the tallest thing on a row that
+     now carries three lines beside it. */
+  --ar-size: 52px;
+  /*
+   * 4, down from 6. Radius reads relative to the tile it is on, and the
+   * tile came down from 64 to 52 — the same 6px corner on a smaller
+   * square is a rounder square.
+   */
+  --ar-r: 4px;
+  /*
+   * DIVIDED BY THE BOARD'S ZOOM, and this is not decoration.
+   *
+   * The ring is padding on `.ar-box` — `gap + ring` on all four sides —
+   * and the board sets `zoom: 1.18` on the root. A flat 1px is 1.18
+   * device pixels after that, which cannot be drawn: each edge falls to
+   * whichever whole pixel it happens to land on, so the band comes out
+   * a pixel thinner on one or two sides. Whole CSS pixels did not fix
+   * it, because the zoom is what makes them fractional.
+   *
+   * Dividing first means 1px / 1.18 x 1.18 = exactly 1 device pixel on
+   * every edge. It is the same `calc(px / var(--ui-scale))` the column
+   * head already uses, for the same reason.
+   *
+   * The fallback of 1 is for `/whatever`, which has no zoom.
+   */
+  --ar-gap: calc(1px / var(--ui-scale, 1));
+  --ar-ring: calc(1px / var(--ui-scale, 1));
+  --pad: #55d491;
+  /* What the ring is painted with. A flat colour on a launchpad; the
+     component swaps in a gradient for graduated. */
+  --ring: var(--pad);
+  /* The one gold in the file. Both the ring and the mark read it, so
+     graduated is a single value rather than a set of matching ones. */
+  --gold: linear-gradient(135deg, #ae7b0e 0%, #efc10d 46%, #f7d770 62%, #b8830f 100%);
+  --ar-ground: #131316;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*
+   * 10, up from 7. The badge overhangs the bottom right corner by 5px,
+   * so the mint was sitting about two pixels under it and reading as
+   * part of the art rather than as a line of its own.
+   */
+  gap: 10px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/*
+ * ── THE RING IS A PAINTED BAND, NOT A SHADOW ─────────────────────────
+ *
+ * It used to be `box-shadow: 0 0 0 Npx <colour>`, which can only ever be
+ * a flat colour. Sampling the reference's graduated ring shows it is
+ * not: the left side reads #ae7b0e and the right #efc10d — a gradient
+ * across the ring, which is the whole reason it looks like metal rather
+ * than like a yellow outline.
+ *
+ * So the box carries the ring as its own BACKGROUND, with padding making
+ * the band, and the picture's shadow punching the ground coloured gap
+ * back out of the inside of it. `--ring` can then be any paint at all: a
+ * flat colour for a launchpad, a gradient for gold.
+ */
+.ar-box {
+  position: relative;
+  box-sizing: content-box;
+  width: var(--ar-size);
+  height: var(--ar-size);
+  flex-shrink: 0;
+  padding: calc(var(--ar-gap) + var(--ar-ring));
+  border-radius: calc(var(--ar-r) + var(--ar-gap) + var(--ar-ring));
+  background: var(--ring);
+}
+
+.ar-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: var(--ar-r);
+  object-fit: cover;
+  background: #23252b;
+  /* The gap: the page's ground laid back over the inner part of the
+     band, so what is left of the paint is exactly `--ar-ring` wide. */
+  box-shadow: 0 0 0 var(--ar-gap) var(--ar-ground);
+}
+
+/*
+ * ── THE BADGE: A RING, THE ROW'S GROUND, THEN THE MARK ───────────────
+ *
+ * Three layers and each one is doing a job:
+ *
+ *   the ring    `--ring`, the same paint as the picture's ring, so the
+ *               two marks on the block are one statement — and so the
+ *               gold gradient reaches both when the token graduates
+ *   the face    the ROW's own ground, not white and not the logo file's
+ *               background. The logo artwork had its background knocked
+ *               out to transparency so this is what shows behind it.
+ *   the mark    the launchpad's logo, or its gold silhouette
+ */
+.ar-pad {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  /*
+   * 24, up from 18.
+   *
+   * At 18 the mark inside was about 15px, and a launchpad logo is a
+   * piece of artwork with internal detail — a face, a word, a shape
+   * inside a shape. Fifteen pixels is not enough of it to tell one from
+   * another, which is the badge's only job. The graduated silhouette is
+   * worse off still, because flattening to one colour throws away
+   * whatever contrast was carrying the detail.
+   */
+  width: 17px;
+  height: 17px;
+  padding: 1.25px;
+  border-radius: 999px;
+  background: var(--ring);
+}
+
+.ar-pad-face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--ar-ground);
+}
+
+/*
+ * ── TWO KINDS OF ARTWORK, TWO TREATMENTS ─────────────────────────────
+ *
+ * A transparent MARK is inset, so it sits inside the ring with air
+ * around it. 68%, down from 76 and 92 before that.
+ */
+.ar-pad-face img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+  display: block;
+}
+
+/*
+ * ── NOTHING FILLS THE FACE ───────────────────────────────────────────
+ *
+ * `data-solid` used to make an app icon cover the whole face, on the
+ * argument that an icon is meant to be shown edge to edge. The result
+ * was that the badge's background became the icon's own background — an
+ * orange disc for Bonk, a pink square for Moonshot — and the row's
+ * ground never showed at all.
+ *
+ * So every logo is inset now, whatever it is. The badge's background is
+ * the row's ground in all fourteen, and an icon that carries its own
+ * plate simply draws that plate smaller, inside the face, instead of
+ * becoming the face.
+ */
+.ar-pad-face img[data-solid] {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+}
+
+/*
+ * ── GRADUATED: THE MARK IS TINTED GOLD, NOT MASKED ───────────────────
+ *
+ * The first attempt used `mask-image`: the logo's alpha as a shape, the
+ * gold gradient painted through it. That is a SILHOUETTE — every pixel
+ * inside the outline becomes the same colour, so a face, a word or a
+ * shape inside a shape all collapse into one blob. Half the pads became
+ * unidentifiable, and making the badge bigger did not help, because the
+ * detail was gone rather than small.
+ *
+ * A filter keeps the artwork's own light and dark and moves only its
+ * hue. `grayscale` first so the pad's own colour cannot fight the tint,
+ * `sepia` to put everything on one warm axis, then saturation and a
+ * small hue turn to land it on gold. The internal contrast survives, so
+ * the mark still reads as itself.
+ *
+ * This only works because the logos are transparent now: a filter tints
+ * every pixel it is given, so any background left in the file would have
+ * come out as a gold square.
+ */
+.ar-pad-face img[data-gold] {
+  /*
+   * ── TUNED OFF RED ────────────────────────────────────────────────
+   *
+   * Was `saturate(5.5) hue-rotate(-14deg)`, and it came out red on the
+   * darker marks — LaunchLab especially.
+   *
+   * `sepia` lands everything near 35 degrees, a brown gold. Multiplying
+   * saturation by 5.5 drives that straight past amber into orange red,
+   * and a NEGATIVE hue rotation then pushes it further the same way. The
+   * two were compounding.
+   *
+   * 3.2 keeps it short of that, and +12 degrees turns toward yellow
+   * rather than away from it. Brightness carries the dark marks up so
+   * they read as metal instead of rust.
+   */
+  filter: grayscale(1) sepia(1) saturate(3.2) hue-rotate(12deg) brightness(1.18) contrast(1.05);
+}
+
+/*
+ * ── THE ADDRESS IS NOT MONOSPACED ────────────────────────────────────
+ *
+ * It was Geist Mono, on the reflex that an address is code. It is not,
+ * here: this is eight characters with an ellipsis in the middle, sitting
+ * on its own under a picture. It is never compared column to column with
+ * the address above it, and nothing lines up with it — which is the only
+ * thing a monospace face buys.
+ *
+ * What it costs is the look. A mono face at 11.5px has wide, even
+ * letterfits and a mechanical rhythm that reads as a log line, and the
+ * board is full of them already.
+ *
+ * So it is the same Geist Sans as everything else, with tabular figures
+ * so the digits still hold their width, and a little tracking because a
+ * string with no words in it needs the characters separated to be read
+ * one at a time.
+ */
+.ar-mint {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  /*
+   * 11.5, up from 10. It is an address, so it is read character by
+   * character rather than as a word — the one string on the block that
+   * cannot be skimmed, and it was the smallest thing there.
+   */
+  font-size: 9.5px;
+  /* 600. An address is read character by character rather than skimmed,
+     and a mono face at regular weight goes thin at this size. */
+  font-weight: 600;
+  line-height: 1;
+  /* And a step up in contrast, for the same reason. */
+  color: #8b9099;
+  letter-spacing: 0.03em;
+}
+
+/* Sheet scaffolding, not a field on the row. */
+
+/* ══ GRADUATED ════════════════════════════════════════════════════════
+ *
+ * One rule, and it is the only one this state needs.
+ *
+ * A graduated token is off its launchpad's curve and on an open market,
+ * so the launchpad is history rather than status. Gold says that, and it
+ * says it the same way on every pad: `--pad` is what the picture's ring
+ * and the badge's ring both read, so re-pointing that one value turns
+ * both of them gold at once and nothing else in the block moves.
+ *
+ * Twelve other treatments were tried here — dashed rings, ticks, halos,
+ * dropped rings, squared corners. All deleted. They were twelve answers
+ * to a question that has one.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * THE CONTRACT ADDRESS DOES NOT GO GOLD.
+ *
+ * It was tinted with the ring on the argument that the two should match.
+ * Wrong: gold means graduated, and the address is the same address
+ * either way. Colouring it says the address changed when the state did.
+ * It stays grey in both.
+ */
+
+/*
+ * THE COLOUR IS NOT SET HERE. `--ring` is written as an inline style by
+ * the component,
+ * and an inline custom property beats one from a selector — so this rule
+ * would never apply. The gold lives in `kinds.ts` as `GRADUATED` and the
+ * component chooses between it and the pad's colour.
+ *
+ * The attribute stays as a hook for anything that wants to style the
+ * state without re-deciding the colour.
+ */
+
+/* ── the sheet's own furniture ────────────────────────────────────── */
+
+/* One cell per launchpad, each holding the pair. A pair is about 160px,
+   so 190 fits it with room and puts six or seven pads across a normal
+   window. */
+
+/*
+ * Ungraduated on the left of each pair, graduated on the right. The
+ * state has to be told apart from its own neighbour, not admired alone.
+ *
+ * A rule between the two pairs of a cell would be one more line on a
+ * sheet about lines; the 30px gap does the same job.
+ */
+
+/* ══ A ROW IN THE COLUMN ═══════════════════════════════════════════════
+ *
+ * NO BACKGROUND. Not a plate, not a tint, not a hover fill. The only
+ * thing separating one row from the next is a hairline along the bottom
+ * — which means the column reads as one surface with rows written on it
+ * rather than as a stack of cards.
+ *
+ * The art block's own gap colour has to follow that: the ring is held
+ * off the picture by a band of the ground, and with no row plate the
+ * ground IS the column's.
+ * ══════════════════════════════════════════════════════════════════ */
+
+/*
+ * 560, up from 430.
+ *
+ * 430 is what a column gets when three of them share a 1280 window, and
+ * it is the width the head was tuned against. A wider sheet is not a
+ * different design — the head still has to survive 430 — but the row is
+ * being drawn now, and judging what goes beside the art at the tightest
+ * width first means every decision is made under duress.
+ *
+ * So the sheet is 560: a column on a 1700 window, or two lanes instead
+ * of three. Whatever lands here still has to be checked at 430 before it
+ * ships.
+ */
+.arc-wrap {
+  width: 100%;
+}
+
+/* The column is a fixed sheet here rather than a viewport filling panel,
+   so the head sits at its natural height and the rows run under it. */
+.arc-wrap .cl {
+  height: auto;
+}
+
+.arc-wrap .cl-list {
+  flex: none;
+  gap: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+/*
+ * ── ALIGNED TO THE TOP, NOT CENTRED ──────────────────────────────────
+ *
+ * The art block is taller than the identity beside it, because it
+ * carries the address under the picture. Centring put the ticker halfway
+ * down the row, floating against nothing, and left the top of the row
+ * empty on every line.
+ *
+ * At the top it starts on the picture's own first line, which is where
+ * the eye lands, and the space that is left over collects at the bottom
+ * where the rest of the row will go.
+ */
+/*
+ * TALLER than it was — 13px of padding against 10. At 10 the row was
+ * tighter than the three lines of content it holds, which is what made
+ * it feel small rather than dense.
+ */
+.arc-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 13px 12px;
+  border-bottom: 1px solid #2a2a2e;
+}
+
+.arc-row:last-child {
+  border-bottom: 0;
+}
+
+/* The address is centred under the picture, not aligned to its left
+   edge — it is a caption belonging to the art, and the art is the only
+   thing on the row for it to sit under. */
+.arc-row .ar {
+  align-items: center;
+  gap: 7px;
+}
+
+/* ══ THE TICKER AND THE NAME ═══════════════════════════════════════════
+ *
+ * The one field that has to be read before anything else on the row.
+ * Six treatments, one per column on the sheet.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* The two lines beside the art. */
+.arc-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 12px;
+  /*
+   * No top padding. The ticker's line box starts at the same y as the
+   * picture beside it, so the row's first line and the art share an
+   * edge — 2px of padding here left the name sitting low against a
+   * block it is supposed to be level with.
+   */
+  padding-top: 0;
+}
+
+.arc-id {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.arc-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+/*
+ * ── THE AGE BAND ─────────────────────────────────────────────────────
+ *
+ *   under 30 minutes   green
+ *   30 to 60 minutes   orange
+ *   over an hour       red
+ *
+ * A lighter red than the board's `--down`: this is not a loss, it is an
+ * age past its window, and the full red is spoken for by figures that
+ * mean something has gone wrong.
+ */
+.arc-age {
+  flex-shrink: 0;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* 13. It carries a colour band, so it is read rather than skimmed, and
+     at 11.5 it was the smallest thing on a line it leads. */
+  font-size: 11.5px;
+  /* 500. It carries a colour band, and a colour is already emphasis —
+     doing it twice is what made it shout. */
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.arc-age[data-tier='fresh'] { color: #34d399; }
+.arc-age[data-tier='aging'] { color: #ff9f45; }
+.arc-age[data-tier='old'] { color: #ff8a8a; }
+
+.arc-ticker {
+  flex-shrink: 0;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 12px;
+  /*
+   * ── EVERYTHING ON THE ROW CAME DOWN A WEIGHT ─────────────────────
+   *
+   * The ticker, the age and both figures were all at 600 to 650. Four
+   * bold things on one row is four things shouting, and when everything
+   * is emphasised nothing is — the row read as heavy rather than as
+   * having a hierarchy.
+   *
+   * The ticker keeps the MOST weight of the four, because it is what the
+   * row is, but 550 is enough to lead them.
+   */
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/*
+ * The name TRUNCATES and the ticker does not.
+ *
+ * `min-width: 0` because a flex item will not shrink below its content
+ * without it, so a long name would push the row wider instead of
+ * ellipsing. "Dynamic Bonding Curve" is on the sheet for exactly this.
+ */
+.arc-name {
+  min-width: 0;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10.5px;
+  color: #8b9099;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arc-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-self: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #6e7178;
+  cursor: pointer;
+}
+
+/* ══ VOLUME AND MARKET CAP ═════════════════════════════════════════════
+ *
+ * Top right, on the ticker's own line, so the row reads across: what it
+ * is on the left, what it is worth on the right.
+ *
+ * ── WHY THE COLUMN HAS A FIXED MEASURE ───────────────────────────────
+ *
+ * `min-width` in `ch` on tabular figures: every row's numbers start at
+ * the same x, so scanning a lane for the biggest market cap is a glance
+ * down one edge rather than a search. Without it `$0.8` and `$2.56M`
+ * would each sit wherever their own width put them.
+ * ══════════════════════════════════════════════════════════════════ */
+
+/*
+ * Two LINES now, not one row: volume and market cap together, fees
+ * under them. Right aligned, because the block sits at the right edge
+ * of the row and a ragged right edge on numbers is unreadable down a
+ * column.
+ */
+.arc-money {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-end;
+  gap: 3px;
+  padding-top: 2px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.arc-money-line {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.arc-money-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/*
+ * ── THE MARKET CAP TIER ──────────────────────────────────────────────
+ *
+ *   under 20K    blue
+ *   20K to 100K  gold
+ *   over 100K    green
+ *
+ * Volume takes none of it. It is a rate, and a rate has no good or bad
+ * value — the size of the token is the thing being judged, so the colour
+ * goes on the market cap alone.
+ *
+ * And 600 while volume stays at 500. The two figures sit side by side in
+ * the same shape, so weight is what separates the one being judged from
+ * the one being reported.
+ */
+.arc-fig[data-tier] {
+  font-weight: 600;
+}
+
+/* A lighter blue: #4a9eff sat at the same weight as the white beside it
+   and read as a second ink rather than a signal. */
+.arc-fig[data-tier='low'] { color: #6fb6ff; }
+
+/* Yellow, not the metal gold. #e4b514 is the graduated ring's colour and
+   it is brown next to white type at this size; this is the same hue
+   pushed up in lightness and saturation so it reads as a band on a
+   figure rather than as the metal on the art. It also stops the two
+   golds on a row being the same colour. */
+.arc-fig[data-tier='mid'] { color: #ffd23f; }
+.arc-fig[data-tier='high'] { color: #34d399; }
+
+/* The key is the quietest thing in the pair: it never changes, so it is
+   read once and then ignored. */
+.arc-key {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #6e7178;
+}
+
+.arc-fig {
+  font-size: 12px;
+  /* Volume stays at 500. */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #e9ebef;
+}
+
+/* ══ THE CHILLI ════════════════════════════════════════════════════════
+ *
+ * Three states in the same three colours the age uses, because a row
+ * that speaks in green, orange and red should not have two different
+ * greens on it. The leaf carries no number, so the colour IS the value
+ * and it is the only thing that has to read at 13px.
+ *
+ * The mark is filled, not stroked: a 1.9px outline on a 13px leaf closes
+ * up into a blob and the colour goes with it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-leaf {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  cursor: pointer;
+  /*
+   * ── HOVER DIMS IT ────────────────────────────────────────────────
+   *
+   * Opacity, not colour. The mark's colour IS its value — green, orange
+   * or red — so tinting it on hover would say the value changed. Fading
+   * it says the same thing about state that a colour change would, and
+   * says nothing about the reading.
+   *
+   * It also means one rule covers all three states instead of three
+   * hover colours to keep in step with three resting ones.
+   */
+  transition: opacity 130ms ease;
+}
+
+.arc-leaf:hover {
+  opacity: 0.5;
+}
+
+.arc-leaf[data-tier='good'] { color: #34d399; }
+.arc-leaf[data-tier='warn'] { color: #ff9f45; }
+.arc-leaf[data-tier='bad'] { color: #ff8a8a; }
+
+/* ══ A STAT ON THE META LINE ═══════════════════════════════════════════
+ *
+ * Three of them render now: searches, holders, and the dev's record.
+ *
+ * An icon and a number, and the pair reads as one thing: the gap between
+ * them is smaller than the gap to whatever is next, or the icon looks
+ * like it belongs to the field on its left.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-stat {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #9aa0aa;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+/* The mark is a step quieter than its own figure: the number is what is
+   read, the icon only says which number it is. */
+/*
+ * The stat marks are the SAME SIZE as every other mark on this line.
+ *
+ * They were dropped to 11.5 to sit closer to their figures, and that
+ * was the wrong fix: the leaf, the protocol and the socials beside them
+ * are 15.5, so two shrunken marks in the middle of the line read as a
+ * different set that had wandered in. A mark's neighbours set its size,
+ * not the number next to it.
+ *
+ * The alignment problem they were meant to solve is handled by
+ * `align-items: center` on the stat itself.
+ */
+.arc-stat svg {
+  width: 14px;
+  height: 14px;
+  color: #6e7178;
+  flex-shrink: 0;
+}
+
+/*
+ * The dev's record is the smallest thing on the line.
+ *
+ * It is a PAIR — graduated over shipped — so it carries two figures and
+ * a slash where every other stat carries one number. At the same size
+ * it was the widest and loudest mark on a line where it is the least
+ * urgent: a holder count changes what you do now, a dev's history is
+ * background.
+ */
+.arc-stat.is-gold {
+  font-size: 9.5px;
+}
+
+.arc-stat.is-gold svg {
+  width: 13px;
+  height: 13px;
+}
+
+.arc-stat:hover {
+  opacity: 0.5;
+}
+
+/*
+ * A stat with no figure — the magnifier, which is an action rather than
+ * a count. It drops the gap it would have left for a number, so it sits
+ * at the same spacing as the plain glyphs before it instead of looking
+ * like a stat whose figure failed to load.
+ */
+.arc-stat.is-bare {
+  gap: 0;
+}
+
+/* ══ THE QUOTE BADGE ═══════════════════════════════════════════════════
+ *
+ * The token this pair is bought with, when it is not SOL.
+ *
+ * ROUND, AND CROPPED TO IT. Three of the four are round marks already;
+ * the fourth is a rectangular poster, and left square beside them it was
+ * the odd one on every row it appeared. `object-fit: cover` inside a
+ * round mask takes the middle of the poster, which is where the mark in
+ * it is.
+ *
+ * A ring rather than a border: a 1px border eats into a 15px image and
+ * the artwork loses its own edge. An inset shadow sits on top instead.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-quote {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-left: 2px;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.arc-quote img {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  object-fit: cover;
+  /*
+   * ── THE CROP IS OFF CENTRE ───────────────────────────────────────
+   *
+   * Three of these are round marks and land wherever they are cropped.
+   * The fourth is a poster, and its middle is a torso: at 15px that is
+   * a dark disc with nothing in it. 22% down puts the face and the top
+   * of the gold in the circle instead.
+   *
+   * It still does not READ as the poster at this size, and it is not
+   * supposed to. The badge's job is to be told apart from the other
+   * three — blue disc, gold coin, dark with a pale figure — and the tip
+   * on hover is what names it.
+   */
+  object-position: 50% 22%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.arc-quote:hover {
+  opacity: 0.6;
+}
+
+/* ══ THE TIP ═══════════════════════════════════════════════════════════
+ *
+ * Three of these marks do not say what they are. A magnifier with no
+ * figure could be search or zoom; a crown could be the dev, a top
+ * holder, or a rank. The figure beside it does not settle it either —
+ * `7 / 297` is only obvious once you already know.
+ *
+ * NOT `title`. The native tooltip waits about a second, paints in the
+ * OS's own chrome on a black board, and cannot be seen at all on a
+ * touch screen. This one is instant, quiet, and made of the same
+ * materials as everything else on the sheet.
+ *
+ * Drawn from `data-tip` rather than a component: it is one rule for
+ * every mark that wants one, and the mark stays a span.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ANY mark on a row can have one. The selector was a list of the two
+ * classes that wanted tips, and every new mark meant adding a third
+ * name to it in two places — which is how the platform mark ended up
+ * on the native `title` instead, with a second tooltip style on the
+ * same line.
+ */
+.arc-row [data-tip] {
+  position: relative;
+}
+
+.arc-row [data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: #202024;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: #ffffff;
+  /* Hidden rather than absent, so it is not laid out on every hover and
+     the row does not have to reflow to show it. */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.arc-row [data-tip]:hover::after {
+  opacity: 1;
+}
+
+/*
+ * The tip stays white even on the gold mark. The bubble is chrome — it
+ * says what the thing IS — and gold on it would read as part of the
+ * value rather than as a label for it.
+ */
+/*
+ * The tip stays white on every coloured mark — the gold crown, the pink
+ * charity heart, all of them. The bubble is chrome: it says what the
+ * thing IS, and tinting it would read as part of the value rather than
+ * as a label for it.
+ */
+.arc-row [data-tip]::after {
+  color: #ffffff;
+}
+
+/* The mark keeps its own dim-on-hover, but not while the tip is up:
+   fading the thing you are pointing at to explain it is backwards. */
+.arc-row [data-tip]:hover {
+  opacity: 1;
+}
+
+/*
+ * ── THE DEV IS THE ONE COLOURED STAT ─────────────────────────────────
+ *
+ * Gold, and the same gold the graduated ring uses, because it is the
+ * same fact: this dev has taken tokens all the way. The other two stats
+ * stay grey — a searches count and a holder count are context, and if
+ * all three were coloured none of them would be the one worth looking at.
+ *
+ * The crown takes the colour too rather than staying a step quieter like
+ * the grey marks do. It is a solid shape, and a dimmed solid at 17.5px
+ * stops reading as gold at all — it just looks like a grey blob.
+ */
+.arc-stat.is-gold,
+.arc-stat.is-gold svg {
+  color: #e8b33d;
+}
+
+/* The slash is the quietest thing in the pair: it is punctuation between
+   two figures, not a third one. */
+.arc-of {
+  margin: 0 1px;
+  opacity: 0.45;
+}
+
+/* ══ THE PERSON ════════════════════════════════════════════════════════
+ *
+ * A plain outlined user, stroked at the same weight as the leaf, because
+ * two marks on one line drawn differently read as two systems.
+ *
+ * It takes the same blue as the low market cap band. One blue on the
+ * row, not two that nearly match.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-user {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  color: #6fb6ff;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.arc-user:hover {
+  opacity: 0.5;
+}
+
+/* ══ THE WEBSITE ═══════════════════════════════════════════════════════
+ *
+ * Grey, not blue. The user beside it is blue because it counts something
+ * — the website either exists or it does not, and a link that is present
+ * on nearly every row should not be the loudest thing on the line.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-web {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  color: #8b9099;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.arc-web:hover {
+  opacity: 0.5;
+}
+
+/*
+ * ── THE PLATFORM MARK ON THE ROW ─────────────────────────────────────
+ *
+ * The SAME GREY as the socials it sits with. It was white, and being
+ * the one white mark on a line of greys made it the loudest thing
+ * there — which is backwards, because it is also the most predictable:
+ * every token has a launchpad, so it is on every row, and a mark that
+ * is always present should never be the one that catches the eye.
+ *
+ * The socials' grey rather than the stats' grey, because it is a link
+ * and it closes the group of links. Everything past it is a number.
+ *
+ * Same 17.5px box as every other mark on the line, so the lane reads as
+ * one set even though this one is a logo rather than an icon.
+ */
+.arc-plat {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 15.5px;
+  height: 15.5px;
+  color: #8b9099;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.arc-plat:hover {
+  opacity: 0.5;
+}
+
+
+/*
+ * The Solana mark sits between the key and the figure, carrying the
+ * unit. 10.5px against the 11px type beside it, and nudged down a
+ * hair: a square mark aligned to a baseline sits high, because the
+ * baseline is where letters END and the mark's own centre is not.
+ */
+.arc-sol {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  transform: translateY(1px);
+}
+
+/*
+ * ── THE ATTRIBUTES ───────────────────────────────────────────────────
+ *
+ * Cashback, charity, fee sharing, boost. Coloured, where every other
+ * mark on this line is grey.
+ *
+ * That inverts the rule the platform mark follows, for the same reason
+ * behind it: the platform is on every row, so it should never catch the
+ * eye; these are on a few, and a mark that is rare is exactly the one
+ * worth catching it. If most rows carried them they would all go grey.
+ *
+ * 15.5px rather than 17.5. Two of them are the app's own icons and are
+ * drawn heavier than this set, and matching the box would make them
+ * read heavier than the line they sit in.
+ */
+.arc-attr {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.arc-attr:hover {
+  opacity: 0.5;
+}
+
+/* Green for money coming back, pink for giving it away — the pink is
+   the shade the shipped charity icon already uses. */
+.arc-attr.is-cash { color: #34d399; }
+.arc-attr.is-give { color: #ec4899; }
+.arc-attr.is-fees { color: #6fb6ff; }
+.arc-attr.is-boost { color: #a78bfa; }
+
+.arc-pop {
+  position: absolute;
+  right: -10px;
+  bottom: 100%;
+  z-index: 40;
+  /*
+   * PADDING, not margin. The panel has to be reachable with the
+   * pointer, and a real gap between the mark and the panel closes it
+   * the moment you leave the mark to cross that gap.
+   */
+  padding-bottom: 9px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity 130ms ease, transform 130ms ease;
+}
+
+.arc-attr.has-pop:hover .arc-pop {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* The mark keeps its own dim-on-hover, but not while the panel is up:
+   fading the thing you are pointing at to explain it is backwards. */
+.arc-attr.has-pop:hover {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE THIRD LINE — WHO HOLDS IT
+ *
+ * Top ten, dev, snipers, insiders, bundles, then Dex paid and boost
+ * when a token has them.
+ *
+ * ── SAMPLED, NOT CHOSEN ──────────────────────────────────────────────
+ *
+ * Every value here was read off the reference, because two passes chose
+ * their own and neither looked like it:
+ *
+ *   fill        none          the pill is the row's own ground
+ *   edge        #292a2c       one hairline, the only drawn thing
+ *   radius      999           a capsule, not a 6px rounded rect
+ *   red         #cb5f5f
+ *   green       #4aa856
+ *   dev blue    #778ad6
+ *   boost gold  #c7ac0d
+ *   trailing    white at 72%  the age and the hours are NOT dim grey
+ *
+ * THE PLATE IS GONE. The first version washed it white at 5%, the
+ * second filled it #232327, and the reference fills nothing — a
+ * hairline capsule sitting on the row. That is the whole difference
+ * between a light line of readings and a row of buttons.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ONE LINE, ALWAYS. `nowrap`, because seven pills wrapping to a second
+ * line makes the row two different heights depending on how many a
+ * token happens to have, and a column of rows that change height
+ * cannot be scanned.
+ *
+ * They fit by being TIGHT, not by being moved. 10px type, a 3px gap,
+ * and the two Dex Screener pills carry the owl and a duration with no
+ * word between them — at 11px with "Paid" and "Boost" spelled out,
+ * seven pills measured 458px against 336 of line.
+ *
+ * The line stays INSIDE the body, under the meta line. It was lifted
+ * out to a band of its own to win width and that was the wrong trade:
+ * the width came at the cost of the row's structure.
+ *
+ * It fits at a readable size because the COLUMN grew instead. Seven
+ * pills at 11.5px measure about 430px, which is roughly what the
+ * reference's six take — the pills were never too big, the column was
+ * too narrow for them.
+ */
+.arc-pills {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+  padding-top: 7px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.arc-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 2px 5px 2px 4px;
+  border: 1px solid #292a2c;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 600;
+  color: #4aa856;
+  cursor: pointer;
+  transition: border-color 130ms ease;
+}
+
+.arc-pill:hover {
+  border-color: #3a3b3f;
+}
+
+.arc-pill[data-tier='bad'] {
+  color: #cb5f5f;
+}
+
+/*
+ * The dev is BLUE — not white, not on the green-to-red scale. It is the
+ * one pill on this line about a PERSON rather than a proportion, and a
+ * hue of its own is what keeps it from reading as a verdict scored the
+ * same way as the five around it.
+ */
+.arc-pill[data-tier='none'] {
+  color: #778ad6;
+}
+
+/* Dex Screener's gold. Boost is the only pill here that is bought
+   rather than measured, so it stays off the scale entirely. */
+.arc-pill[data-tier='boost'] {
+  color: #c7ac0d;
+}
+
+/*
+ * The trailing figure — the dev's age, the boost's hours, how long
+ * since the listing was paid — is WHITE. It was dimmed to 42% on the
+ * argument that it is the second half of one reading; in the reference
+ * it is the brightest thing in its pill, because it is the half that is
+ * a plain fact about time rather than a colour-coded score.
+ */
+.arc-pill-sub {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.arc-pill-dot {
+  color: currentColor;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * QUICK BUY
+ *
+ * BOTTOM RIGHT of the row in all three, absolutely placed. It is the
+ * only control here and it always lives in the same corner — a buy
+ * button that moves between rows is one you have to find before you
+ * can press it.
+ *
+ * ── THE PLATE IS THE VARIANT ─────────────────────────────────────────
+ *
+ * The first cut made the plate hover-only for all three, and the three
+ * columns came out identical at rest: small and large differ by
+ * padding, and padding is invisible with nothing drawn around it.
+ *
+ * The crops settle it. Small is a 90x24 plate and large a 180x48 one,
+ * both with near-black on green, both sitting there — the plate is not
+ * a hover state, it is the button. What the row screenshot shows with
+ * no plate is a fourth thing, and it is not one of the three asked for.
+ *
+ * ── IT IS THE BRIGHT GREEN, NOT THE DARK ONE ─────────────────────────
+ *
+ * Filled #86efac with a BLACK label — the same green the row already
+ * uses for its own figures, at full strength.
+ *
+ * The first cut used #284733, the muted green from the hover crops, and
+ * that is the wrong half of the pair: a dark plate with dark text is a
+ * button that has to be found. This is the one control on the row and
+ * it should be the brightest thing on it.
+ *
+ *   rest    #86efac fill, #000 label
+ *   hover   #a7f3c4 — lifts, because there is no darker left to go
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-row {
+  position: relative;
+}
+
+/*
+ * `.arc-row .arc-buy`, not `.arc-buy`. The tooltip rule is
+ * `.arc-row [data-tip] { position: relative }` and this button carries
+ * a tip, so two selectors beat one — the offsets applied while the
+ * positioning did not, and it sat wherever the flow left it.
+ */
+.arc-row .arc-buy {
+  position: absolute;
+  right: 12px;
+  bottom: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 999px;
+  background: #86efac;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition:
+    background 130ms ease,
+    transform 130ms ease;
+}
+
+/*
+ * Hover lifts rather than darkens. The button is already the brightest
+ * thing on the row, so the only direction left that still reads as
+ * "pressed" is further up.
+ */
+.arc-row .arc-buy:hover {
+  background: #a7f3c4;
+}
+
+/* ── ultra: a quarter of the row, on hover ──────────────────────── */
+
+/*
+ * ULTRA IS A ZONE, NOT A REPLACEMENT.
+ *
+ * The first cut filled the right quarter with #86efac and centred a
+ * black label in it, which covers the market cap — the reference does
+ * the opposite. There, hovering lifts the right quarter a step in tone
+ * and everything already in it stays exactly where it was and stays
+ * readable: V, MC, F and the green label all sit ON the panel.
+ *
+ * So the panel is a surface arriving under the numbers, not a door
+ * closing over them. The label stays green in its corner and never
+ * moves, because the thing you are about to click should not jump the
+ * moment you point at it.
+ *
+ * NO BLUR. It was asked for and the reference does not have it — the
+ * figures on that panel are sharp. Blurring the one part of the row
+ * that carries the price, at the moment you reach for the buy button,
+ * is backwards.
+ */
+[data-buy='ultra'] .arc-row .arc-buy {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 25%;
+  height: auto;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0 12px 13px 0;
+  border-radius: 0;
+  background: transparent;
+  /*
+   * WHITE on ultra, where the small and large buttons are green.
+   *
+   * Those two are a filled control — the green IS the button, and its
+   * label sits on it. Ultra has no fill at rest: the label is loose on
+   * the row, and green loose on the row is the same value the pills and
+   * the age already use, so it read as one more reading rather than as
+   * the thing you press.
+   */
+  color: #ffffff;
+  font-size: 11px;
+  transition: background 170ms ease, box-shadow 170ms ease;
+}
+
+/*
+ * The panel sits UNDER the row's own content — z-index 1 against the
+ * money block's normal flow — so the tint arrives behind the figures
+ * rather than on top of them. That is the whole trick.
+ */
+[data-buy='ultra'] .arc-row .arc-money,
+[data-buy='ultra'] .arc-row .arc-body,
+[data-buy='ultra'] .arc-row .ar {
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * The money block sits ON the panel, so it was eating every pointer
+ * event aimed at the right quarter — the zone looked hoverable and did
+ * nothing, because the figures on top of it took the hover first.
+ *
+ * It has no interactions of its own, so it passes them through. The
+ * whole quarter is the target now, which is the point of ultra: you
+ * reach for the corner of the row, not for a label inside it.
+ */
+[data-buy='ultra'] .arc-row .arc-money {
+  pointer-events: none;
+}
+
+/*
+ * THE PANEL LIGHTS FOR ITS OWN HOVER, NOT THE ROW'S.
+ *
+ * It used to tint whenever the pointer was anywhere on the row, which
+ * made the right quarter the brightest thing on a row you were only
+ * passing over — and by the time you reached the panel it was already
+ * lit, so arriving on it said nothing.
+ *
+ * The row still lifts as a whole; that is what says "clickable". This
+ * says "this part buys", and it should only say it when you are on it.
+ */
+[data-buy='ultra'] .arc-row .arc-buy:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * WHAT A LINE CAN HOLD
+ *
+ * The meta line stops at five marks and the stat line at four pills.
+ *
+ * Not for tidiness — for FIT. The row wants about 600px with everything
+ * on, and a Discover column is 632px at 1920 and far less below that.
+ * Past those counts the lines ran into the market cap and the buy
+ * button, which is worse than showing fewer of them.
+ *
+ * They are cut by position rather than by kind, and the render order is
+ * fixed, so what survives is always the same first five and first four
+ * — a row never drops a mark another row kept.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * Six, up from five.
+ *
+ * The line leads with time, currency, leaf and protocol — four marks
+ * about the token itself — so a cap of five left one slot for
+ * everything after them, and the cashback, charity and fee-sharing
+ * marks were cut before they were ever seen.
+ *
+ * Seven was tried first and overflowed by 128px on the busiest row.
+ * Six is what the column actually holds.
+ */
+.arc-meta > :nth-child(n + 7) {
+  display: none;
+}
+
+/*
+ * Except these two. The cap counts positions, and holders and dev
+ * migrations sit last by design — so the rule that trims a long line
+ * was trimming exactly the two marks that are on every row.
+ */
+.arc-meta > .arc-stat:not(.is-bare) {
+  display: inline-flex !important;
+}
+
+/*
+ * Three by position, plus the two exempt Dex pills — five at most.
+ * Four plus the pair came to six and ran the line over by 72px.
+ */
+.arc-pills > :nth-child(n + 4) {
+  display: none;
+}
+
+/*
+ * Except the two Dex Screener pills. They sit last because they are the
+ * only ones on the line that are not a measurement — paid and boosted
+ * are things a team DID — and the cap counts positions, so last meant
+ * never shown. Order says where they sit; this says they are there.
+ */
+.arc-pills > .arc-pill.is-dex {
+  display: inline-flex !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * EVEN BORDERS, INCLUDING GRADUATED
+ *
+ * The ring is a painted band: `.ar-box` carries the pad colour and pads
+ * itself by gap + ring on all four sides, so the band is even by
+ * construction. What was NOT even is the picture inside it — token
+ * artwork is rarely square, and anything but `cover` letterboxes it,
+ * which reads as more border on two sides than on the other two.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ar-img {
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+/*
+ * The pad badge draws the TRACED mark, not the artwork.
+ *
+ * `currentColor` off `--pad` makes graduated a colour change and
+ * nothing else: the same drawing goes gold. The bitmap it replaces
+ * needed a grayscale-sepia-saturate-hue-rotate stack to fake gold out
+ * of a full colour image, and a filter cannot know which pixels are the
+ * mark — which is why gold Bonk came out as an orange smear.
+ */
+.ar-pad-mark {
+  display: block;
+  width: 74%;
+  height: 74%;
+  color: var(--pad);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WHOLE ROW IS A TARGET
+ *
+ * A row goes to the token's page, so it takes the pointer cursor and it
+ * lifts a step in tone under it — the same wash the ultra panel uses,
+ * at half the strength.
+ *
+ * HALF, not the same. The row and the panel are both live at once when
+ * you are in the right quarter, and if they lifted by the same amount
+ * the panel would vanish into the row exactly when it matters. The row
+ * says "this is clickable"; the panel says "this part buys".
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-row {
+  cursor: pointer;
+  transition: background 130ms ease;
+}
+
+.arc-row:hover {
+  background: rgba(255, 255, 255, 0.022);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE ROW SHRINKS WITH ITS COLUMN
+ *
+ * A full row wants about 600px. That is fine at 1920 with three columns
+ * (632 each) and fine again under 1200 where one column gets the lot —
+ * but a 600px window leaves it nothing, and the line ran into the
+ * market cap.
+ *
+ * ── IT ASKS THE COLUMN, NOT THE WINDOW ───────────────────────────────
+ *
+ * `@container`, not `@media`. The same 1000px window is three 320px
+ * columns or one 1000px column depending on the breakpoint above, so
+ * viewport width does not tell a row how much room it has. Its own
+ * column does.
+ *
+ * ── THE NUMBERS ARE PRE-ZOOM ─────────────────────────────────────────
+ *
+ * The board sets `zoom: 1.18` on the root, and a container query
+ * resolves in the container's OWN coordinate space — before that zoom.
+ * So a column that measures 630px on screen reports 526 to the query.
+ *
+ * That is what made the first cut wrong twice. At 600 the step fired on
+ * every column of the wide board, because 630 device pixels of column
+ * reports as 526. The numbers here are the reported ones: 480 and 400,
+ * which are about 566 and 472 on screen.
+ *
+ * ── TWO STEPS, AND THE SECOND ONE DROPS THINGS ───────────────────────
+ *
+ * The first step just makes everything smaller. The second stops
+ * pretending it fits: the marks come down to three and the pills to
+ * three, because past a point the honest move is to show fewer of them
+ * rather than to keep shaving type until none of it is readable.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.cl-list {
+  container-type: inline-size;
+  container-name: tokencol;
+}
+
+@container tokencol (max-width: 480px) {
+  .arc-row {
+    padding: 10px;
+  }
+
+  .ar {
+    --ar-size: 44px;
+  }
+
+  .arc-ticker {
+    font-size: 11px;
+  }
+
+  .arc-name {
+    font-size: 9.5px;
+  }
+
+  .ar-mint {
+    font-size: 8.5px;
+  }
+
+  .arc-meta {
+    gap: 6px;
+  }
+
+  .arc-fig {
+    font-size: 10px;
+  }
+
+  .arc-key {
+    font-size: 8px;
+  }
+
+  .arc-pill {
+    padding: 2px 5px 2px 4px;
+    font-size: 9px;
+  }
+
+  .arc-row .arc-buy {
+    font-size: 10px;
+  }
+}
+
+@container tokencol (max-width: 400px) {
+  .ar {
+    --ar-size: 38px;
+  }
+
+  .arc-ticker {
+    font-size: 10.5px;
+  }
+
+  /* Fewer marks rather than smaller ones. Below this the line cannot
+     hold five of anything at a size worth reading. */
+  .arc-meta > :nth-child(n + 4) {
+    display: none;
+  }
+
+  .arc-pills > :nth-child(n + 4) {
+    display: none;
+  }
+
+  /*
+   * Three pills still ran over by 40px on the widest row — the dev's
+   * "42% 8m" and the snipers' "14 · 14%" each carry two figures, so
+   * three pills is not three short ones. They tighten as well as thin
+   * out.
+   */
+  .arc-pills {
+    gap: 2px;
+  }
+
+  .arc-pill {
+    gap: 2.5px;
+    padding: 2px 4px 2px 3px;
+    font-size: 8px;
+  }
+
+  .arc-pill svg {
+    width: 9px;
+    height: 9px;
+  }
+
+  /*
+   * The trailing figure goes. "42% 8m" and "14 · 14%" are two readings
+   * in one pill, and at this width the row cannot afford the second —
+   * the percentage is the one that decides anything.
+   */
+  .arc-pill-sub,
+  .arc-pill-dot {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FEE PANEL, FLOATING
+ *
+ * Portalled to the body and positioned `fixed`, because the mark that
+ * opens it lives inside `.cl-list` — `overflow: auto` and a size
+ * container, with four more clipping ancestors above it. Anchored in
+ * the row, a panel taller than the row was cut off and scrolled away
+ * while it was open.
+ *
+ * Anchored by its RIGHT edge to the mark's, opening leftwards and
+ * upwards: these marks sit near the end of the line, and a 264px panel
+ * centred on a 15px one hangs off the column.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.fp-float {
+  position: fixed;
+  z-index: 90;
+  /*
+   * PADDING, not margin. The pointer has to cross from the mark to the
+   * panel, and a real gap between them is a strip where it is on
+   * neither — which closes the panel exactly as you reach for it.
+   */
+  padding: 0 6px 10px 0;
+  transform: translate(-100%, -100%);
+  animation: fp-in 130ms ease both;
+}
+
+@keyframes fp-in {
+  from {
+    opacity: 0;
+    transform: translate(-100%, calc(-100% + 3px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-100%, -100%);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FEE AUTHORITY PANEL
+ *
+ * These rules were left behind in the sandbox sheet when the row was
+ * moved into the product — the split routed everything matching `.fp`
+ * to the sheet, and the panel is `.fp`. So the popover rendered in
+ * Discover with no styling at all.
+ *
+ * Only the sheet FURNITURE stayed behind: `.fp-sheet`, `.fp-col` and
+ * `.fp-label` are the grid of states under the column and render
+ * nowhere else.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FEE PANEL
+ *
+ * The layout that was already here, in the product's own colours.
+ * Values from `groups-popover-v2.css`, which is where this product
+ * settled the question:
+ *
+ *   ground   #111111        a step UP in tone from a near-black board,
+ *                           equal channels so the lift is tone and not
+ *                           a colour cast
+ *   edge     white at 12%
+ *   radius   10px
+ *   shadow   a long drop plus a faint outer glow, so the panel reads as
+ *            raised rather than as a hole cut in the board
+ *   ink      white for what matters on a line, 55% for its context,
+ *            #4b4f5b for what is inert
+ *
+ * The structure is untouched — title, authority, a centred status band
+ * between two rules, a SHARES label, a row per recipient. Only the
+ * palette moved.
+ *
+ * These rules serve BOTH the hover panel on a row and the sheet of
+ * states under the column, so the two cannot drift.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.fp {
+  display: flex;
+  flex-direction: column;
+  width: 264px;
+  padding: 12px 13px 7px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow:
+    0 24px 80px #0000008c,
+    0 0 60px #ffffff0a;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  text-align: left;
+}
+
+.fp-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  padding-bottom: 10px;
+}
+
+/* ── the authority ──────────────────────────────────────────────── */
+
+/*
+ * The row keeps its container, and the container gets quieter: a step
+ * DOWN from the panel's own ground with an 8% edge, where it used to be
+ * a lighter plate with an inset hairline. A raised panel holding a
+ * recessed field is the right way round — the field is where the value
+ * sits, not another surface stacked on top.
+ */
+.fp-addr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border-radius: 8px;
+  background: #0c0c0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fp-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.fp-ca {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * The copy control shows nothing at rest and lifts when the pointer is
+ * on its row. There is no plate under it — a ground here would be the
+ * one plate in a panel built on not having any.
+ */
+.fp-copy {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: #4b4f5b;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.fp-addr:hover .fp-copy,
+.fp-share:hover .fp-copy {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.fp-copy:hover {
+  color: #ffffff !important;
+}
+
+.fp-copy.sm {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── the status band ────────────────────────────────────────────── */
+
+.fp-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 12px;
+  padding: 12px 0 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/*
+ * The one place colour is spent. Locked or not is the only fact in this
+ * panel that changes what every figure below it means, and an unlocked
+ * authority is a warning — so red is the default and green is earned.
+ */
+.fp-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ff8a8a;
+}
+
+.fp-band[data-locked] .fp-lock {
+  color: #34d399;
+}
+
+.fp-sub {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #4b4f5b;
+}
+
+/* ── the shares ─────────────────────────────────────────────────── */
+
+.fp-sec {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4b4f5b;
+  padding: 12px 0 3px;
+}
+
+.fp-share {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+/*
+ * Round for a person, square for an organisation. The shape carries the
+ * distinction on its own, so the two hues that used to carry it as well
+ * — pink for a charity, grey for a person — are gone. One ground, one
+ * ink, at the panel's context weight.
+ */
+.fp-av {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.fp-av[data-org] {
+  border-radius: 7px;
+}
+
+.fp-who {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 1px;
+}
+
+.fp-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fp-addr2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4b4f5b;
+}
+
+.fp-amt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 1px;
+}
+
+/*
+ * The percentage is the TERM — agreed, and it does not move. The SOL is
+ * how much has landed so far, which is context for it, so it sits back.
+ *
+ * It was green. A settled amount is not good news, it is just an
+ * amount, and green on it competed with the one green in this panel
+ * that means something.
+ */
+.fp-pct {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.fp-sol {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+/* ═══════════════════════════════════════════════════════════════════
+ * QUICK BUY, AS CHOSEN IN THE PALETTE
+ *
+ * Colour and corner arrive as custom properties on the root; size
+ * arrives as `data-buy` on the column, because `ultra` is a different
+ * arrangement rather than a bigger chip and a layout is not a value.
+ *
+ * Every rule below FALLS BACK to what shipped, so the button is right
+ * before anything has been chosen and stays right in a private window
+ * where the choice cannot be read back.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * `background-color`, not `background`.
+ *
+ * A `var()` inside a SHORTHAND cannot be resolved when the sheet is
+ * parsed, so the whole shorthand is held as a pending substitution — and
+ * if anything about it fails to resolve, every background sub-property
+ * falls back to its initial value, which for the colour is transparent.
+ * That is exactly what happened: the radius and the text colour from
+ * this same rule applied and the fill did not.
+ *
+ * The longhand takes the variable directly and has nothing to reset.
+ */
+.arc-row .arc-buy {
+  border-radius: var(--buy-radius, 999px);
+  background-color: var(--buy-bg, #86efac);
+  color: var(--buy-fg, #000000);
+}
+
+/* ── small: the chip ────────────────────────────────────────────── */
+
+[data-buy='small'] .arc-row .arc-buy {
+  top: auto;
+  right: 12px;
+  bottom: 13px;
+  width: auto;
+  min-width: 90px;
+  height: 24px;
+  padding: 0 10px;
+  font-size: 12px;
+  transform: none;
+}
+
+/* ── medium: the same control, more of it ───────────────────────── */
+
+[data-buy='medium'] .arc-row .arc-buy {
+  top: auto;
+  right: 12px;
+  bottom: 13px;
+  width: auto;
+  min-width: 144px;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+  transform: none;
+}
+
+/*
+ * Ultra keeps its own ground. It is a panel, and a panel filled with
+ * the button's colour is a block painted over the market cap — the
+ * whole point of that arrangement is that the figures stay readable
+ * underneath. Only the LABEL takes the chosen foreground.
+ */
+[data-buy='ultra'] .arc-row .arc-buy {
+  background-color: transparent;
+  color: var(--buy-fg, #ffffff);
+  border-radius: 0;
+}
+
+[data-buy='ultra'] .arc-row .arc-buy:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* The blur layer only belongs to ultra. */
+[data-buy='small'] .arc-row::after,
+[data-buy='medium'] .arc-row::after {
+  content: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE BOLT SITS ON THE LABEL, NOT ON THE PANEL
+ *
+ * The bolt and "0 SOL" used to be two flex children of the button, so
+ * the button's own `align-items` decided where each of them went. In
+ * ultra that is `flex-end`, because the button IS the panel and the
+ * control has to sit on its floor — which aligned the icon's box and
+ * the text's box to that floor separately. The two boxes are not the
+ * same height, so the bolt ended up about 2.5px below the middle of the
+ * label it belongs to.
+ *
+ * They are one span now. The button places the span; the span aligns
+ * its own two pieces. That is one job each, and it holds in all three
+ * sizes rather than only in the two that centre.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.arc-row .arc-buy-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  /*
+   * `1` so the label's box is its own type and nothing else. A line box
+   * carries the font's leading split above and below the text, and
+   * centring the icon against THAT is centring it against whitespace —
+   * which is how a bolt that looks low can measure as perfectly centred.
+   */
+  line-height: 1;
+}
+
+/*
+ * No optical nudge on the bolt.
+ *
+ * One looked obviously necessary — "0 SOL" is digits and caps with no
+ * descenders, so its ink sits high in the box and an icon centred on the
+ * box should read low. Measured against the label's real ink, with the
+ * baseline probed and the glyph extents read from the font, the gap is
+ * about a third of a pixel. The correction I first wrote was a twelfth
+ * of an em and it moved the bolt visibly too high — measuring it is what
+ * caught that, since both versions look centred in a screenshot.
+ *
+ * So the fix was the wrapper and nothing else. `line-height: 1` is what
+ * makes centring mean centring here, and the leftover is a sixth of a
+ * pixel.
+ */
+.arc-row .arc-buy-in > svg {
+  flex-shrink: 0;
+}
+
+/* The amount is one token: it never wraps between the figure and its
+   unit, whatever the panel's width does. */
+.arc-row .arc-buy-amt {
+  white-space: nowrap;
+}

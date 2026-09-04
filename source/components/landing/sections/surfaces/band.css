@@ -1,0 +1,24 @@
+/*
+ * THE BAND'S ONE KEYFRAME.
+ *
+ * `motion-safe:animate-[surfacein_...]` in Surfaces.tsx names this.
+ * Tailwind will generate the animation shorthand from an arbitrary value
+ * but it cannot invent the keyframes behind it, so without this the class
+ * resolves to an animation with no definition and every step simply
+ * appears with no entrance. It fails silently, which is why it is written
+ * down rather than left to be rediscovered.
+ *
+ * The band also stops stepping entirely under reduced motion, so this
+ * only ever plays for somebody who has not asked for less of it.
+ */
+
+@keyframes surfacein {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

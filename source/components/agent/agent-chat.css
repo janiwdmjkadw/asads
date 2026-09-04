@@ -1,0 +1,1240 @@
+/* ══════════════════════════════════════════════════════════════════
+   Agent chat — liquid glass surface + streaming choreography
+   ------------------------------------------------------------------
+   One namespace (`ag-`) shared by the floating window and the
+   full-page view, so both read as the same material.
+
+   Material rules:
+   - ONE blurred pane per surface (the window shell). Nested rows use
+     gradients + specular edges instead: the window floats over live
+     charts and feeds, and every extra backdrop-filter region re-blurs
+     whenever that backdrop repaints.
+   - The pane stays substantially opaque. Legibility of a streaming
+     answer must never depend on what happens to be behind it.
+   - Depth comes from three coordinated layers: a top specular edge
+     (light catching the rim), a body gradient (the glass itself), and
+     a soft floor shadow (the pane's distance from the page).
+
+   Motion rules: entrances are short and directional (6px rise, no
+   bounce); "working" states breathe rather than spin; everything is
+   transform/opacity only, and everything stops under
+   prefers-reduced-motion.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── the pane ───────────────────────────────────────────────────── */
+
+.ag-glass {
+  /* Three background layers, top to bottom:
+     1. film grain — the detail that separates real glass from a CSS
+        gradient. Grayscale turbulence at soft-light, so it textures the
+        surface without tinting it.
+     2. aurora — a wide accent bloom hanging off the top edge, which is
+        what gives the pane somewhere to BE rather than a flat plate.
+     3. the body gradient.
+     All static: depth here costs one paint, never a frame. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E"),
+    radial-gradient(
+      130% 70% at 50% -12%,
+      color-mix(in srgb, var(--accent-primary) 13%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(
+      168deg,
+      color-mix(in srgb, var(--surface-2) 92%, transparent) 0%,
+      color-mix(in srgb, var(--surface-1) 94%, transparent) 42%,
+      color-mix(in srgb, var(--surface) 96%, transparent) 100%
+    );
+  background-size: 160px 160px, auto, auto;
+  background-blend-mode: soft-light, normal, normal;
+  -webkit-backdrop-filter: blur(26px) saturate(1.45);
+  backdrop-filter: blur(26px) saturate(1.45);
+  border-color: rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 28px 70px -20px rgba(0, 0, 0, 0.72);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .ag-glass { background: var(--surface-1); }
+}
+
+/* Accent filament along the very top rim — the surface reads "lit". */
+.ag-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent-primary) 55%, transparent) 22%,
+    color-mix(in srgb, var(--accent-secondary) 45%, transparent) 58%,
+    transparent
+  );
+  opacity: 0.55;
+  z-index: 1;
+}
+
+/* Header: a shade lighter than the body, so the pane has a "cap". */
+.ag-header {
+  /* Positioned: the scroll-edge fade hangs off this box's bottom. */
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.012)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* The scroll edge: content fades out as it passes beneath the header
+   rather than being guillotined by it. Hangs BELOW the header, ignores
+   the pointer, and is one static gradient. */
+.ag-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -20px;
+  height: 20px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-1) 82%, transparent),
+    transparent
+  );
+}
+
+/* Header icon buttons — glass on hover instead of a flat wash. */
+.ag-iconbtn {
+  border-radius: 9px;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 200ms ease,
+    transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ag-iconbtn:hover {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 4px 12px -6px rgba(0, 0, 0, 0.7);
+}
+.ag-iconbtn:active { transform: scale(0.94); }
+
+/* ── turn entrances ─────────────────────────────────────────────── */
+
+@keyframes ag-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.ag-turn { animation: ag-rise 260ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Popover (mentions): the composer's material, floated. */
+.ag-pop {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--surface-2) 88%, transparent),
+    color-mix(in srgb, var(--surface-1) 92%, transparent)
+  );
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 20px 44px -14px rgba(0, 0, 0, 0.75);
+}
+.ag-pop-row { transition: background 130ms ease; }
+.ag-pop-row:hover { background: rgba(255, 255, 255, 0.04); }
+/* Keyboard selection is the LOUDER state: it is the row Enter will
+   take, so it gets the accent wash and a spine, not just a grey fill. */
+.ag-pop-row[data-active='true'] {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-primary) 15%, transparent),
+    color-mix(in srgb, var(--accent-primary) 4%, transparent)
+  );
+}
+.ag-pop-row[data-active='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+}
+
+/* Turn actions (copy / retry): quiet until reached for. */
+.ag-action {
+  border-radius: 8px;
+  transition: background 150ms ease, color 150ms ease, transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ag-action:hover {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.ag-action:active { transform: scale(0.92); }
+
+/* User bubble: accent-tinted glass, lit from the top-left. The corner
+   nearest the composer is tightened — the bubble points back at where
+   it was typed, which is what stops a chat from reading as a stack of
+   identical rounded rectangles. */
+.ag-bubble {
+  border-radius: 14px 14px 5px 14px;
+  background: linear-gradient(
+    158deg,
+    color-mix(in srgb, var(--accent-primary) 16%, rgba(255, 255, 255, 0.05)) 0%,
+    color-mix(in srgb, var(--accent-primary) 7%, rgba(255, 255, 255, 0.02)) 52%,
+    color-mix(in srgb, var(--accent-secondary) 5%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, rgba(255, 255, 255, 0.07));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 20px -14px rgba(0, 0, 0, 0.8);
+}
+
+/* ── the working orb (streaming / posting indicator) ────────────── */
+
+@keyframes ag-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.95; }
+  50%      { transform: scale(1.14); opacity: 1; }
+}
+@keyframes ag-halo {
+  0%   { transform: scale(0.7); opacity: 0.55; }
+  70%  { opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+.ag-orb {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(140deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+  animation: ag-breathe 2s ease-in-out infinite;
+}
+/* Expanding ring — the "listening" pulse leaving the orb. */
+.ag-orb::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 70%, transparent);
+  animation: ag-halo 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* ── activity group (tool calls + reasoning) ────────────────────── */
+
+.ag-activity {
+  /* Positioned: the running border ring is an ::after inset on this box. */
+  position: relative;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.055) 0%,
+    rgba(255, 255, 255, 0.018) 55%,
+    rgba(255, 255, 255, 0.008) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.085);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 26px -20px rgba(0, 0, 0, 0.8);
+  transition: border-color 220ms ease, box-shadow 260ms ease;
+}
+/* While the turn works the card itself is faintly lit from within. */
+.ag-activity[data-running='true'] {
+  border-color: color-mix(in srgb, var(--accent-primary) 26%, rgba(255, 255, 255, 0.08));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 0 24px -10px color-mix(in srgb, var(--accent-primary) 55%, transparent),
+    0 10px 26px -20px rgba(0, 0, 0, 0.8);
+}
+
+/* Node rows fade up as the trace grows. */
+.ag-node { animation: ag-rise 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* A finished node's dot lands with a spring + one-shot ring flash. */
+@keyframes ag-land {
+  0%   { transform: scale(0.3); opacity: 0; }
+  60%  { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes ag-flash {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 55%, transparent); }
+  100% { box-shadow: 0 0 0 7px transparent; }
+}
+.ag-dot-done {
+  animation:
+    ag-land 320ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    ag-flash 620ms ease-out both;
+}
+/* A running node's dot breathes with its own halo (same language as
+   the working orb, one size down). */
+.ag-dot-running { animation: ag-breathe 1.6s ease-in-out infinite; }
+.ag-dot-running::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 60%, transparent);
+  animation: ag-halo 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Disclosure: animate the interior open on a grid row instead of a
+   height guess, so any trace length expands smoothly. */
+.ag-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ag-reveal > * { overflow: hidden; min-height: 0; }
+.ag-reveal[data-open='true'] { grid-template-rows: 1fr; }
+
+/* Key/value payload panel inside a node. */
+.ag-kv {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ── composer ───────────────────────────────────────────────────── */
+
+.ag-composer {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 22px -18px rgba(0, 0, 0, 0.9);
+  transition: border-color 200ms ease, box-shadow 260ms ease;
+  /* Positioned: the streaming light rides this box's base edge. */
+  position: relative;
+}
+.ag-composer:focus-within {
+  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(255, 255, 255, 0.1));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 0 0 3px color-mix(in srgb, var(--accent-primary) 12%, transparent),
+    0 8px 22px -18px rgba(0, 0, 0, 0.9);
+}
+
+/* Send: liquid accent key. Specular top edge + accent bloom beneath. */
+.ag-send {
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, #ffffff 28%, var(--accent-primary)),
+    var(--accent-primary) 55%,
+    var(--accent-secondary)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 6px 16px -8px color-mix(in srgb, var(--accent-primary) 85%, transparent);
+  transition:
+    filter 160ms ease,
+    box-shadow 220ms ease,
+    transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ag-send:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 8px 22px -8px color-mix(in srgb, var(--accent-primary) 95%, transparent);
+}
+.ag-send:active:not(:disabled) { transform: scale(0.93); }
+.ag-send:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Stop button: the one control that should read "interruptible". */
+.ag-stop {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transition: border-color 160ms ease, color 160ms ease, transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ag-stop:hover {
+  border-color: color-mix(in srgb, var(--down) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 18px -8px color-mix(in srgb, var(--down) 80%, transparent);
+}
+.ag-stop:active { transform: scale(0.93); }
+
+/* ── suggestion chips ───────────────────────────────────────────── */
+
+.ag-chip {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 220ms ease;
+  animation: ag-rise 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.ag-chip:nth-child(2) { animation-delay: 60ms; }
+.ag-chip:nth-child(3) { animation-delay: 120ms; }
+.ag-chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(255, 255, 255, 0.1)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 20px -8px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+}
+
+
+/* ── the snake board ────────────────────────────────────────────────
+   16 cells on the ring share ONE keyframe; a cell's place in the chain
+   is its negative animation-delay (AgentSnake.tsx). Only opacity and
+   transform animate, so the board rides the compositor. The head's
+   glow is free — every cell carries a box-shadow in its own color, and
+   opacity scales that shadow, so only the bright head throws light.
+
+   Snake length is 6 of 16 cells: the tail reaches board level at
+   6/16 = 37.5% of the cycle. */
+
+.ag-board {
+  display: grid;
+  gap: var(--ag-gap);
+  padding: calc(var(--ag-gap) * 1.5);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.022);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.ag-cell {
+  width: var(--ag-cell);
+  height: var(--ag-cell);
+  border-radius: 1px;
+  /* Board level: the unlit grid, visible enough to read as a playfield. */
+  background: var(--ink-1);
+  opacity: 0.09;
+}
+.ag-cell--track,
+.ag-cell--food {
+  opacity: 0.1;
+  animation-duration: var(--ag-cycle);
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+  /* Deliberately no `will-change`: opacity/transform animations are
+     auto-composited, and promoting 16 three-pixel cells to their own
+     layers costs more memory than it ever saves in paint. */
+}
+/* The body advances cell to cell — `steps(1, end)` per segment keeps
+   the movement CRISP like the game's grid, instead of smearing between
+   cells the way a linear ease would. */
+.ag-cell--track {
+  background: var(--accent-primary);
+  box-shadow: 0 0 5px var(--accent-primary);
+  animation-name: ag-snake-body;
+}
+@keyframes ag-snake-body {
+  0%     { opacity: 1;    transform: scale(1.18); }  /* head */
+  6.25%  { opacity: 0.85; transform: scale(1); }     /* neck */
+  12.5%  { opacity: 0.62; transform: scale(1); }
+  18.75% { opacity: 0.45; transform: scale(0.96); }
+  25%    { opacity: 0.3;  transform: scale(0.92); }
+  31.25% { opacity: 0.19; transform: scale(0.88); }  /* tail */
+  37.5%  { opacity: 0.1;  transform: scale(1); }     /* board again */
+  100%   { opacity: 0.1;  transform: scale(1); }
+}
+/* Food: waits on the ring, is swallowed exactly as the head lands on
+   it (phase 0 — same delay math as the body), then respawns. */
+.ag-cell--food {
+  background: var(--accent-secondary);
+  box-shadow: 0 0 6px var(--accent-secondary);
+  animation-name: ag-snake-food;
+  animation-timing-function: ease-out;
+}
+@keyframes ag-snake-food {
+  0%   { opacity: 1;    transform: scale(2); }      /* swallowed */
+  7%   { opacity: 0;    transform: scale(0.5); }
+  45%  { opacity: 0;    transform: scale(0.5); }    /* gone */
+  55%  { opacity: 0.9;  transform: scale(1); }      /* respawn */
+  70%  { opacity: 0.55; transform: scale(0.94); }
+  85%  { opacity: 0.9;  transform: scale(1); }      /* waiting, breathing */
+  100% { opacity: 0.9;  transform: scale(1); }
+}
+
+/* Border snake: a single arc of light travelling the card's rim while
+   the turn works. The ring is a masked 1px inset, so the light rides
+   the border itself rather than washing the card.
+
+   `@property` makes the angle interpolable; without it (older engines)
+   the ring simply renders static — a quiet gradient rim, never broken.
+   Scoped to [data-running='true'] so a settled thread animates NOTHING. */
+@property --ag-ang {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes ag-ring-turn {
+  to { --ag-ang: 360deg; }
+}
+.ag-activity[data-running='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--ag-ang),
+    transparent 0deg 232deg,
+    color-mix(in srgb, var(--accent-primary) 70%, transparent) 300deg,
+    var(--accent-secondary) 340deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ag-ring-turn 3s linear infinite;
+}
+/* Composer, while a run streams: the same light crosses its base edge,
+   so the place you type stays visibly connected to the work upstream. */
+@keyframes ag-underline {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.ag-composer[data-streaming='true']::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent-primary) 80%, transparent),
+    transparent
+  );
+  animation: ag-underline 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* ── jump-to-latest ─────────────────────────────────────────────── */
+
+.ag-jump {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  backdrop-filter: blur(12px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 8px 20px -10px rgba(0, 0, 0, 0.8);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
+}
+.ag-jump:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 22px -8px color-mix(in srgb, var(--accent-primary) 75%, transparent);
+}
+
+/* ── the greeting ───────────────────────────────────────────────── */
+
+.ag-hello { animation: ag-rise 380ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+/* A small lit diamond, echoing the window's identity mark. */
+.ag-hello-mark {
+  display: block;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  rotate: 45deg;
+  border-radius: 1.5px;
+  background: linear-gradient(140deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent-primary) 60%, transparent);
+}
+
+/* ── openers (empty state) ──────────────────────────────────────── */
+
+.ag-openers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ag-opener {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 11px;
+  text-align: left;
+  cursor: pointer;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.014));
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease;
+  animation: ag-rise 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.ag-opener:nth-child(2) { animation-delay: 70ms; }
+.ag-opener:nth-child(3) { animation-delay: 140ms; }
+.ag-opener:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent-primary) 32%, rgba(255, 255, 255, 0.08));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--accent-primary) 11%, rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.02)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 26px -10px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+}
+/* The glyph sits in its own lit well, so the card has a focal point
+   at the size where a title alone would read as a plain list row. */
+.ag-opener-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  color: var(--accent-primary);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--accent-primary) 22%, transparent),
+    color-mix(in srgb, var(--accent-secondary) 8%, transparent)
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: box-shadow 240ms ease;
+}
+.ag-opener:hover .ag-opener-glyph {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 16px -4px color-mix(in srgb, var(--accent-primary) 75%, transparent);
+}
+.ag-opener-title {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: var(--ink-0);
+}
+.ag-opener-sub {
+  display: block;
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+
+/* ── conversation list (full-page view) ─────────────────────────── */
+
+.ag-convo-item {
+  position: relative;
+  transition: background 160ms ease, color 160ms ease;
+}
+/* Active thread carries an accent spine rather than a filled block —
+   the list stays calm while still saying which one you are reading. */
+.ag-convo-item[data-active='true'] {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-primary) 12%, transparent), transparent);
+}
+.ag-convo-item[data-active='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent-primary) 60%, transparent);
+}
+
+/* ── streaming caret ────────────────────────────────────────────── */
+
+@keyframes ag-caret {
+  0%, 45%  { opacity: 1; }
+  70%, 100% { opacity: 0.18; }
+}
+
+/* ── reduced motion ─────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-turn,
+  .ag-node,
+  .ag-chip,
+  .ag-dot-done,
+  .ag-dot-running,
+  .ag-dot-running::after,
+  .ag-orb,
+  .ag-orb::after,
+  .ag-cell--track,
+  .ag-cell--food,
+  .ag-activity[data-running='true']::after,
+  .ag-composer[data-streaming='true']::after,
+  .ag-hello,
+  .ag-opener {
+    animation: none;
+  }
+  .ag-reveal { transition: none; }
+  /* Static board: the snake still reads as a lit chain, it just does
+     not travel. Cells keep their painted colour from the classes. */
+  .ag-cell--track { opacity: 0.5; }
+  .ag-cell--food { opacity: 0.9; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SOREN SKIN — emitted ONLY under `soren-chat-surface`
+   ------------------------------------------------------------------
+   Every rule below is reached exclusively through the `ag-soren-*`
+   classes / `data-soren` attribute the flag-on components emit
+   (lib/flags/useSorenChat.ts), so the flag-off surface above is
+   untouched. Nothing here is shared with the classic skin.
+
+   Two rules govern the whole section:
+   - NO `backdrop-filter`, anywhere. The window opens over live charts
+     and every blurred region re-blurs whenever its backdrop repaints;
+     the panel is opaque instead ("window open costs ~0 FPS").
+   - Chrome is STATIC paint — no transition, no animation, no
+     keyframes. There is therefore nothing here for
+     `prefers-reduced-motion` to switch off.
+
+   Type is pinned to the physical Geist faces (D6): the theme picker
+   rewrites --sans/--mono, and a user-picked face would reflow these
+   measured lanes.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── the panel ──────────────────────────────────────────────────── */
+
+.ag-soren-window {
+  font-family: var(--font-geist-sans);
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+  /* The measured backdrop: base + the two farthest-corner radials +
+     the 198deg linear (spec 30-creature §3.3). */
+  background-color: #07070a;
+  background-image:
+    radial-gradient(
+      circle farthest-corner at 74% 50% in oklab,
+      oklab(80% -0.003 -0.03 / 7%) 0%,
+      oklab(80% -0.003 -0.03 / 2%) 22%,
+      oklab(80% -0.003 -0.03 / 0%) 46%
+    ),
+    radial-gradient(
+      circle farthest-corner at 38% 64% in oklab,
+      oklab(80% -0.003 -0.03 / 9%) 0%,
+      oklab(80% -0.003 -0.03 / 3%) 40%,
+      oklab(80% -0.003 -0.03 / 0%) 70%
+    ),
+    linear-gradient(
+      in oklab 198deg,
+      oklab(12% 0.0005 -0.009) 0%,
+      oklab(12.6% 0.001 -0.011) 42%,
+      oklab(15.6% 0.002 -0.014) 56%,
+      oklab(16.4% 0.002 -0.014) 100%
+    );
+}
+/* Below the floating floor the window is a full-height right sheet;
+   a 26px radius on a flush edge would read as a mistake. */
+.ag-soren-window[data-mode='sheet'] {
+  border-radius: 0;
+}
+
+/* The headerless window's drag handle (D8): a reserved, visually empty
+   66px top row. The × sits over it as a sibling, so this row can stay
+   `aria-hidden` without hiding the only control in the chrome. */
+.ag-soren-drag {
+  flex: 0 0 66px;
+  height: 66px;
+  user-select: none;
+}
+
+.ag-soren-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(232, 232, 226, 0.72);
+}
+/* The only control in the chrome answers the pointer — a state swap, not
+   a transition, so the window still paints once. */
+.ag-soren-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e8e8e2;
+}
+
+/* ── the thread ─────────────────────────────────────────────────── */
+
+/* 20px page inset; 22px between turns, measured from the pill's bottom
+   edge — one gap, and no separators of any kind.
+
+   The `[data-soren]` qualifier is load-bearing, not decoration: the AI
+   Elements scroll stack hands this element its own `gap-8 p-4`, and a
+   Tailwind utility is emitted AFTER this file (globals.css imports it
+   above `@tailwind utilities`), so a single class would tie on
+   specificity and lose. The attribute breaks the tie in CSS rather than
+   by piling arbitrary-value utilities onto the JSX. */
+.ag-soren-thread[data-soren] {
+  gap: 22px;
+  padding: 0 20px 4px;
+  font-family: var(--font-geist-sans);
+}
+
+/* The user's line — the locked pill. The container marks what YOU
+   said; Soren's side stays bare. */
+.ag-soren-pill {
+  max-width: 300px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(232, 232, 226, 0.85);
+}
+
+/* Soren's turn: no bubble, no rim, no fill — prose at the full column
+   width, and the type the parts inherit. */
+.ag-soren-reply {
+  font-size: 15px;
+  line-height: 22px;
+  color: #e8e8e2;
+}
+
+/* ── the composer ───────────────────────────────────────────────── */
+
+.ag-soren-composer-wrap {
+  padding: 0 20px 16px;
+  font-family: var(--font-geist-sans);
+}
+
+/* Field-only: no inner dark box, the composer IS the field. Pearl —
+   the 70deg foil band marks a surface you ACT on. Height re-cut
+   2026-08-24 (owner: "the bottom section is way too big"): 60→48 min,
+   act 44→36 — the TYPE is untouched. */
+.ag-soren-composer {
+  min-height: 48px;
+  border-radius: 14px;
+  padding: 0 7px 0 16px;
+  background-color: #0e0d14c7;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-image: linear-gradient(
+    70deg,
+    transparent 22%,
+    oklab(79.6% 0.105 -0.021 / 12.8%) 40%,
+    oklab(87.4% -0.075 -0.021 / 14.4%) 52%,
+    oklab(92.4% -0.048 0.08 / 11.2%) 64%,
+    transparent 80%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* The field carries no focus ring of its own (`outline-none`), so the
+   pearl's rim is what says "you are typing here". */
+.ag-soren-composer:focus-within {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.ag-soren-field {
+  font-family: var(--font-geist-sans);
+  font-size: 14px;
+  line-height: 20px;
+  color: #e8e8e2;
+}
+.ag-soren-field::placeholder {
+  color: rgba(232, 232, 226, 0.62);
+}
+
+/* The act material — the submit, and the Stop it becomes mid-run. The
+   SHAPE is the decision; on this charcoal the tint reads holographic. */
+.ag-soren-act {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  color: #0a0a0b;
+  background-image: linear-gradient(
+    135deg,
+    oklab(84.7% 0.079 -0.019),
+    oklab(90% -0.035 -0.025) 50%,
+    oklab(92.4% -0.046 0.063)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 5px 14px rgba(205, 227, 165, 0.22);
+}
+.ag-soren-act:disabled {
+  opacity: 0.42;
+}
+
+.ag-soren-act:focus-visible,
+.ag-soren-close:focus-visible {
+  outline: 2px solid rgba(232, 232, 226, 0.55);
+  outline-offset: 2px;
+}
+
+/* ── the gap row — the reply's first line box (§3.2) ────────────────
+   The section note above holds for the CHROME: it is static paint. The
+   gap is the one place in the skin that moves, because the wait IS
+   motion — so everything below has a `prefers-reduced-motion` answer,
+   and the row itself never mounts for a viewer who asked for less (the
+   components fall back to the classic activity group instead). */
+
+/* The reply is the containing block for the leaving row, which goes out
+   of flow so the prose can take its slot with no shift. */
+.ag-soren-reply {
+  position: relative;
+}
+
+/* THE ZERO-SHIFT CONTRACT. An explicit 22px line box — the same box the
+   first prose line (15/22) will occupy. `overflow: visible` plus the
+   fixed height is what lets the 30.4px-tall owl overhang by ≈4.2px top
+   and bottom instead of growing the row. Nothing here may gain padding,
+   a border, or a min-height. */
+.ag-soren-gap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 22px;
+  flex: none;
+  overflow: visible;
+}
+
+.ag-soren-gap-owl {
+  flex: none;
+}
+
+/* The handoff: out of flow, so the prose lands in the slot the row just
+   held, while Soren's own `slide-left` plays over the top of it. */
+.ag-soren-gap--leaving {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* The whisper — mono 11/14, .02em, grey (10-system §1.1). Pinned to the
+   physical Geist Mono variable: the theme picker rewrites --mono. */
+.ag-soren-whisper {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  color: #8a8a85;
+  white-space: nowrap;
+}
+
+/* The 180ms roll (§3.4): the old word rises 4px and fades while the new
+   one fades in from below. Transform and opacity only. The outgoing copy
+   is taken out of flow, so the row's width never depends on it. */
+.ag-soren-word {
+  display: block;
+}
+.ag-soren-word--out {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: ag-soren-word-out 180ms ease-out forwards;
+}
+.ag-soren-word--in {
+  animation: ag-soren-word-in 180ms ease-out both;
+}
+
+/* He takes the whisper with him. */
+.ag-soren-gap--leaving .ag-soren-whisper {
+  animation: ag-soren-whisper-out 420ms ease-out forwards;
+}
+
+@keyframes ag-soren-word-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes ag-soren-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes ag-soren-whisper-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-soren-word--in,
+  .ag-soren-word--out,
+  .ag-soren-gap--leaving .ag-soren-whisper {
+    animation: none;
+  }
+  /* No cross-fade to make: the word simply changes. */
+  .ag-soren-word--out {
+    display: none;
+  }
+}
+
+/* ── the build sequence (spec/30-creature.md §3.5) ─────────────────────
+   Beats 5 and 6 over the TRUE ghost, and nothing else: the frame's
+   entrance, the rows' precipitation, the pellet that rides each row's
+   path, and the failure form's reverse collapse.
+
+   COMPOSITOR ONLY. Every rule below animates opacity or transform, so
+   none of them resizes the scroll container and none can feed back into
+   stick-to-bottom. The per-row delays arrive as inline `animation-delay`
+   from `soren/buildSequence.ts`, which owns the arithmetic.
+
+   AT REST THE ROW HAS NO RULE AT ALL. A settled sequence renders the
+   ghost with no `ag-soren-brow` on it, which is byte for byte what the
+   ack lane renders a frame later — that identity is what makes beat 8
+   move nothing, so nothing here may style the undecorated row. */
+
+.ag-soren-build {
+  animation: ag-soren-build-in 320ms ease-out both;
+}
+
+@keyframes ag-soren-build-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* One condition row's arrival. `--fly` adds the flight from the frame's
+   top-left region; without it the row simply fades in place, which is
+   `beside` — the sequence with the pellets switched off. */
+.ag-soren-brow {
+  animation: ag-soren-brow-in 220ms ease-out both;
+}
+
+.ag-soren-brow--fly {
+  animation-name: ag-soren-brow-fly;
+}
+
+@keyframes ag-soren-brow-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ag-soren-brow-fly {
+  from {
+    opacity: 0;
+    transform: translate3d(-12px, -8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* The pellet: a 3px ivory dot on the row's own path, gone by the time
+   the row has landed. It is absolutely positioned so it costs no layout,
+   and it is the ONE element of the sequence carrying no information —
+   `PELLETS_ENABLED` in buildSequence.ts drops it in one edit. */
+.ag-soren-pellet {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 3px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: var(--pcv2-ivory, #e8e8e2);
+  animation: ag-soren-pellet-fly 220ms ease-out both;
+}
+
+@keyframes ag-soren-pellet-fly {
+  from {
+    opacity: 0.9;
+    transform: translate3d(-14px, -10px, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* The failure form: the rows fade back toward the frame's origin corner,
+   last row first, and the frame goes with them. */
+.ag-soren-build--out {
+  animation: ag-soren-build-out 240ms ease-in both;
+}
+
+.ag-soren-brow--out {
+  animation: ag-soren-brow-out 240ms ease-in both;
+}
+
+@keyframes ag-soren-build-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ag-soren-brow-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-12px, -8px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The component drops the beats itself; these are the belt to that
+     brace, for a preference that changes mid-sequence. */
+  .ag-soren-build,
+  .ag-soren-build--out,
+  .ag-soren-brow,
+  .ag-soren-brow--fly,
+  .ag-soren-brow--out {
+    animation: none;
+  }
+  .ag-soren-pellet {
+    display: none;
+  }
+}
+
+/* ── soren · the answer's atoms (§1.4.1/.3/.4) ─────────────────────────
+   Markup behind `soren-chat-surface` only — these classes never render
+   flag-off. The number box is B·code 01 verbatim; colour lives in the
+   TEXT (green = time/positive, red = negative), the container is always
+   neutral. Physical Geist variables on purpose: the theme picker rewrites
+   the --mono/--sans aliases and these lanes are measured. */
+
+.ag-atom-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  color: #e8e8e2;
+  vertical-align: middle;
+  white-space: pre;
+}
+.ag-atom-box[data-tone='green'] { color: #7ed6a6; }
+.ag-atom-box[data-tone='red'] { color: #f08a9a; }
+.ag-atom-u { font-size: 0.8em; color: var(--ink-2); }
+.ag-atom-u[data-u='$'] { margin-right: 0.05em; }
+.ag-atom-u[data-u='%'] { margin-left: 0.035em; }
+.ag-atom-sol { width: 14px; height: 14px; flex: none; }
+
+/* A04.6, prose size — the bold-frame rectangle on the 22px line. */
+/* Both tags hold the number box's 20px line (owner, 2026-08-24: "the
+   address should be the same size as the number box… the token addresses
+   box as well") — one row of objects, one height. The 1.5px frame stays:
+   the tag's identity is its weight, its mass was the height and the type. */
+.ag-ttag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 6px 0 3px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(232, 232, 226, 0.3);
+  background: none;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: border-color 0.14s ease;
+}
+.ag-ttag:hover { border-color: rgba(232, 232, 226, 0.6); }
+.ag-ttag:focus-visible,
+.ag-wtag:focus-visible {
+  outline: 1.5px solid rgba(232, 232, 226, 0.6);
+  outline-offset: 1px;
+}
+.ag-ttag-art {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex: none;
+}
+.ag-ttag-art--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  font-family: var(--font-geist-mono);
+  font-size: 8px;
+  line-height: 1;
+  color: #e8e8e2;
+}
+.ag-ttag-sym {
+  font-family: var(--font-geist-sans);
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #e8e8e2;
+}
+
+/* W04 — identity for a person; same rim, mono short address. */
+.ag-wtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 6px 0 4px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(232, 232, 226, 0.3);
+  text-decoration: none;
+  vertical-align: middle;
+  transition: border-color 0.14s ease;
+}
+.ag-wtag:hover { border-color: rgba(232, 232, 226, 0.6); }
+.ag-wtag-glyph { flex: none; }
+.ag-wtag-addr {
+  font-family: var(--font-geist-mono);
+  font-size: 12.5px;
+  line-height: 16px;
+  color: #e8e8e2;
+  white-space: pre;
+}

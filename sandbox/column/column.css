@@ -1,0 +1,678 @@
+/*
+ * THE COLUMN, REMADE FROM THE REFERENCE.
+ *
+ * ── COLOUR IS SPENT ONLY ON RISK ─────────────────────────────────────
+ *
+ * The reference greens the age, the market cap, the fee, the buy button
+ * and all four stat pills. Six unrelated things in one hue, so being
+ * green stops meaning anything — a 31% dev holding and a one second age
+ * are the same colour, and only one of them is telling you something.
+ *
+ * Here the four risk percentages keep green and red, because those are
+ * the only values on the row where the COLOUR is the reading rather than
+ * decoration on a number you were going to read anyway. Everything else
+ * is white, grey, or the board's caps.
+ *
+ * ── AND THE BUY IS WHITE ─────────────────────────────────────────────
+ *
+ * It is the one press on the row and the only filled thing on it, which
+ * is what makes it read as the action rather than as a fifth pill.
+ *
+ * ── THE GREYS ARE NEUTRAL ────────────────────────────────────────────
+ *
+ * Equal channels throughout. Board #050607, lane #0d0d0d, row set by the
+ * variant. Every panel in this product has started blue-grey and had to
+ * be corrected; this one starts neutral.
+ */
+
+.cl {
+  box-sizing: border-box;
+  /* 740 — the reference's own width. At 460 the four risk pills wrapped
+     onto a second line and the row grew a whole band it does not have. */
+  width: 740px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0d0d0d;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+
+  --cl-row: #141414;
+  --cl-line: rgba(255, 255, 255, 0.07);
+  --cl-cap: #7c7c7c;
+  --cl-good: #2fe0a0;
+  --cl-bad: #ff5f6e;
+}
+
+.cl *,
+.cl *::before,
+.cl *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * THE SPACER THAT MAKES THE HEAD A HEAD.
+ *
+ * It was lost in a rewrite, and without it every flex child collapsed to
+ * its own width — title, search and tools all bunched against the left
+ * edge with three hundred pixels of nothing after them. Two of these
+ * either side of the search is what puts the title hard left, the search
+ * in the middle and the tools hard right, which is the reference's whole
+ * layout.
+ */
+.cl-grow {
+  flex: 1 1 auto;
+}
+
+/* ── the lane head ────────────────────────────────────────────────── */
+
+/*
+ * ROOM UNDER THE CONTROLS.
+ *
+ * The head was a fixed 48 with everything vertically centred in it, which
+ * left the search pill and the tools group about nine pixels off the rule
+ * underneath — close enough that the rule read as their border rather
+ * than as the edge of the head.
+ *
+ * Padding instead of a height: 14 above and 16 below, so the controls sit
+ * ON a band rather than being squeezed into a bar, and the extra pixel or
+ * two goes underneath where the eye reads the gap.
+ */
+.cl-head {
+  display: flex;
+  align-items: center;
+  /* 6, not 10: the group and the two loose icons read as one cluster on
+     the right rather than three things spaced apart. */
+  gap: 6px;
+  padding: 14px 14px 16px;
+  border-bottom: 1px solid var(--cl-line);
+}
+
+.cl-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+/*
+ * AN OUTLINED PILL, NOT A FILLED PLATE.
+ *
+ * A fill makes the field a block sitting on the head; a 1px outline makes
+ * it a field cut into it, which is what the reference draws. Fully
+ * rounded, and no magnifier — the word "Search" is the label, and an icon
+ * beside it is the same word twice.
+ */
+.cl-search {
+  display: flex;
+  align-items: center;
+  flex: 0 0 148px;
+  min-width: 0;
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--cl-line);
+  border-radius: 999px;
+  background: transparent;
+  cursor: text;
+}
+
+.cl-search input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #ffffff;
+  /*
+   * LEFT, not centred.
+   *
+   * A centred placeholder looks tidy while the field is empty and then
+   * lies the moment anyone types: the caret starts mid-pill and the query
+   * grows outward from the middle, so the text you are reading never
+   * holds still. A field is read from its left edge.
+   */
+  text-align: left;
+}
+
+.cl-search input::placeholder {
+  color: var(--cl-cap);
+}
+
+/*
+ * ONE OBJECT, NOT FOUR BUTTONS.
+ *
+ * The buy size, the preset, the mute and the filters are all "how this
+ * lane behaves", and the reference draws them as a single bordered group
+ * with rules between the parts. Four loose buttons on a head this wide
+ * read as four unrelated things.
+ */
+.cl-tools {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  height: 30px;
+  border: 1px solid var(--cl-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/*
+ * 8px of padding and a 5px gap, down from 10 and 6.
+ *
+ * The group had a comfortable-form's spacing on controls that are a
+ * glyph and two characters — the buy size ran nearly a hundred pixels
+ * for "0". Tightened, the whole cluster gives back about 30px and the
+ * head stops reading as one long bar with things floating in it.
+ */
+.cl-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.cl-tool:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.cl-tool.is-icon {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+}
+
+/* The rule runs the full height of the group, which is what makes it one
+   object with two parts rather than two buttons with a gap. */
+.cl-toolrule {
+  width: 1px;
+  flex: 0 0 auto;
+  background: var(--cl-line);
+}
+
+/*
+ * LOOSE, OUTSIDE THE GROUP.
+ *
+ * The buy size and the preset are settings and belong in one bordered
+ * object. Mute and filter DO something — they are actions, and the
+ * reference leaves them bare beside it rather than inside.
+ */
+.cl-loose {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.cl-loose:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.cl-sol {
+  flex: 0 0 auto;
+  display: block;
+}
+
+/* ── the list ─────────────────────────────────────────────────────── */
+
+.cl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* 10 at the top so the first row clears the head's rule, and 10 at the
+     bottom so the last one is not flush to the lane's own edge. */
+  padding: 10px 8px;
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+/* ── a row ────────────────────────────────────────────────────────── */
+
+.cl-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 9px;
+  background: var(--cl-row);
+  cursor: pointer;
+  transition: background-color 130ms ease, filter 130ms ease;
+}
+
+.cl-row:hover {
+  filter: brightness(1.4);
+}
+
+/* ── the art column ───────────────────────────────────────────────── */
+
+/*
+ * THE BADGES ARE INLINE NOW.
+ *
+ * They were absolutely positioned on the corners of a 56px image. With
+ * the image gone they sit in the flow of the line that names the token,
+ * where they need no ring to separate them from anything.
+ */
+.cl-pad {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  align-self: center;
+}
+
+.cl-pad.is-pump {
+  background: var(--cl-good);
+}
+
+.cl-pad.is-bonk {
+  background: #ffb020;
+}
+
+.cl-tick {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.cl-mint {
+  flex: 0 0 auto;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  color: var(--cl-cap);
+  white-space: nowrap;
+}
+
+/* ── the body ─────────────────────────────────────────────────────── */
+
+.cl-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cl-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cl-ticker {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.cl-name {
+  /* The name is the one thing on this line that may truncate: the
+     ticker, the badges and the mint are all identity. */
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * The run of marks. Every metric on this row is an icon and a number
+ * rather than a labelled field — which is the only reason twenty values
+ * fit in a row this tall at all.
+ */
+.cl-marks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  color: var(--cl-cap);
+}
+
+.cl-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--cl-cap);
+}
+
+/*
+ * The age is white, not green. It is a reading like every other number
+ * here, and the reference's green says nothing that "1s" does not
+ * already say.
+ */
+.cl-age {
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cl-dev {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* ── the four risk pills ──────────────────────────────────────────── */
+
+.cl-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+.cl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  /* Tinted from the value's own colour, so the pill and its number are
+     one statement rather than a coloured number in a grey box. */
+  color: var(--cl-good);
+  background: color-mix(in srgb, var(--cl-good) 12%, transparent);
+}
+
+.cl-pill.is-bad {
+  color: var(--cl-bad);
+  background: color-mix(in srgb, var(--cl-bad) 14%, transparent);
+}
+
+/* The trailing "1mo" / "1yr" is context on the value, not the value. */
+.cl-note {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── the figures and the buy ──────────────────────────────────────── */
+
+.cl-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.cl-fig {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 3px 6px;
+  justify-items: end;
+}
+
+.cl-cap {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cl-cap);
+}
+
+.cl-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* Market cap is the figure being scanned, so it takes weight — not a
+   colour, which is spent on the pills. */
+.cl-num.is-mc {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/*
+ * The one press on the row, and the only filled thing on it. The
+ * reference makes it a fifth green pill sitting among four others.
+ */
+.cl-buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 11px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000000;
+  background: #ffffff;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.cl-buy:hover {
+  opacity: 0.88;
+}
+
+/* ══ THE EIGHT GROUNDS ══════════════════════════════════════════════
+ *
+ * The row is identical in all of them. Only `--cl-row` moves, plus how
+ * one row separates from the next.
+ */
+
+.cl.is-g10 {
+  --cl-row: #101010;
+}
+
+.cl.is-g14 {
+  --cl-row: #141414;
+}
+
+.cl.is-g1a {
+  --cl-row: #1a1a1a;
+}
+
+.cl.is-g20 {
+  --cl-row: #202020;
+}
+
+.cl.is-tint {
+  --cl-row: rgba(255, 255, 255, 0.05);
+}
+
+.cl.is-zebra .cl-list,
+.cl.is-edge .cl-list {
+  gap: 0;
+  padding: 0;
+}
+
+.cl.is-zebra .cl-row,
+.cl.is-edge .cl-row,
+.cl.is-none .cl-row {
+  --cl-row: transparent;
+}
+
+.cl.is-zebra .cl-row,
+.cl.is-edge .cl-row {
+  border-radius: 0;
+  padding: 8px 12px;
+}
+
+.cl.is-zebra .cl-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.cl.is-edge .cl-row {
+  border-bottom: 1px solid var(--cl-line);
+}
+
+/*
+ * The four with no fill have nothing for `brightness` to act on, so they
+ * take a plate on hover instead — the same 5% every other surface in the
+ * product uses for a hovered row.
+ */
+.cl.is-tint .cl-row:hover,
+.cl.is-zebra .cl-row:hover,
+.cl.is-edge .cl-row:hover,
+.cl.is-none .cl-row:hover {
+  filter: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+
+
+/* ── the scrollbar ────────────────────────────────────────────────── */
+
+/*
+ * A thin dark bar, as the reference has it. The platform default is a
+ * light 15px chrome bar that lands on a black column like a strip of
+ * masking tape — and on a lane that scrolls constantly it is on screen
+ * the whole time.
+ *
+ * `scrollbar-width` and `scrollbar-color` are the standard pair, honoured
+ * by Firefox; the `::-webkit-` block is the same result for Chromium and
+ * Safari. Both are given because neither covers everything, and a lane
+ * with a default bar in one browser and a hairline in another is worse
+ * than either on its own.
+ */
+.cl-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.cl-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cl-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cl-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  /* A transparent border with `background-clip` insets the thumb without
+     narrowing the track, so the bar has air around it at rest and still
+     takes the full 8px of hit area. */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.cl-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+  background-clip: content-box;
+}
+
+/*
+ * THE BOLT IS FULLY WHITE.
+ *
+ * It inherits the tool's 85% like the rest of the group, which leaves it
+ * a shade under the number beside it — and it is the mark for the one
+ * thing in this head that spends money. Full white, and heavier, so it
+ * reads as a bolt rather than as a grey tick.
+ */
+.cl-tool > svg:first-child {
+  color: #ffffff;
+}
+
+.cl-tool .cl-num {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ── the editable buy size ────────────────────────────────────────── */
+
+/*
+ * The one setting on this lane you change most often, so it is typed
+ * rather than displayed. The bolt and the SOL mark are its label and its
+ * unit; the field between them carries no chrome of its own, so the
+ * three read as one control instead of a form dropped into the head.
+ */
+.cl-tool.is-field {
+  cursor: text;
+}
+
+.cl-size {
+  min-width: 0;
+  width: auto;
+  border: 0;
+  padding: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+}
+
+/*
+ * ONLY THIS CONTROL IS TIGHTENED.
+ *
+ * It was 104px to show a bolt, one character and a coin mark, because it
+ * carried the same 8px of padding and 5px gaps as the labelled controls
+ * beside it. Those gaps buy nothing here: the bolt and the SOL mark are
+ * the label and the unit for the number between them, and they should sit
+ * ON it rather than a comfortable distance away.
+ */
+.cl-tool.is-field {
+  gap: 5px;
+  padding: 0 10px;
+}
+
+/*
+ * 3ch. Two was tight enough that "2.5" had nowhere to go and the field
+ * grew under the text as you typed — the control has to hold its own
+ * width while the number inside it changes.
+ */
+.cl-tool.is-field .cl-size {
+  width: 3ch;
+}
+
+/* Focus is a rule under the number — the field only draws itself while
+   it is being used, which is what keeps the head quiet at rest. */
+.cl-size:focus {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}

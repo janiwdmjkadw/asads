@@ -1,0 +1,78 @@
+/*
+ * THE PAGE BAR.
+ *
+ * Same ground as the two strips above it: none. The top nav, the
+ * watchlist nav and this bar all sit directly on the black page with no
+ * fill, no blur and no divider between them, so the chrome reads as one
+ * quiet block rather than three stacked bars.
+ */
+
+[data-page-bar] {
+  box-sizing: border-box;
+  height: var(--h-pagebar) !important;
+  gap: 10px;
+}
+
+/*
+ * THE LINE BELONGS TO THE WATCHLIST NAV, NOT TO THIS BAR.
+ *
+ * `subheader-v2.css` draws a bottom hairline on anything carrying its
+ * attribute, and this bar carries it for the cluster's styling. Left
+ * alone that put a line under both strips. The watchlist nav keeps
+ * its own — it closes the tape off from what is under it — and this bar
+ * gives its up, so the chrome ends on the board rather than on a rule.
+ *
+ * The doubled attribute is for specificity: that hairline is set with
+ * `!important` in a file that loads after this one, so an
+ * equal-specificity rule here would lose on source order alone.
+ */
+[data-page-bar][data-page-bar] {
+  border-bottom: 0 !important;
+}
+
+/*
+ * The page's name. A heading, so it is set like one: the product's sans
+ * at the size and weight the floating panels title themselves with, and
+ * the word written the way it is read.
+ */
+.page-bar-title {
+  flex: 0 0 auto;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  color: var(--ink-0);
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * The bezel gap the watchlist nav takes below 600, for the same reason:
+ * a control against the edge of the screen is a mis-tap on a phone in a
+ * way it is not under a cursor.
+ */
+@media (max-width: 600px) {
+  [data-page-bar] {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /*
+   * The title gives way before the cluster does. The cluster is three
+   * controls you press; the title is a word telling you where you are,
+   * and on a phone the nav above has already told you.
+   */
+  .page-bar-title {
+    display: none;
+  }
+
+  /*
+   * The cluster tightens the way it did on the strip it came from: three
+   * controls grouped under the thumb rather than spread across a width
+   * nobody reaches.
+   */
+  [data-page-bar] [data-subheader-cluster] {
+    gap: 6px;
+  }
+}

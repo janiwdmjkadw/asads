@@ -1,0 +1,1250 @@
+@import "../components/listen/listen.css";
+@import "../components/discover/discover.css";
+@import "../components/agent/agent-chat.css";
+@import "../components/agent/soren/soren-hover.css";
+@import "../components/agent/soren/soren-panes.css";
+
+.meta-hover-shell {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--hairline);
+  box-shadow: none;
+  transition: background 140ms var(--ease-out), border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.meta-hover-shell:hover {
+  background: color-mix(in srgb, var(--meta-tint) 14%, rgba(255,255,255,0.03));
+  border-color: color-mix(in srgb, var(--meta-tint) 45%, transparent);
+  box-shadow: 0 0 10px -2px color-mix(in srgb, var(--meta-tint) 50%, transparent);
+}
+
+/* Compositor-only: scaleX instead of width — a width animation relayouts
+   and repaints the bar every frame for every terminal toast on screen. */
+@keyframes trade-toast-dismiss {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Pulse used by the in-flight phase dot in `<TradeActivityToasts />`.
+   Pure opacity so the glow stays steady. */
+@keyframes trade-activity-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.trade-activity-pulse {
+  animation: trade-activity-pulse 1.2s ease-in-out infinite;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==================================================================
+   Deploy Terminal — design tokens
+   Arctic accent (#bae6fd → #5eead4) over cool obsidian, mirroring the
+   default `arctic` theme so surfaces outside `.listen-root` match. No
+   glass blur.
+   Instrument Serif (display) · Inter (sans) · JetBrains Mono (mono).
+   ================================================================== */
+:root {
+  /* Surfaces */
+  --surface:     hsl(220, 12%, 3%);
+  --surface-1:   hsl(220, 12%, 7%);
+  --surface-2:   hsl(220, 12%, 10%);
+  --surface-3:   hsl(220, 12%, 15%);
+  --hairline:    rgba(255,255,255,0.06);
+  --hairline-2:  rgba(255,255,255,0.12);
+
+  /* Ink */
+  --ink-0:  #ffffff;
+  --ink-1:  #e4e7ee;
+  --ink-2:  #a8aeba;
+  --ink-3:  #6b7180;
+  --ink-4:  #2a2d36;
+
+  /* Accents (arctic — the default theme; ThemeProvider overrides these
+     inline inside the terminal shell, these cover everything else) */
+  --accent-primary:   #bae6fd;
+  --accent-secondary: #5eead4;
+  --accent-ink:       #0b0e14;
+  --accent-soft:      rgba(186,230,253,0.14);
+  --accent-glow:      rgba(186,230,253,0.45);
+  --accent-wash:      rgba(186,230,253,0.06);
+
+  /* Back-compat aliases — same value as accent-*, matching `.listen-root`.
+     The flame palette they used to hold (#ff6a3d) is retired. */
+  --flame:       var(--accent-primary);
+  --flame-soft:  var(--accent-soft);
+  --flame-glow:  var(--accent-glow);
+  --flame-wash:  var(--accent-wash);
+
+  /* Data */
+  --up:    #34d399;
+  --down:  #fb5374;
+  --hold:  #ffcf5c;
+
+  /* Fonts — self-hosted next/font variables (app/layout.tsx). The literal
+     names that used to lead these stacks ('Instrument Serif' / 'Inter' /
+     'JetBrains Mono') were never loaded by anything, so these tokens have
+     always rendered their fallbacks. Inside the terminal shell the
+     ThemeProvider overrides them inline; these cover everything else
+     (homepage sections, rewards, auth pages). */
+  --display: var(--font-instrument-serif, ui-serif), 'Tiempos Headline', ui-serif, Georgia, serif;
+  --sans:    var(--font-geist-sans, system-ui), -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --mono:    var(--font-geist-mono, ui-monospace), 'Berkeley Mono', ui-monospace, monospace;
+
+  /* Motion */
+  --ease:     cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast:     180ms;
+  --medium:   280ms;
+  --slow:     520ms;
+
+  /* Radii */
+  --r-card: 20px;
+  --r-chip: 999px;
+  --r-tile: 14px;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body {
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    /* Black, not `--surface`: the document is what shows through on
+       over-scroll and on any route that does not mount `.listen-root`. */
+    background: #000;
+    color: var(--ink-1);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    letter-spacing: 0.005em;
+  }
+  /* Retina-tuned text rendering, high-DPI screens only. At 1x these same
+     settings backfire: grayscale AA + unhinted geometric glyph placement
+     visibly softens the dense 9-14px type (the "blurry on my external
+     monitor" complaint). Low-DPI displays keep the platform default
+     hinted/subpixel rendering instead. */
+  @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx) {
+    html, body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+    }
+  }
+  /* UI auto-scale for standard-density (~1x) screens. The type scale was
+     tuned on Retina, where dense 9-14px text gets 2x the pixels per glyph
+     and looks sharp; at 1x the same sizes sit below the clean-rendering
+     threshold and the whole app reads as "blurry" (measured against a
+     competitor whose baseline is 16px vs our 14px — crisp on the same
+     monitor). Zoom re-renders text at the larger size (same mechanism as
+     browser zoom, which users confirmed fixes it), so glyphs gain real
+     pixels; it is NOT a bitmap stretch. High-DPI screens are untouched.
+
+     IMPORTANT: unlike browser zoom, CSS zoom does NOT shrink vh/dvh units,
+     so anything sized to the viewport must divide by var(--ui-scale) or it
+     overflows the screen by the scale factor (see overrides below and
+     --h-app-content in listen.css). */
+  :root {
+    --ui-scale: 1;
+  }
+  @media (max-resolution: 1.49dppx) {
+    /* --ui-scale-pref is the user's dial from the Tweaks panel (set inline
+       on <html> by lib/state/ui-scale.ts, persisted per browser). It only
+       feeds this media query, so high-DPI screens ignore it entirely. */
+    :root {
+      --ui-scale: var(--ui-scale-pref, 1.18);
+    }
+    html {
+      zoom: var(--ui-scale);
+    }
+    /* The base html/body rule above uses min-height: 100vh; divide it back
+       down under zoom or the body alone forces an 18% page scroll. */
+    html, body {
+      min-height: calc(100vh / var(--ui-scale));
+    }
+    /* Clerk's modal overlay (sign-in/up) sizes and centers itself with raw
+       viewport units, which zoom does not shrink — the card drifts right of
+       center by half the scale factor. Inverse-zoom the overlay so its net
+       scale is exactly 1: geometry and centering match the pre-scale
+       rendering. Clerk's own type is normal web size, so it reads fine
+       unscaled. Scoped to the modal backdrop only — anchored popovers must
+       keep the page's coordinate space. */
+    .cl-modalBackdrop {
+      zoom: calc(1 / var(--ui-scale));
+    }
+    /* Same exemption as a reusable hook for zoom-hostile subtrees. Canvas
+       chart libraries (lightweight-charts) size from clientWidth (unscaled
+       by zoom) but map the mouse via getBoundingClientRect (scaled), so a
+       zoomed ancestor skews the crosshair by the scale factor and bitmap-
+       stretches the canvas. Net zoom 1 restores exact hit-testing and 1:1
+       physical-pixel rendering. */
+    .ui-scale-exempt {
+      zoom: calc(1 / var(--ui-scale));
+    }
+    /* Radix poppers (Popover/DropdownMenu/Tooltip/Select/HoverCard) compute
+       their fixed wrapper's translate from getBoundingClientRect — physical
+       px — which the page zoom re-multiplies, so end-aligned popovers (e.g.
+       the notification bell) drift ~18% right and off-screen. Inverse-zoom
+       the wrapper so its coordinate space IS physical px (net zoom 1), then
+       re-zoom the content one level down so popover text matches the scaled
+       page. Floating-UI's math stays exact: it measures the wrapper, whose
+       layout px equal physical px with this pairing. */
+    [data-radix-popper-content-wrapper] {
+      zoom: calc(1 / var(--ui-scale));
+    }
+    [data-radix-popper-content-wrapper] > * {
+      zoom: var(--ui-scale);
+    }
+  }
+  /* Zoom-corrected viewport-height utilities: `html` prefix outranks the
+     single-class Tailwind rules. With --ui-scale: 1 these are identical to
+     the utilities they override. */
+  html .min-h-screen {
+    min-height: calc(100dvh / var(--ui-scale));
+  }
+  html .h-screen {
+    height: calc(100dvh / var(--ui-scale));
+  }
+  html .max-h-screen {
+    max-height: calc(100dvh / var(--ui-scale));
+  }
+  body {
+    position: relative;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  /* No `body::before`. It was a fixed, full-viewport "warm vignette" —
+     an orange radial at 50% 0% and a black one at 50% 100% — sitting
+     over every route at all times. The orange is the hue that showed
+     across the top of the page once the ground went black. */
+  #root { position: relative; z-index: 1; }
+  /*
+   * ── SELECTION IS NEUTRAL ─────────────────────────────────────────
+   *
+   * It was `background: var(--flame); color: var(--surface)` — the
+   * theme's accent behind the text and the page's own ground in front
+   * of it. On the default theme that is cyan with black type, which
+   * nothing else in the product looks like and which turns "I am
+   * copying an address" into the loudest thing on screen.
+   *
+   * A translucent white instead, and NO colour: dropping the foreground
+   * declaration leaves the text its own colour, so a green figure stays
+   * green while it is selected. The highlight marks the range; it does
+   * not restyle what is inside it.
+   */
+  ::selection { background: rgba(255, 255, 255, 0.22); }
+}
+
+html[data-listen-theme-loading="1"] .listen-root {
+  visibility: hidden;
+}
+
+/* ==================================================================
+   Scrollbar — almost invisible
+   ================================================================== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline-2); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+.scroll-hide::-webkit-scrollbar { display: none; }
+.scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ==================================================================
+   Type scale (Deploy Terminal)
+   ================================================================== */
+.dp-display-xl  { font-family: var(--display); font-weight: 400; font-size: 64px; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink-0); }
+.dp-display-lg  { font-family: var(--display); font-weight: 400; font-size: 48px; line-height: 1.08; letter-spacing: -0.015em; color: var(--ink-0); }
+.dp-display-md  { font-family: var(--display); font-weight: 400; font-size: 32px; line-height: 1.10; letter-spacing: -0.01em;  color: var(--ink-0); }
+.dp-title       { font-family: var(--sans);    font-weight: 500; font-size: 18px; line-height: 1.40; letter-spacing: -0.005em; color: var(--ink-0); }
+.dp-body-lg     { font-family: var(--sans);    font-weight: 400; font-size: 17px; line-height: 1.5; }
+.dp-body        { font-family: var(--sans);    font-weight: 400; font-size: 14px; line-height: 1.5; }
+.dp-body-sm     { font-family: var(--sans);    font-weight: 400; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.dp-label-sm    { font-family: var(--sans);    font-weight: 500; font-size: 9px;  line-height: 1.3; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.dp-label       { font-family: var(--sans);    font-weight: 500; font-size: 11px; line-height: 1.3; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.dp-mono-sm     { font-family: var(--mono);    font-weight: 500; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
+.dp-mono        { font-family: var(--mono);    font-weight: 500; font-size: 12px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.dp-mono-lg     { font-family: var(--mono);    font-weight: 500; font-size: 14px; font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
+
+.dp-tweet-text {
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+  color: var(--ink-0);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  margin: 0;
+}
+
+/* ==================================================================
+   Animations
+   ================================================================== */
+@keyframes dp-fade-in      { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dp-rise         { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dp-enter        { from { opacity: 0; transform: translateY(12px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes dp-gentle-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.85; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+@keyframes dp-bloom {
+  0%   { opacity: 0; transform: scale(0.9); }
+  40%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+.dp-enter { animation: dp-enter var(--slow) var(--ease) both; }
+.dp-fade  { animation: dp-fade-in var(--medium) var(--ease-out) both; }
+.dp-rise  { animation: dp-rise   var(--medium) var(--ease-out) both; }
+
+/* ==================================================================
+   Top rail
+   ================================================================== */
+.dp-rail {
+  display: flex; align-items: center; gap: 24px;
+  height: 56px;
+  padding: 0 28px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.dp-rail__brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--display);
+  font-size: 18px;
+  color: var(--ink-0);
+  letter-spacing: -0.01em;
+}
+.dp-rail__brand-dot {
+  width: 7px; height: 7px; border-radius: 999px;
+  background: var(--flame);
+  box-shadow: 0 0 12px var(--flame-glow);
+  animation: dp-gentle-pulse 2.4s ease-in-out infinite;
+}
+.dp-rail__sep  { width: 1px; height: 14px; background: var(--hairline); }
+.dp-rail__stat { display: flex; align-items: baseline; gap: 8px; }
+.dp-rail__stat-label {
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.dp-rail__stat-value {
+  color: var(--ink-0);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.dp-rail__spacer { flex: 1; }
+
+/* ==================================================================
+   Chips / pills
+   ================================================================== */
+.dp-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-chip);
+  background: var(--surface-3);
+  color: var(--ink-1);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--hairline);
+  transition: background var(--fast) var(--ease),
+              border-color var(--fast) var(--ease),
+              color var(--fast) var(--ease);
+}
+.dp-chip--flame {
+  background: var(--flame-soft);
+  color: var(--flame);
+  border-color: rgba(255,106,61,0.24);
+}
+.dp-chip--ghost {
+  background: transparent;
+  border-color: var(--hairline);
+  color: var(--ink-2);
+}
+.dp-chip--ghost:hover { border-color: var(--hairline-2); color: var(--ink-1); }
+.dp-chip--quiet {
+  background: transparent;
+  border: none;
+  color: var(--ink-3);
+  padding: 4px 0;
+}
+.dp-chip--outline-flame {
+  background: transparent;
+  color: var(--flame);
+  border-color: rgba(255,106,61,0.35);
+}
+
+/* ==================================================================
+   Buttons
+   ================================================================== */
+.dp-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: var(--r-chip);
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-2);
+  color: var(--ink-0);
+  font: inherit;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform var(--fast) var(--ease),
+              background var(--fast) var(--ease),
+              border-color var(--fast) var(--ease);
+}
+.dp-btn:hover:not(:disabled) { background: var(--surface-3); }
+.dp-btn:active:not(:disabled) { transform: translateY(1px); }
+.dp-btn:disabled { opacity: 0.4; cursor: default; }
+.dp-btn--ghost { background: transparent; }
+.dp-btn--ghost:hover:not(:disabled) { background: var(--surface-2); border-color: var(--hairline-2); }
+.dp-btn--flame {
+  background: var(--flame);
+  border-color: var(--flame);
+  color: var(--surface);
+  font-weight: 600;
+}
+.dp-btn--flame:hover:not(:disabled) { background: var(--accent-secondary); border-color: var(--accent-secondary); }
+
+.dp-kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 18px; padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* ==================================================================
+   Input
+   ================================================================== */
+.dp-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  color: var(--ink-0);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--fast) var(--ease-out),
+              background var(--fast) var(--ease-out);
+}
+.dp-input:focus {
+  border-color: var(--flame);
+  background: var(--surface-2);
+}
+.dp-input::placeholder { color: var(--ink-3); }
+
+/* ==================================================================
+   Card surfaces (Deploy Terminal)
+   ================================================================== */
+.dp-card {
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-card);
+  transition: border-color var(--medium) var(--ease),
+              transform var(--medium) var(--ease);
+}
+.dp-card--vip {
+  border-color: rgba(255,106,61,0.22);
+  box-shadow:
+    0 0 0 1px rgba(255,106,61,0.08) inset,
+    0 40px 80px -40px rgba(255,106,61,0.15);
+}
+
+/* Option tiles (rails) */
+.dp-opt {
+  position: relative;
+  border-radius: var(--r-tile);
+  border: 1px solid var(--hairline);
+  background: var(--surface-1);
+  color: var(--ink-1);
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease-out),
+              background var(--fast) var(--ease-out),
+              transform var(--medium) var(--ease);
+  text-align: left;
+  font: inherit;
+  padding: 0;
+}
+.dp-opt:hover { border-color: var(--hairline-2); background: var(--surface-2); }
+.dp-opt--selected {
+  border-color: var(--flame);
+  background: var(--surface-2);
+  box-shadow:
+    0 0 0 1px var(--flame) inset,
+    0 0 28px -10px var(--flame-glow);
+}
+.dp-opt--selected::after {
+  content: '';
+  position: absolute; top: 10px; right: 10px;
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--flame);
+  box-shadow: 0 0 10px var(--flame-glow);
+}
+
+/* Hairline divider */
+.dp-hairline { height: 1px; background: var(--hairline); }
+
+/* Wrapping rail row — no horizontal scroll */
+.dp-rail-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 2px 4px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* ==========================================================
+   Deploy CTA — "milled graphite" button
+   ==========================================================
+   Design intent: restrained premium object, not a screaming
+   gradient. Resting state is matte graphite with a whisper of
+   top-edge highlight (like polished metal catching a room
+   light). Hover warms the surface with a subtle bronze wash
+   instead of flooding it with orange. Pressed state has a
+   mechanical click feel.
+*/
+.dp-preview-deploy {
+  outline: none;
+  /* Matte graphite surface with a top-edge sheen. */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.030) 0%, rgba(255,255,255,0) 45%),
+    #0f0f11;
+  border: 1px solid rgba(255,255,255,0.065);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    inset 0 -1px 0 rgba(0,0,0,0.35),
+    0 8px 24px -18px rgba(0,0,0,0.7);
+  transition:
+    background 220ms var(--ease-out),
+    border-color 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    transform 120ms var(--ease);
+}
+
+/* Hover / focus: warm bronze wash. Two layered gradients give
+   a subtle "heating up" feel — brighter at the top edge where
+   a light would fall, deeper at the bottom. Border picks up
+   the flame, and a soft amber glow sits well below the button
+   so it feels lit from the surface, not pasted on. */
+.dp-preview-deploy:not(:disabled):hover,
+.dp-preview-deploy:not(:disabled):focus-visible {
+  background:
+    linear-gradient(180deg, rgba(255,200,170,0.055) 0%, rgba(255,106,61,0.025) 100%),
+    #14100e;
+  border-color: rgba(255,106,61,0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,200,170,0.11),
+    inset 0 -1px 0 rgba(0,0,0,0.35),
+    0 12px 32px -16px rgba(255,106,61,0.28);
+}
+
+/* Pressed: shallow seat. Top highlight dies, bottom gains a
+   short inset shadow like a mechanical switch bottomed out. */
+.dp-preview-deploy:not(:disabled):active {
+  transform: translateY(0.5px) scale(0.998);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,200,170,0.04),
+    0 2px 6px -3px rgba(255,106,61,0.25);
+  transition-duration: 60ms;
+}
+
+/* Keyboard focus ring — outside the button, precise, not
+   replacing the hover. */
+.dp-preview-deploy:focus-visible {
+  outline: 2px solid rgba(255,106,61,0.5);
+  outline-offset: 3px;
+}
+
+/* ==================================================================
+   Legacy classes (still used by current Workspace/Feed/NameGrid/etc.
+   until Phase 2-6 swaps them out). Kept minimal + theme-bridged.
+   ================================================================== */
+.glass {
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.glass-strong {
+  background: var(--surface-3);
+  border: 1px solid var(--hairline-2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.deploy-card {
+  background: linear-gradient(135deg, rgba(255,106,61,0.06) 0%, rgba(255,106,61,0.02) 100%);
+}
+.gradient-border { position: relative; border: none !important; }
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,106,61,0.4), rgba(255,106,61,0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.gradient-border-emerald::before,
+.gradient-border-violet::before,
+.gradient-border-amber::before {
+  background: linear-gradient(135deg, rgba(255,106,61,0.4), rgba(255,106,61,0.1));
+}
+.ring-glow-blue,
+.ring-glow-emerald,
+.ring-glow-violet,
+.ring-glow-amber {
+  box-shadow:
+    0 0 0 1px rgba(255,106,61,0.30),
+    0 0 20px rgba(255,106,61,0.15),
+    0 0 40px rgba(255,106,61,0.05);
+}
+.shimmer-btn { position: relative; overflow: hidden; }
+.shimmer-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.08) 45%,
+    rgba(255,255,255,0.14) 50%,
+    rgba(255,255,255,0.08) 55%,
+    transparent 60%
+  );
+  animation: shimmer 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.section-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.08), transparent);
+}
+.divider-gradient {
+  border-image: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.08) 80%, transparent) 1;
+}
+.source-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.animate-slide-up { animation: slide-up 0.2s ease-out; }
+
+@keyframes flash-emerald {
+  0% { box-shadow: 0 0 0 0 rgba(255,106,61,0.4); }
+  50% { box-shadow: 0 0 30px 4px rgba(255,106,61,0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(255,106,61,0); }
+}
+.animate-flash-emerald { animation: flash-emerald 0.6s ease-out; }
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  50%, 100% { transform: translateX(100%); }
+}
+
+@keyframes dash-march { to { stroke-dashoffset: -12; } }
+
+/* ------- Listening-page hit overlay animations ------- */
+/* hit-float: opacity + transform only. Animated filter:blur was by far
+   the worst per-frame cost — each frame re-ran a gaussian blur on the
+   whole card + text. Transform-only stays on the compositor. */
+@keyframes hit-float {
+  0%   { opacity: 0; transform: translate(-50%, -44%) scale(0.96); }
+  14%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  82%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -54%) scale(0.98); }
+}
+@keyframes hit-toast {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+  14%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  82%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+}
+@keyframes hit-chip {
+  0%   { opacity: 0; transform: translateX(-8px); }
+  10%  { opacity: 1; transform: translateX(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(6px); }
+}
+@keyframes hit-edge-right {
+  0%   { opacity: 0; transform: translateX(24px); }
+  10%  { opacity: 1; transform: translateX(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(20px); }
+}
+@keyframes hit-edge-left {
+  0%   { opacity: 0; transform: translateX(-24px); }
+  10%  { opacity: 1; transform: translateX(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-20px); }
+}
+@keyframes hit-edge-top {
+  0%   { opacity: 0; transform: translateY(-20px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes hit-edge-bottom {
+  0%   { opacity: 0; transform: translateY(20px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes title-shimmer {
+  0%,100% {
+    text-shadow:
+      0 0 36px rgba(11,11,13,0.85),
+      0 2px 12px rgba(0,0,0,0.75),
+      0 0 90px rgba(255,106,61,0.12);
+  }
+  50% {
+    text-shadow:
+      0 0 36px rgba(11,11,13,0.85),
+      0 2px 12px rgba(0,0,0,0.75),
+      0 0 130px rgba(255,106,61,0.25);
+  }
+}
+.listening-title {
+  animation: title-shimmer 5s ease-in-out infinite;
+}
+
+/* Orange "spotlight" cone that shines down onto the title from above.
+   Pure static gradient — no filter: blur, no animation, no backdrop
+   sampling. Rasterized once and composited at zero per-frame cost. */
+.listening-title-wrap {
+  position: relative;
+  isolation: isolate;
+}
+.listening-title-wrap::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -88px;
+  transform: translateX(-50%);
+  width: 560px;
+  height: 180px;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(
+      ellipse 48% 100% at 50% 0%,
+      rgba(255, 106, 61, 0.28) 0%,
+      rgba(255, 106, 61, 0.12) 28%,
+      rgba(255, 106, 61, 0.04) 55%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 70% 100% at 50% 0%,
+      rgba(255, 170, 120, 0.08) 0%,
+      transparent 65%
+    );
+}
+
+/* Discover page's CSS (fluid sizing tokens + .coin-card__action rules)
+   lives in src/components/discover/discover.css and is imported from
+   DiscoverPage.tsx. Kept local to the page folder so the Discover view
+   can be lifted / handed to an agent in isolation. */
+
+/* ===================================================================
+   HOMEPAGE REDESIGN — dark "technical terminal" marketing page.
+   Scoped to `.lh-home` (the marketing page wrapper). The palette lives
+   here as the single source of truth: Tailwind `homepage-*` tokens read
+   these vars (with matching hex fallbacks), and inline-styled diagram
+   internals reference `var(--lh-*)` directly.
+
+   Animation model:
+   - [data-anim]  = one-shot entrance reveal. Base style is the hidden
+     start state; the animation reveals to the final state (fill `both`).
+   - [data-loop]  = continuous motion (travelling pulses, breathing).
+   Section animations are applied only once the section scrolls into view
+   (gated in JS). `prefers-reduced-motion` snaps reveals to their final
+   visible state and silences all looping motion.
+   =================================================================== */
+/* The global `html, body { background: var(--surface) }` resolves to
+   transparent on the marketing page (`--surface` is scoped to
+   `.listen-root`), so the app's default light canvas would flash white on
+   viewport over-scroll behind the dark page. Mirror the design's dark
+   document background, scoped to the homepage via `:has()` so no other
+   route is affected. */
+html:has(.lh-home) {
+  background-color: #0a0a0b;
+}
+
+.lh-home {
+  --lh-accent: #5eead4;
+  --lh-word: #e8e8e6;
+  --lh-green: #5fb98a;
+  --lh-bg: #0a0a0b;
+  --lh-panel: #0f0f11;
+  --lh-panel2: #141416;
+  --lh-ink: #ededec;
+  --lh-ink2: #9a9a95;
+  --lh-ink3: #62625c;
+  --lh-line: rgba(255, 255, 255, 0.1);
+  --lh-line2: rgba(255, 255, 255, 0.055);
+  --lh-line3: rgba(255, 255, 255, 0.18);
+}
+
+/* Faint technical grid backdrop behind the whole page. */
+.lh-page-grid {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2042%2058%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%20fill-rule%3D%22evenodd%22%20d%3D%22M12%2018h12v18h6v4H18V22h-6v-4zm-6-2v-4H0V0h36v6h6v36h-6v4h6v12H6v-6H0V16h6zM34%202H2v8h24v24h8V2zM6%208a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm8%200a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm8%200a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm8%200a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm0%208a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm0%208a2%202%200%201%200%200-4%202%202%200%200%200%200%204zm0%208a2%202%200%201%200%200-4%202%202%200%200%200%200%204zM2%2050h32v-8H10V18H2v32zm28-6a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm-8%200a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm-8%200a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm-8%200a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm0-8a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm0-8a2%202%200%201%200%200%204%202%202%200%200%200%200-4zm0-8a2%202%200%201%200%200%204%202%202%200%200%200%200-4z%22%2F%3E%3C%2Fsvg%3E");
+  background-size: 34px 47px;
+  background-position: center top;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 7%, rgba(0, 0, 0, 0.9) 92%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 7%, rgba(0, 0, 0, 0.9) 92%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Cross-hatch grid inside each diagram panel body. */
+.lh-diagram-grid {
+  background-color: rgba(10, 10, 12, 0.5);
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2718%27%20height=%2718%27%3E%3Cpath%20d=%27M9%206v6M6%209h6%27%20stroke=%27rgba(255,255,255,0.05)%27%20stroke-width=%271%27%20fill=%27none%27/%3E%3C/svg%3E");
+  background-size: 18px 18px;
+}
+
+/* Off-screen diagram panels drop their animations entirely (DiagramShell
+   toggles this via an IntersectionObserver). `animation: none` — not merely
+   `paused` — is deliberate: WebKit/iOS Safari caps the number of accelerated
+   animations, and a *paused* animation still occupies a slot, so the diagrams
+   furthest down the page (Ingestion / MEV) never got one and rendered frozen.
+   Removing the off-screen animations frees those slots for the visible
+   diagram. Animations restart cleanly when a panel scrolls back into view. */
+.lh-anim-off,
+.lh-anim-off * {
+  animation: none !important;
+}
+
+@keyframes lh-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lh-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lh-tag { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lh-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lh-drawx { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes lh-drawy { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes lh-revealup { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lh-revealfade { from { opacity: 0; } to { opacity: 1; } }
+/* CTA liquid glass */
+@keyframes lh-ctadrift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes lh-ctabreath { 0%, 100% { filter: saturate(1) brightness(1); } 50% { filter: saturate(1.15) brightness(1.04); } }
+@keyframes lh-ctawave { 0% { left: -65%; opacity: 0; transform: skewX(-14deg) scaleY(1); } 10% { opacity: 1; } 50% { transform: skewX(-9deg) scaleY(1.04); } 90% { opacity: 1; } 100% { left: 120%; opacity: 0; transform: skewX(-14deg) scaleY(1); } }
+/* section divider: slow mint breath */
+@keyframes lh-divbreath { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+/* trust: single pulse Listen->Turnkey->Execution + green fill stamp */
+@keyframes lh-tflow { 0% { left: 0%; opacity: 0; } 5% { opacity: 1; } 60% { left: 100%; opacity: 1; } 66% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-tfill { 0%, 58% { opacity: 0; transform: scale(0.9); } 64% { opacity: 1; transform: scale(1); } 90% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.9); } }
+@keyframes lh-deny { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+/* performance: three lanes finishing at different times */
+@keyframes lh-laneH { 0% { left: 0%; opacity: 0; } 6% { opacity: 1; } 52% { left: 100%; opacity: 1; } 58% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-laneT { 0% { left: 0%; opacity: 0; } 6% { opacity: 1; } 72% { left: 100%; opacity: 1; } 78% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-laneZ { 0% { left: 0%; opacity: 0; } 6% { opacity: 1; } 84% { left: 100%; opacity: 1; } 90% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-landed { 0%, 52% { opacity: 0; transform: translateY(4px); } 58% { opacity: 1; transform: translateY(0); } 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lh-dropZ { 0%, 84% { opacity: 0; } 90% { opacity: 1; } 97% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lh-dropT { 0%, 72% { opacity: 0; } 78% { opacity: 1; } 97% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lh-winglow { 0%, 52% { opacity: 0; } 58% { opacity: 1; } 94% { opacity: 1; } 100% { opacity: 0; } }
+/* ingestion */
+@keyframes lh-ingpulse { 0% { left: 0%; opacity: 0; } 6% { opacity: 1; } 28% { left: 100%; opacity: 1; } 34% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-skel { 0%, 28% { opacity: 1; } 34%, 90% { opacity: 0; } 96%, 100% { opacity: 1; } }
+@keyframes lh-full { 0%, 28% { opacity: 0; } 36%, 90% { opacity: 1; } 96%, 100% { opacity: 0; } }
+@keyframes lh-bar { 0%, 32% { width: 0%; } 50% { width: 92%; } 90% { width: 92%; } 96%, 100% { width: 0%; } }
+@keyframes lh-flash { 0%, 30% { opacity: 0; } 33% { opacity: 0.9; } 40% { opacity: 0; } 100% { opacity: 0; } }
+/* mev */
+@keyframes lh-mevtx { 0% { left: 0%; opacity: 0; } 10% { opacity: 1; } 46% { left: 100%; opacity: 1; } 52% { left: 100%; opacity: 0; } 100% { left: 100%; opacity: 0; } }
+@keyframes lh-mevseal { 0%, 46% { opacity: 0; transform: scale(0.85); } 54% { opacity: 1; transform: scale(1); } 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lh-attA { 0% { top: -14%; opacity: 0; } 6% { opacity: 1; } 26% { top: 24%; opacity: 1; } 30% { top: 24%; opacity: 1; } 40% { top: 21%; opacity: 0; } 100% { opacity: 0; } }
+@keyframes lh-attB { 0%, 18% { top: -14%; opacity: 0; } 24% { opacity: 1; } 44% { top: 24%; opacity: 1; } 48% { top: 24%; opacity: 1; } 58% { top: 21%; opacity: 0; } 100% { opacity: 0; } }
+@keyframes lh-attC { 0%, 40% { top: -14%; opacity: 0; } 46% { opacity: 1; } 66% { top: 24%; opacity: 1; } 70% { top: 24%; opacity: 1; } 80% { top: 21%; opacity: 0; } 100% { opacity: 0; } }
+/* trust diagram (3D) — beat-driven non-custodial flow */
+@keyframes lhd-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes lhd-energyH { 0% { transform: translate(0, 0) scale(1, 1); border-radius: 50%; opacity: 0; } 10% { opacity: 1; } 78% { transform: translate(calc(var(--tx) * 0.78), 0) scale(1, 1); border-radius: 50%; opacity: 1; } 90% { transform: translate(calc(var(--tx) * 0.9), 0) scale(3, 0.5); border-radius: 2px; opacity: 1; } 100% { transform: translate(var(--tx), 0) scale(5, 0.32); border-radius: 1px; opacity: 0; } }
+@keyframes lhd-energyV { 0% { transform: translate(0, 0) scale(1, 1); border-radius: 50%; opacity: 0; } 10% { opacity: 1; } 78% { transform: translate(0, calc(var(--ty) * 0.78)) scale(1, 1); border-radius: 50%; opacity: 1; } 90% { transform: translate(0, calc(var(--ty) * 0.9)) scale(0.5, 3); border-radius: 2px; opacity: 1; } 100% { transform: translate(0, var(--ty)) scale(0.32, 5); border-radius: 1px; opacity: 0; } }
+@keyframes lhd-tipflash { 0%, 80% { opacity: 0; } 90% { opacity: 0.95; } 100% { opacity: 0; } }
+@keyframes lhd-denydraw { from { stroke-dashoffset: 640; } to { stroke-dashoffset: 0; } }
+@keyframes lhd-denyfade { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+@keyframes lhd-denyred { 0%, 52% { opacity: 0; } 62% { opacity: 1; } 80% { opacity: 0.9; } 100% { opacity: 0; } }
+@keyframes lhd-orbD { 0% { transform: translate(0, 0) scale(1); opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; transform: translate(calc(var(--tx) * 0.82), calc(var(--ty) * 0.82)) scale(1); } 100% { transform: translate(var(--tx), var(--ty)) scale(2.2); opacity: 0; } }
+@keyframes lhd-denymsg { 0% { opacity: 0; transform: translate(-50%, calc(-50% + 9px)); } 14% { opacity: 1; transform: translate(-50%, -50%); } 80% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -50%); } }
+@keyframes lhd-fadein { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes lhd-flare { 0%, 40% { transform: rotate(45deg) scale(0.4); opacity: 0; } 70% { transform: rotate(45deg) scale(1.7); opacity: 0.95; } 100% { transform: rotate(45deg) scale(1); opacity: 0; } }
+@keyframes lhd-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes lhd-emis { 0%, 100% { filter: drop-shadow(0 0 1px rgba(94, 234, 212, 0)); } 50% { filter: drop-shadow(0 0 5px rgba(94, 234, 212, 0.22)); } }
+/* shared diagram console blinking cursor */
+@keyframes lh-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+/* performance / parallel-route: lanes race in arctic ice, the data provider wins green */
+@keyframes lhp-lane { 0% { stroke-dashoffset: 100; opacity: 0; } 6% { opacity: 1; } 50% { stroke-dashoffset: 0; opacity: 1; } 86% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes lhp-win { 0%, 52% { stroke-dashoffset: 100; opacity: 0; } 56% { opacity: 1; } 66% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes lhp-str-t { 0%, 50% { stroke-dashoffset: 100; opacity: 0; } 54% { opacity: 1; } 64% { stroke-dashoffset: 38; opacity: 1; } 92% { stroke-dashoffset: 38; opacity: 1; } 100% { stroke-dashoffset: 38; opacity: 0; } }
+@keyframes lhp-str-z { 0%, 50% { stroke-dashoffset: 100; opacity: 0; } 54% { opacity: 1; } 64% { stroke-dashoffset: 50; opacity: 1; } 92% { stroke-dashoffset: 50; opacity: 1; } 100% { stroke-dashoffset: 50; opacity: 0; } }
+@keyframes lhp-orb-t { 0%, 50% { offset-distance: 0%; opacity: 0; } 54% { opacity: 1; } 64% { offset-distance: 62%; opacity: 1; } 92% { offset-distance: 62%; opacity: 1; } 100% { offset-distance: 62%; opacity: 0; } }
+@keyframes lhp-orb-z { 0%, 50% { offset-distance: 0%; opacity: 0; } 54% { opacity: 1; } 64% { offset-distance: 50%; opacity: 1; } 92% { offset-distance: 50%; opacity: 1; } 100% { offset-distance: 50%; opacity: 0; } }
+@keyframes lhp-orb-lane { 0% { offset-distance: 0%; opacity: 0; } 6% { opacity: 1; } 50% { offset-distance: 100%; opacity: 1; } 55% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes lhp-orb-win { 0%, 52% { offset-distance: 0%; opacity: 0; } 56% { opacity: 1; } 66% { offset-distance: 100%; opacity: 1; } 71% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes lhp-winglow { 0%, 62% { opacity: 0; } 66% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lhp-landed { 0%, 62% { opacity: 0; transform: translateY(4px); } 68% { opacity: 1; transform: translateY(0); } 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lhp-drop { 0%, 66% { opacity: 0; } 72% { opacity: 1; } 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes lhp-txglow { 0% { opacity: 0; } 3% { opacity: 1; } 14% { opacity: 1; } 27% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes lhp-provglow { 0%, 9% { opacity: 0; } 18% { opacity: 0.95; } 46% { opacity: 0.95; } 56% { opacity: 0; } 100% { opacity: 0; } }
+/* ingestion: mint event -> lightning strike -> pair card hydrates */
+@keyframes ing-charge { 0%, 9% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); } 13% { opacity: 1; transform: translate(-50%, -50%) scale(1.45); } 15.5% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); } 100% { opacity: 0; } }
+@keyframes ing-strike { 0%, 15% { stroke-dashoffset: 100; opacity: 0; } 15.6% { stroke-dashoffset: 0; opacity: 1; } 16.4% { opacity: 0.25; } 17.2% { opacity: 1; } 18.4% { opacity: 0.45; } 19.6% { opacity: 1; } 22% { opacity: 0.8; } 25% { opacity: 0; stroke-dashoffset: 0; } 100% { opacity: 0; } }
+@keyframes ing-glow { 0%, 15% { opacity: 0; } 15.6% { opacity: 0.95; } 18% { opacity: 0.35; } 20% { opacity: 0.8; } 26% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes ing-fork { 0%, 15.6% { opacity: 0; } 16.2% { opacity: 1; } 18% { opacity: 0.15; } 19.4% { opacity: 0.9; } 23% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes ing-flash { 0%, 15.2% { opacity: 0; } 15.8% { opacity: 0.95; } 18% { opacity: 0.3; } 21% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes ing-burst { 0%, 15.2% { opacity: 0; transform: translate(-50%, -50%) scale(0.25); } 15.9% { opacity: 0.9; } 30% { opacity: 0; transform: translate(-50%, -50%) scale(2.1); } 100% { opacity: 0; } }
+@keyframes ing-skel { 0%, 15% { opacity: 1; } 21%, 90% { opacity: 0; } 95%, 100% { opacity: 1; } }
+@keyframes ing-full { 0%, 16% { opacity: 0; } 22%, 90% { opacity: 1; } 96%, 100% { opacity: 0; } }
+@keyframes ing-pop { 0%, 16% { opacity: 0; transform: translateY(6px); } 22% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 96%, 100% { opacity: 0; transform: translateY(6px); } }
+@keyframes ing-channel { 0%, 100% { opacity: 0.12; } 50% { opacity: 0.22; } }
+@keyframes ing-statusblink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes ing-glow1 { 0% { opacity: 0; } 5% { opacity: 0.95; } 15% { opacity: 0.95; } 18.5% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes ing-glow2 { 0%, 15.5% { opacity: 0; } 17% { opacity: 1; } 19% { opacity: 0.8; } 21% { opacity: 1; } 97% { opacity: 1; } 100% { opacity: 0; } }
+/* mev protections: tx sealed in a private-relay shield; searchers break against it */
+@keyframes mev-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes mev-spinrev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+@keyframes mev-breath { 0%, 100% { opacity: 0.42; } 50% { opacity: 0.7; } }
+@keyframes mev-ripple { 0% { opacity: 0.85; transform: translate(-50%, -50%) scale(0.22); } 60% { opacity: 0.4; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); } }
+@keyframes mev-particle { 0% { opacity: 1; transform: translate(-50%, -50%) translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.3); } }
+@keyframes mev-spark { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); } 25% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); } }
+@keyframes mev-membraneflare { 0% { border-color: #5eead4; } 30% { border-color: #d6fff5; } 100% { border-color: #5eead4; } }
+@keyframes mev-flareburst { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.72); } 25% { opacity: 0.62; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.16); } }
+@keyframes mev-reject { 0% { opacity: 0; transform: translate(-50%, -50%) translateY(2px); } 22% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) translateY(-22px); } }
+@keyframes mev-relay { 0% { opacity: 0; transform: translate(-50%, -50%) translateX(0); } 12% { opacity: 1; } 86% { opacity: 1; transform: translate(-50%, -50%) translateX(330px); } 100% { opacity: 0; transform: translate(-50%, -50%) translateX(330px); } }
+@keyframes mev-lanefill { from { width: 0; opacity: 0.95; } to { width: 330px; opacity: 0.55; } }
+@keyframes mev-drift { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(9px, -7px); } 50% { transform: translate(-5px, 8px); } 75% { transform: translate(6px, 5px); } }
+@keyframes mev-scan { to { stroke-dashoffset: -28; } }
+
+/* ===================================================================
+   AGENTIC TRADING (`/agentic-trading`) — the agent surfaces rendered in
+   the marketing page's register. Prefix `lha-` (listen home agentic).
+   The page reuses the `.lh-home` palette and adds ONE token: `--lha-hot`
+   (the agent flame, `--flame` in the live chat), so the mint accent
+   stays "the system" and the flame stays "the agent".
+   =================================================================== */
+.lh-agentic {
+  --lha-hot: #ff6a3d;
+  --lha-hot-soft: rgba(255, 106, 61, 0.14);
+  --lha-hot-glow: rgba(255, 106, 61, 0.42);
+}
+
+/* Prompt caret at the end of the typewriter run. */
+.lha-caret::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.14em;
+  background: var(--lha-hot);
+  animation: lh-blink 1s steps(1) infinite;
+}
+
+/* Marquee track: two identical halves translated -50% for a seamless loop. */
+.lha-marquee { display: flex; width: max-content; will-change: transform; }
+.lha-marquee-row:hover .lha-marquee { animation-play-state: paused; }
+
+/* one-shot entrances */
+@keyframes lha-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+/* the proposal card does not fade in, it CONDENSES — scale + blur out of nothing */
+@keyframes lha-materialize {
+  0% { opacity: 0; transform: translateY(10px) scale(0.965); filter: blur(7px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes lha-noderise { 0% { opacity: 0; transform: translateY(7px); } 100% { opacity: 1; transform: translateY(0); } }
+
+/* running states */
+@keyframes lha-pulse { 0%, 100% { box-shadow: 0 0 0 0 var(--lha-hot-glow); } 50% { box-shadow: 0 0 0 4px rgba(255, 106, 61, 0); } }
+@keyframes lha-rail { 0% { transform: translateX(-100%); } 100% { transform: translateX(340%); } }
+@keyframes lha-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes lha-scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(560%); } }
+
+/* approval choreography: a cursor flies in, the button flares, the card arms */
+@keyframes lha-cursorfly {
+  0% { opacity: 0; transform: translate(46px, 52px) scale(1.3); }
+  18% { opacity: 1; }
+  62% { opacity: 1; transform: translate(0, 0) scale(1); }
+  70% { transform: translate(0, 0) scale(0.82); }
+  86% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(0, -6px) scale(1); }
+}
+@keyframes lha-approveflare {
+  0%, 58% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0); }
+  72% { box-shadow: 0 0 0 8px rgba(94, 234, 212, 0.22), 0 0 40px -6px rgba(94, 234, 212, 0.8); }
+  100% { box-shadow: 0 0 0 26px rgba(94, 234, 212, 0), 0 0 0 -6px rgba(94, 234, 212, 0); }
+}
+@keyframes lha-sweep { 0% { left: -60%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { left: 130%; opacity: 0; } }
+
+/* the trigger firing, then the fill landing */
+@keyframes lha-ping { 0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.3); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(3.4); } }
+@keyframes lha-fillpop { 0% { opacity: 0; transform: translateY(8px) scale(0.9); } 55% { transform: translateY(0) scale(1.045); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes lha-packet { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+
+/* the three "how it works" vignettes — each loops on a shared 9s cycle,
+   offset per element by animation-delay, so they stay in phase forever */
+@keyframes lha-type { 0% { width: 0; } 34% { width: 100%; } 84% { width: 100%; } 96%, 100% { width: 0; } }
+@keyframes lha-stepin { 0% { opacity: 0; transform: translateY(6px); } 7% { opacity: 1; transform: translateY(0); } 88% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(0); } }
+/* The two layers of the approve→armed swap sit on top of each other, so
+   their fades must NOT overlap — a shared window renders both at half
+   opacity and reads as a rendering bug rather than a handoff. */
+@keyframes lha-swapout { 0%, 44% { opacity: 1; transform: translateY(0); } 52%, 90% { opacity: 0; transform: translateY(-6px); } 97%, 100% { opacity: 1; transform: translateY(0); } }
+@keyframes lha-swapin { 0%, 52% { opacity: 0; transform: translateY(6px); } 60%, 90% { opacity: 1; transform: translateY(0); } 96%, 100% { opacity: 0; transform: translateY(6px); } }
+@keyframes lha-flarecycle { 0%, 40% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0); } 50% { box-shadow: 0 0 0 7px rgba(94, 234, 212, 0.2); } 58%, 100% { box-shadow: 0 0 0 16px rgba(94, 234, 212, 0); } }
+
+/* hero atmospherics */
+@keyframes lha-aurora { 0%, 100% { transform: translate3d(-3%, 0, 0) scale(1.05); opacity: 0.5; } 50% { transform: translate3d(3%, -2%, 0) scale(1.16); opacity: 0.85; } }
+@keyframes lha-beam { 0%, 100% { opacity: 0.16; transform: scaleY(0.94); } 50% { opacity: 0.4; transform: scaleY(1); } }
+@keyframes lha-marqueeL { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes lha-marqueeR { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* ===================================================================
+   PREVIEW DIRECTIONS (`/preview/*`) — the homepage + agents restyle.
+   Prefix `pv-`. Shared MOTION only; every colour, font and radius lives
+   in each direction's own token set, so the three can look nothing like
+   each other while animating off one vocabulary.
+
+   `[data-pv-anim]`  one-shot entrance (base style is the hidden state)
+   `[data-pv-loop]`  continuous motion
+   Both are silenced under `prefers-reduced-motion` at the bottom of
+   this file, with entrances snapped to their finished state.
+   =================================================================== */
+
+/* entrances */
+@keyframes pv-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pv-rise-sm { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pv-fade { from { opacity: 0; } to { opacity: 1; } }
+/* glass does not fade in, it CONDENSES out of the ground */
+@keyframes pv-condense {
+  0% { opacity: 0; transform: translateY(16px) scale(0.97); filter: blur(10px); }
+  62% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes pv-draw { from { stroke-dashoffset: var(--pv-dash, 600); } to { stroke-dashoffset: 0; } }
+@keyframes pv-wipe-up { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* ambience */
+@keyframes pv-drift {
+  0%, 100% { transform: translate3d(-2%, 1%, 0) scale(1.04); opacity: 0.72; }
+  50% { transform: translate3d(3%, -2%, 0) scale(1.14); opacity: 1; }
+}
+@keyframes pv-drift-slow {
+  0%, 100% { transform: translate3d(2%, -1%, 0) scale(1.1); opacity: 0.55; }
+  50% { transform: translate3d(-3%, 2%, 0) scale(1); opacity: 0.9; }
+}
+@keyframes pv-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes pv-breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes pv-spin { to { transform: rotate(360deg); } }
+
+/* live states */
+@keyframes pv-pulse { 0%, 100% { box-shadow: 0 0 0 0 var(--pv-pulse, rgba(127,242,222,0.5)); } 55% { box-shadow: 0 0 0 5px rgba(0,0,0,0); } }
+@keyframes pv-rail { 0% { transform: translateX(-110%); } 100% { transform: translateX(360%); } }
+@keyframes pv-ping { 0% { opacity: 0.9; transform: translate(-50%,-50%) scale(0.3); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(3.6); } }
+@keyframes pv-scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(620%); } }
+@keyframes pv-caret { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
+
+/* specular: the sweep that makes a glass pane read as glass */
+@keyframes pv-sweep { 0% { left: -60%; opacity: 0; } 12% { opacity: 1; } 86% { opacity: 1; } 100% { left: 130%; opacity: 0; } }
+
+/* Glacier draws its rules rather than fading them in. */
+@keyframes pv-scale-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pv-scale-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* hover states that belong to a direction rather than an element */
+.pv-btn:hover { transform: translateY(-2px); box-shadow: 0 26px 60px -22px rgba(127, 242, 222, 0.95); }
+.pv-btn:hover .pv-btn-sheen { animation: pv-sweep 1.3s cubic-bezier(0.4, 0, 0.2, 1) infinite; opacity: 1; }
+.pv-ghost:hover { border-color: rgba(255, 255, 255, 0.26); color: #F4F8F9; }
+.pv-g-primary:hover { background: #8CF6E4; border-color: #8CF6E4; }
+.pv-g-ghost:hover { border-color: #6FEFD6; color: #6FEFD6; }
+.pv-s-btn:hover { transform: translateY(-2px); }
+.pv-s-btn:active { transform: translateY(0); }
+
+/* marquees */
+@keyframes pv-marquee-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes pv-marquee-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* the lane race + travelling packets */
+@keyframes pv-packet { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+
+.pv-marquee { display: flex; width: max-content; will-change: transform; }
+.pv-marquee-row:hover .pv-marquee { animation-play-state: paused; }
+
+/* A caret that belongs to the text it follows, not to a wrapper. */
+.pv-caret::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1.05em;
+  margin-left: 0.12em;
+  vertical-align: -0.16em;
+  background: currentColor;
+  animation: pv-caret 1.05s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pv-anim] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  [data-pv-loop] { animation: none !important; }
+  .pv-caret::after { animation: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lh-home [data-anim] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .lh-home [data-loop] {
+    animation: none !important;
+  }
+  /* Pseudo-elements can't carry [data-loop]; silence the caret directly. */
+  .lh-home .lha-caret::after {
+    animation: none !important;
+  }
+  /* The agent run's beat-gated entrances are keyframed but NOT [data-anim]
+     — their `opacity` is the beat gate, so the global rule's
+     `opacity: 1 !important` would reveal every beat at once. Kill the
+     motion, keep the gate. Inline transitions stay, matching the
+     homepage diagrams. */
+  .lh-home .lha-run * {
+    animation: none !important;
+  }
+  /* Loops whose HIDDEN state is the animation's start frame: with the
+     animation gone they would never appear at all. */
+  .lh-home [data-rm-show] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ==================================================================
+   Agent chat markdown — Streamdown third-party overrides.
+   Streamdown ships prose-scale defaults (text-3xl headings, text-sm
+   cells); the thread needs the terminal's 9–13px scale. Streamdown
+   tags every element with data-streamdown, which is the supported
+   restyling hook (components/agent/parts/AgentMarkdown.tsx).
+   ================================================================== */
+.agent-md {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-1);
+  overflow-wrap: break-word;
+}
+.agent-md p { margin: 0 0 8px; }
+.agent-md > *:last-child, .agent-md p:last-child { margin-bottom: 0; }
+.agent-md [data-streamdown='heading-1'],
+.agent-md [data-streamdown='heading-2'] {
+  margin: 12px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-0);
+}
+.agent-md [data-streamdown='heading-3'],
+.agent-md [data-streamdown='heading-4'],
+.agent-md [data-streamdown='heading-5'],
+.agent-md [data-streamdown='heading-6'] {
+  margin: 10px 0 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.agent-md > :first-child { margin-top: 0; }
+.agent-md [data-streamdown='strong'] { font-weight: 600; color: var(--ink-0); }
+.agent-md [data-streamdown='unordered-list'],
+.agent-md [data-streamdown='ordered-list'] { margin: 2px 0 8px; padding-left: 2px; }
+.agent-md [data-streamdown='list-item'] { padding: 1px 0; }
+.agent-md [data-streamdown='list-item']::marker { color: var(--ink-3); }
+.agent-md [data-streamdown='link'] {
+  color: var(--flame);
+  font-weight: 500;
+  text-decoration-color: rgba(255, 106, 61, 0.35);
+}
+.agent-md [data-streamdown='inline-code'] {
+  padding: 0 4px;
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  background: var(--surface-2);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-0);
+}
+.agent-md [data-streamdown='blockquote'] {
+  margin: 8px 0;
+  border-left: 2px solid var(--hairline-2);
+  padding-left: 10px;
+  color: var(--ink-2);
+  font-style: normal;
+}
+.agent-md [data-streamdown='horizontal-rule'] { margin: 10px 0; border-color: var(--hairline); }
+.agent-md [data-streamdown='table-wrapper'] {
+  margin: 8px 0;
+  border-color: var(--hairline);
+  border-radius: 6px;
+  background: var(--surface-2);
+  padding: 2px;
+}
+.agent-md [data-streamdown='table'] { border-color: var(--hairline); }
+.agent-md [data-streamdown='table-header'] { background: transparent; }
+.agent-md [data-streamdown='table-header-cell'] {
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.agent-md [data-streamdown='table-cell'] {
+  padding: 4px 8px;
+  font-size: 11.5px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.agent-md [data-streamdown='table-body'],
+.agent-md [data-streamdown='table-row'] { border-color: var(--hairline); }
+.agent-md [data-streamdown='code-block'] {
+  margin: 8px 0;
+  border-color: var(--hairline);
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+.agent-md [data-streamdown='code-block'] pre,
+.agent-md [data-streamdown='code-block-body'] {
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+/* Dim variant — reasoning summaries render one notch smaller/quieter. */
+.agent-md.agent-md--dim { font-size: 12px; color: var(--ink-2); }
+/* Streaming caret: Streamdown appends its block caret as ::after on the
+   last block while isAnimating. Tinted accent and eased on its own
+   curve (`ag-caret`, agent-chat.css) — it holds lit and fades back
+   rather than strobing, which is what made the old shared pulse read
+   as an error state next to calm prose. */
+.agent-md > *:last-child::after {
+  color: var(--accent-primary);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  animation: ag-caret 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-md > *:last-child::after { animation: none; }
+}

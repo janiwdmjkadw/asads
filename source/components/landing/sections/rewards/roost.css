@@ -1,0 +1,157 @@
+/*
+ * THE ROOST.
+ *
+ * Its own stylesheet rather than Tailwind arbitrary values, for one
+ * reason: the mark is a CSS mask over a gradient, and a mask needs six
+ * declarations with vendor prefixes on half of them. That is a thing to
+ * write once in a file, not six times in a class attribute.
+ *
+ * Every colour in here comes from the band's own `--lp-*` tokens, which
+ * Rewards declares light on its own scope. The metals are the exception
+ * and they are inline on the element, because each rung has its own.
+ */
+
+[data-lp-roost] .rst-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+/*
+ * `space-between`, so the outer two owls sit flush on the column's edges
+ * and the three between them divide the span evenly. That is what makes
+ * the ladder exactly as wide as the three columns under it, rather than a
+ * short bar floating in the middle of a wide band.
+ */
+[data-lp-roost] .rst-c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/*
+ * The mark is the real logo, masked, so the metal is simply the ground
+ * showing through the silhouette. Same technique the header uses, and the
+ * same technique `tier-roost.css` uses in the product, which is what stops
+ * the crest and the logo ever drifting apart.
+ *
+ * `/landing/svg/mark.svg` and the product's `/assets/logo.svg` are the
+ * same file, byte for byte. The landing path is used here because it is
+ * the one the header already depends on.
+ */
+[data-lp-roost] .rst-owl {
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  -webkit-mask-image: url(/landing/svg/mark.svg);
+  mask-image: url(/landing/svg/mark.svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/*
+ * The rate is the fact somebody came for, so it outranks the tier's name.
+ * In the product it is the other way round, because in there you already
+ * know which rung is yours and want to know what it pays.
+ *
+ * IT IS INK, NOT MINT. Mint was tried here and taken back out. On paper
+ * #5EEAD4 is 1.24:1 so it can never be the real thing, and the readable
+ * version of the hue turned five figures into a second accent competing
+ * with the five metals directly above them. The owls are already carrying
+ * colour on this row. The numbers do not need to.
+ */
+[data-lp-roost] .rst-p {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--lp-ink-1);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-lp-roost] .rst-k {
+  font-size: 10.5px;
+  line-height: 1.2;
+  color: var(--lp-ink-3);
+  white-space: nowrap;
+}
+
+/* ── the rail ─────────────────────────────────────────────────────── */
+
+[data-lp-roost] .rst-rail {
+  position: relative;
+  height: 4px;
+  margin-top: 18px;
+  border-radius: 2px;
+  background: rgba(11, 11, 11, 0.07);
+  box-shadow: inset 0 0 0 1px var(--lp-hairline);
+}
+
+[data-lp-roost] .rst-rail > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--lp-ink-1);
+}
+
+/* The ring is the page ground, not a colour, so the head sits ON the rail
+   rather than over it. */
+[data-lp-roost] .rst-rail > b {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--lp-ink-1);
+  box-shadow: 0 0 0 4px #ffffff;
+}
+
+[data-lp-roost] .rst-say {
+  margin: 22px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--lp-ink-3);
+  text-align: center;
+}
+
+/*
+ * ── AT `lg` ──────────────────────────────────────────────────────────
+ *
+ * Everything grows. The phone sizes above are the constraint, not the
+ * design: five names have to fit across 335px there, and "Platinum" at
+ * 13.5px against a 58px owl is what collides.
+ */
+@media (min-width: 1024px) {
+  [data-lp-roost] .rst-row {
+    gap: 16px;
+  }
+  [data-lp-roost] .rst-c {
+    gap: 12px;
+  }
+  [data-lp-roost] .rst-owl {
+    width: 58px;
+    height: 58px;
+  }
+  [data-lp-roost] .rst-p {
+    font-size: 26px;
+  }
+  [data-lp-roost] .rst-k {
+    font-size: 13.5px;
+  }
+  [data-lp-roost] .rst-rail {
+    margin-top: 22px;
+  }
+  [data-lp-roost] .rst-say {
+    margin-top: 26px;
+    font-size: 13.5px;
+  }
+}

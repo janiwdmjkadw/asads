@@ -1,0 +1,849 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE PORTFOLIO HEADER, LEDGER
+ *
+ * Black ground, one ink scale, type doing the hierarchy through size
+ * and weight and never through hue. The ONLY colour on this screen is
+ * up-green and down-pink, and only ever on a figure that is actually a
+ * gain or a loss.
+ *
+ * There is no accent here on purpose. This page was the most colourful
+ * thing in the product and the least legible — a green-blue-pink
+ * gradient dash, three coloured ticks, an accent-filled and glowing
+ * range pill, a cyan-to-purple chart line over a tinted wash, a mascot,
+ * and five confetti bars falling onto a gold coin. The accent belongs
+ * to the friends page, where colour is the point. Here the point is a
+ * number somebody wants to show other people.
+ *
+ * See `SpotHeader.tsx` for what each element replaced.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.spl-lab {
+  display: block;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  /* Sentence case, no track, no mark in front of it. It was 9.5px mono
+     capitals on a 0.18em track behind a three-colour gradient dash. */
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+}
+
+.spl-total {
+  font-family: var(--sans);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-0);
+}
+
+/*
+ * The cents, and the percent beside the delta. Both are true and both
+ * are secondary, and setting them back is what lets the figure in front
+ * of them be read at a glance instead of parsed.
+ *
+ * This is the only treatment on the number. The two stacked copies with
+ * a metallic sweep across the top one, over a drop-shadow emboss, made
+ * the total HARDER to read at the exact moment it mattered most.
+ */
+.spl-dim { color: rgba(255, 255, 255, 0.4); }
+
+.spl-delta {
+  padding-bottom: 4px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── the range control ────────────────────────────────────────────── */
+
+/*
+ * Four words. The live one is the white one.
+ *
+ * It was a bordered tray holding four bordered capsules, the live one
+ * filled with 16% accent, its border 45% accent, under a 14px accent
+ * glow: five borders and a light source, to say which of `1D 30D 90D
+ * Max` you had clicked.
+ */
+.spl-range { display: inline-flex; align-items: center; gap: 14px; }
+
+.spl-range > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.spl-range > button[data-on] { color: var(--ink-0); }
+.spl-range > button:hover { color: var(--ink-1); }
+.spl-range > button:focus-visible {
+  outline: none;
+  color: var(--ink-0);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── realized / unrealized / cost basis ───────────────────────────── */
+
+/*
+ * Three figures with their names under them. No pips, no capitals, no
+ * track, and no rules between them — 34px of space says these are three
+ * separate things at least as well as a fading hairline does, and does
+ * not put furniture on a line that is already three columns of digits.
+ *
+ * Wraps, because a phone gets the same three figures.
+ */
+.spl-figs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 34px;
+  margin-top: 16px;
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.spl-fig { display: inline-flex; flex-direction: column; gap: 4px; }
+
+.spl-fig > i {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+}
+
+.spl-fig > b { font-size: 15px; font-weight: 500; line-height: 1.1; }
+
+/* ── the chart, and the line under it ─────────────────────────────── */
+
+/*
+ * The chart runs on the page: no plate, no border, no radius, and the
+ * height the line needs rather than the 300px a panel wanted. Directly
+ * under the total, because it is the picture of that number.
+ */
+.spl-chart {
+  position: relative;
+  flex-shrink: 0;
+  height: 168px;
+  margin-top: 14px;
+}
+
+/*
+ * The three figures, and the wallet filter at the far end. One rule
+ * under them, and it is the only divider on the page — everything
+ * above it belongs to the total, everything below is the holdings.
+ */
+/*
+ * Centred, because there is one thing on it. It was `space-between`
+ * with realized and unrealized at the other end; with those gone a
+ * lone control pinned to the left edge of a 1100px rule reads as
+ * something that lost its pair.
+ */
+.spl-under {
+  /*
+   * ── IT HAS TO OUTRANK ITS OWN SIBLINGS ────────────────────────────
+   *
+   * The selector's menu is `z-index: 40` and was still painted over by
+   * the split and the holdings below it.
+   *
+   * `spot-rise` is an `animation: … both`, which leaves a transform on
+   * the element it finished on — and a transform creates a stacking
+   * context. So `.spot-rise-2` and `.spot-rise-3` are each their own
+   * context at `z-index: auto`, and being LATER siblings they paint on
+   * top of anything inside this one, whatever number it carries.
+   *
+   * The fix is here rather than on the menu: this row needs its own
+   * context, above theirs.
+   */
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  flex-shrink: 0;
+  padding: 0 2px 16px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ── the three way split ──────────────────────────────────────────── */
+
+/*
+ * ONE BAR, NOT THREE.
+ *
+ * The three lengths in a single stacked object with a legend under it,
+ * so the comparison the row exists to make is made by the row. Three
+ * separate bars means three baselines, and comparing lengths that do
+ * not start at the same place is work the reader should not be doing.
+ *
+ * Three weights of one white, never three hues: this is one quantity
+ * cut three ways, and a hue per cut would both claim they are different
+ * kinds of thing and make the lengths harder to read.
+ */
+.spl-split {
+  /* The bar is 8px tall where the three columns were 60, so the section
+     gap that used to sit under a tall block now reads as nothing at all
+     — the legend and the holdings head were touching. */
+  padding: 0 2px 26px;
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.spl-bar { display: flex; height: 8px; gap: 2px; }
+.spl-bar > span { border-radius: 2px; transition: flex-grow 700ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+.spl-key { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 14px; font-size: 12px; }
+.spl-key > span { display: inline-flex; align-items: baseline; gap: 7px; }
+/* 9px, not 7. The swatch is the only place the three inks are read
+   side by side at the same size, so it is the size that decides whether
+   they are telling anybody apart — and 7px of 16% white is a smudge. */
+.spl-key i { width: 9px; height: 9px; border-radius: 2px; align-self: center; font-style: normal; flex: none; }
+.spl-key b { font-weight: 500; color: var(--ink-0); }
+.spl-key u { text-decoration: none; color: var(--ink-3); }
+
+/* ── narrow ───────────────────────────────────────────────────────── */
+
+/*
+ * The container, not the viewport: this header sits inside a tab pane
+ * that a docked panel can take 480px off. A `@media` rule keyed to the
+ * window would not fire while the thing it is measuring is half the
+ * window wide.
+ */
+@container portfolio (max-width: 560px) {
+  .spl-total { font-size: 34px; }
+  .spl-chart { height: 132px; }
+  .spl-key { gap: 8px 18px; font-size: 11.5px; }
+  /* The amount and the share are the two the reader can live without at
+     this width; the value and the day cannot go. */
+  .spl-tr { grid-template-columns: 24px minmax(80px, 1fr) minmax(30px, 0.7fr) 92px 58px; }
+  .spl-tr-share, .spl-tr-amt { display: none; }
+  .spl-delta { font-size: 13.5px; }
+  .spl-figs { gap: 10px 24px; margin-top: 13px; }
+  .spl-fig > b { font-size: 14px; }
+}
+
+/* ══ THE PANELS ════════════════════════════════════════════════════
+ *
+ * `--section-bg` is the app-wide panel ground, and it carries two
+ * coloured washes: a 1200×200 violet radial from the top left corner
+ * and an 800×200 cyan one from the bottom right. On most screens they
+ * are a texture you never notice. On this one they sit behind a chart
+ * that used to be cyan-to-purple itself, and once the chart went white
+ * they became the only hue left on the page — a violet corner and a
+ * cyan corner, lighting nothing.
+ *
+ * Overridden HERE rather than in the token, because the token is every
+ * panel in the product and this is a decision about the portfolio.
+ * `.portfolio-panel` is only ever the spot, wallets and perpetuals
+ * panes; nothing else wears it.
+ */
+/*
+ * ── THE PORTFOLIO HAS NO PANEL ───────────────────────────────────────
+ *
+ * Black. Not a card on black, not a grey plate, not a rounded box with
+ * a light on it. The page IS the ground, and the only line on it is the
+ * one under the figures.
+ *
+ * `.panel` is four separate paint jobs, and all four had to go:
+ *
+ *   background   `--section-bg`, itself a violet radial from the top
+ *                left corner and a cyan one from the bottom right
+ *   border       `--section-border`, a rounded card edge
+ *   ::before     a 14% ACCENT radial out of the top left, a 10% accent
+ *                radial out of the bottom right, and a white gradient
+ *                down the first 40% — the "light at the top"
+ *   ::after      a 1px accent-into-white glow across the top edge
+ *
+ * That is a lit card, and the page inside it is a black page. The two
+ * were never going to agree, and every restyle underneath it was being
+ * judged through a wash it did not put there.
+ *
+ * Scoped to `.portfolio-panel`, which is only ever the spot, wallets
+ * and perpetuals panes. Every other `.panel` in the product keeps its
+ * card, because this is a decision about the portfolio.
+ *
+ * `.listen-root .portfolio-panel` and not `.portfolio-panel`: the rule
+ * being beaten is `.listen-root .panel`, which is two classes, and one
+ * class loses to it silently.
+ */
+.listen-root .portfolio-panel {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.listen-root .portfolio-panel::before,
+.listen-root .portfolio-panel::after {
+  content: none;
+}
+
+/*
+ * ── EXCEPT THE WALLETS PANE ──────────────────────────────────────────
+ *
+ * Spot and perpetuals are one column of figures on the page's own
+ * ground, and a frame around them would be a box drawn round a page.
+ * Wallets is a different shape: two panes side by side, a list you drag
+ * OUT of and two wells you drop INTO, and the frame is what says those
+ * three regions are one instrument rather than three lists that happen
+ * to be near each other. It is a hairline and a radius, nothing else —
+ * no fill, no lift, no light. The ground inside it is the same black.
+ */
+.listen-root .wallets-panel {
+  /* The edge has to stay ahead of the fill or the plate loses its
+     outline: --hairline is 6% white and the ground is now 5%. */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  /*
+   * A GROUND OF ITS OWN. The frame alone said "these three regions
+   * belong together"; the fill says "and they are a surface you work
+   * ON", which is the thing the reference gets right and a bare border
+   * does not.
+   *
+   * White at 2.8% over black, NOT --surface. The theme's surface steps
+   * are hsl(220 ...), a blue near-black, and a blue plate on a neutral
+   * black page reads as a colour cast rather than a lift. This is the
+   * same neutral film the approved ticket on the frens page uses, so
+   * the two surfaces are the same material.
+   */
+  background: rgba(255, 255, 255, 0.03);
+}
+
+
+/* ══ THE PHONE ═════════════════════════════════════════════════════
+ *
+ * Only layout here. Scrolling is not a phone rule any more — the pane
+ * scrolls at every size (see `.spl-spot`), so this block no longer has
+ * to undo a desk layout, it just decides what fits on 375px.
+ *
+ * And width is a CONTAINER question, not a viewport one: the pane
+ * narrows when a tracker docks beside it, so how many columns fit is
+ * decided in `@container portfolio` above. What is left for `@media` is
+ * the handful of things that really are about the device.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  /* The three figures and the wallet filter stack rather than sit at
+     opposite ends of a line 375px wide. */
+  .spl-under {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding-bottom: 16px;
+  }
+
+  .spl-chart { height: 148px; }
+
+  /* The legend wraps to two lines rather than one scrolling one. */
+  .spl-key { gap: 8px 18px; }
+
+  /* Room to breathe at the bottom, so the last holding is not welded to
+     the footer. */
+  .spl-tape-body { padding-bottom: 24px; }
+
+  /* The amount and the share are the two a reader can live without at
+     this width; the value and the day cannot go. */
+  .spl-tr { grid-template-columns: 24px minmax(80px, 1fr) minmax(30px, 0.7fr) 92px 58px; }
+  .spl-tr-share, .spl-tr-amt { display: none; }
+}
+
+
+/* ══ THE PANE ══════════════════════════════════════════════════════
+ *
+ * ── THE PAGE SCROLLS, NOTHING INSIDE IT DOES ─────────────────────────
+ *
+ * One scroller, at every width.
+ *
+ * It was locked to the window with each part carrying its own overflow,
+ * which sounds right and is not: on an 820px window the header, the
+ * chart and the split take everything, and the holdings tape — the
+ * thing the page is for — got sixty pixels and an inner scrollbar. A
+ * list of six tokens was a peephole showing one.
+ *
+ * RESTORED. A later rewrite of this file's selector section dropped the
+ * rule, so the pane fell back to `overflow: visible` and nothing on the
+ * page scrolled at all — most visibly on a phone, where the tape simply
+ * ran off the bottom.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.spl-spot {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  /* `none`, not `contain`: `contain` still rubber-bands at the ends,
+     which on a page like this reads as the layout coming apart. */
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Nothing in the column may shrink to make room; that is what produced
+   the peephole. */
+.spl-spot > * { flex-shrink: 0; }
+
+/* ══ THE HOLDINGS TAPE ═════════════════════════════════════════════
+ *
+ * Restored. An earlier edit cut from the wallets-tab block through to
+ * the end of the file and took these with it, which is why the tape
+ * rendered with a token logo at full page width and `Holdings6 tokens`
+ * run together — the rules were simply not there.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.spl-body { display: block; padding-bottom: 20px; }
+.spl-tape-wrap { display: block; min-width: 0; }
+.spl-tape { display: flex; flex-direction: column; min-height: 0; font-family: var(--sans); }
+
+.spl-tape-h {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 2px 8px;
+}
+
+.spl-tape-h > b { font-size: 12.5px; font-weight: 600; color: var(--ink-0); }
+.spl-tape-h > small { font-size: 11px; color: var(--ink-3); }
+
+.spl-tape-body { display: block; }
+.spl-tape-empty { padding: 20px 2px; font-family: var(--sans); font-size: 12px; color: var(--ink-3); }
+
+/*
+ * Seven tracks, all fixed except the identity and the bar, so the
+ * figures line up down the column. A tape whose columns do not line up
+ * is not a tape.
+ */
+.spl-tr {
+  display: grid;
+  grid-template-columns: 24px minmax(96px, 1.2fr) minmax(40px, 1fr) 52px 84px 96px 62px;
+  align-items: center;
+  column-gap: 12px;
+  height: 38px;
+  padding: 0 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 130ms ease;
+}
+
+.spl-tr:hover { background: rgba(255, 255, 255, 0.03); }
+
+/*
+ * No ring. The frame carried a 1px 14% white border, which existed back
+ * when these were generated squares and the artwork needed an edge to
+ * stop it reading as a hole. They are real logos now, and a real logo
+ * has its own edge — a ring round it is a second one, and six of them
+ * down a column is a row of buttons.
+ *
+ * The frame stays for the corner and the clip: `overflow: hidden` plus
+ * a radius is what rounds an image that does not round itself, and the
+ * ground behind it is what a transparent logo sits on.
+ */
+.spl-tr-art {
+  display: block;
+  width: 22px;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #131316;
+}
+
+.spl-tr-art > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.spl-tr-id { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
+.spl-tr-tick { font-weight: 500; color: var(--ink-0); }
+.spl-tr-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* White, because a share of a total is not a category — and because
+   the comparison this column exists to make is between LENGTHS. */
+.spl-tr-bar {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+
+.spl-tr-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255, 255, 255, 0.5); }
+
+.spl-tr-share { text-align: right; font-size: 11.5px; color: var(--ink-3); }
+.spl-tr-amt { text-align: right; font-size: 11.5px; color: var(--ink-3); }
+.spl-tr-val { text-align: right; color: var(--ink-0); }
+.spl-tr-day { text-align: right; font-size: 12px; }
+
+/* ══ THE WALLET SELECTOR ═══════════════════════════════════════════
+ *
+ * It drops out of this page, so it is made of this page: black ground,
+ * one hairline, type doing the work, and a hover that is one step of
+ * brightness.
+ *
+ * What it was: a `--surface-1` grey card with a 10px radius floating
+ * under a 40px drop shadow, rows on rounded fills. That is a generic
+ * dropdown — a component from some other product parked on a screen
+ * that has no plates anywhere else on it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.wsel { position: relative; font-family: var(--sans); }
+
+/* Words and a chevron, like the range control above it. */
+.wsel-t {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-0);
+  cursor: pointer;
+}
+
+.wsel-t-usd { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.wsel-chev { align-self: center; color: var(--ink-3); transition: transform 130ms ease, color 130ms ease; }
+.wsel-t:hover .wsel-chev { color: var(--ink-1); }
+
+/* ── the menu ─────────────────────────────────────────────────────── */
+
+/*
+ * Black on black, held apart by one hairline and nothing else. No
+ * radius past the page's own 10, no fill, and no shadow bloom — the
+ * hairline is the edge, the way every edge on this page is.
+ *
+ * Centred under the trigger, because the trigger is centred and a menu
+ * hanging off one side of a centred control pulls the eye off centre.
+ */
+.wsel-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  width: 252px;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--ink-0) 14%, transparent);
+  border-radius: 10px;
+  background: #000000;
+}
+
+/* Only above ten wallets — see `SEARCH_AT`. A box labelled `Filter`
+   over four wallets asks a question the list already answers. */
+.wsel-find {
+  width: 100%;
+  height: 28px;
+  margin-bottom: 2px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-0);
+}
+
+.wsel-find::placeholder { color: var(--ink-3); }
+.wsel-find:focus { outline: none; border-bottom-color: color-mix(in srgb, var(--ink-0) 30%, transparent); }
+
+/* Nine rows before it scrolls: a normal book never scrolls at all, and
+   fifty do not fill the page. */
+.wsel-list { max-height: 270px; overflow-y: auto; }
+
+/*
+ * 30px rows and no rounded plate under the pointer. Hover is a step of
+ * brightness on the type, which is what every other list on this page
+ * does — the rounded fill was the dropdown's, not ours.
+ */
+.wsel-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.wsel-row:hover { color: var(--ink-0); }
+.wsel-row[data-on] { color: var(--ink-0); }
+.wsel-row[data-archived] { opacity: 0.55; }
+
+/* The `All wallets` row is the head of the list, so it carries the
+   rule rather than a heading nobody needs. */
+.wsel-row:first-child { border-bottom: 1px solid var(--hairline); height: 32px; }
+
+.wsel-row-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.wsel-row-usd { flex: none; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.wsel-row[data-on] .wsel-row-usd { color: var(--ink-2); }
+
+/* The box, empty or filled, never a colour. */
+.wsel-box {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 1px solid color-mix(in srgb, var(--ink-0) 24%, transparent);
+  border-radius: 3px;
+  background: transparent;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.wsel-row:hover .wsel-box { border-color: color-mix(in srgb, var(--ink-0) 42%, transparent); }
+.wsel-box[data-on] { background: var(--ink-0); border-color: var(--ink-0); }
+
+.wsel-none { padding: 9px 8px; font-size: 12px; color: var(--ink-3); }
+
+
+/* ══ THE WALLETS TAB, ON A PHONE ═══════════════════════════════════
+ *
+ * At 375 the tab was unusable, and not in a way more breakpoints fix:
+ * it is a desk layout that assumes a pointer and a wide row.
+ *
+ *   · The row is a five track grid. In a 354px pane the three fixed
+ *     tracks and their gaps take 276 of it, so the NAME — the only
+ *     thing on the row a person is looking for — got 78px and rendered
+ *     as nothing. Every row read `Sand…1111`.
+ *
+ *   · The stats strip flowed as one line, so `3 wallets active` broke
+ *     across two and `0 SOL` broke between the mark and the figure.
+ *
+ *   · The transfer rail is two DRAG TARGETS, and there is no dragging
+ *     on a touch screen. It took two thirds of the page to offer a
+ *     gesture the device cannot make.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  /*
+   * The row becomes two lines: who on the first, what it holds on the
+   * second. Nothing is truncated because nothing competes for the same
+   * line any more.
+   *
+   * Scoped to WALLET rows by their testid. A blanket `[role="row"]`
+   * also caught the group rows, which have one cell — they inherited a
+   * 52px floor and wrapped around nothing, so the tree turned into four
+   * tall empty bands.
+   */
+  .listen-root [data-testid^='wallet-row-'] {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 10px;
+    height: auto !important;
+    min-height: 52px;
+    padding: 8px 12px !important;
+  }
+
+  /* The identity cluster takes the whole first line. */
+  .listen-root [data-testid^='wallet-row-'] > div:first-of-type { flex: 1 1 100%; min-width: 0; }
+
+  /* Everything after it shares the second. */
+  .listen-root [data-testid^='wallet-row-'] > span { flex: 0 0 auto; }
+
+  /*
+   * The rail is gone below 700, not shrunk. A drop target you cannot
+   * drag into is not a smaller feature, it is a dead one — and the
+   * transfer modal it opens is still reachable from the desk layout.
+   */
+  .wt-rail { display: none !important; }
+
+  /* The stats strip stacks instead of breaking mid-phrase. */
+  .listen-root .portfolio-stats { flex-wrap: wrap; gap: 10px 14px; }
+}
+
+
+/* ══ THE WALLETS TAB'S WORD BUTTONS ════════════════════════════════
+ *
+ * `History`, `Import`, `Create` and `Show Archived`.
+ *
+ * They had NO hover state at all — the inline style set a colour and
+ * nothing changed under the pointer, so four things that are buttons
+ * looked exactly like four things that are labels. That is most of why
+ * the strip read as unfinished.
+ *
+ * Hover is a step of brightness on the type plus a soft plate behind
+ * it, which is what tells you the word is a target before you click it.
+ * The plate is 6% white — enough to register, not enough to reintroduce
+ * the bordered pills these replaced.
+ *
+ * The padding lives here rather than in the inline style so the plate
+ * has something to be, and the row's own gap holds them apart.
+ */
+.listen-root .wt-word {
+  padding: 0 9px !important;
+  border-radius: 7px !important;
+  transition: color 130ms ease, background-color 130ms ease !important;
+}
+
+.listen-root .wt-word:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-0) !important;
+}
+
+.listen-root .wt-word:active:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+
+.listen-root .wt-word:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-0) !important;
+}
+
+/* Disabled says so by not lighting up, rather than by looking the same
+   as everything else and doing nothing. */
+.listen-root .wt-word:disabled { cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WALLETS TAB'S ACTION RAIL
+ *
+ * NAMED `wt-acts`, NOT `wt-rail`. `wt-rail` was already taken by the
+ * TRANSFER rail — the `<aside>` on the right half of this same tab,
+ * whose classes are `grid grid-rows-2 wt-rail`, and which the phone
+ * rules hide by that hook. A `.listen-root .wt-rail` rule here beats
+ * Tailwind's `.grid` on specificity, so it turned that whole panel into
+ * an inline flex row on a translucent plate: From Wallet and
+ * Destination went side by side and the right half of the tab broke.
+ *
+ * `History`, `Import`, `Create` were three controls of equal weight in
+ * the loudest slot on the page, and two of them are not the same KIND
+ * of thing as the third: Create makes a wallet, the other two are
+ * somewhere to go. A flat row says they are peers, which is why moving
+ * them further apart never helped.
+ *
+ * One plate, three squares. The plate says they belong together and sit
+ * under the figure opposite them; the white square says which one makes
+ * something. Everything is scoped under `.listen-root` because the
+ * buttons it dresses carry inline styles from the page, and a bare
+ * class loses to those.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.listen-root .wt-acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  /* Barely there. It is a ground for three glyphs, not a card — at 8%
+     it read as a fourth button behind the three. */
+  background: rgba(255, 255, 255, 0.045);
+}
+
+/* The create square owns the menu, so it anchors it. */
+.listen-root .wt-acts-wrap { position: relative; display: inline-flex; }
+
+.listen-root .wt-sq {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2, #8b8f98);
+  cursor: pointer;
+  transition:
+    color 130ms var(--ease, ease),
+    background-color 130ms var(--ease, ease);
+}
+
+.listen-root .wt-sq:hover { color: var(--ink-0); background: rgba(255, 255, 255, 0.09); }
+.listen-root .wt-sq:active { background: rgba(255, 255, 255, 0.14); }
+
+.listen-root .wt-sq:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.34);
+  outline-offset: 1px;
+}
+
+/*
+ * `aria-disabled`, not `:disabled`. A disabled button eats pointer
+ * events, so the tooltip saying WHY it is dark could never open — the
+ * one moment the label earns its keep. This dresses it the same and
+ * leaves it hoverable.
+ */
+.listen-root .wt-sq[aria-disabled='true'] {
+  color: var(--ink-3, #4b4e55);
+  cursor: not-allowed;
+}
+.listen-root .wt-sq[aria-disabled='true']:hover { background: rgba(255, 255, 255, 0.05); }
+.listen-root .wt-sq[aria-disabled='true']:active { background: rgba(255, 255, 255, 0.05); }
+
+/* The page is allowed exactly one filled control and this is it. */
+.listen-root .wt-sq-go,
+.listen-root .wt-sq-go:hover {
+  background: var(--ink-0, #fff);
+  color: #000;
+}
+.listen-root .wt-sq-go:hover { background: #dcdde0; }
+.listen-root .wt-sq-go:active { background: #c8c9cd; }
+
+.listen-root .wt-menu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 50;
+  min-width: 160px;
+  padding: 4px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--surface-1, var(--surface));
+  box-shadow: var(--shadow-dropdown, 0 8px 24px rgba(0, 0, 0, 0.18));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--sans);
+}
+
+/*
+ * ── THE TOOLTIP HAS TO BE VISIBLE ON BLACK ───────────────────────────
+ *
+ * The shared chip is `bg-popover` over a 6% border, which resolves to
+ * #101114 on a hairline nobody can see. That is fine on the panels it
+ * was drawn for and it VANISHES here: this page's ground is actual
+ * black, so the chip was dark grey type floating with no edge at all.
+ *
+ * A step lighter than anything else on the strip, a border with enough
+ * in it to close the shape, and a real shadow to lift it off the row.
+ * It is the one floating object on the tab, so it can afford all three.
+ *
+ * Two lines when there is a reason to give one, so `Coming soon` sits
+ * UNDER the name rather than inside it in brackets.
+ */
+.listen-root .wt-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  line-height: 1.3;
+  background: #1b1c21;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+}
+.listen-root .wt-tip-l { font-size: 11.5px; font-weight: 500; color: var(--ink-0); }
+.listen-root .wt-tip-s { font-size: 10.5px; color: var(--ink-3); }

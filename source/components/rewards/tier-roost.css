@@ -1,0 +1,90 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE ROOST
+ *
+ * Five owls in a row, each struck in the metal it is named after.
+ *
+ * It replaced a rail of five hue coded pips under a 96px ghost word of
+ * the tier's name in that tier's colour, with a coin at the summit. The
+ * hues were arbitrary, so the page taught a code before it could say
+ * anything.
+ *
+ * The mark is the real logo, masked, the way `BrandMark.tsx` does it in
+ * the nav — so the metal is just the background showing through the
+ * silhouette, and the crest cannot drift from the logo.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* The column gap is a variable because the rail below has to do
+   arithmetic with it to line its ends up with the outer owls. */
+.trs {
+  --trs-gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: end;
+  gap: var(--trs-gap);
+  padding: 4px 0 2px;
+}
+
+.trs-c { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+
+.trs-owl {
+  display: block;
+  flex: none;
+  -webkit-mask-image: url('/assets/logo.svg');
+  mask-image: url('/assets/logo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: opacity 200ms var(--ease, ease);
+}
+
+.trs-k { font-size: 11.5px; font-weight: 500; color: var(--ink-3); }
+.trs-p { font-size: 11px; color: var(--ink-3); opacity: 0.7; }
+
+/* The rung you are on is the only one whose name is in full ink. The
+   metals already say which is which; this says which is YOURS. */
+.trs-c[data-on] .trs-k { color: var(--ink-0); }
+.trs-c[data-on] .trs-p { color: var(--ink-2); opacity: 1; }
+
+/* ── THE RAIL ────────────────────────────────────────────────────────
+ *
+ * One bar, the full width of the roost.
+ *
+ * It fills against the BAND you are in rather than the whole ladder.
+ * The bands are 250, 750, 1,500 and 7,500 SOL wide, so a bar scaled to
+ * platinum's threshold would put four of the five tiers inside its
+ * first quarter and show somebody most of the way through silver a fill
+ * at 13%. The sentence under it names which two rungs the span is
+ * between, so the bar never has to carry that by itself.
+ * ─────────────────────────────────────────────────────────────────── */
+
+.trs-rail {
+  grid-column: 1 / -1;
+  height: 4px;
+  margin-top: 18px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.trs-rail > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--ink-0);
+  transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trs-say { margin: 20px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.trs-say b { font-weight: 500; color: var(--ink-0); }
+
+@media (max-width: 700px) {
+  /* Five across at 375 leaves 60px a column, which is narrower than the
+     word `Platinum`. The names wrap rather than the row scrolling. */
+  .trs { --trs-gap: 8px; }
+  .trs-c { gap: 7px; }
+  .trs-k { font-size: 10.5px; text-align: center; }
+  .trs-p { font-size: 10px; }
+}

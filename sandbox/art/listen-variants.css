@@ -1,0 +1,296 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE LISTEN TOGGLE, ON TAB STRIPS
+ *
+ * Each tile is a real strip: the tape's own ground, two tabs at their
+ * real size, and the toggle at the right where it lives. A pill judged
+ * on a card is judged against nothing.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.lv {
+  min-height: 100vh;
+  padding: 34px 22px 60px;
+  background: #08080a;
+  font-family: var(--sans);
+}
+
+.lv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px 18px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.lv-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.lv-strip {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #26262a;
+  border-radius: 8px;
+  background: #0a0a0c;
+}
+
+.lv-tab {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.lv-tab.is-on {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.lv-gap { flex: 1 1 auto; }
+
+.lv-name {
+  padding-left: 2px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* ── the button shell ─────────────────────────────────────────────── */
+
+.lv-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.lv-btn:hover { border-color: #3a4150; }
+
+.lv-word {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 150ms ease;
+}
+
+.lv-btn[data-on] .lv-word { color: #ffffff; }
+
+.lv-count {
+  font-size: 9px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── the mosaic ───────────────────────────────────────────────────── */
+
+/*
+ * The FRENS pill's five-pixel scatter, kept exactly: same cells, same
+ * palette, same stagger. It sits in the pill's corner air by default so
+ * it never affects layout, and dims while the toggle is off.
+ */
+.lv-mosaic {
+  position: absolute;
+  top: -3px;
+  right: 4px;
+  width: 11px;
+  height: 7px;
+  pointer-events: none;
+  opacity: 0.45;
+  transition: opacity 150ms ease;
+}
+
+.lv-mosaic.is-inline {
+  position: relative;
+  top: 0;
+  right: 0;
+  flex-shrink: 0;
+}
+
+.lv-btn:hover .lv-mosaic,
+.lv-btn[data-on] .lv-mosaic { opacity: 1; }
+
+.lv-px {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  animation: lv-twinkle 3.4s ease-in-out infinite;
+}
+
+@keyframes lv-twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+/* ── the equaliser ────────────────────────────────────────────────── */
+
+.lv-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 9px;
+  flex-shrink: 0;
+}
+
+.lv-eq > i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.4);
+  transform-origin: bottom;
+  transform: scaleY(0.5);
+  transition: background-color 150ms ease;
+}
+
+.lv-eq > i[data-on] {
+  background: #ffffff;
+  animation: lv-eq 1.3s ease-in-out infinite;
+}
+
+@keyframes lv-eq {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.4); }
+}
+
+/* ── A · Shipping ─────────────────────────────────────────────────── */
+
+.lv-btn[data-v='A'][data-on] {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0a0a0c, #0a0a0c) padding-box,
+    linear-gradient(120deg, #38bdf8, #f052d2, #38bdf8) border-box;
+  box-shadow: 0 0 16px -7px rgba(56, 189, 248, 0.9);
+}
+
+.lv-word.is-grad {
+  background-image: linear-gradient(90deg, #38bdf8, #f052d2);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.lv-btn[data-v='A'][data-on] .lv-word.is-grad { color: transparent; }
+
+.lv-count.is-ring {
+  padding: 0 5px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.14);
+  line-height: 14px;
+}
+
+/* ── B · Quiet ────────────────────────────────────────────────────── */
+
+/*
+ * Nothing but the mosaic carries colour. On a strip of grey chips one
+ * coloured mark is already the loudest thing there; a gradient ring, a
+ * gradient wordmark and a tinted badge on top of it is four.
+ */
+.lv-btn[data-v='B'][data-on] {
+  border-color: #4a5262;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── C · Mosaic only ──────────────────────────────────────────────── */
+
+/*
+ * No equaliser. The mosaic already twinkles, and two things moving in a
+ * 90px pill is one too many — the pixels say "live" on their own.
+ */
+.lv-btn[data-v='C'][data-on] {
+  border-color: #4a5262;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── D · Filled ───────────────────────────────────────────────────── */
+
+/*
+ * The strongest read of the six. Beside two filter chips that light to a
+ * faint plate, a solid fill says this one did something different — it
+ * changed the view rather than narrowing it.
+ */
+.lv-btn[data-v='D'][data-on] {
+  border-color: transparent;
+  background: #ffffff;
+}
+
+.lv-btn[data-v='D'][data-on] .lv-word { color: #0a0a0c; }
+.lv-btn[data-v='D'][data-on] .lv-count { color: rgba(10, 10, 12, 0.6); }
+.lv-btn[data-v='D'][data-on] .lv-eq > i[data-on] { background: #0a0a0c; }
+
+/* ── E · Mark ─────────────────────────────────────────────────────── */
+
+/*
+ * Wordless. The mosaic is already the thing you recognise, so the word
+ * is a caption on a logo. Smallest target of the six, which is the cost.
+ */
+.lv-btn[data-v='E'] {
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.lv-btn[data-v='E'][data-on] {
+  border-color: #4a5262;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── F · Underline ────────────────────────────────────────────────── */
+
+/*
+ * The scatter becomes a band along the bottom edge, so the pill reads as
+ * standing ON Listen's colours rather than wearing them in a corner.
+ */
+.lv-btn[data-v='F'] {
+  overflow: hidden;
+  padding-bottom: 2px;
+}
+
+.lv-btn[data-v='F'] .lv-mosaic {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 2px;
+  opacity: 0.5;
+}
+
+.lv-btn[data-v='F'] .lv-px {
+  top: 0 !important;
+  width: 20%;
+  height: 2px;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+.lv-btn[data-v='F'] .lv-px:nth-child(1) { left: 0 !important; }
+.lv-btn[data-v='F'] .lv-px:nth-child(2) { left: 20% !important; }
+.lv-btn[data-v='F'] .lv-px:nth-child(3) { left: 40% !important; }
+.lv-btn[data-v='F'] .lv-px:nth-child(4) { left: 60% !important; }
+.lv-btn[data-v='F'] .lv-px:nth-child(5) { left: 80% !important; }
+
+.lv-btn[data-v='F'][data-on] {
+  border-color: #4a5262;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.lv-btn[data-v='F'][data-on] .lv-mosaic { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-px, .lv-eq > i { animation: none; }
+}

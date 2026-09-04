@@ -1,0 +1,145 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE HOLDER AND TRADER GRIDS
+ *
+ * Nine columns — rank, holder, SOL balance, bought, sold, PnL,
+ * remaining, funding, held — whose `minmax` floors added up to about
+ * 1150px. Set inline on the head and on every row, so nothing could
+ * reshape it: at any pane narrower than a desk the table simply ran off
+ * the side and you dragged it left and right to read one holder.
+ *
+ * ── COLUMNS LEAVE IN ORDER OF WHAT YOU CAME FOR ──────────────────────
+ *
+ * The question a holder row answers is "who holds it, how much, and are
+ * they up". So rank, holder, remaining and PnL are the last to go, and
+ * the provenance columns — funding, held-since — are the first, because
+ * they are what you check AFTER you have found a row worth checking.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tt .trow--holders {
+  grid-template-columns:
+    52px
+    minmax(160px, 1.45fr)
+    minmax(92px, 0.85fr)
+    minmax(126px, 1fr)
+    minmax(126px, 1fr)
+    minmax(104px, 0.9fr)
+    minmax(130px, 1fr)
+    minmax(118px, 0.9fr)
+    minmax(96px, 0.8fr);
+  column-gap: 18px;
+}
+
+/* Every cell truncates rather than pushing the grid wider. A holder's
+   address, a funding source and a label are all strings of unknown
+   length, and one long one used to widen the whole table. */
+.tt .trow--holders > * {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── under 1160: provenance goes ──────────────────────────────────── */
+
+/*
+ * Funding and Held. Where a wallet's money came from and how long it has
+ * been in are both worth knowing and neither is why you opened the tab.
+ *
+ * ── 1160, NOT 1000 ───────────────────────────────────────────────────
+ *
+ * The number is the layout's own arithmetic, not a round figure. The
+ * nine columns above have `minmax` floors of 52+160+92+126+126+104+130+
+ * 118+96 = 1004, plus eight 18px gutters = 1148. Stepping down at 1000
+ * left a 148px band where the full grid was still in force and could not
+ * fit — the table scrolled sideways and you were looking at SOLD and PNL
+ * with the holder column dragged off the left.
+ *
+ * Every step below is set the same way: the width at which the step
+ * ABOVE it stops fitting.
+ */
+@container pane (max-width: 1160px) {
+  /*
+   * ── ONE MINIMUM, NOT TWO ───────────────────────────────────────────
+   *
+   * The table's wrapper carries its own `min-width` from
+   * `--table-min-w-wide`, and it was set independently of this grid — so
+   * the wrapper could demand 640px in a 632px pane while the grid itself
+   * needed only 454. Two numbers describing one thing, and the larger
+   * wrong one won.
+   *
+   * Each step sets both, together, from the same arithmetic: the sum of
+   * this step's column floors plus its gutters.
+   */
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w-wide: 738px;
+  }
+
+  .tt .trow--holders {
+    grid-template-columns:
+      44px
+      minmax(130px, 1.4fr)
+      minmax(80px, 0.85fr)
+      minmax(104px, 1fr)
+      minmax(104px, 1fr)
+      minmax(88px, 0.9fr)
+      minmax(104px, 1fr);
+    column-gap: 14px;
+  }
+
+  .tt .trow--holders > *:nth-child(8),
+  .tt .trow--holders > *:nth-child(9) {
+    display: none;
+  }
+}
+
+/* ── under 760: the two halves of the trade go ────────────────────── */
+
+/*
+ * Bought and Sold. What is left is the whole story in four columns —
+ * rank, who, what they still hold, and whether they are up on it.
+ */
+@container pane (max-width: 760px) {
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w-wide: 454px;
+  }
+
+  .tt .trow--holders {
+    grid-template-columns:
+      36px
+      minmax(120px, 1.5fr)
+      minmax(74px, 0.8fr)
+      minmax(88px, 0.9fr)
+      minmax(88px, 1fr);
+    column-gap: 12px;
+  }
+
+  .tt .trow--holders > *:nth-child(4),
+  .tt .trow--holders > *:nth-child(5) {
+    display: none;
+  }
+}
+
+/* ── under 520: who, how much, up or down ─────────────────────────── */
+
+/*
+ * The SOL balance goes too. Three columns is the floor: the wallet, what
+ * it still holds, and its PnL. Below this there is no table left to make
+ * — there is a list of wallets and one number each.
+ */
+@container pane (max-width: 520px) {
+  .tt [class*='min-w-[var(--table-min-w)]'] {
+    --table-min-w-wide: 276px;
+  }
+
+  .tt .trow--holders {
+    grid-template-columns:
+      minmax(104px, 1.4fr)
+      minmax(78px, 1fr)
+      minmax(74px, 1fr);
+    column-gap: 10px;
+  }
+
+  .tt .trow--holders > *:nth-child(1),
+  .tt .trow--holders > *:nth-child(3) {
+    display: none;
+  }
+}

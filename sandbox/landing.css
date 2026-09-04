@@ -1,0 +1,29 @@
+/*
+ * The landing page's stylesheet, and nothing else.
+ *
+ * This is a copy of `../New folder/app/globals.css`, the file that page's
+ * own harness loads, minus the Google Fonts import that harness uses only
+ * for its `/hero/type` lab route. The landing's actual design system is
+ * `components/landing/tokens.css`, which LandingPage imports itself.
+ *
+ * The terminal's `source/app/globals.css` is deliberately NOT here. It
+ * paints `body`, redefines the base layer and pulls in listen.css,
+ * discover.css and agent-chat.css, none of which the landing is authored
+ * against.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* `geist`/next-font expose the sans as --font-geist-sans, while the
+     export's Tailwind `font-geist` family reads --font-geist. Bridge it. */
+  --font-geist: var(--font-geist-sans);
+}
+
+html,
+body {
+  margin: 0;
+  background: #000000;
+}

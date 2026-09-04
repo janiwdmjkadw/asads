@@ -1,0 +1,181 @@
+/*
+ * THE HIDDEN-TOKEN MENU.
+ *
+ * The button is skinned like the cog beside it, in the same rail
+ * language: no border, a 6% plate, 10% on hover, white when it is doing
+ * something. The popover is the panels' #111111 with one hairline, and it
+ * borrows `.df-seg` from the filters stylesheet rather than growing a
+ * second idea of what a two-way choice looks like.
+ */
+
+.htm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0 5px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.htm-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/*
+ * White while hidden tokens are being SHOWN. That is a state the board is
+ * in — rows on screen that you told it to hide — and the only place it is
+ * stated. Nothing lights up merely for having a hidden set, because that
+ * is the normal condition.
+ *
+ * The doubled class and the `!important` are load bearing. Two other
+ * rules reach this button and both outrank a plain `.is-on`: Tailwind's
+ * `button` reset, and `[data-subheader-v2] [aria-expanded='true']`, which
+ * paints the open state of every control on this bar with `!important`.
+ * Without this the button stayed at its rest plate no matter what the
+ * setting was.
+ */
+.htm-btn.htm-btn.is-on {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* How many, so the button is not identical at zero and at forty. */
+.htm-count {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* ── the popover ──────────────────────────────────────────────────── */
+
+.htm-pop {
+  position: fixed;
+  z-index: 70;
+  box-sizing: border-box;
+  width: 244px;
+  /*
+   * A hard ceiling in CSS as well as the clamp in JS. `%` on a fixed
+   * element resolves against the viewport, so this holds even when the
+   * script's width reading has not landed yet or comes back as zero,
+   * which embedded webviews do while the host is still sizing them.
+   * `vw` would not: it fails under device emulation.
+   */
+  max-width: calc(100% - 20px);
+  padding: 12px;
+  border-radius: 12px;
+  background: #111111;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 24px 60px #000000b0;
+
+  --df-line: rgba(255, 255, 255, 0.07);
+  --df-cap: #7c7c7c;
+}
+
+.htm-pop *,
+.htm-pop *::before,
+.htm-pop *::after {
+  box-sizing: border-box;
+}
+
+.htm-choice + .htm-choice {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--df-line);
+}
+
+.htm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.htm-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/*
+ * What the setting actually does, under it. These two choices are the
+ * kind whose labels do not explain themselves — "unhide on migration"
+ * means nothing until someone tells you when migration happens — and a
+ * menu that needs a tooltip to be usable should have said it out loud.
+ */
+.htm-note {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--df-cap);
+}
+
+/* The segment pair is narrower here than on a full panel row. */
+.htm-pop .df-segbtn {
+  padding: 0 9px;
+  font-size: 11px;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * A LABEL AND A SEGMENT PAIR DO NOT FIT ON ONE LINE ON A PHONE.
+ *
+ * `Keep hidden / Unhide` beside the words `On migration` needs about 230
+ * of the 244, and the row was pushing the pair off the right edge. The
+ * label takes the line and the control goes under it, full width, which
+ * also makes both halves a comfortable tap.
+ */
+/*
+ * ── IT CANNOT TOUCH AN EDGE ──────────────────────────────────────────
+ *
+ * The JS clamp was not enough. It depends on a width reading, and every
+ * width reading on this page has a way of coming back wrong: the root
+ * carries a `zoom` that splits `clientWidth` from `getBoundingClientRect`,
+ * and an embedded webview reports zero while the host sizes it. When the
+ * number is wrong the panel goes off the side of the screen.
+ *
+ * Below this width nothing is measured at all. Both edges are pinned 10px
+ * in, the width is capped, and the auto margin puts it against the right
+ * side under the button it belongs to. `!important` because the inline
+ * `left` from the placement effect would otherwise win.
+ */
+@media (max-width: 560px) {
+  .htm-pop {
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: 244px;
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .htm-row {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .htm-row .df-seg {
+    width: 100%;
+  }
+
+  .htm-row .df-segbtn {
+    flex: 1 1 0;
+  }
+}

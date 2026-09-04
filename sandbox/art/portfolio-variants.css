@@ -1,0 +1,301 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE PORTFOLIO, IN BLACK
+ *
+ * Four mockups of the same portfolio: same total, same delta, same six
+ * holdings, same series on the chart. What changes is the arrangement
+ * and how loud it is.
+ *
+ * ── WHAT THEY ARE ALL MOVING AWAY FROM ───────────────────────────────
+ *
+ * The page today is the most colourful thing in the product and the
+ * least legible. `TOTAL PORTFOLIO VALUE` in 9px mono capitals on a
+ * 0.13em track; three more of those under it, each with a coloured pip
+ * in front — teal, blue, amber — naming figures that are all dollars;
+ * the total itself in mono with letter-spacing; a violet-to-blue
+ * gradient filling the whole chart panel; and a rainbow stack glyph
+ * beside the range pills.
+ *
+ * That is six decorative devices on a screen whose entire job is to
+ * show one number to someone who wants to show it to someone else.
+ *
+ * ── THE RULE ALL FOUR FOLLOW ─────────────────────────────────────────
+ *
+ * Black ground. One ink scale, white down to 40%. Type is the only
+ * hierarchy — size and weight, never hue. The ONLY colour on the page
+ * is up-green and down-pink, and only ever on a figure that is actually
+ * a gain or a loss. No accent. The accent belongs to the friends page.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.pf {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.pf h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.pf p.pf-note {
+  margin: 0 0 22px;
+  max-width: 660px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.pf-stack { display: flex; flex-direction: column; gap: 30px; }
+
+.pf-slot { display: flex; flex-direction: column; gap: 9px; }
+
+.pf-cap { display: flex; align-items: baseline; gap: 7px; }
+.pf-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.pf-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+/* The page each mockup is drawn on: true black, the ground the product
+   actually uses behind this screen. */
+.pg {
+  /* Full width of the sheet, capped. Fixed at 880 it ran off the right
+     edge of a narrow window and took the range control with it. */
+  width: 100%;
+  max-width: 880px;
+  padding: 26px 28px 24px;
+  border-radius: 12px;
+  background: #000000;
+  color: var(--ink-0);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── parts shared by all four ─────────────────────────────────────── */
+
+.pg-lab {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.pg-total {
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.pg-total > s { text-decoration: none; color: rgba(255, 255, 255, 0.4); }
+
+.up { color: var(--up); }
+.down { color: var(--down); }
+
+/* The range control: text, and the live one is the bright one. It was
+   a bordered segmented track with a filled active plate — chrome around
+   four two-character words. */
+.pg-range { display: flex; align-items: center; gap: 14px; }
+
+.pg-range > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.pg-range > button[data-on] { color: var(--ink-0); }
+.pg-range > button:hover { color: var(--ink-1); }
+
+/* The chart. One stroke, and a fill that is white at 7% falling to
+   nothing — the same shape the violet gradient occupied, without
+   introducing a hue the product does not otherwise have. */
+.pg-chart { display: block; width: 100%; }
+.pg-chart path.line { fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.4; }
+.pg-chart path.area { stroke: none; }
+.pg-chart line.base { stroke: rgba(255, 255, 255, 0.07); stroke-width: 1; }
+
+/* Three figures on a line. Labels in sentence case, in grey, at the
+   size of a caption — no pips, no capitals, no track. */
+.pg-figs { display: flex; gap: 34px; }
+.pg-fig { display: flex; flex-direction: column; gap: 4px; }
+.pg-fig > i { font-style: normal; font-size: 11px; color: var(--ink-3); }
+.pg-fig > b { font-size: 15px; font-weight: 500; }
+
+/* ── the holdings tape ────────────────────────────────────────────── */
+
+.pg-hold { display: flex; flex-direction: column; }
+
+/*
+ * SIX tracks, because the row has six cells: art, name, weight bar,
+ * amount, value, 24h. It shipped with five, so every row's last cell
+ * wrapped onto a line of its own and the tape came apart into stripes.
+ */
+.pg-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 92px 74px 92px 54px;
+  align-items: center;
+  column-gap: 12px;
+  height: 38px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+  transition: background-color 130ms ease;
+}
+
+.pg-row:hover { background: rgba(255, 255, 255, 0.03); }
+.pg-row:last-child { border-bottom: 0; }
+
+.pg-art {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  object-fit: cover;
+  background: #131316;
+}
+
+.pg-tick { font-weight: 500; }
+.pg-sub { font-size: 11px; color: var(--ink-3); }
+.pg-num { text-align: right; }
+.pg-num-2 { text-align: right; font-size: 12px; }
+
+/* The weight bar: white, because a share of a total is not a category
+   and does not want a hue. */
+/* `display: block`, because these are spans: an inline box ignores a
+   height and the whole weight column was rendering as empty space. */
+.pg-bar { display: block; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.09); overflow: hidden; }
+.pg-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255, 255, 255, 0.55); }
+
+/* ══ 1 · LEDGER ════════════════════════════════════════════════════
+ *
+ * One column, everything left. The total, the delta beside it, the
+ * ranges at the far end of the same line, the chart under it full
+ * bleed, three figures, then the holdings.
+ *
+ * The most restrained of the four and the easiest to read at a glance:
+ * there is exactly one place your eye lands and one direction to go
+ * from it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.v1-top { display: flex; align-items: flex-end; gap: 14px; }
+.v1-delta { font-size: 15px; font-weight: 500; padding-bottom: 4px; }
+.v1-sp { flex: 1 1 auto; }
+.v1 .pg-chart { height: 128px; margin: 20px 0 18px; }
+.v1-figs { padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.v1-hold { margin-top: 6px; }
+
+/* ══ 2 · HERO ══════════════════════════════════════════════════════
+ *
+ * Centred, and the total is the page. 68px, with the chart running
+ * under it as one wide low line and the three figures set small
+ * beneath.
+ *
+ * This is the one built to be SCREENSHOTTED. Everything is arranged
+ * around a single number sitting in the middle of a black field, which
+ * is what a person posting their portfolio is actually posting.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.v2 { padding-top: 34px; text-align: center; }
+.v2 .pg-lab { display: block; margin-bottom: 10px; }
+.v2 .pg-total { font-size: 68px; letter-spacing: -0.03em; }
+
+.v2-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.v2 .pg-chart { height: 116px; margin: 22px 0 20px; }
+.v2 .pg-figs { justify-content: center; gap: 52px; }
+.v2 .pg-fig { align-items: center; }
+.v2 .pg-range { justify-content: center; margin-top: 22px; }
+
+/* The single stacked weight bar and its legend, in place of a table —
+   a hero screen shows the shape of a portfolio, not its rows. */
+.v2-mix { display: flex; height: 6px; gap: 2px; margin: 26px 0 12px; }
+.v2-mix > span { border-radius: 2px; }
+.v2-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; font-size: 11.5px; }
+.v2-key > span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.v2-key i { width: 6px; height: 6px; border-radius: 2px; font-style: normal; }
+.v2-key b { font-weight: 500; color: var(--ink-0); }
+
+/* ══ 3 · SPLIT ═════════════════════════════════════════════════════
+ *
+ * Total and chart on the left, holdings down the right. Nothing is
+ * below the fold and nothing is centred, so it reads as a working
+ * screen rather than a poster — the one to pick if the portfolio is
+ * something you check rather than something you post.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.v3-grid { display: grid; grid-template-columns: minmax(0, 1fr) 316px; gap: 26px; }
+.v3-l { min-width: 0; }
+
+/*
+ * The ranges move OFF the total's line here. In Ledger that line is the
+ * full page and there is room at the end of it; in Split the left column
+ * is 316px narrower, and the control ran straight out of it and over the
+ * holdings. So the label line carries them instead: same control, same
+ * order, at the top right of the half it belongs to.
+ */
+.v3-lab { display: flex; align-items: baseline; justify-content: space-between; }
+.v3 .v1-top { align-items: flex-end; }
+.v3 .v1-sp { display: none; }
+.v3 .v1-top > .pg-range { display: none; }
+.v3 .pg-chart { height: 150px; margin: 20px 0 20px; }
+.v3 .pg-figs { gap: 30px; }
+
+.v3-r {
+  min-width: 0;
+  padding-left: 26px;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.v3-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.v3-h > b { font-size: 12.5px; font-weight: 600; }
+.v3-h > small { font-size: 11px; color: var(--ink-3); }
+
+.v3 .pg-row { grid-template-columns: 22px minmax(0, 1fr) 74px; height: 40px; column-gap: 10px; font-size: 12px; }
+.v3 .pg-art { width: 20px; height: 20px; }
+
+/* ══ 4 · PLATES ════════════════════════════════════════════════════
+ *
+ * The four figures on their own grounds, the chart on another, the
+ * holdings on a third. The most structured, and the only one where the
+ * page has visible parts.
+ *
+ * A plate here is a ground and a hairline. No shadow, no radius beyond
+ * 10, no gradient — the structure is spacing and one step of lift, not
+ * a set of cards floating over black.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.v4-quad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+.v4-plate {
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background: #0b0c0e;
+}
+
+.v4-plate > i { display: block; font-style: normal; font-size: 11px; color: var(--ink-3); margin-bottom: 7px; }
+.v4-plate > b { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.v4-plate.v4-hero > b { font-size: 26px; }
+.v4-plate > u { display: block; margin-top: 5px; font-size: 11.5px; text-decoration: none; }
+
+.v4-wide {
+  margin-top: 10px;
+  padding: 14px 16px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background: #0b0c0e;
+}
+
+.v4-wide-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.v4-wide-h > b { font-size: 12.5px; font-weight: 600; }
+.v4 .pg-chart { height: 132px; }
+.v4 .pg-row { height: 36px; }
+.v4 .pg-row:last-child { border-bottom: 0; }

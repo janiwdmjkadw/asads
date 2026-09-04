@@ -1,0 +1,45 @@
+/*
+ * The auth card's chrome, and where it comes off.
+ *
+ * ON A PHONE THERE IS NO CARD. The panel is already the full screen, and
+ * the card sitting inside it added a second frame and a second 24px
+ * gutter — so a field started 48px in on a 375px screen, nearly a third of
+ * the width spent on two borders saying the same thing. The footer band
+ * was worse: an inset grey block with its own rule, inside a white page
+ * that reaches every edge.
+ *
+ * So below 700px the frame, the fill and the horizontal padding all go,
+ * and the fields line up with the headline above them on the panel's own
+ * gutter. The band keeps only its top rule, which is the one part of it
+ * that was doing work: separating the sign in line from the form.
+ *
+ * Everything here is a media query, which is why these classes exist at
+ * all — the card is styled inline, and an inline style cannot be
+ * conditioned on width.
+ *
+ * And every declaration is `!important`, which is not laziness: an inline
+ * style outranks any selector, so without it the media query parses,
+ * matches, and changes nothing. The first pass here left the border and
+ * the gutter exactly as they were.
+ */
+
+@media (max-width: 700px) {
+  .ck-card {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .ck-body {
+    padding: 0 0 22px !important;
+  }
+
+  .ck-band {
+    padding-inline: 0 !important;
+    background: transparent !important;
+  }
+
+  .ck-band-sub {
+    padding-bottom: 0 !important;
+  }
+}

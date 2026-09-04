@@ -1,0 +1,286 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WALLETS TAB, FOUR WAYS
+ *
+ * Same five wallets, same balances, same actions, at the width the tab
+ * actually gets. What changes is what a wallet IS on the page: a table
+ * row, a line of tape, a block, or a thing you pick up.
+ *
+ * ── WHAT THEY ARE ALL MOVING AWAY FROM ───────────────────────────────
+ *
+ * The tab today is a spreadsheet beside two empty boxes.
+ *
+ * On the left: a `Wallet / Balance / Holdings / Actions` header rule
+ * over rows carrying a checkbox, a coloured identity pip, a name
+ * truncated to `Wall…` in a 60px column, a copy glyph, a balance, a
+ * TOGGLE SWITCH, a holdings count, and four action icons — nine
+ * controls per row, in a row whose right half is empty. Under it,
+ * `AGENT` in mono capitals.
+ *
+ * On the right, taking half the tab: `From Wallet` and `Destination`,
+ * two bordered wells with column headers of their own and an arrow in
+ * the middle of each saying `Drag wallets to distribute SOL`. Both are
+ * empty until you drag something into them, which is most of the time.
+ *
+ * ── THE RULE ALL FOUR FOLLOW ─────────────────────────────────────────
+ *
+ * Black, one ink scale, and the same Ledger voice the Spot tab now
+ * speaks. A wallet is a name and a balance. Everything else — archive,
+ * rename, copy, explorer — is an action ON a wallet and appears when
+ * the pointer is on one, rather than nine glyphs sitting on every row
+ * forever. Transfer is a mode you enter, not a pair of empty boxes you
+ * live beside.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.wv {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.wv h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.wv p.wv-note {
+  margin: 0 0 22px;
+  max-width: 660px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.wv-stack { display: flex; flex-direction: column; gap: 30px; }
+.wv-slot { display: flex; flex-direction: column; gap: 9px; }
+
+.wv-cap { display: flex; align-items: baseline; gap: 7px; }
+.wv-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.wv-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+/* The tab, on the ground the product uses behind it. */
+.wp {
+  width: 100%;
+  max-width: 880px;
+  padding: 22px 24px;
+  border-radius: 12px;
+  background: #000000;
+  color: var(--ink-0);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the strip above every list ───────────────────────────────────── */
+
+.wp-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+.wp-count { font-size: 13px; font-weight: 600; }
+.wp-count > s { text-decoration: none; color: var(--ink-3); font-weight: 500; }
+
+.wp-sp { flex: 1 1 auto; }
+
+/* A field, not a bordered capsule with a magnifier in it. */
+.wp-find {
+  width: 190px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-0);
+}
+
+.wp-find::placeholder { color: var(--ink-3); }
+.wp-find:focus { outline: none; border-color: color-mix(in srgb, var(--ink-0) 22%, transparent); }
+
+.wp-act {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.wp-act:hover { color: var(--ink-0); }
+.wp-act[data-strong] { color: var(--ink-0); }
+
+/* ── parts ────────────────────────────────────────────────────────── */
+
+.wp-addr { font-size: 11px; color: var(--ink-3); }
+.wp-bal { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wp-dim { color: var(--ink-3); }
+
+/* The row's actions: absent until the pointer is on the row. Nothing
+   moves when they appear — the space is always reserved. */
+.wp-tools { display: inline-flex; align-items: center; gap: 12px; opacity: 0; transition: opacity 130ms ease; }
+.wp-tools > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.wp-tools > button:hover { color: var(--ink-0); }
+
+/* ══ 1 · TABLE ─ what ships ════════════════════════════════════════ */
+
+.w1h,
+.w1r {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 96px 88px 132px;
+  align-items: center;
+  column-gap: 12px;
+  padding: 0 8px;
+  height: 34px;
+  font-size: 12.5px;
+}
+
+.w1h {
+  height: 28px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.w1r { border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+.w1r:hover { background: rgba(255, 255, 255, 0.03); }
+
+.w1-box { width: 13px; height: 13px; border-radius: 3px; border: 1px solid var(--hairline-2, rgba(255,255,255,0.18)); }
+.w1-who { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.w1-pip { width: 8px; height: 8px; border-radius: 3px; flex: none; }
+.w1-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The switch, drawn at the size it ships. */
+.w1-sw { width: 26px; height: 15px; border-radius: 999px; background: rgba(255,255,255,0.16); position: relative; flex: none; }
+.w1-sw[data-on] { background: #3b82f6; }
+.w1-sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 11px; height: 11px; border-radius: 999px; background: #fff; }
+.w1-sw[data-on]::after { left: 13px; }
+
+.w1-icons { display: inline-flex; gap: 9px; color: var(--ink-3); }
+.w1-icons > svg { width: 13px; height: 13px; }
+.w1-agent { margin-top: 14px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+
+/* ══ 2 · TAPE ══════════════════════════════════════════════════════
+ *
+ * The Spot tab's holdings row, applied to wallets: name, address, a
+ * white share bar, the balance. No header rule, no checkbox, no pip,
+ * no switch. The actions live on hover at the right, in words.
+ *
+ * The one to pick if the wallets tab should read like the rest of the
+ * portfolio, because this is literally the same row.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w2r {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(60px, 0.7fr) 96px 148px;
+  align-items: center;
+  column-gap: 14px;
+  padding: 0 2px;
+  height: 38px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+}
+
+.w2r:hover { background: rgba(255, 255, 255, 0.03); }
+.w2r:hover .wp-tools { opacity: 1; }
+
+.w2-id { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.w2-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w2-bar { display: block; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.w2-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.5); }
+.w2-bal { text-align: right; }
+.w2-tools { justify-content: flex-end; }
+
+/* ══ 3 · BLOCKS ════════════════════════════════════════════════════
+ *
+ * One wallet per block rather than per line: the name at reading size,
+ * the address under it, the balance at the right, and the actions on
+ * their own line underneath, always visible.
+ *
+ * Nobody has forty wallets. At five, the vertical room a block costs is
+ * room the page had anyway, and nothing is truncated or hidden behind a
+ * hover — which is the argument against the tape.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w3 { display: flex; flex-direction: column; gap: 2px; }
+
+.w3b {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  transition: background-color 130ms ease;
+}
+
+.w3b:hover { background: rgba(255, 255, 255, 0.035); }
+
+.w3-name { font-size: 14px; font-weight: 600; }
+.w3-bal { font-size: 15px; font-weight: 600; text-align: right; grid-row: span 2; }
+.w3-sub { display: flex; align-items: center; gap: 12px; font-size: 11.5px; color: var(--ink-3); }
+.w3-sub .wp-tools { opacity: 1; }
+
+/* ══ 4 · PICK ══════════════════════════════════════════════════════
+ *
+ * The transfer rail's two empty wells are gone. A wallet is SELECTED by
+ * clicking its row — a rule down the left and a lift, the same language
+ * the docked panels use — and one line appears at the bottom saying
+ * what will happen, with the only button on the page.
+ *
+ * The rail took half the tab to hold two arrows and the words "drag
+ * wallets here", permanently, for a thing done a few times a month.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.w4r {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 148px;
+  align-items: center;
+  column-gap: 14px;
+  padding: 0 12px;
+  height: 40px;
+  border-left: 2px solid transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background-color 130ms ease;
+}
+
+.w4r:hover { background: rgba(255, 255, 255, 0.03); }
+.w4r:hover .wp-tools { opacity: 1; }
+.w4r[data-on] { background: rgba(255, 255, 255, 0.05); border-left-color: var(--ink-0); }
+
+.w4-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12.5px;
+}
+
+.w4-say { color: var(--ink-2); }
+.w4-say b { color: var(--ink-0); font-weight: 600; }
+
+.w4-go {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 130ms ease;
+}
+
+.w4-go:hover { background: #f4f4f5; }

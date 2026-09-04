@@ -1,0 +1,383 @@
+/*
+ * THE ACCOUNT MENU, in the notis material.
+ *
+ * Picked off the `/whatever` sheet: `fade`. The banner covers the whole
+ * identity block and is scrimmed to black by the time it reaches the
+ * first row, so there is no band edge to align the mark against and no
+ * seam to get wrong. The identity is centred; the destinations under it
+ * are not, which is what makes the top of the panel read as a header
+ * rather than as the first two rows of a list.
+ *
+ * ── WHAT CHANGED FROM WHAT SHIPPED ───────────────────────────────────
+ *
+ * 1 · NO ACCENT FIELD. The old header was a 52px band whose empty state
+ *     was an aurora built from `--accent-primary` and `--accent-secondary`.
+ *     This material reserves colour for the state of a plan and the
+ *     direction of money, and a decorative gradient is neither — it was
+ *     also the largest single thing on the surface. With no upload the
+ *     field is now the account's OWN invader, blown up and desaturated:
+ *     art the account already has, costing no accent.
+ *
+ * 2 · SIGN OUT IS NOT RED AND NOT TALLER. It went `--down` on hover at
+ *     44px against the other rows' 34. `--down` means a fill failed or
+ *     money left; signing out is neither. It is a position problem, so
+ *     it is solved with a rule and the bottom of the panel.
+ *
+ * 3 · ONE ROW HEIGHT, one hairline weight, two type sizes in the list,
+ *     and a chevron on hover instead of nothing — the same call the
+ *     notis rows made. The two panels hang off the same bar eight pixels
+ *     apart and now take the same ground, ring, radius and rhythm.
+ *
+ * ── THE ONE COLOUR EXCEPTION, ON PURPOSE ─────────────────────────────
+ *
+ * The invader keeps the frens confetti palette. It is fixed per account
+ * and seeded from the user id, not a theme axis and not decoration — it
+ * is how you tell your account from someone else's at 24px in a nav bar.
+ * That is identity, which is the third job.
+ *
+ * ── BLACK, LIKE THE NOTIS PANEL ──────────────────────────────────────
+ *
+ * This surface used to read `var(--popover)` so the thirty themes could
+ * repaint it. `notis-v2.css` already hardcodes black for the panel eight
+ * pixels to its left, and two popovers off one bar disagreeing about
+ * ground is worse than either answer. If the light themes are brought
+ * back into scope, both files change together.
+ *
+ * `!important` throughout for the same reason it is in `notis-v2.css`:
+ * `PopoverContent` merges shadcn defaults through `cn`, and its shadow
+ * is an inline style.
+ */
+
+/*
+ * ── WHITE, LIKE ITS NEIGHBOURS ───────────────────────────────────────
+ *
+ * The avatar, the bell and the balance pill are one cluster, and all
+ * three now open the same material.
+ */
+[data-acct] {
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+  --hairline: #e1e6e4;
+  --hairline-2: #d3dad8;
+
+  width: 300px !important;
+  border-radius: 14px !important;
+  border: 0 !important;
+  padding: 6px !important;
+  overflow: hidden;
+  background: #ffffff !important;
+  color: #3e4a47;
+  box-shadow:
+    0 0 0 1px #d3dad8,
+    0 24px 80px #00000066 !important;
+}
+
+/* ── the header: art with no edge ─────────────────────────────────── */
+
+/*
+ * NO BANNER. It was an upload behind a scrim behind a centred avatar
+ * over two lines of copy: a poster, in a 300px menu whose job is four
+ * destinations. The identity is one row and the actions start
+ * immediately.
+ */
+.acct-head {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+.acct-art,
+.acct-art-fallback,
+.acct-scrim {
+  display: none !important;
+}
+
+.acct-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * NO UPLOAD: the account's own creature as the field.
+ *
+ * The canvas stays 8x8 and CSS does the enlarging — `PixelAvatar` scales
+ * it with `image-rendering: pixelated`, so every cell stays a hard
+ * square. Grayscale only: a blur would promote this to its own
+ * compositor layer and re-rasterise it, which is real cost on a surface
+ * that opens over a board painting 130 live cards.
+ */
+/*
+ * BIG ENOUGH THAT THE CROP LANDS ON TWO OR THREE CELLS, not on the whole
+ * creature. At 300px the header showed most of an invader at 20% opacity,
+ * which reads as stray dark rectangles — recognisable enough to look like
+ * a mistake, too faint to look like art. At 560 a cell is 70px and what
+ * you get is a couple of soft blocks: a field, which is the job.
+ */
+.acct-art-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 560px;
+  height: 560px;
+  transform: translate(-50%, -50%);
+  filter: grayscale(1) brightness(1.4);
+  opacity: 0.2;
+}
+
+.acct-art-fallback canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/*
+ * The scrim runs the whole block rather than a band. It stays literal in
+ * every theme: the banner is an upload, not a theme surface, and the
+ * identity over it needs it to fall away to the panel.
+ */
+.acct-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, #000000 92%);
+}
+
+.acct-id {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 11px;
+  align-items: center;
+  padding: 10px 10px 12px;
+}
+
+/* 2px of the panel's own ground, not a hairline. It is what separates
+   the mark from an upload of any brightness. */
+.acct-mark {
+  grid-row: 1 / span 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #e8ecea;
+  border: 0;
+  box-shadow: none;
+}
+
+.acct-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.acct-name {
+  margin-top: 0;
+  align-self: end;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  color: #0b0e14;
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The bio, which is real data the account already set. The old panel put
+   an invented line here; nothing is invented now, and with no bio the
+   line is simply absent. */
+.acct-meta {
+  margin-top: 2px;
+  align-self: start;
+  max-width: 100%;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #8a9591;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── the list ─────────────────────────────────────────────────────── */
+
+.acct-rule {
+  height: 1px;
+  background: #e1e6e4;
+}
+
+/*
+ * `.acct-cap` is unused: the `Go to` label it styled is gone. Kept as a
+ * sentence-case label in case a group here ever needs naming, without
+ * the uppercase and the 0.13em track that made it the loudest thing on
+ * a menu it was only introducing.
+ */
+.acct-cap {
+  display: block;
+  padding: 13px 16px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+  line-height: 1.2;
+}
+
+.acct-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  text-align: left;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: #3e4a47;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.acct-row:hover {
+  background: #e8ecea;
+  color: #0b0e14;
+}
+
+.acct-ico {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: #8a9591;
+  transition: color 120ms ease;
+}
+
+.acct-row:hover .acct-ico {
+  color: #0b0e14;
+}
+
+.acct-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The row is already the target. A chevron on hover says so without
+   printing a word on all four of them. */
+.acct-go {
+  flex: 0 0 auto;
+  width: 12px;
+  /* 0.62. It only appears on hover, so it never needed to be quiet as
+     well as hidden — at 35% it was invisible in the state where it is
+     supposed to be doing its job. */
+  color: #3e4a47;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.acct-row:hover .acct-go {
+  opacity: 1;
+}
+
+/* Sign out sits alone under the last rule and takes no colour. Position
+   is the whole warning. */
+.acct-row.is-out {
+  /*
+   * 0.72, up from 0.55. Sign out is deliberately quieter than the rows
+   * above it and stays so, but 55% white was under the readable floor
+   * for a 12px word — quiet and hard to read are not the same thing.
+   */
+  color: #3e4a47;
+}
+
+/* ══ NARROW SCREENS: CENTRED, 1rem GUTTERS ══════════════════════════
+ *
+ * EVERY POPUP IS CENTRED ON A PHONE AND NONE OF THEM TOUCH AN EDGE.
+ *
+ * A popover cannot do that from the content, because Radix leaves the
+ * content `position: static` inside a `position: fixed` popper wrapper
+ * and drives the placement with a transform on that wrapper. Anything
+ * set on the content — `left`, `right`, `margin` — is inert.
+ *
+ * So below 420 the wrapper stops being a popper: its transform is
+ * dropped, it spans the viewport under the nav, and it centres its one
+ * child. The panel then takes the width minus two 1rem gutters, which
+ * needs no `vw` — just as well, since `vw` resolves against the layout
+ * viewport and silently fails under device emulation and inside some
+ * embedded browser views.
+ *
+ * Identical to the rule `notis-v2.css` carries, because the two panels
+ * hang off the same bar and a phone should not be able to tell them
+ * apart by how they arrive.
+ */
+@media (max-width: 420px) {
+  [data-radix-popper-content-wrapper]:has([data-acct]) {
+    transform: none !important;
+    inset: 64px 0 auto 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  [data-acct] {
+    width: calc(100% - 2rem) !important;
+    max-width: none !important;
+    left: auto !important;
+    right: auto !important;
+    /*
+     * The open animation zooms from `--radix-popper-transform-origin`,
+     * which the popper sets to the corner nearest its trigger — the
+     * right edge, for an avatar in the top right. A sheet that is now
+     * centred must grow from its own top centre, or it visibly slides in
+     * from one side.
+     */
+    transform-origin: top center !important;
+  }
+
+  /* A row is a tap target on a phone, so it gets the height a tap needs
+     rather than the height a pointer needs. Matches the 38px the nav
+     settles on below 560. */
+  .acct-row {
+    height: 48px;
+  }
+
+  /* The chevron is a hover affordance, and a phone has no hover. */
+  .acct-go {
+    display: none;
+  }
+
+  /* The header can take a little more room when the panel is wider than
+     320px, which it is on anything but the smallest phones. */
+  .acct-id {
+    padding: 22px 16px 17px;
+  }
+}
+
+/* ══ THE ROW GLYPHS ════════════════════════════════════════════════════
+ *
+ * The mark at the head of each row is inked inline by the component, so
+ * the row's own `color` never reaches it and it stayed at the value it
+ * shipped with while everything around it was lifted.
+ * ══════════════════════════════════════════════════════════════════ */
+
+.acct-row > svg:first-child {
+  color: #8a9591 !important;
+  stroke-width: 1.8 !important;
+}
+
+.acct-row:hover > svg:first-child {
+  color: #0b0e14 !important;
+}

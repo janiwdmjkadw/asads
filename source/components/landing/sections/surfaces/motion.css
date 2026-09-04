@@ -1,0 +1,257 @@
+/*
+ * THE MOTION FOR THE FOUR SURFACE DRAWINGS.
+ *
+ * Every vector in here is written by SurfaceArt.tsx at mount, as a custom
+ * property on the stroke itself. This file only says what to do with them,
+ * so the main thread measures once and the compositor runs everything
+ * after that.
+ *
+ * Nothing selects on a class. The animations key off `[data-sa='...']` on
+ * the svg, which is the last attribute the component sets, so a stroke can
+ * never be animating from a vector that has not been written yet.
+ *
+ * ── ROTATION, AND WHY IT LOOKS LIKE THIS ─────────────────────────────
+ *
+ * Every rotation is composed by hand:
+ *
+ *     translate(p) rotate(a) translate(-p)      with origin 0 0
+ *
+ * rather than written as `transform-origin`. These strokes sit inside a
+ * `<g>` carrying its own translate and scale, so the element's user space
+ * and the svg's viewBox do not agree, and an origin expressed in one is
+ * silently wrong in the other. The composed form is exact and does not
+ * care which space it is read in. It is verbose. It is also correct.
+ */
+
+/*
+ * NOTHING CLIPS THE DRAWING.
+ *
+ * An outer `<svg>` gets `overflow: hidden` from the UA stylesheet, so a
+ * stroke that leaves the 256 viewBox is cut off at a hard straight edge.
+ * Both of the drawings that travel do exactly that: charts sweeps wide
+ * because its arcs are off centre and a rotation about the middle traces a
+ * circle bigger than the box, and tracking pushes every stroke outward
+ * along its own ray by design.
+ *
+ * A drawing that is cut off by an invisible rectangle reads as a picture
+ * inside a frame. Letting it out reads as a thing on the page. The band
+ * itself does not clip either: its two ground layers are `inset-0` and
+ * cannot overflow, so the `overflow-hidden` that used to sit on the
+ * section was doing nothing except cutting this off at the window.
+ */
+svg[data-sa] {
+  overflow: visible;
+}
+
+/*
+ * WEIGHT, WHICH IS WHAT "DARKER" ACTUALLY MEANS HERE.
+ *
+ * The strokes are already #0b0b0b. What made them read as light grey is
+ * that not one of them was reaching a whole pixel. The four drawings were
+ * authored at 0.3, 0.4, 0.5 and 0.8, each inside a `<g>` with a different
+ * scale on it, and then drawn into a 240px box, so the widths that
+ * actually reached the screen were about 0.72, 0.46, 0.64 and 0.38 CSS
+ * pixels. A sub pixel line cannot be black: the renderer spreads it across
+ * one pixel at partial coverage, and partial coverage of black is grey.
+ * No colour change could have fixed that.
+ *
+ * `non-scaling-stroke` takes the width out of the drawing's own coordinate
+ * system entirely, so one number here is the width every drawing renders
+ * at, whatever scale its group carries and whatever size the box is. It
+ * also settles the four against each other: they were authored separately
+ * and were never the same weight as one another.
+ */
+svg[data-sa] * {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.2;
+}
+
+/* Below `lg` the same drawing is in a 128px box, so the strokes sit twice
+   as close together. The same 1.2 there fills the gaps between them and
+   the drawing goes muddy. */
+@media (max-width: 1023px) {
+  svg[data-sa] * {
+    stroke-width: 0.95;
+  }
+}
+
+[data-sa] * {
+  transform-origin: 0 0;
+  transform-box: view-box;
+}
+
+/* ── discover · the blocks trade places ──────────────────────────────
+ *
+ * There and back over nine seconds, with two long holds. The holds are the
+ * point: a block that is always moving reads as drift, and a block that
+ * stops in its neighbour's place reads as a rearrangement.
+ */
+[data-sa='discover'] [data-sa-move] {
+  animation: sa-swap 9s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0ms) infinite;
+  will-change: transform;
+}
+
+@keyframes sa-swap {
+  0%,
+  12% {
+    transform: translate(0px, 0px);
+  }
+  38%,
+  62% {
+    transform: translate(var(--sx, 0px), var(--sy, 0px));
+  }
+  88%,
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* ── charts · the rings turn ─────────────────────────────────────────
+ *
+ * Linear and very slow. An eased rotation reads as a thing being turned by
+ * something; a linear one reads as a thing that turns.
+ */
+[data-sa='charts'] [data-sa-spin] {
+  animation: sa-spin var(--dur, 40s) linear 0ms infinite;
+  animation-direction: var(--dir, normal);
+  will-change: transform;
+}
+
+@keyframes sa-spin {
+  from {
+    transform: translate(var(--px, 0px), var(--py, 0px)) rotate(0deg)
+      translate(calc(-1 * var(--px, 0px)), calc(-1 * var(--py, 0px)));
+  }
+  to {
+    transform: translate(var(--px, 0px), var(--py, 0px)) rotate(360deg)
+      translate(calc(-1 * var(--px, 0px)), calc(-1 * var(--py, 0px)));
+  }
+}
+
+/* ── conditionals · the hammer hits ──────────────────────────────────
+ *
+ * The whole loop is 3.4s and the strike is about 200ms of it. The wind up
+ * accelerates into the blow, the blow stops dead, and the bounce is a
+ * small overshoot that settles before the head lifts away again. The easing
+ * lives inside the keyframes because no single curve describes a swing and
+ * an impact.
+ */
+[data-sa='conditionals'] [data-sa-swing] {
+  animation: sa-swing 3.8s 0ms infinite;
+  will-change: transform;
+}
+
+@keyframes sa-swing {
+  /* At rest it sits where it was drawn. The wind up is a separate phase
+     rather than the resting position, so the drawing is still itself when
+     nothing is happening and when motion is turned off. */
+  0%,
+  12% {
+    transform: translate(var(--px), var(--py)) rotate(0deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+    animation-timing-function: cubic-bezier(0.35, 0, 0.2, 1);
+  }
+  /* Back, and far back. This is the whole point of the long arc: the head
+     leaves the drawing on the way up, which it can now do because nothing
+     clips it any more. */
+  30% {
+    transform: translate(var(--px), var(--py)) rotate(-28deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+    animation-timing-function: cubic-bezier(0.6, 0, 0.85, 0.2);
+  }
+  /* Forty degrees of travel in about 340ms, and it stops dead. */
+  42% {
+    transform: translate(var(--px), var(--py)) rotate(12deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+    animation-timing-function: cubic-bezier(0.2, 0.9, 0.35, 1);
+  }
+  48% {
+    transform: translate(var(--px), var(--py)) rotate(4deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  55% {
+    transform: translate(var(--px), var(--py)) rotate(9deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+    animation-timing-function: cubic-bezier(0.33, 0, 0.25, 1);
+  }
+  80%,
+  100% {
+    transform: translate(var(--px), var(--py)) rotate(0deg)
+      translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+  }
+}
+
+/* The recoil, on the same 3.8s clock so its first frame is the frame the
+   head lands on. Four steps, each smaller and opposite: it rings once and
+   stops, rather than wobbling. */
+[data-sa='conditionals'] [data-sa-hit] {
+  animation: sa-hit 3.8s 0ms infinite;
+  will-change: transform;
+}
+
+@keyframes sa-hit {
+  0%,
+  41% {
+    transform: translate(0px, 0px);
+  }
+  /* Harder than before, because it is being hit harder than before. */
+  44% {
+    transform: translate(-2.6px, 1.8px);
+  }
+  49% {
+    transform: translate(1.3px, -0.9px);
+  }
+  54% {
+    transform: translate(-0.6px, 0.4px);
+  }
+  60%,
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* ── tracking · it breaks and comes back ─────────────────────────────
+ *
+ * The translate is written first so it is applied LAST: each stroke turns
+ * about its own centre and is then carried out along its ray. The other
+ * order rotates the drawing about a point the stroke has already left.
+ */
+[data-sa='tracking'] [data-sa-burst] {
+  animation: sa-burst 8s cubic-bezier(0.6, 0, 0.4, 1) var(--d, 0ms) infinite;
+  will-change: transform;
+}
+
+@keyframes sa-burst {
+  0%,
+  16% {
+    transform: translate(0px, 0px);
+  }
+  42%,
+  58% {
+    transform: translate(var(--sx, 0px), var(--sy, 0px)) translate(var(--px), var(--py))
+      rotate(var(--ra, 0deg)) translate(calc(-1 * var(--px)), calc(-1 * var(--py)));
+  }
+  84%,
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* Off screen, the loops stop where they are and pick up where they left
+   off. The attribute is only ever ADDED by the observer, so a browser that
+   never reports leaves the drawings running. */
+[data-sa-rest] svg[data-sa] * {
+  animation-play-state: paused;
+}
+
+/*
+ * The OS setting is already read in the component, which is what stops the
+ * work being done at all. This is the backstop for anything that slipped
+ * through, and for a setting changed after mount.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-sa] * {
+    animation: none !important;
+  }
+}

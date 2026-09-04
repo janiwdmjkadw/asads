@@ -1,0 +1,48 @@
+/*
+ * STRIKING THE SURFACE DRAWINGS IN METAL.
+ *
+ * Two rules, and both of them are overrides of something that is correct
+ * for ink and wrong for an alloy.
+ */
+
+/*
+ * THE WEIGHT.
+ *
+ * `motion.css` ships `svg[data-sa] * { stroke-width: 1.2 }`, and 0.95
+ * below `lg`. Those are the right numbers for near black on paper. They
+ * are useless for metal: a five stop ramp needs somewhere to put its
+ * bright band, and across 1.2px there is nowhere, so the whole thing
+ * averages back to grey and the effect disappears.
+ *
+ * 1.6 at every width. The selector carries a class, an element and an
+ * attribute, so it outranks the one in motion.css without an `!important`
+ * and without touching that file, which the other bands still rely on.
+ */
+[data-lp-struck] svg[data-sa] *,
+[data-lp-struck] svg * {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.6;
+}
+
+/*
+ * THE COLOUR.
+ *
+ * `LineArt` paints `stroke="currentColor"` as a presentation attribute on
+ * the svg. CSS on the same element wins against a presentation attribute,
+ * so this is all it takes to swap ink for an alloy.
+ */
+[data-lp-struck][data-metal='0'] svg {
+  stroke: url(#lp-metal-0);
+}
+
+[data-lp-struck][data-metal='1'] svg {
+  stroke: url(#lp-metal-1);
+}
+
+[data-lp-struck][data-metal='2'] svg {
+  stroke: url(#lp-metal-2);
+}
+
+[data-lp-struck][data-metal='3'] svg {
+  stroke: url(#lp-metal-3);
+}

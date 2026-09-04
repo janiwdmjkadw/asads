@@ -1,0 +1,159 @@
+/*
+ * THE CORPUS WALL.
+ *
+ * Two rows of prompt cards travelling in opposite directions. Corpus.tsx
+ * says why; this file is the travel and the card.
+ */
+
+.cp-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/*
+ * THE ROW FADES AT BOTH ENDS.
+ *
+ * Without the mask a card is chopped in half by the window edge, which
+ * reads as a layout that overflowed rather than as a wall that continues.
+ * The fade is what makes the row feel longer than the screen.
+ */
+.cp-row {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+
+/*
+ * THE TRAVEL.
+ *
+ * The track carries the cards twice and moves exactly minus fifty
+ * percent, so at the instant the animation restarts the second copy is
+ * standing where the first one began. Any other distance leaves a visible
+ * jump once a minute.
+ */
+.cp-track {
+  display: flex;
+  width: max-content;
+  animation-name: cp-travel;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.cp-half {
+  display: flex;
+}
+
+@keyframes cp-travel {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/*
+ * HOVER STOPS THE ROW.
+ *
+ * A wall you cannot read is a wall you resent. This one rule is the
+ * difference between a marquee and a gimmick.
+ */
+.cp-row:hover .cp-track {
+  animation-play-state: paused;
+}
+
+/* ── the item ────────────────────────────────────────────────────────
+ *
+ * NOT A CARD. The boxed version of this band was fourteen bordered
+ * rectangles sliding past each other, and a wall of boxes reads as a
+ * component library rather than as a wall of things people said. Nothing
+ * is drawn around a prompt now: it is a sentence, at reading size, with
+ * what it exercises named underneath.
+ *
+ * The only mark is the rule to its left, which is what separates one
+ * sentence from the next when they are all set in the same ink.
+ */
+.cp-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  flex: none;
+  width: 400px;
+  min-height: 150px;
+  margin-right: 56px;
+  padding-left: 26px;
+  border-left: 1px solid var(--lp-hairline);
+}
+
+/*
+ * The sentence is set at the size the band's own body copy is, because it
+ * IS the body copy: the argument of the section is what these say, not
+ * that there are a lot of them.
+ */
+.cp-text {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 26px;
+  letter-spacing: -0.011em;
+  color: var(--lp-ink-1);
+
+  /* One of these carries a 42 character contract address, and a single
+     unbreakable token would otherwise run out past the rule. */
+  overflow-wrap: anywhere;
+}
+
+/*
+ * The tags are the quietest thing here. They name a capability, nothing
+ * routes off them, and boxing them would put back the chrome the band
+ * just lost. One line, separated by a middot.
+ */
+.cp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cp-tags span {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--lp-ink-3);
+}
+
+.cp-tags span + span::before {
+  content: '·';
+  padding-right: 6px;
+}
+
+/*
+ * Somebody who has asked for less motion gets a still wall. The rows keep
+ * their cards and simply stop, which is exactly what hovering does, so
+ * nothing about the band is lost.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .cp-track {
+    animation: none;
+  }
+}
+
+/* ── on a phone ──────────────────────────────────────────────────────
+ *
+ * Narrower cards, so more than one is on screen at a time. A single 372px
+ * card at 375 fills the window and the row stops reading as a wall.
+ */
+@media (max-width: 640px) {
+  .cp-item {
+    width: 268px;
+    min-height: 140px;
+    margin-right: 34px;
+    padding-left: 18px;
+  }
+
+  .cp-text {
+    font-size: 15.5px;
+    line-height: 24px;
+  }
+}

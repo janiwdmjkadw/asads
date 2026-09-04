@@ -1,0 +1,511 @@
+/*
+ * THE PROFILE EDITOR — "card".
+ *
+ * The shipped silhouette kept — banner, avatar overlapping it, fields
+ * underneath — in the material the wallet sheets, the deposit and
+ * withdraw sheets, the agent setup gate, the search overlay and both nav
+ * menus now share.
+ *
+ * ── WHY IT IS WHITE ──────────────────────────────────────────────────
+ *
+ * It is an ERRAND, and the last one still dressed as chrome. You open it
+ * to claim a name, write a line about yourself and leave, and while it is
+ * open you are not reading the board behind it. It is also a FORM, which
+ * is the one thing this product has that a light ground is simply better
+ * at: four inputs, a switch and two buttons on a black panel is a lot of
+ * hairlines describing empty boxes.
+ *
+ * The palette, verbatim: #0B0E14 ink on #FFFFFF, #3E4A47 body, #8A9591
+ * quiet, #F2F5F4 for a field, #E8ECEA recessed, #D3DAD8 rim, #134E4A on,
+ * #B4482E wrong.
+ *
+ * ── WHY THIS IS A STYLESHEET AND NOT AN OVERRIDE ─────────────────────
+ *
+ * `SettingsPanel.tsx` used to style itself with inline `CSSProperties`
+ * objects. An inline style beats any selector, so restyling it from
+ * outside would mean `!important` on every declaration. The markup
+ * carries these classes instead, and its style objects are gone.
+ *
+ * ── TYPE ─────────────────────────────────────────────────────────────
+ *
+ *   THE CHARACTER COUNT is Geist Sans with tabular numerals, because it
+ *   ticks as you type and must not jitter.
+ *
+ *   THE FREN LINK is Geist Mono. It is a URL somebody reads back to you
+ *   or types in, and it is the one string here read character by
+ *   character.
+ *
+ * Never `--mono` or `--sans`. Those are THEME AXES a person picks, so
+ * anything built on them renders in whatever face is active.
+ *
+ * ── WHAT CAME OUT ────────────────────────────────────────────────────
+ *
+ * USERNAME and BIO were 9.5px, uppercase, at 0.13em tracking: the
+ * board's column head treatment, spent on the two words on a form that
+ * label the two things you are filling in. They are sentence case at a
+ * size a person reads without leaning in.
+ *
+ * The switch was white when on, on the argument that the surface gets
+ * one white control. On a white panel that says nothing, and the
+ * notification settings had already settled the question: on is the
+ * palette's teal.
+ */
+
+[data-profile-editor] {
+  --pe-ink: #0b0e14;
+  --pe-body: #3e4a47;
+  --pe-faint: #8a9591;
+  --pe-field: #f2f5f4;
+  --pe-panel: #e8ecea;
+  --pe-line: #e1e6e4;
+  --pe-rim: #d3dad8;
+  --pe-on: #134e4a;
+  --pe-bad: #b4482e;
+
+  /*
+   * ONE WIDTH RULE FOR EVERY SCREEN, and no media query.
+   *
+   * `min()` says 480 when there is room and "the viewport minus two 1rem
+   * gutters" when there is not, so the panel can never touch an edge. It
+   * is `100%`, not `100vw`: a fixed element's percentage resolves against
+   * the initial containing block, while `vw` resolves against the layout
+   * viewport and silently fails under device emulation and inside some
+   * embedded browser views.
+   *
+   * The centring is already correct and is NOT overridden here. Radix's
+   * `left-1/2` and `-translate-x-1/2` do it, they live in a Tailwind
+   * layer, and a layered declaration beats an unlayered `!important` —
+   * so pinning `left`/`right` from this file silently lost while `right`
+   * alone won, which is how the panel ended up 166px wide and centred by
+   * accident.
+   */
+  width: min(480px, calc(100% - 2rem)) !important;
+  max-width: none !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  /*
+   * A banner, four fields, a switch and a foot is about 520px, so on a
+   * short window the panel used to run off both ends with no way to
+   * reach Save. `hidden auto` keeps the corner clip on x and lets it
+   * scroll on y. `100%` and not `100vh`, for the same reason the width
+   * uses it.
+   */
+  max-height: calc(100% - 2rem) !important;
+  overflow: hidden auto;
+  background: #ffffff !important;
+  color: var(--pe-body) !important;
+  box-shadow:
+    0 0 0 1px var(--pe-rim),
+    0 28px 90px #00000059 !important;
+}
+
+/* The dialog's own close control is drawn for a dark panel, and here it
+   sits over a banner that may be any image at all, so it keeps a plate. */
+[data-profile-editor] > button[type='button']:last-child {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px;
+}
+
+[data-profile-editor] > button[type='button']:last-child:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* Blink paints an amber ring on anything focusable, and a form is
+   nothing but focusable things. The inputs carry their own focus. */
+[data-profile-editor] :focus,
+[data-profile-editor] :focus-visible {
+  outline: none !important;
+}
+
+/* Sentence case. It was the board's shouted column head, spent on the
+   two words that label the two fields. */
+[data-profile-editor] .pe-cap {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--pe-ink);
+  line-height: 1.2;
+}
+
+[data-profile-editor] .pe-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.005em;
+}
+
+[data-profile-editor] .pe-link {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  letter-spacing: -0.01em;
+  color: var(--pe-ink);
+}
+
+/* ── banner and avatar ────────────────────────────────────────────── */
+
+[data-profile-editor] .pe-banner {
+  position: relative;
+  height: 128px;
+  border-bottom: 1px solid var(--pe-line);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Empty is a neutral hatch, not colour standing in for a picture. An
+   empty banner drawn as a saturated gradient makes the state with
+   nothing in it look more finished than the state with an image. */
+[data-profile-editor] .pe-banner.is-empty {
+  background:
+    repeating-linear-gradient(45deg, #dfe5e3 0 8px, transparent 8px 16px),
+    var(--pe-panel);
+}
+
+/*
+ * BOTTOM RIGHT, not top right: `DialogContent` puts its own close button
+ * in the top right corner, and the chip landed underneath it. The foot of
+ * the banner is empty anyway — the avatar hangs off the left end.
+ *
+ * It keeps a dark plate rather than joining the light palette, because it
+ * sits on an uploaded image and has to stay legible over anything.
+ */
+[data-profile-editor] .pe-chip {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 27px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #ffffff;
+  background: rgba(11, 14, 20, 0.62);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out;
+}
+
+[data-profile-editor] .pe-chip:hover {
+  background: rgba(11, 14, 20, 0.82);
+}
+
+[data-profile-editor] .pe-chip svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+[data-profile-editor] .pe-avatar {
+  position: absolute;
+  left: 20px;
+  bottom: -34px;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--pe-faint);
+  background-color: var(--pe-panel);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/*
+ * IT IS A FILE PICKER AND NEVER SAID SO. The only hint was the cursor,
+ * which a person finds by accident. The mark comes up over the whole
+ * circle on hover, so it works over an uploaded photo too.
+ */
+[data-profile-editor] .pe-avatar-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(11, 14, 20, 0.5);
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+[data-profile-editor] .pe-avatar:hover .pe-avatar-hint {
+  opacity: 1;
+}
+
+[data-profile-editor] .pe-avatar-hint svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── body ─────────────────────────────────────────────────────────── */
+
+[data-profile-editor] .pe-body {
+  padding: 44px 20px 0;
+}
+
+[data-profile-editor] .pe-name {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--pe-ink);
+}
+
+[data-profile-editor] .pe-field {
+  margin-top: 17px;
+}
+
+[data-profile-editor] .pe-input,
+[data-profile-editor] .pe-area {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--pe-ink);
+  background: var(--pe-field);
+  box-shadow: inset 0 0 0 1px var(--pe-line);
+  outline: none;
+  transition: box-shadow 150ms ease-in-out, background-color 150ms ease-in-out;
+}
+
+[data-profile-editor] .pe-input::placeholder,
+[data-profile-editor] .pe-area::placeholder {
+  color: var(--pe-faint);
+}
+
+/* Focus is the field going white with the rim drawn in, which is the
+   only place on this panel a border is allowed to darken. */
+[data-profile-editor] .pe-input:focus,
+[data-profile-editor] .pe-area:focus {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--pe-ink);
+}
+
+[data-profile-editor] .pe-input.is-invalid,
+[data-profile-editor] .pe-input.is-invalid:focus {
+  box-shadow: inset 0 0 0 1px var(--pe-bad);
+}
+
+[data-profile-editor] .pe-area {
+  resize: none;
+  line-height: 1.45;
+}
+
+/*
+ * A LOCKED USERNAME IS NOT AN INPUT. The shipped one stayed a text field
+ * at 0.7 opacity, which reads as temporarily unavailable — the same
+ * treatment a disabled control gets. Permanent is a different fact, so it
+ * loses the input chrome and becomes the value, with the copy button it
+ * exists to give you.
+ */
+[data-profile-editor] .pe-locked {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 7px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--pe-panel);
+  font-size: 13px;
+  color: var(--pe-ink);
+}
+
+[data-profile-editor] .pe-note {
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--pe-faint);
+}
+
+[data-profile-editor] .pe-note.is-bad {
+  color: var(--pe-bad);
+}
+
+[data-profile-editor] .pe-count {
+  margin-top: 6px;
+  text-align: right;
+  font-size: 11.5px;
+  color: var(--pe-faint);
+}
+
+/* ── visibility ───────────────────────────────────────────────────── */
+
+[data-profile-editor] .pe-vis {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: var(--pe-panel);
+}
+
+[data-profile-editor] .pe-vis-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+[data-profile-editor] .pe-vis-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pe-ink);
+}
+
+[data-profile-editor] .pe-vis-note {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--pe-faint);
+}
+
+[data-profile-editor] .pe-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: var(--pe-rim);
+  transition: background-color 180ms ease-in-out;
+}
+
+/* On is the palette's teal, the same one the notification settings and
+   the agent gate use for a thing that is settled. */
+[data-profile-editor] .pe-switch.is-on {
+  background: var(--pe-on);
+}
+
+[data-profile-editor] .pe-switch > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  transition: left 180ms ease-in-out;
+}
+
+[data-profile-editor] .pe-switch.is-on > span {
+  left: 19px;
+}
+
+/* ── actions ──────────────────────────────────────────────────────── */
+
+/*
+ * The buttons used to float under the last field with nothing between
+ * them and it. They sit on their own foot, which is what the agent gate,
+ * the deposit sheet and the wallet modal all do, so "the form" and "what
+ * you do with it" are two bands rather than one long column.
+ */
+[data-profile-editor] .pe-acts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px -20px 0;
+  padding: 13px 20px 16px;
+  border-top: 1px solid var(--pe-line);
+}
+
+[data-profile-editor] .pe-acts-gap {
+  flex: 1 1 auto;
+}
+
+[data-profile-editor] .pe-btn {
+  height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 150ms ease-in-out, background-color 150ms ease-in-out,
+    color 150ms ease-in-out;
+}
+
+[data-profile-editor] .pe-btn.is-primary {
+  background: var(--pe-ink);
+  color: #ffffff;
+}
+
+[data-profile-editor] .pe-btn.is-primary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+[data-profile-editor] .pe-btn.is-primary:disabled {
+  background: var(--pe-panel);
+  color: var(--pe-faint);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+[data-profile-editor] .pe-btn.is-ghost {
+  background: none;
+  color: var(--pe-body);
+}
+
+[data-profile-editor] .pe-btn.is-ghost:hover {
+  color: var(--pe-ink);
+  background: var(--pe-panel);
+}
+
+[data-profile-editor] .pe-copy {
+  margin-left: auto;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--pe-faint);
+  cursor: pointer;
+  transition: color 150ms ease-in-out, background-color 150ms ease-in-out;
+}
+
+[data-profile-editor] .pe-copy:hover {
+  color: var(--pe-ink);
+  background: #ffffff;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+@media (max-width: 420px) {
+  [data-profile-editor] .pe-body {
+    padding: 44px 16px 0;
+  }
+
+  [data-profile-editor] .pe-acts {
+    margin: 20px -16px 0;
+    padding: 13px 16px 16px;
+  }
+
+  /* Touch targets, matching the 38px the nav settles on below 560. */
+  [data-profile-editor] .pe-btn {
+    height: 42px;
+  }
+}

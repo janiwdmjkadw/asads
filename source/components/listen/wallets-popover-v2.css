@@ -1,0 +1,363 @@
+/*
+ * THE WALLETS DROPDOWN — "plain", off the `/whatever` sheet.
+ *
+ * ── THE IDEA ─────────────────────────────────────────────────────────
+ *
+ * The figures stay bare numbers rather than sitting in chips, the row
+ * reads as two bands instead of four columns, and SOL is the only
+ * balance on it.
+ *
+ * ── WHAT IT REPLACES ─────────────────────────────────────────────────
+ *
+ * Three unrelated things on one row were lit in the same accent: the
+ * checked row's `--accent-soft` wash, the primary star, and the "set up
+ * this wallet" link. None of them means what the others mean.
+ *
+ * A wallet that cannot trade dropped the whole row to 50% opacity, which
+ * reads as a rendering fault rather than a state, with the reason hidden
+ * in a `title` attribute nobody hovers long enough to see.
+ *
+ * And the count and the column heads were set in `--font-mono,
+ * monospace`, which falls through to whatever the browser calls
+ * monospace rather than a face anyone chose.
+ *
+ * ── HOW IT IS APPLIED ────────────────────────────────────────────────
+ *
+ * Every surface, colour and size in `MultiWalletSelector` is set INLINE,
+ * and an inline style beats any selector, so everything here needs
+ * `!important`. The panel is reached by its own aria-label rather than a
+ * new class, because the same body also mounts on the trade page.
+ *
+ * The two-band row is done WITHOUT touching the component: the name
+ * group is already a flex row holding name, badge, star and address, so
+ * wrapping it and giving the address a full-width basis drops the
+ * address onto its own line.
+ */
+
+[aria-label='Select wallets for trading'],
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-list'] {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* ── the head ─────────────────────────────────────────────────────── */
+
+/* Geist with tabular numerals — was `--font-mono, monospace`. */
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-count'] {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  color: #4b4f5b !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-select-all'],
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-clear'] {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  /*
+   * 0.68, up from 0.5. `Select all` and `Clear` are the two presses at
+   * the top of this panel and they were the dimmest text in it — half
+   * white on the popover ground is about 3.9:1, under the 4.5:1 an
+   * 11.5px word needs. Same value the sub header cluster and the nav
+   * settled on, so the three surfaces agree on what "quiet" is.
+   */
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-select-all']:hover:not(:disabled),
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-clear']:hover:not(:disabled) {
+  color: #ffffff !important;
+}
+
+/* ── the rows ─────────────────────────────────────────────────────── */
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] {
+  padding: 8px 14px !important;
+  /*
+   * NOT 50% OPACITY. A whole row at half strength reads as a rendering
+   * fault; the row keeps its ink and the setup link says what is wrong.
+   */
+  opacity: 1 !important;
+  border-radius: 0 !important;
+  transition: background-color 130ms ease !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-']:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/*
+ * Checked is a white plate. `MultiWalletSelector` has no pressed
+ * attribute on the row, so the checked one is found by the accent wash
+ * it is about to lose.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'][style*='accent-soft'] {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* A wallet that cannot trade keeps its name legible but quiet. */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'][data-trade-ready='false'] {
+  background: transparent !important;
+}
+
+/* ── the name band ────────────────────────────────────────────────── */
+
+/*
+ * TWO BANDS OUT OF ONE FLEX ROW.
+ *
+ * The name group holds name, agent badge, star and address on one line,
+ * which is what squeezes a long label into "Long term co…". Allowing it
+ * to wrap and giving the address a full width basis puts the address on
+ * its own line under the name, and the name gets the whole width.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:nth-child(2) {
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  row-gap: 3px !important;
+}
+
+/* The address tail — it carries the pubkey as its title. */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:nth-child(2) > span[title]:last-child {
+  flex: 0 0 100% !important;
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+  font-size: 10.5px !important;
+  letter-spacing: -0.01em !important;
+  color: #4b4f5b !important;
+}
+
+/*
+ * The primary star. It was `--accent-primary`, the same colour as the
+ * checked wash and the setup link.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] span[title='Primary wallet'] {
+  /*
+   * 0.62, up from 0.35. It is a star marking ONE row out of a list, and
+   * at 35% it was fainter than the rule under the row it sits on — the
+   * one thing on the panel that has to be spotted rather than read.
+   */
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+
+/*
+ * The "set up this wallet" link. It stays findable — it is the one
+ * actionable thing on a row that cannot trade — but it drops the accent
+ * and sits on its own line where the address would be.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] [role='button'] {
+  flex: 0 0 100% !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] [role='button']:hover {
+  color: #ffffff !important;
+}
+
+/* ── the figures ──────────────────────────────────────────────────── */
+
+/*
+ * SOL only, as a bare number — `plain`. A chip states a boundary the
+ * number does not need, and on six rows that is a stack of small boxes
+ * down the panel.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:nth-child(3),
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:nth-child(4) {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/*
+ * THERE IS NO TOKEN COLUMN HERE, AND NO SOL ONE EITHER.
+ *
+ * `rowGridColumns(mint !== null)` gives this row `15px minmax(0, 1fr)`
+ * when no mint is in context, which is always the case off the strip —
+ * so the figures the trade page shows do not exist on this mount at all.
+ * Nothing needs hiding.
+ *
+ * The rules above that reach for the third and fourth cells are the same
+ * treatment the trade page's panel would want; they are scoped to this
+ * popover, so they sit inert here and do not reach that surface.
+ */
+
+/* ── the checkbox ─────────────────────────────────────────────────── */
+
+/*
+ * A WHITE BOX, NOT A CYAN ONE.
+ *
+ * `CheckGlyph` fills with `--accent-primary` and strokes its tick in
+ * `--surface-1`, so a ticked wallet was the brightest thing in the
+ * popover and the only accent left on the surface once the row wash, the
+ * star and the setup link had gone. On a list where several rows are on
+ * at once that is a column of cyan squares down the left edge.
+ *
+ * It is the last child of the wrapper span, after the invisible native
+ * input that carries the accessibility and the tests.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:first-child > span {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: transparent !important;
+}
+
+[aria-label='Select wallets for trading']
+  [data-testid^='multi-wallet-row-'][style*='accent-soft']
+  > span:first-child
+  > span {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+/* The tick strokes in `--surface-1` so it reads against the fill. On a
+   white box that has to be black. */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] svg path {
+  stroke: #000000 !important;
+}
+
+/* ── the type comes down ──────────────────────────────────────────── */
+
+/*
+ * The wallet name shipped at 13px and the head at 13px, which is the
+ * size a page title takes elsewhere in the product. This is a picker off
+ * a 22px chip — the same list the Groups dropdown beside it renders at
+ * 12.5px, and the two sit a few pixels apart on the same strip.
+ *
+ * So: the name to 12px, the head to 12.5px, the address to 10px, and the
+ * row loses two pixels of padding with them. Nothing here is read at a
+ * distance; it is read while the pointer is already on it.
+ */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] {
+  padding: 6px 14px !important;
+}
+
+[aria-label='Select wallets for trading']
+  [data-testid^='multi-wallet-row-']
+  > span:nth-child(2)
+  > span:first-child {
+  font-size: 12px !important;
+}
+
+[aria-label='Select wallets for trading']
+  [data-testid^='multi-wallet-row-']
+  > span:nth-child(2)
+  > span[title]:last-child {
+  font-size: 10px !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] [role='button'] {
+  font-size: 10.5px !important;
+}
+
+/* The head sits above the list, so it stays a step over the rows without
+   becoming a title. */
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-count'] {
+  font-size: 10.5px !important;
+}
+
+/* `Wallets`, the one label on the panel. */
+[aria-label='Select wallets for trading'] > div:first-child > span:first-child {
+  font-size: 12.5px !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-select-all'],
+[aria-label='Select wallets for trading'] [data-testid='multi-wallet-clear'] {
+  font-size: 11px !important;
+}
+
+/* The check comes down with the row it marks. */
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:first-child,
+[aria-label='Select wallets for trading']
+  [data-testid^='multi-wallet-row-']
+  > span:first-child
+  > span {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/* ── the surface ──────────────────────────────────────────────────── */
+
+/*
+ * #111111 — the same surface the Groups dropdown and the Trading
+ * Settings panel take.
+ *
+ * `ChipPopover` paints itself with `--surface-1`, a THEME token that
+ * moves with whatever palette is active, so the two popovers hanging off
+ * the same strip a few pixels apart opened in two different greys. They
+ * are the same kind of object and are made of the same thing now.
+ */
+[aria-label='Select wallets for trading'] {
+  background: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 24px 80px #0000008c,
+    0 0 60px #ffffff0a !important;
+}
+
+/* The head's rule and the list's dividers come down to the one hairline
+   weight the rest of the product uses. */
+[aria-label='Select wallets for trading'] > div:first-child {
+  border-bottom-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * NEVER WIDER THAN THE SCREEN, WITH 10px EACH SIDE.
+ *
+ * `ChipPopover` is handed a fixed pixel width — 320 here, 224 for the
+ * groups list — and `computeAnchor` only clamps the LEFT edge. On a 360
+ * wide phone that put the left edge safely inside and let the right edge
+ * run off the screen.
+ *
+ * A PERCENTAGE, not `vw`: the popover is `position: fixed`, so a
+ * percentage resolves against the viewport itself, and `vw` is unreliable
+ * here — it resolves against the layout viewport and silently fails under
+ * device emulation and inside embedded webviews, which is exactly where
+ * this needs to hold.
+ */
+[aria-label='Select wallets for trading'],
+[aria-label='Select a wallet group'] {
+  max-width: calc(100% - 20px) !important;
+}
+
+/* Below the nav's own breakpoint the rows get thumb sized, since the
+   same list is now the phone's wallet picker. */
+@media (max-width: 560px) {
+  [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] {
+    padding: 10px 14px !important;
+  }
+
+  [aria-label='Select wallets for trading']
+    [data-testid^='multi-wallet-row-']
+    > span:first-child,
+  [aria-label='Select wallets for trading']
+    [data-testid^='multi-wallet-row-']
+    > span:first-child
+    > span {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* ══ THE SAME PLATE AS THE BAR THAT OPENS IT ═══════════════════════════
+ *
+ * Every field and control inside this panel draws its fill from
+ * `--input-bg`. The token doubled to 0.05 globally, but a popover is
+ * PORTALLED to `.listen-root` rather than nested in the strip, so it
+ * never saw the scoped bump the sub header got — it only sees the token,
+ * which is now right. This block is the part the token cannot reach: the
+ * glyphs, which are inked inline by their components.
+ * ══════════════════════════════════════════════════════════════════ */
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] svg {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+
+[aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-']:hover svg {
+  color: #ffffff !important;
+}

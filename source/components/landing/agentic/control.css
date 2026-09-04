@@ -1,0 +1,78 @@
+/*
+ * THE THREE COLUMN BANDS.
+ *
+ * Used by both the loop and the control band. Control.tsx says why they
+ * share a shape.
+ */
+
+/*
+ * THREE ACROSS, AND SEPARATED BY SPACE RATHER THAN BY RULES.
+ *
+ * A vertical hairline between columns is the obvious move and it is the
+ * wrong one here: the band already sits between two ruled bands, and a
+ * third set of lines turns the page into a table. The gap does the same
+ * job for nothing.
+ */
+.ct-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 44px;
+  border-top: 1px solid var(--lp-hairline);
+  padding-top: 34px;
+}
+
+/*
+ * The number is the smallest thing in the column and it is the first
+ * thing read, which is the whole reason it works: it says "one of three"
+ * before the eye has to decide anything.
+ */
+.ct-n {
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+.ct-title {
+  margin: 14px 0 0;
+  max-width: 22ch;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--lp-ink-1);
+}
+
+.ct-body {
+  margin: 12px 0 0;
+  max-width: 46ch;
+  font-size: 15.5px;
+  line-height: 25px;
+  color: var(--lp-ink-2);
+}
+
+/*
+ * ── BELOW `lg` ───────────────────────────────────────────────────────
+ *
+ * One column with a rule between items. Two across at 800 leaves an
+ * orphan on its own row, and the wallet paragraph is long enough that
+ * three narrow columns become three grey blocks.
+ */
+@media (max-width: 1023px) {
+  .ct-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .ct-cols > div {
+    padding: 26px 0;
+  }
+
+  .ct-cols > div:first-child {
+    padding-top: 0;
+  }
+
+  .ct-cols > div + div {
+    border-top: 1px solid var(--lp-hairline);
+  }
+}

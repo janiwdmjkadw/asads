@@ -1,0 +1,338 @@
+/*
+ * THE WALLET MODAL. White, near-black ink, Geist.
+ *
+ * Applied over the shipped markup in `WalletBalanceModal.tsx` rather than
+ * replacing the component, so every hook keeps working: the balances
+ * query, the deposit address, the withdraw form and its validation.
+ *
+ * ── WHY IT IS NOT BLACK ──────────────────────────────────────────────
+ *
+ * It was, and the deposit tab inside it was a white QR slab sitting in a
+ * black panel, which is the loudest possible way to draw the one thing
+ * on the tab nobody looks at. The Flash dialog already established the
+ * product's light register — #0B0E14 on #FFFFFF, #E8ECEA plates, #134E4A
+ * for a settled figure — and this is the same KIND of surface: a short
+ * errand you open, finish and close. Both tabs take it, so switching
+ * between Deposit and Withdraw does not switch worlds.
+ *
+ * ── HOW IT IS DONE ───────────────────────────────────────────────────
+ *
+ * By redefining the INK SCALE inside the modal, not by chasing every
+ * utility. The markup is full of `text-[var(--ink-2)]`, so moving
+ * `--ink-0…4` and the hairlines to the light palette on this one scope
+ * repaints the whole panel, including the withdraw form's labels,
+ * inputs and errors, without touching the component.
+ *
+ * ── THE TYPE RULE, and it is the one thing to get right here ─────────
+ *
+ *   AMOUNTS are Geist Sans with `tabular-nums`. Tabular figures lock the
+ *   digits to one width so a ticking number cannot jitter, and that is
+ *   achievable without a monospace. The same number must not appear in
+ *   two faces across the product, and Geist Mono draws a slashed zero
+ *   that makes a balance read like a stack trace.
+ *
+ *   ADDRESSES are Geist Mono, because they are read character by
+ *   character and a proportional face makes an l and a 1 the same shape.
+ *
+ *   THE TITLE is Geist Mono, matching the Flash dialog's, which is half
+ *   of what makes that register recognisable. It carries no digits.
+ *
+ * Nothing here uses `--mono` or `--sans`. Those are THEME AXES — the
+ * provider lets a person pick their own faces — so anything built on them
+ * renders in whatever the active theme happens to carry.
+ */
+
+.listen-root [data-wallet-modal] {
+  /* The Flash dialog's palette, verbatim. */
+  --wm-line: #e1e6e4;
+  --wm-ink: #0b0e14;
+  --wm-rest: #8a9591;
+  --wm-plate: #e8ecea;
+  --wm-teal: #134e4a;
+
+  /* The ink scale, remapped for a light ground. Everything inside that
+     reads a token follows from here. */
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+  --hairline: #e1e6e4;
+  --hairline-2: #d3dad8;
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f3f5f4;
+  --surface-3: #e8ecea;
+  --input-bg: #e8ecea;
+  --input-border: #d3dad8;
+  --accent: #0b0e14;
+  --accent-ink: #ffffff;
+  --up: #134e4a;
+  --down: #b4482e;
+
+  border-color: transparent !important;
+  background: #ffffff !important;
+  color: var(--wm-ink) !important;
+  box-shadow: 0 24px 80px #00000099 !important;
+}
+
+/* The title, in the Flash dialog's face. */
+.listen-root [data-wallet-modal] h2 {
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+  font-size: 22px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.02em;
+}
+
+/* Every amount on the panel. */
+.listen-root [data-wallet-modal] [class*='tabular'],
+.listen-root [data-wallet-modal] input {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* The deposit address and the withdraw destination — the two strings
+   read character by character. */
+.listen-root [data-wallet-modal] [data-deposit-address],
+.listen-root [data-wallet-modal] input[data-address-input] {
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+  letter-spacing: -0.01em;
+  color: var(--wm-ink) !important;
+}
+
+/*
+ * THE PLATE. One value for every recessed surface on the panel: the
+ * card the QR sits on, the tab track, the address field. The code is
+ * black modules on white inside a grey plate, which is the deposit
+ * variant the owner picked.
+ */
+.listen-root [data-wallet-modal] [class*='rounded-2xl'],
+.listen-root [data-wallet-modal] [role='tablist'] {
+  border-color: transparent !important;
+  background: var(--wm-plate) !important;
+}
+
+/* The segmented indicator: white on the grey track, the way a light
+   segmented control has always said which one is live. */
+.listen-root [data-wallet-modal] [role='tablist'] > span[aria-hidden] {
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px #0b0e1414 !important;
+}
+
+/*
+ * ── THE ACTION BUTTON ────────────────────────────────────────────────
+ *
+ * Near-black solid on white, which on this ground is the one thing that
+ * reads as "press me". Hover is opacity only, the same as the landing
+ * pill.
+ */
+.listen-root [data-wallet-modal] [data-wallet-cta] {
+  background: var(--wm-ink) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transition: opacity 150ms ease;
+}
+
+.listen-root [data-wallet-modal] [data-wallet-cta]:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+/*
+ * MAX is a shortcut, not a destination, so it is muted until hovered.
+ */
+.listen-root [data-wallet-modal] [data-wallet-max] {
+  color: var(--wm-rest) !important;
+}
+
+.listen-root [data-wallet-modal] [data-wallet-max]:hover:not(:disabled) {
+  color: var(--wm-ink) !important;
+  background: #dfe5e3 !important;
+}
+
+/*
+ * COPY sits at the end of the address it copies. On the deposit tab the
+ * address is the content and copy is how you take it, so it is muted at
+ * rest and inks up on hover — the same rank as MAX on the other tab.
+ *
+ * Scoped inside the modal on purpose: `DepositAddress` also renders in
+ * the onboarding card, and that card's accent is doing its own job.
+ */
+.listen-root [data-wallet-modal] [data-wallet-copy] {
+  color: var(--wm-rest) !important;
+  transition: color 140ms ease;
+}
+
+.listen-root [data-wallet-modal] button:hover [data-wallet-copy] {
+  color: var(--wm-ink) !important;
+}
+
+/*
+ * ── THE ADDRESS ROW ──────────────────────────────────────────────────
+ *
+ * It is a button on `--input-bg`, which is now the same grey as the
+ * plate it sits on, so it vanished into it and the string wrapped onto
+ * two lines. White recess, one line, ellipsised — the whole address is
+ * still what gets copied, and nobody reads it off the screen when there
+ * is a Copy next to it.
+ */
+.listen-root [data-wallet-modal] [data-deposit-address] {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+}
+
+.listen-root [data-wallet-modal] button:has([data-deposit-address]) {
+  background: #ffffff !important;
+  border-color: #d3dad8 !important;
+  padding: 9px 9px 9px 14px !important;
+  /* A nowrap child in a flex row is measured at its FULL width unless
+     the chain above it is allowed to shrink, and a 44 character address
+     pushed the whole plate past the dialog's edge. */
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+/*
+ * And the chain above it. `flex-1` on a column child sizes to CONTENT
+ * on the cross axis, so one nowrap string 44 characters long dragged
+ * the plate 80px past the dialog. Every box between the panel and the
+ * address is pinned to the panel's width.
+ */
+.listen-root [data-wallet-modal] [class*='rounded-2xl'],
+.listen-root [data-wallet-modal] [class*='rounded-2xl'] > *,
+.listen-root [data-wallet-modal] [class*='h-[420px]'],
+.listen-root [data-wallet-modal] [class*='h-[420px]'] > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* `flex-1` alone still resolves against max-content; a zero basis is
+   what actually makes the string give way. */
+.listen-root [data-wallet-modal] [data-deposit-address] {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+}
+
+/* Copy is a real control here rather than a word: it is the one thing
+   the deposit tab is for. */
+.listen-root [data-wallet-modal] button:has([data-deposit-address]) [data-wallet-copy] {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 6px;
+  background: var(--wm-ink) !important;
+  color: #ffffff !important;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.listen-root [data-wallet-modal] button:hover:has([data-deposit-address]) [data-wallet-copy] {
+  color: #ffffff !important;
+  opacity: 0.88;
+}
+
+/* The QR keeps its own white card, but on a grey plate it needs no
+   border of its own — two boxes for one object. */
+.listen-root [data-wallet-modal] [class*='rounded-xl'][class*='qr-light'],
+.listen-root [data-wallet-modal] img[alt='Deposit address QR'] {
+  border: 0 !important;
+}
+
+/* The close control ships as white-on-dark; on this ground it needs the
+   panel's own ink or it is a white cross on white. */
+.listen-root [data-wallet-modal] > button[type='button']:last-child {
+  color: var(--wm-ink) !important;
+  opacity: 0.5;
+}
+.listen-root [data-wallet-modal] > button[type='button']:last-child:hover {
+  opacity: 1;
+}
+
+/*
+ * ── THE WALLET PICKER ────────────────────────────────────────────────
+ *
+ * Radix portals `SelectContent` to the body, so it is a sibling of the
+ * dialog rather than a descendant, and every rule scoped to
+ * `[data-wallet-modal]` misses it. It gets the palette directly.
+ */
+[data-wallet-select] {
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+  --hairline: #e1e6e4;
+  --hairline-2: #d3dad8;
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f3f5f4;
+
+  border-color: #d3dad8 !important;
+  background: #ffffff !important;
+  color: #0b0e14 !important;
+  box-shadow: 0 16px 40px #00000033 !important;
+}
+
+/* The rows: hover and the checked one both on the plate grey, so the
+   list has one fill rather than two. */
+[data-wallet-select] [role='option'] {
+  color: #0b0e14 !important;
+}
+[data-wallet-select] [role='option']:hover,
+[data-wallet-select] [role='option'][data-highlighted] {
+  background: #e8ecea !important;
+  color: #0b0e14 !important;
+}
+[data-wallet-select] [role='option'][data-state='checked'] {
+  background: #e8ecea !important;
+}
+
+/*
+ * The tick. `SelectItem` draws it in `--accent-primary`, which is the
+ * theme's pale cyan — a third colour on a panel whose whole point is
+ * that it has two. It takes the panel's ink like everything else here.
+ */
+[data-wallet-select] [role='option'] svg {
+  color: #0b0e14 !important;
+}
+
+/* ══ NARROW SCREENS ══════════════════════════════════════════════════
+ *
+ * The panel sizes itself with `w-[calc(100vw-2rem)] max-w-md`. That
+ * reads as "full width minus a gutter, never wider than 448" and it is
+ * wrong in one place that matters: `vw` resolves against the layout
+ * viewport, which under device emulation and inside some embedded
+ * browser views is NOT the width the page is laid out at. When it
+ * resolves large the width clamps to `max-w-md` and a 448px panel sits
+ * on a 360px screen, hanging off both edges.
+ *
+ * Media queries do not have that problem, so below 420 the panel stops
+ * being a centred fixed width box and pins to both gutters, which needs
+ * no `vw` at all. Same fix as the agent setup gate.
+ */
+@media (max-width: 420px) {
+  .listen-root [data-wallet-modal] {
+    width: auto !important;
+    max-width: none !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    /* Centring is what the gutters do now. Leaving the X translate would
+       shove the pinned box half its own width off screen. */
+    transform: translateY(-50%) !important;
+    padding: 18px 16px !important;
+  }
+
+  /* Touch targets, matching the 38px the nav settles on below 560. */
+  .listen-root [data-wallet-modal] [data-wallet-cta] {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+
+  .listen-root [data-wallet-modal] [role='tablist'] > button {
+    height: 40px !important;
+  }
+}

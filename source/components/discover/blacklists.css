@@ -1,0 +1,220 @@
+/*
+ * THE BLACKLISTS MODAL.
+ *
+ * Rides on `discover-filters-v2.css` — the same `.df` surface, head, lane
+ * tabs, foot, ghosts and white primary the filters panel uses — so the
+ * two panels are one language and this file only adds what is new: the
+ * add row, the list, and the empty state.
+ */
+
+.df.bl {
+  max-width: 460px !important;
+}
+
+/* ── the add row ──────────────────────────────────────────────────── */
+
+.bl-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px 0;
+}
+
+.bl-add input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--df-line);
+  border-radius: 8px;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #ffffff;
+  transition: border-color 130ms ease;
+}
+
+.bl-add input::placeholder {
+  color: var(--df-cap);
+}
+
+.bl-add input:focus {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Nothing typed, nothing to add. Dimmed rather than hidden, so the shape
+   of the row does not change under the cursor as you type. */
+.bl-add .df-apply:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.bl-error {
+  padding: 8px 18px 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #ff5f6e;
+}
+
+/* ── the list ─────────────────────────────────────────────────────── */
+
+.bl-body {
+  padding: 12px 18px 16px;
+  /* A floor, so the panel does not resize under the pointer as entries
+     come and go, and a ceiling so a full list scrolls inside itself. */
+  min-height: 260px;
+  max-height: min(360px, 44vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.bl-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bl-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bl-body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.bl-empty {
+  max-width: 46ch;
+  padding-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--df-cap);
+}
+
+.bl-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 36px;
+}
+
+/*
+ * An address is a value, so it is set in the mono with tabular figures:
+ * the whole reason to show it is to compare it against another one, and
+ * a proportional face makes two addresses that differ in the middle look
+ * the same length.
+ */
+.bl-entry {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bl-remove {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.bl-row:hover .bl-remove {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bl-remove:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* The real input behind the Import button. Not `display: none`, which
+   makes it unfocusable for a keyboard. */
+.bl-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * TWO-WORD TAB LABELS STAY ON ONE LINE.
+ *
+ * `Dev blacklist` and `Handles blacklist` wrapped on a phone, which put
+ * the three tabs on two lines each and doubled the height of the strip.
+ * They keep their line and the strip scrolls instead, the same answer the
+ * lane headers give.
+ */
+.bl .df-lane {
+  white-space: nowrap;
+}
+
+/* A button's label is not a paragraph. `Delete all` was breaking across
+   two lines inside its own pill. */
+.bl .df-ghost,
+.bl .df-apply {
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  /*
+   * The add row stays on one line. Stacking it was tried and is worse: a
+   * full-width Add under a full-width field is the loudest thing on a
+   * panel whose body is usually empty, and there is room for both at 355
+   * once the field is allowed to shrink.
+   */
+  .bl-add input {
+    min-width: 0;
+  }
+
+  /*
+   * The count takes its own line and the two presses share the next one.
+   * All three on one line left about 90px for `Delete all`, which is
+   * where the label broke in half.
+   */
+  .bl .df-foot {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .bl .df-foot .df-cap {
+    flex: 1 1 100%;
+    order: -1;
+  }
+
+  .bl .df-foot .df-grow {
+    display: none;
+  }
+
+  .bl .df-foot .df-ghost {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+}

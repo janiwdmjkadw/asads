@@ -1,0 +1,146 @@
+/* ─────────────────────────────────────────────────────────────────────
+ * SOREN · THE HOVER CARD (spec/10-system.md §1.4.2) — owned by the
+ * hover-card build; nothing else styles here. Flag-gated markup only:
+ * every selector is scoped under the soren tree, so this sheet is inert
+ * for flag-off users.
+ * ──────────────────────────────────────────────────────────────────── */
+
+.ag-glimpse-layer {
+  position: fixed;
+  z-index: 60;
+  width: 370px;
+}
+/* The pearl pane — §1.3's recipe verbatim: 78% opaque, no blur, so it
+   ghosts over whatever sits behind it and never needs to dodge content. */
+.ag-glimpse {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 370px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #0e0d14c7;
+  background-image:
+    linear-gradient(
+      70deg,
+      transparent 22%,
+      oklab(79.6% 0.105 -0.021 / 12.8%) 40%,
+      oklab(87.4% -0.075 -0.021 / 14.4%) 52%,
+      oklab(92.4% -0.048 0.08 / 11.2%) 64%,
+      transparent 80%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 14px 36px rgba(0, 0, 0, 0.5);
+}
+.ag-glimpse-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ag-glimpse-art {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  object-fit: cover;
+  flex: none;
+}
+.ag-glimpse-art--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  color: #e8e8e2;
+}
+.ag-glimpse-name {
+  font-family: var(--font-geist-sans);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #e8e8e2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ag-glimpse-sym {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  color: #8a8a85;
+  flex: none;
+}
+.ag-glimpse-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ag-glimpse-price {
+  font-family: var(--font-geist-sans);
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 600;
+  color: #e8e8e2;
+  font-variant-numeric: tabular-nums;
+}
+.ag-glimpse-chg {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(232, 232, 226, 0.3);
+}
+.ag-glimpse-chg[data-tone='green'] { color: #7ed6a6; }
+.ag-glimpse-chg[data-tone='red'] { color: #f08a9a; }
+.ag-glimpse-chart-slot {
+  position: relative;
+  width: 336px;
+  height: 64px;
+}
+.ag-glimpse-chart { display: block; }
+.ag-glimpse-chart--empty {
+  width: 336px;
+  height: 64px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.ag-glimpse-time {
+  position: absolute;
+  top: -16px;
+  transform: translateX(-50%);
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  line-height: 14px;
+  color: #e8e8e2;
+  white-space: pre;
+  pointer-events: none;
+}
+.ag-glimpse-rule { display: block; }
+.ag-glimpse-stats {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.ag-glimpse-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ag-glimpse-stat-k {
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.06em;
+  color: #8a8a85;
+}
+.ag-glimpse-stat-v {
+  font-family: var(--font-geist-mono);
+  font-size: 14px;
+  line-height: 18px;
+  color: #e8e8e2;
+  font-variant-numeric: tabular-nums;
+}

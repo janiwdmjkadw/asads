@@ -1,0 +1,1047 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE CHART, IN THE PAGE'S MATERIALS
+ *
+ * The chart itself is `lightweight-charts` and stays as it is. What was
+ * rebuilt is everything AROUND it — the toolbar, its menu, its toggles —
+ * because the chrome was speaking a different language from the header
+ * above it and the rail beside it: accent-tinted toggles, 6px radii,
+ * bordered icon buttons, a different type scale.
+ *
+ * Everything below is the rail's own vocabulary: 10–11.5px type, hairline
+ * `#1d1d20` rules, `#272729` outlines, 4–7px corners, and one thing lit
+ * white to say "this one".
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ── THE CHART DOES NOT TAKE THE WHOLE PAGE ───────────────────────────
+ *
+ * It was `flex: 1` of the viewport, which on a tall screen meant a
+ * thousand-pixel pane: a chart that big is mostly empty air above and
+ * below the candles, and it pushed everything that belongs under it —
+ * the tape, the holders, the orders — off the bottom of the window.
+ *
+ * 500 as a starting height, and it still gives way if the window is
+ * short. What is under it gets the rest.
+ */
+.tc {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  /*
+   * 600, and it does not shrink. The tape below it is a list that grows;
+   * if the chart were allowed to give way, a long tape would squeeze the
+   * candles instead of taking the space it needs from the page.
+   */
+  flex: 0 0 600px;
+  height: 600px;
+  font-family: var(--sans);
+  /*
+   * ── THE BARS MEASURE THIS COLUMN, NOT THE WINDOW ──────────────────
+   *
+   * The toolbar's crowding has nothing to do with the viewport: with the
+   * rail beside it this column is about 470px wide on ANY screen, so a
+   * `@media (max-width: 700px)` rule never fired on a desktop and the
+   * last controls on the bar — settings, fullscreen — sat outside the
+   * visible strip with no way to reach them.
+   *
+   * A container instead. The bars trim when THIS column is narrow,
+   * which is the thing that was ever actually true.
+   */
+  container-type: inline-size;
+  container-name: chart;
+}
+
+/* ── the bar ──────────────────────────────────────────────────────── */
+
+.tc-bar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 5px;
+  height: 38px;
+  padding: 0 10px;
+  border-bottom: 1px solid #1d1d20;
+  background: #000000;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tc-bar::-webkit-scrollbar { display: none; }
+
+.tc-gap { flex: 1 1 auto; }
+
+/* A rule, not a component. Two of these on the bar were a whole imported
+   primitive doing what one pseudo-element does. */
+.tc-div {
+  flex-shrink: 0;
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: #1d1d20;
+}
+
+/* ── the timeframe ────────────────────────────────────────────────── */
+
+.tc-tf {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid #272729;
+  border-radius: 5px;
+  background: #0c0c0d;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  cursor: pointer;
+  transition: border-color 130ms ease;
+}
+
+.tc-tf:hover { border-color: #3a4150; }
+
+.tc-tf > svg {
+  width: 11px;
+  height: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * The menu is the rail's popup: a plate at #101318 with a hairline and a
+ * drop, and the chosen row lit white rather than tinted with an accent.
+ */
+.tc-menu {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  min-width: 74px;
+  padding: 4px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #101318;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+.tc-menu-i {
+  height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.tc-menu-i:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.tc-menu-i[data-on] {
+  background: rgba(255, 255, 255, 0.09);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ── the icon buttons ─────────────────────────────────────────────── */
+
+/*
+ * No border and no plate at rest. Nine outlined boxes across a 38px bar
+ * is a row of frames with pictures in them; the mark alone is the
+ * control, and the plate arrives on hover to say it is reachable.
+ */
+.tc-bar .tc-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tc-bar .tc-ico:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.tc-bar .tc-ico > svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── the labelled toggle ──────────────────────────────────────────── */
+
+.tc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid #272729;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease, border-color 130ms ease;
+}
+
+.tc-btn > svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * ── THE HOVER IS A PLATE, NOT A BRIGHTER OUTLINE ─────────────────────
+ *
+ * It lit its border and its label at once, which on a 1px outline reads
+ * as the edge flickering rather than as the button waking up — and the
+ * mark inside stayed dim, so three things moved at three weights.
+ *
+ * A ground instead: the outline holds still, the whole cell lifts, and
+ * the label and its mark come up together.
+ */
+.tc-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.tc-btn:hover > svg { color: rgba(255, 255, 255, 0.8); }
+
+.tc-btn:active { background: rgba(255, 255, 255, 0.1); }
+
+/* On means the bubbles are HIDDEN — a state worth seeing, so it takes
+   the lit plate rather than a colour of its own. */
+.tc-btn[data-on] {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: #3a4150;
+  color: #ffffff;
+}
+
+.tc-btn[data-on] > svg { color: #ffffff; }
+
+/* ── the segmented tracks ─────────────────────────────────────────── */
+
+/*
+ * The same object the rail uses for Buy/Sell and Dev Sell/DCA: one
+ * bordered track, the chosen half on a raised plate. They were accent
+ * tinted, which made "USD" and "MCap" the two brightest things on a bar
+ * that also holds nine controls.
+ */
+.tc-seg {
+  display: inline-flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid #272729;
+  border-radius: 6px;
+}
+
+.tc-seg-b {
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tc-seg-b:hover { color: rgba(255, 255, 255, 0.85); }
+
+.tc-seg-b[data-on] {
+  background: rgba(255, 255, 255, 0.11);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ── the canvas ───────────────────────────────────────────────────── */
+
+/*
+ * A flex COLUMN, not a block. `PriceChart`'s own root is
+ * `flex min-h-0 flex-1 flex-col` — it expects to be a flex child and to
+ * be handed the space. Given a block parent its `flex: 1` meant nothing
+ * and it collapsed to the height of its own overlays, which is why the
+ * readout and the footer stacked at the top with no candles between.
+ */
+.tc-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── the footer ───────────────────────────────────────────────────── */
+
+/*
+ * The same bar as the toolbar, the other way up. It was a second design
+ * — `--tabs-bg`, `--r-xs`, accent-lit toggles — for the same job.
+ */
+.tc-foot {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border-top: 1px solid #1d1d20;
+  background: #000000;
+}
+
+/*
+ * The quick timeframes. Type on the bar, lit when chosen — no plate and
+ * no outline, because there are four of them beside a row of icon
+ * buttons and six more boxes would be a fence.
+ */
+.tc-tfq {
+  height: 20px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tc-tfq:hover { color: rgba(255, 255, 255, 0.85); }
+
+.tc-tfq[data-on] {
+  background: rgba(255, 255, 255, 0.09);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tc-foot-b {
+  height: 20px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tc-foot-b:hover { color: rgba(255, 255, 255, 0.8); }
+
+.tc-foot-b[data-on] {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.tc-clock {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+/* The attribution is required, so it is legible and no louder. "powered
+   by" is four syllables saying what the link already says. */
+.tc-attr {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  transition: color 130ms ease;
+}
+
+.tc-attr:hover { color: rgba(255, 255, 255, 0.6); }
+
+/* The Instant Trade toggle sits on the footer and borrows the toolbar's
+   button, so the two bars have one control between them and not two. */
+.tc-foot .tc-btn { height: 22px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE CHART STUDIO
+ *
+ * The dialog is portalled out of `.tc`, so these are the one set of
+ * rules in this file not scoped under it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.cs-modal {
+  padding: 16px 18px 18px;
+  border: 1px solid #272729;
+  border-radius: 12px;
+  background: #08080a;
+  font-family: var(--sans);
+  /* No visible track. The panel scrolls when it has to and says so by
+     moving, not by carrying a bar down its edge. */
+  scrollbar-width: none;
+}
+
+.cs-modal::-webkit-scrollbar { display: none; }
+
+.cs-title {
+  margin-bottom: 14px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* A preset is a stamp: pressing it replaces the whole style. So it lifts
+   on hover rather than lighting — nothing here is "selected", because
+   every knob below keeps editing what the stamp put down. */
+.cs-modal button[aria-label^='Apply']:hover {
+  border-color: #3a4150 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE CHART ON A PHONE — 700 AND UNDER
+ *
+ * The bars around the chart were laid out for a page that is a thousand
+ * pixels wide: nine controls on the toolbar, six on the footer. At 375
+ * both simply ran off the right edge, so half of each was unreachable
+ * and nothing said there was more there.
+ *
+ * The answer is not to shrink them until they all fit — it is to decide
+ * which of them a phone actually needs. What is left is what you change
+ * WHILE looking at a chart: the timeframe, what it is denominated in,
+ * whether it is price or market cap, and the way into settings.
+ *
+ * What goes: indicators, recents, layouts, undo and the screenshot. All
+ * five are desk work, none of them are one-handed, and every one of them
+ * is still there on a wider window.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  /*
+   * The chart takes the space it is given rather than a fixed 500. On a
+   * phone the sheet covers the bottom third, so a fixed height either
+   * hid candles under it or left a band of nothing when the sheet was
+   * down.
+   */
+  /*
+   * ── THE CHART GIVES WAY TO THE TAPE ──────────────────────────────
+   *
+   * 600 is a desk number. On a phone it is most of the window, and with
+   * the tape under it and the sheet's strip under that, the ledger was
+   * left with about forty pixels — a tab bar and nothing else.
+   *
+   * 300 here, fixed, and the tape takes what is left. Half the screen
+   * each is the right split when the screen is this small: you are
+   * watching the price and reading the flow, and neither is worth
+   * having if the other is a sliver.
+   */
+  .tc {
+    flex: 0 0 300px;
+    height: 300px;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
+}
+
+/* ── the narrow column ────────────────────────────────────────────── */
+
+@container chart (max-width: 700px) {
+  .tc-bar {
+    gap: 4px;
+    height: 36px;
+    padding: 0 8px;
+  }
+
+  /* Desk controls. Gone from the bar, not shrunk on it. */
+  .tc-bar .tc-ico[aria-label='Indicators'],
+  .tc-bar .tc-ico[aria-label='Recent'],
+  .tc-bar .tc-ico[aria-label='Grid'],
+  .tc-bar .tc-ico[aria-label='Undo'],
+  .tc-bar .tc-ico[aria-label='Screenshot'],
+  .tc-bar .tc-div {
+    display: none;
+  }
+
+  /*
+   * "Hide bubbles" keeps its mark and loses its words. It is the one
+   * toggle here whose state you can see on the chart itself the moment
+   * you press it, so the label was telling you something the bubbles
+   * were about to tell you anyway.
+   */
+  .tc-bar .tc-btn {
+    gap: 0;
+    justify-content: center;
+    padding: 0;
+    width: 26px;
+    font-size: 0;
+  }
+
+  .tc-bar .tc-btn > svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .tc-seg-b { padding: 0 7px; }
+
+  /*
+   * ── THE FOOTER KEEPS THE TWO THINGS YOU PRESS ────────────────────
+   *
+   * The timeframes and Instant Trade. The clock is a readout nobody
+   * came here for, and `log` / `auto` are axis preferences you set once
+   * on a desk.
+   */
+  .tc-foot {
+    gap: 4px;
+    height: 30px;
+    padding: 0 8px;
+  }
+
+  .tc-foot .tc-clock,
+  .tc-foot .tc-foot-b,
+  .tc-foot .tc-div {
+    display: none;
+  }
+
+  /* The attribution stays — TradingView's terms require it — but it is
+     the quietest thing on the bar and sits at the end. */
+  .tc-attr {
+    font-size: 9px;
+    opacity: 0.7;
+  }
+}
+
+/*
+ * ── THE READOUT CLEARS THE PRICE SCALE ───────────────────────────────
+ *
+ * O/H/L/C runs along the top of the pane and the scale is pinned to its
+ * right, so on a narrow window the change figure ran under the axis
+ * labels and the two sets of numbers overlapped.
+ *
+ * `PriceChart` insets it 12px each side; the scale is about 56 wide.
+ */
+.tc-canvas > div > div:first-child {
+  right: 62px !important;
+}
+
+@media (max-width: 700px) {
+  .tc-canvas > div > div:first-child {
+    gap: 8px;
+    font-size: 10px;
+  }
+}
+
+/* And again for the container: this legend sits INSIDE the chart
+   column, so a docked tracker crowds it long before the window is
+   700 wide. Same declarations as the block above. */
+@container chart (max-width: 700px) {
+  .tc-canvas > div > div:first-child {
+    gap: 8px;
+    font-size: 10px;
+  }
+}
+
+/* ── the studio's controls ────────────────────────────────────────── */
+
+/*
+ * ── A REAL DROPDOWN, NOT THE BROWSER'S ───────────────────────────────
+ *
+ * These were bare `<select>`s: the platform's own chrome, which on
+ * Windows is a grey field with a blue focus ring and a system arrow.
+ * Three of those in a row were the only things in the studio that did
+ * not belong to it.
+ *
+ * `appearance: none` takes the chrome off and the arrow is drawn as a
+ * background SVG, so the field is ours at every state. The option LIST
+ * is still the operating system's — that part no page can style — but it
+ * only appears while it is open.
+ */
+.cs-sel {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 24px;
+  padding: 0 24px 0 8px;
+  border: 1px solid #272729;
+  border-radius: 5px;
+  background-color: #0c0c0d;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b9099' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9.5 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 11px 11px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: border-color 130ms ease, background-color 130ms ease;
+}
+
+.cs-sel:hover { border-color: #3a4150; }
+
+/*
+ * ── NO WHITE RING ────────────────────────────────────────────────────
+ *
+ * The default focus outline is a hard 2px white rectangle drawn OUTSIDE
+ * the control, so tabbing through the studio lit a box around every
+ * field in turn.
+ *
+ * It is not simply removed — that would leave a keyboard user with no
+ * idea where they are. The field's own border lights instead, which is
+ * the same signal every input on this page uses.
+ */
+.cs-sel:focus,
+.cs-sel:focus-visible {
+  outline: none;
+  border-color: #4a5262;
+  background-color: #101013;
+}
+
+.cs-modal input:focus,
+.cs-modal input:focus-visible,
+.cs-modal button:focus,
+.cs-modal button:focus-visible {
+  outline: none;
+}
+
+.cs-modal input[type='range']:focus-visible,
+.cs-modal button:focus-visible {
+  box-shadow: 0 0 0 1px #4a5262;
+  border-radius: 5px;
+}
+
+/* ── the footer pair ──────────────────────────────────────────────── */
+
+.cs-btn {
+  padding: 5px 11px;
+  border: 1px solid #272729;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+}
+
+/* Reset had no hover at all, which on a button that throws away every
+   setting in the panel is the one place you want to be sure you are on
+   the right thing before you press. */
+.cs-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #3a4150;
+  color: #ffffff;
+}
+
+.cs-btn.is-primary {
+  border-color: #3a4150;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.cs-btn.is-primary:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #4a5262;
+}
+
+/* ── the studio's checkboxes ──────────────────────────────────────── */
+
+/*
+ * ── A DRAWN BOX, NOT THE PLATFORM'S ──────────────────────────────────
+ *
+ * These were bare `<input type="checkbox">`. On Windows that is a small
+ * pale square with a blue system tick in it, at whatever size the OS
+ * feels like — the last two controls in the studio still wearing the
+ * operating system's clothes.
+ *
+ * Same box the rail's own checkboxes use: a 15px outline that fills
+ * green with a dark tick. The input stays in the DOM and keeps every
+ * keyboard and screen-reader behaviour; only its painting is ours.
+ */
+.cs-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  user-select: none;
+}
+
+.cs-check > input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  border: 1px solid #2c313a;
+  border-radius: 4px;
+  background: #0c0c0d;
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease;
+}
+
+.cs-check > input[type='checkbox']:hover { border-color: #3a4150; }
+
+/* The TICK is the state, not the fill — the same reasoning as the rail:
+   a solid square says something is set without saying what. */
+.cs-check > input[type='checkbox']:checked {
+  border-color: #22c77e;
+  background-color: #22c77e;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2304120b' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 11px 11px;
+}
+
+.cs-check > input[type='checkbox']:focus-visible {
+  outline: none;
+  border-color: #4a5262;
+}
+
+/* ── the snapshot menu ────────────────────────────────────────────── */
+
+.tc-snap-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/*
+ * Fixed, not absolute — it is portalled to the document root, so it is
+ * placed against the viewport at the anchor the button measured.
+ */
+.tc-snap {
+  position: fixed;
+  /* Pulled left by its own width, so `left` can be the camera's right
+     edge and the menu right-aligns under it whatever it measures. */
+  transform: translateX(-100%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  min-width: 236px;
+  padding: 6px;
+  border: 1px solid #272729;
+  border-radius: 9px;
+  background: #101318;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
+}
+
+/*
+ * The menu says what it is. Five verbs with no heading read as five
+ * unrelated things the camera might do; one line above them says they
+ * are all the same act.
+ */
+/*
+ * Sentence case, regular weight. It was tracked capitals at 600 — the
+ * setting the page uses for a section HEADING — on a line that is just
+ * telling you what the five items below it have in common. It should be
+ * the quietest thing in the menu, not the boldest.
+ */
+.tc-snap-h {
+  padding: 4px 8px 7px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.tc-snap-i {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.tc-snap-i:hover { background: rgba(255, 255, 255, 0.07); }
+
+.tc-snap-i > svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* The shortcut sits at the end in the quietest grey on the menu — it is
+   a reminder for next time, not part of the label, so it is set well
+   below the item it belongs to rather than beside it as an equal. */
+.tc-snap-i > em {
+  margin-left: auto;
+  padding-left: 14px;
+  font-style: normal;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.26);
+}
+
+/* ── fullscreen ───────────────────────────────────────────────────── */
+
+/*
+ * The column takes the screen, so it has to fill it — its own 600px
+ * height would otherwise leave the chart floating in a black frame.
+ */
+.tc:fullscreen {
+  height: 100%;
+  max-height: none;
+  flex: 1 1 auto;
+  background: #000000;
+}
+
+.tc:fullscreen .tc-canvas { flex: 1 1 auto; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE MARKER CARD
+ *
+ * What a bubble opens. It replaces a "Wallet trades" panel that listed
+ * up to twelve rows of side, amount, wallet, avg buy, avg sell and holds
+ * — in mono, at 10px — every time the pointer crossed a busy candle.
+ * Eleven of those rows were trades nobody asked about.
+ *
+ * The stack is gone (one disc per candle, a white count for the rest),
+ * so hovering a disc is a question about ONE trade, and this answers
+ * that one.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.mk {
+  position: absolute;
+  z-index: 20;
+  width: 178px;
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid #26262c;
+  border-radius: 11px;
+  background: #0e0f12;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.75);
+  font-family: var(--sans);
+}
+
+.mk-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px 0;
+}
+
+.mk-face {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mk-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* The figure leads, and that is all it has to do — nothing else on the
+   card is over 11px, so it does not need weight on top of size. */
+.mk-amt {
+  padding: 4px 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.mk-when {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px 8px;
+  font-size: 9.5px;
+  color: #6e7178;
+}
+
+.mk-side {
+  flex: none;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.mk-when > i {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: normal;
+}
+
+/* Where the wallet stands on the position, as three columns rather than
+   three sentences — they are the same kind of fact and they line up. */
+.mk-pnl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 6px 8px;
+  border-top: 1px solid #1c1c21;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.mk-pnl b {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 400;
+  color: #55585f;
+}
+
+.mk-pnl s {
+  display: block;
+  margin-top: 2px;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+
+/* The claim's own tooltip: one line, because a claim has no side, no
+   market cap and no position to put in the other rows. */
+.mk-claim {
+  position: absolute;
+  z-index: 20;
+  /* Anchored at the bubble and pulled back by its own width, so the
+     trailing disc sits ON the mark whatever the sentence says. 15px is
+     that disc's centre from the pill's right edge: 5 of padding plus
+     half of 20. */
+  transform: translate(calc(-100% + 15px), -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 30px;
+  padding: 0 5px 0 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  border: 1px solid #26262c;
+  border-radius: 999px;
+  background: #0e0f12;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: #b9bdc4;
+}
+
+.mk-claim > b { font-weight: 600; color: #ffffff; }
+
+.mk-claim > u {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #22c77e;
+  text-decoration: none;
+  color: #0b0d11;
+}
+
+.mk-claim > u > svg { width: 11px; height: 11px; display: block; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE BAR AT PHONE WIDTHS
+ *
+ * `.tc-bar` is `overflow-x: auto`, so when its contents outgrow it they
+ * do not wrap or clip — they slide, and half a control ends up under the
+ * edge with no sign that there is more. That is the breakage: at 700 the
+ * bar already drops the desk controls, but the value-mode segment
+ * (USD · SOL · MCap · Price) is four buttons of full-size type and on a
+ * 390px phone it alone is wider than what is left.
+ *
+ * Everything shrinks together rather than anything else being hidden:
+ * these four are the axis the whole chart is drawn against and none of
+ * them is the odd one out.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@container chart (max-width: 480px) {
+  .tc-bar {
+    gap: 3px;
+    padding: 0 6px;
+  }
+
+  .tc-seg-b {
+    padding: 0 5px;
+    font-size: 10px;
+  }
+
+  .tc-bar .tc-ico {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tc-bar .tc-ico > svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .tc-bar .tc-btn {
+    width: 24px;
+  }
+
+  .tc-tf {
+    padding: 0 6px;
+    font-size: 10.5px;
+  }
+}

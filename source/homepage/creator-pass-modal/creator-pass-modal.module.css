@@ -1,0 +1,1090 @@
+/* Invite-code modal — a living 3D scene.
+   Perspective camera over depth-stacked layers: THE COLOR ROAD (panels
+   racing in from the horizon on a tilted floor), deep streaks, ghost
+   watermark, orbit ring + satellites, the levitating volumetric owl
+   (spring-simulated tiles: field / fling / shockwave), frameless
+   letter slots whose ghosts bob, floating status + plate.
+   All keyframes one-shot or whisper loops; prefers-reduced-motion
+   stills everything (the JS pointer/spring systems gate themselves). */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 24px;
+  perspective: 1600px;
+}
+
+/* No backdrop-filter: a full-screen blur re-samples every frame the
+   page behind changes — at 0.93 alpha the glass wasn't visible anyway. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 4%, rgba(46, 230, 168, 0.07), transparent 38%),
+    radial-gradient(circle at 12% 84%, rgba(56, 189, 248, 0.05), transparent 30%),
+    radial-gradient(circle at 90% 72%, rgba(94, 234, 212, 0.05), transparent 30%),
+    rgba(2, 4, 5, 0.93);
+}
+
+/* Chromatic light that follows the cursor. Pre-rendered once as a
+   fixed-size layer and MOVED with a compositor-only transform (vars
+   are px offsets written by the tilt hook) — zero repaints per move. */
+.spotlight {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 1400px;
+  height: 1400px;
+  margin: -700px 0 0 -700px;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(var(--sx, 50vw), var(--sy, 36vh), 0);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.055), transparent 32%),
+    radial-gradient(circle at 56% 58%, rgba(240, 82, 210, 0.03), transparent 52%);
+}
+
+/* ── THE COLOR ROAD — panels racing in from the horizon ────────────── */
+
+/* THE TUNNEL — four unmasked planes (floor / ceiling / walls) wrap the
+   viewport in racing depth. Horizon fades live in the panels' own
+   opacity keyframes (no masks = no giant GPU textures). The outer
+   layer parallaxes with the pointer; the inner layer rides a slow
+   dream ROLL, so the whole room breathes. All compositor-only. */
+.tunnelPar {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(
+    calc(var(--tiltX, 0) * -18px),
+    calc(var(--tiltY, 0) * -12px),
+    0
+  );
+}
+
+.tunnel {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: cpTunnelRoll 26s ease-in-out infinite;
+}
+
+@keyframes cpTunnelRoll {
+  0%, 100% { transform: rotate(-1.6deg) scale(1.02); }
+  50% { transform: rotate(1.6deg) scale(1.05); }
+}
+
+.plane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130vmax;
+  height: 130vmax;
+  pointer-events: none;
+  contain: layout style;
+  transform-style: preserve-3d;
+}
+
+.roadPanel {
+  position: absolute;
+  border-radius: 14px;
+  opacity: 0;
+  filter: saturate(1.15);
+  transition: filter 240ms ease;
+  animation: cpRoadRun var(--rdur) linear var(--rdel) infinite;
+}
+
+/* The owl detonation pulses the whole room. */
+.overlay[data-pulse] .roadPanel {
+  filter: saturate(1.4) brightness(1.9);
+}
+
+@keyframes cpRoadRun {
+  0% { transform: translateY(0); opacity: 0; }
+  14% { opacity: 0.55; }
+  72% { opacity: 0.45; }
+  100% { transform: translateY(126vmax); opacity: 0; }
+}
+
+@keyframes cpRoadRunX {
+  0% { transform: translateX(0); opacity: 0; }
+  14% { opacity: 0.55; }
+  72% { opacity: 0.45; }
+  100% { transform: translateX(126vmax); opacity: 0; }
+}
+
+/* Comets: one bright traverse per long cycle, then dark. */
+.comet {
+  position: absolute;
+  left: -20%;
+  width: 180px;
+  height: 2px;
+  border-radius: 999px;
+  opacity: 0;
+  animation: cpComet var(--cdur) ease-in var(--cd) infinite;
+}
+
+@keyframes cpComet {
+  0% { transform: translate3d(0, 0, 0) rotate(8deg); opacity: 0; }
+  2% { opacity: 0.9; }
+  9% { transform: translate3d(140vw, 14vh, 0) rotate(8deg); opacity: 0; }
+  100% { transform: translate3d(140vw, 14vh, 0) rotate(8deg); opacity: 0; }
+}
+
+/* ── Deep space: drifting streaks ──────────────────────────────────── */
+
+.deepField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(
+    calc(var(--tiltX, 0) * -24px),
+    calc(var(--tiltY, 0) * -18px),
+    0
+  );
+}
+
+.streak {
+  position: absolute;
+  height: 3px;
+  border-radius: 999px;
+  opacity: 0.16;
+  filter: blur(0.5px);
+  animation: cpDrift var(--sdur) ease-in-out var(--sd) infinite alternate;
+}
+
+@keyframes cpDrift {
+  from { transform: translateX(-34px); opacity: 0.08; }
+  50% { opacity: 0.2; }
+  to { transform: translateX(50px); opacity: 0.1; }
+}
+
+/* ── The scene ─────────────────────────────────────────────────────── */
+
+.scene {
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+  max-width: min(96vw, 880px);
+  width: 100%;
+}
+
+/* Pointer tilt lives on its own element so framer-motion's entrance
+   transform on .scene never fights it. Vars inherit from .overlay. */
+.tilt {
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--tiltY, 0) * -8deg)) rotateY(calc(var(--tiltX, 0) * 10deg));
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  color: #c9c9c4;
+  font-family: var(--sans, -apple-system, 'Segoe UI', sans-serif);
+}
+
+.scene[data-phase='validating'] {
+  pointer-events: none;
+}
+
+.ghostWord {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(-170px);
+  pointer-events: none;
+  font-family: var(--display, 'Instrument Serif', Georgia, serif);
+  font-style: italic;
+  font-size: clamp(150px, 32vw, 300px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.04);
+  user-select: none;
+  white-space: nowrap;
+  animation: cpGhostDrift 14s ease-in-out infinite alternate;
+}
+
+@keyframes cpGhostDrift {
+  from { transform: translate(-52%, -50%) translateZ(-170px); }
+  to { transform: translate(-48%, -52%) translateZ(-170px); }
+}
+
+.closeButton {
+  position: absolute;
+  right: 26px;
+  top: 24px;
+  z-index: 10;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 160ms ease, background 160ms ease;
+}
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px) rotate(90deg);
+}
+.closeButton svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ── Eyebrow ───────────────────────────────────────────────────────── */
+
+.eyebrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  transform: translateZ(24px);
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: rgba(255, 255, 255, 0.52);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.eyebrowTick {
+  width: 4px;
+  height: 13px;
+  border-radius: 2px;
+  background: #5eead4;
+  box-shadow: 0 0 8px rgba(94, 234, 212, 0.5);
+  flex-shrink: 0;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #37d67a;
+  box-shadow: 0 0 8px rgba(55, 214, 122, 0.8);
+  animation: cpLivePulse 2.4s ease-in-out infinite;
+}
+
+@keyframes cpLivePulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ── THE OWL ───────────────────────────────────────────────────────── */
+
+.owlStage {
+  position: relative;
+  width: min(460px, 82vw, 52vh);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  contain: layout style;
+  --orad: 250px;
+}
+
+/* Warm halo breathing behind the owl. */
+.owlHalo {
+  position: absolute;
+  inset: -16%;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(46, 230, 168, 0.16) 0%,
+    rgba(56, 189, 248, 0.06) 45%,
+    transparent 70%
+  );
+  filter: blur(22px);
+  transform: translateZ(-50px);
+  animation: cpHalo 6.5s ease-in-out infinite;
+}
+
+@keyframes cpHalo {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Orbit ring tilted into the scene, satellites riding its plane. */
+.orbit {
+  position: absolute;
+  inset: -13%;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transform: rotateX(68deg) translateZ(-12px);
+  transform-style: preserve-3d;
+}
+
+.satellite {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: var(--oc);
+  box-shadow: 0 0 14px var(--oc), 0 0 4px var(--oc);
+  animation: cpOrbit 13s linear var(--od) infinite;
+}
+
+@keyframes cpOrbit {
+  from { transform: rotate(0deg) translateX(var(--orad)); }
+  to { transform: rotate(360deg) translateX(var(--orad)); }
+}
+
+/* The levitation: the whole owl floats and sways — an impossible
+   monument. During validation it performs one slow full revolution;
+   on error it shudders. */
+.levitate {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: cpLevitate 8s ease-in-out infinite;
+  /* Decorative — MUST be click-transparent. This plane ROTATES in the
+     3D context, so its near half depth-sorts in front of the flat hit
+     button; with pointer-events it swallowed the clicks whose events
+     then bubbled around (never through) the button. */
+  pointer-events: none;
+}
+
+@keyframes cpLevitate {
+  0%, 100% { transform: translateY(0) rotateY(-3deg) rotateX(1deg); }
+  50% { transform: translateY(-9px) rotateY(3deg) rotateX(-1deg); }
+}
+
+.scene[data-phase='validating'] .levitate {
+  animation: cpRevolve 3.2s cubic-bezier(0.45, 0.05, 0.35, 0.95) infinite;
+}
+
+@keyframes cpRevolve {
+  0% { transform: translateY(0) rotateY(0deg); }
+  50% { transform: translateY(-12px) rotateY(180deg); }
+  100% { transform: translateY(0) rotateY(360deg); }
+}
+
+.scene[data-phase='error'] .levitate {
+  animation: cpShudder 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes cpShudder {
+  10%, 90% { transform: translateX(-3px) rotateY(-2deg); }
+  30%, 70% { transform: translateX(6px) rotateY(2deg); }
+  50% { transform: translateX(-8px); }
+}
+
+.owl {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  /* Decorative: the stage handles clicks. 500 fewer hit-test targets. */
+  pointer-events: none;
+}
+
+.tile {
+  position: absolute;
+  border-radius: 2px;
+  /* Keep tiles on their own compositor layers: the ripple (opacity),
+     the spring sim (transform/filter) and the levitate parent all
+     stay off the paint path. Tiles are ~12px — layer memory is tiny. */
+  will-change: transform, opacity, filter;
+  /* Assembly: fly in from a 3D scatter, overshoot, seat at its own
+     resting depth. Then breathe forever. */
+  animation:
+    cpAssemble var(--fd) cubic-bezier(0.22, 1.2, 0.36, 1) var(--d) backwards,
+    cpSeatFlash 340ms ease-out calc(var(--d) + var(--fd) * 0.62) backwards,
+    cpRipple 5.4s ease-in-out calc(var(--d) + var(--fd) + var(--rp)) infinite;
+}
+
+.tileSpark {
+  box-shadow: 0 0 7px currentColor;
+  color: inherit;
+}
+
+@keyframes cpAssemble {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--dx), var(--dy), var(--dz)) rotate(var(--dr)) scale(0.3);
+  }
+  62% {
+    opacity: 1;
+    transform: translate3d(
+        calc(var(--dx) * -0.06),
+        calc(var(--dy) * -0.06),
+        calc(var(--dz) * -0.05)
+      )
+      rotate(calc(var(--dr) * -0.08)) scale(1.14);
+  }
+  82% {
+    transform: translate3d(0, 0, var(--tz)) rotate(0deg) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, var(--tz)) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes cpSeatFlash {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(2.1); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes cpRipple {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
+}
+
+/* Scan: while validating the tiles run hot (the revolve is on the
+   levitate wrapper, so both play together). */
+.scene[data-phase='validating'] .tile {
+  animation: cpScanBreath 1.05s ease-in-out calc(var(--rp) * 0.4) infinite;
+}
+
+@keyframes cpScanBreath {
+  0%, 100% { opacity: 0.8; filter: brightness(0.95) saturate(1); }
+  50% { opacity: 1; filter: brightness(1.55) saturate(1.4); }
+}
+
+/* Burst: the detonation — outward on the radial AND through the
+   camera, spinning, gravity pulling down as it fades. */
+.owlBurst .tile {
+  animation: cpBurst 950ms cubic-bezier(0.18, 0.6, 0.4, 1) calc(var(--d) * 0.12) forwards;
+}
+
+@keyframes cpBurst {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    filter: brightness(2);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(
+        calc(var(--bx) * 0.72px),
+        calc(var(--by) * 0.85px),
+        calc(var(--bz) * 0.7px)
+      )
+      rotate(calc(var(--br) * 0.6)) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(
+        calc(var(--bx) * 1px),
+        calc(var(--by) * 1px + 170px),
+        calc(var(--bz) * 1px)
+      )
+      rotate(var(--br)) scale(1.6);
+  }
+}
+
+/* Click-blast cycle: explode outward fast, hang in space tumbling,
+   then rain home and seat with a flash. One animation per tile with a
+   per-tile duration (--bt, 2.6–4s) so the reassembly staggers in —
+   chimes are scheduled to the same clock in JS. fill is NONE on
+   purpose: when the cycle ends the tile returns to base styles, so
+   the spring sim's inline transforms work again and the assembly
+   never replays. The idle ripple resumes after the cycle. */
+.owlBlast .tile {
+  animation:
+    cpBlastCycle var(--bt) cubic-bezier(0.3, 0, 0.3, 1),
+    cpRipple 5.4s ease-in-out calc(var(--bt) + var(--rp)) infinite;
+}
+
+@keyframes cpBlastCycle {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, var(--tz)) rotate(0deg) scale(1);
+    filter: brightness(1.3);
+    animation-timing-function: cubic-bezier(0.1, 0.8, 0.3, 1);
+  }
+  13% {
+    opacity: 1;
+    transform: translate3d(calc(var(--bx) * 1px), calc(var(--by) * 1px), calc(var(--bz) * 0.55px))
+      rotate(calc(var(--br) * 0.7)) scale(1.15);
+    filter: brightness(1.8);
+    animation-timing-function: ease-in-out;
+  }
+  34% {
+    opacity: 0.92;
+    transform: translate3d(
+        calc(var(--bx) * 1.12px),
+        calc(var(--by) * 1.12px + 30px),
+        calc(var(--bz) * 0.62px)
+      )
+      rotate(var(--br)) scale(1);
+    filter: brightness(1.15);
+    animation-timing-function: ease-in-out;
+  }
+  56% {
+    opacity: 0.9;
+    transform: translate3d(
+        calc(var(--bx) * 1.02px),
+        calc(var(--by) * 1.02px + 52px),
+        calc(var(--bz) * 0.5px)
+      )
+      rotate(calc(var(--br) * 1.18)) scale(0.94);
+    filter: brightness(1);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.25, 1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(0, 0, var(--tz)) rotate(0deg) scale(1.16);
+    filter: brightness(2);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, var(--tz)) rotate(0deg) scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* Flat, invisible hit target covering the owl. The owl's visuals live
+   under two animated 3D transforms where Chromium hit-testing is
+   flaky; this button has NO transform of its own, so pointer events
+   always land. Tiles above it are pointer-events:none and fall
+   through. */
+.owlHit {
+  position: absolute;
+  /* Oversized on purpose: catches presses during the brief moment the
+     calming tilt is still settling the owl under the cursor. */
+  inset: -7%;
+  z-index: 5;
+  /* Above every 3D swing in the depth sort: the levitate plane tips
+     ~±12px toward the camera, tiles ride to ~+55px under the magnet. */
+  transform: translateZ(60px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.owlHit:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.35);
+  outline-offset: -1px;
+  border-radius: 24px;
+}
+
+/* Shockwave ring on owl click. */
+.shockRing {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  pointer-events: none;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 18px rgba(255, 180, 90, 0.5), inset 0 0 12px rgba(255, 180, 90, 0.4);
+  animation: cpShockRing 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cpShockRing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(38); opacity: 0; border-width: 0.5px; }
+}
+
+/* Big gold ring + screen flash on success. */
+.burstRing {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  pointer-events: none;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 216, 77, 0.9);
+  box-shadow: 0 0 30px rgba(255, 216, 77, 0.6);
+  animation: cpShockRing 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.successFlash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 44%, rgba(255, 226, 130, 0.22), transparent 60%);
+  animation: cpFlash 700ms ease-out forwards;
+}
+
+@keyframes cpFlash {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── Success block (fades in where the owl stood) ─────────────────── */
+
+.successBlock {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  transform: translateZ(40px);
+  animation: cpSuccessIn 600ms cubic-bezier(0.16, 1, 0.3, 1) 420ms backwards;
+}
+
+@keyframes cpSuccessIn {
+  0% { opacity: 0; transform: translateZ(40px) translateY(18px) scale(0.94); }
+  100% { opacity: 1; transform: translateZ(40px) translateY(0) scale(1); }
+}
+
+.successKicker {
+  margin: 0;
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+.successTitle {
+  margin: 0;
+  font-family: var(--display, 'Instrument Serif', Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(34px, 6vw, 56px);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #f6f6f4;
+  text-shadow: 0 2px 34px rgba(0, 0, 0, 0.85);
+}
+
+.successBody {
+  margin: 0;
+  max-width: 380px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ── Letter slots — frameless: glyph over a tint underline tick ────── */
+
+.codeDisplay {
+  position: relative;
+  width: min(700px, 94vw);
+  cursor: text;
+  transform: translateZ(52px);
+  transform-style: preserve-3d;
+}
+
+.cellRow {
+  display: flex;
+  gap: clamp(5px, 1.4vw, 12px);
+  width: 100%;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56px;
+  aspect-ratio: 0.74;
+  display: grid;
+  place-items: center;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slot:hover {
+  transform: translateZ(30px);
+}
+
+.slotTick {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--tint) 74%, rgba(255, 255, 255, 0.26));
+  opacity: 0.85;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--tint) 30%, transparent);
+  transition: opacity 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+/* Untyped slots shimmer on the idle air, each on its own beat. */
+.slot[data-typed='false'] .slotTick {
+  animation: cpTickWave 4.2s ease-in-out calc(var(--si) * 2) infinite;
+}
+
+@keyframes cpTickWave {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 0.94; }
+}
+
+.slot:hover .slotTick {
+  opacity: 1;
+  box-shadow: 0 0 14px -2px var(--tint);
+}
+
+.slot[data-typed='true'] .slotTick {
+  opacity: 1;
+  background: var(--tint);
+  box-shadow: 0 0 14px -2px var(--tint);
+}
+
+.slot[data-cursor='true'] .slotTick {
+  animation: cpCursor 850ms ease-in-out infinite alternate;
+}
+
+@keyframes cpCursor {
+  from {
+    opacity: 1;
+    transform: scaleX(1);
+    box-shadow: 0 0 16px -2px var(--tint);
+  }
+  to {
+    opacity: 0.3;
+    transform: scaleX(0.55);
+    box-shadow: none;
+  }
+}
+
+.ghostChar {
+  --ghost-ink: color-mix(in srgb, var(--tint) 34%, rgba(255, 255, 255, 0.93));
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: clamp(17px, 3.4vw, 26px);
+  font-weight: 500;
+  color: var(--ghost-ink);
+  text-shadow: 0 0 9px color-mix(in srgb, var(--tint) 26%, transparent);
+  user-select: none;
+  animation: cpGhostBob 3.8s ease-in-out calc(var(--si) * 3) infinite;
+}
+
+@keyframes cpGhostBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Decode wave: an unresolved cipher glyph reads neutral white, then
+   resolves into its tinted V4 ink as the wave locks that slot in.
+   Driven imperatively (see runDecodeWave) — CSS only styles the state. */
+.ghostChar[data-decoding='true'] {
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 9px rgba(255, 255, 255, 0.18);
+}
+
+/* The stamp: glyph drops in from above with blur, squashes, rebounds. */
+.stamp {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.stampChar {
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: clamp(21px, 4.4vw, 33px);
+  font-weight: 700;
+  color: #f6f6f4;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7);
+  animation: cpStamp 340ms cubic-bezier(0.22, 1.3, 0.36, 1) backwards;
+}
+
+@keyframes cpStamp {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) translateZ(70px) scale(1.6);
+    filter: blur(7px);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(2px) translateZ(0) scale(1.06, 0.78);
+    filter: blur(0);
+  }
+  78% {
+    transform: translateY(0) scale(0.96, 1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Tint burst that flares out of the slot as the glyph seats. */
+.stampFlash {
+  position: absolute;
+  inset: 10% 4%;
+  border-radius: 10px;
+  pointer-events: none;
+  animation: cpStampFlash 480ms ease-out forwards;
+}
+
+@keyframes cpStampFlash {
+  0% {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--tint) 55%, transparent),
+      0 0 26px 3px color-mix(in srgb, var(--tint) 42%, transparent);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 30px 20px transparent, 0 0 36px 24px transparent;
+    opacity: 0;
+  }
+}
+
+/* Validating: an amber wave sweeps the slots left → right, repeating. */
+.cellRow[data-phase='validating'] .slotTick {
+  animation: cpScanWave 1.15s ease-in-out var(--si) infinite;
+}
+
+.cellRow[data-phase='validating'] .stampChar {
+  color: #fbbf24;
+}
+
+@keyframes cpScanWave {
+  0%, 100% {
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+    opacity: 0.4;
+  }
+  18% {
+    background: #fbbf24;
+    box-shadow: 0 0 18px -2px rgba(251, 191, 36, 0.9);
+    opacity: 1;
+  }
+  40% {
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+    opacity: 0.4;
+  }
+}
+
+/* Success: glyphs flash gold in sequence with the arpeggio. */
+.cellRow[data-phase='success'] .slot {
+  animation: cpGoldFlash 520ms ease-out var(--ci) forwards;
+}
+
+.cellRow[data-phase='success'] .stampChar {
+  color: #ffd84d;
+  text-shadow: 0 0 14px rgba(255, 216, 77, 0.6);
+}
+
+.cellRow[data-phase='success'] .slotTick {
+  background: #ffd84d;
+  box-shadow: 0 0 16px -2px rgba(255, 216, 77, 0.8);
+  opacity: 1;
+}
+
+@keyframes cpGoldFlash {
+  0% { transform: translateZ(0) scale(1); }
+  35% { transform: translateZ(50px) scale(1.16); }
+  100% { transform: translateZ(14px) scale(1); }
+}
+
+/* Error: the row shudders and runs red; logic clears the code after. */
+.cellRow[data-phase='error'] {
+  animation: cpShake 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.cellRow[data-phase='error'] .slotTick {
+  background: #e06a6a;
+  box-shadow: 0 0 14px -4px rgba(224, 106, 106, 0.9);
+  opacity: 1;
+}
+
+.cellRow[data-phase='error'] .stampChar {
+  color: #e06a6a;
+}
+
+@keyframes cpShake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(5px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+}
+
+/* Invisible but focusable: the label forwards clicks to it natively,
+   so the slots underneath keep their :hover physics. */
+.hiddenInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  pointer-events: none;
+  background: transparent;
+  caret-color: transparent;
+  color: transparent;
+  outline: none;
+}
+
+/* Touch devices: the input must be touchable or long-press can never
+   summon the native Paste callout (there is no Ctrl+V on mobile). The
+   slot :hover physics this shields on desktop don't exist on touch. */
+@media (pointer: coarse) {
+  .hiddenInput {
+    pointer-events: auto;
+  }
+}
+
+/* ── Status + plate ────────────────────────────────────────────────── */
+
+.statusText {
+  position: relative;
+  margin: 0;
+  transform: translateZ(28px);
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.statusText[data-phase='validating'] {
+  color: #fbbf24;
+  animation: cpLivePulse 1.2s ease-in-out infinite;
+}
+
+.statusText[data-phase='success'] {
+  color: #37d67a;
+}
+
+.statusText[data-phase='error'] {
+  color: #e06a6a;
+}
+
+.plate {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateZ(10px);
+  font-family: var(--mono, ui-monospace, Menlo, monospace);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+.plateTicks {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.plateTicks span {
+  width: 3px;
+  height: 8px;
+  border-radius: 1px;
+  opacity: 0.8;
+}
+
+/* ── Small screens ─────────────────────────────────────────────────── */
+
+@media (max-width: 520px) {
+  .owlStage {
+    width: min(280px, 72vw, 40vh);
+    --orad: 160px;
+  }
+  .tilt {
+    gap: 18px;
+  }
+  .closeButton {
+    right: 14px;
+    top: 14px;
+  }
+  .tunnel {
+    opacity: 0.75;
+  }
+}
+
+/* ── Reduced motion: everything seats instantly, nothing loops ─────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .slot,
+  .slotTick,
+  .cellRow,
+  .stampChar,
+  .stampFlash,
+  .liveDot,
+  .statusText,
+  .successBlock,
+  .satellite,
+  .streak,
+  .owlHalo,
+  .levitate,
+  .ghostWord,
+  .ghostChar,
+  .roadPanel,
+  .tunnel,
+  .comet,
+  .shockRing,
+  .burstRing,
+  .successFlash {
+    animation: none !important;
+  }
+  .stampFlash,
+  .shockRing,
+  .burstRing,
+  .successFlash,
+  .roadPanel,
+  .comet {
+    opacity: 0;
+  }
+  .tilt,
+  .deepField {
+    transform: none !important;
+  }
+  .slot:hover {
+    transform: none;
+  }
+  .owlBurst .tile {
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+  /* A click is an explicit request — it must never be a no-op. Under
+     reduced motion the detonation becomes a motion-free response:
+     the owl flares bright and settles (filter/opacity only, nothing
+     translates) and the ring fades in place without expanding. */
+  .owlBlast .tile {
+    animation: cpRmAck 750ms ease-out !important;
+  }
+  .shockRing {
+    opacity: 1;
+    animation: cpRmRingFade 650ms ease-out !important;
+  }
+}
+
+@keyframes cpRmAck {
+  0% { filter: brightness(2.6); opacity: 1; }
+  55% { filter: brightness(1.6); }
+  100% { filter: brightness(1); opacity: 1; }
+}
+
+@keyframes cpRmRingFade {
+  0% { opacity: 0.8; transform: scale(14); }
+  100% { opacity: 0; transform: scale(14); }
+}

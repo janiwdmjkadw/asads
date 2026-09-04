@@ -1,0 +1,74 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * ONE SCROLLBAR, FOR EVERY PANEL THAT HAS ONE
+ *
+ * This lived in `tracker.css` and answered only to `.tk-scroll`, which
+ * is the tracker page. The two docked panels are the same object on a
+ * different page and were getting the browser's own bar: a square grey
+ * slab in a lighter grey gutter, hard against the panel edge, its ends
+ * cut flat where they meet the header. Nothing else in the product has
+ * a square end or an unpainted channel, and it sat 4px from a tape the
+ * whole panel was built around.
+ *
+ * So the rules moved here and answer to both classes. `tracker.css` and
+ * `dock-chrome.css` both import this file; there is one definition, and
+ * a change to the bar is a change in one place.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * ── THE SCROLLBARS ──────────────────────────────────────────────────
+ *
+ * These panels asked for `scrollbar-width: thin`, which is the browser's
+ * own bar made narrower: a square grey slab in a lighter grey gutter,
+ * hard against the panel's right edge, its top and bottom cut flat where
+ * they meet the header and the footer. Nothing else on this page has a
+ * square end or an unpainted channel.
+ *
+ * So: no gutter at all, a rounded thumb floating in the panel's ground,
+ * held off the edge by a transparent border that the background-clip
+ * keeps out of the paint. It rests at 12% white and comes up to 22% when
+ * the pointer is anywhere in the pane, which is when you are looking for
+ * it. Firefox gets the same two colours through `scrollbar-color`, the
+ * only control it offers.
+ */
+/* `scrollbar-width` is NOT a fallback that WebKit ignores: Chrome honours
+   it and, once it is set, drops the `::-webkit-scrollbar` rules entirely
+   — which is how the first attempt at this ended up with the browser's
+   own square 9px slab again, just tinted. So the standard properties are
+   fenced to engines with no `::-webkit-scrollbar` at all, which is
+   Firefox, and everything else takes the pseudo-elements below. */
+@supports not selector(::-webkit-scrollbar) {
+  .tk-scroll,
+  .dk-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  }
+}
+
+.tk-scroll::-webkit-scrollbar,
+.dk-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.tk-scroll::-webkit-scrollbar-track,
+.tk-scroll::-webkit-scrollbar-corner,
+.dk-scroll::-webkit-scrollbar-track,
+.dk-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.tk-scroll::-webkit-scrollbar-thumb,
+.dk-scroll::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  background-clip: content-box;
+  transition: background-color 130ms ease;
+}
+
+.tk-scroll:hover::-webkit-scrollbar-thumb,
+.dk-scroll:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
+.tk-scroll::-webkit-scrollbar-thumb:hover,
+.dk-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.34); }
+.tk-scroll::-webkit-scrollbar-thumb:active,
+.dk-scroll::-webkit-scrollbar-thumb:active { background: rgba(255, 255, 255, 0.44); }

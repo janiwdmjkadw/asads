@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * FRENS · THE HEADER
+ *
+ * Every part kept, restyled, with the colour re-pointed at people.
+ *
+ * The controls are MONOCHROME on purpose. The page used to give each
+ * sort key its own hue, which meant colour said `the button you
+ * pressed` in one place and `a person` in another. It cannot mean both.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.fh {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+.fh h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+.fh-note { margin: 0 0 12px; max-width: 700px; font-size: 11.5px; line-height: 1.55; color: #4b4e55; }
+.fh-note:last-of-type { margin-bottom: 24px; }
+
+.fh-stack { display: flex; flex-direction: column; gap: 28px; }
+.fh-slot { display: flex; flex-direction: column; gap: 10px; }
+.fh-cap { display: flex; align-items: baseline; gap: 8px; }
+.fh-cap > b { font-size: 11.5px; font-weight: 600; color: #e6e7ea; }
+.fh-cap > small { font-size: 10.5px; line-height: 1.4; color: #4b4e55; }
+
+.fh-frame {
+  padding: 26px 22px 22px;
+  border: 1px solid #1c1c20;
+  border-radius: 8px;
+  background: #000;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the name ────────────────────────────────────────────────────────
+ * Sans, not a serif italic lowercase wordmark under a nav that already
+ * says Frens. Same treatment the rewards page ended on. */
+
+.fh-head { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+
+.fh-head h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: #fff;
+}
+.fh-head p { margin: 10px 0 0; max-width: 460px; font-size: 13px; line-height: 1.5; color: #6e7178; }
+
+/* The two counts as figures rather than bordered capsules with a
+   coloured pip in each. */
+.fh-counts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; font-size: 12.5px; color: #6e7178; }
+.fh-counts b { font-weight: 600; color: #fff; }
+.fh-counts-lit > span { display: inline-flex; align-items: center; gap: 8px; }
+.fh-counts-lit i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+/* ── the controls ────────────────────────────────────────────────── */
+
+.fh-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.fh-sorts,
+.fh-win { display: inline-flex; align-items: center; gap: 18px; }
+.fh-win { gap: 14px; }
+
+.fh-sorts > button,
+.fh-win > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 12.5px/1 var(--sans);
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.fh-win > button { font-size: 12px; }
+.fh-sorts > button[data-on],
+.fh-win > button[data-on] { color: #fff; }
+.fh-sorts > button:hover,
+.fh-win > button:hover { color: #b9bcc4; }
+
+.fh-right { display: inline-flex; align-items: center; gap: 20px; }
+
+/* The one control that keeps an outline, because a field you type into
+   has to look like somewhere to type. */
+.fh-search {
+  width: 230px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 7px;
+  background: transparent;
+  color: #fff;
+  font: 400 12px/1 var(--sans);
+  outline: none;
+  transition: border-color 130ms ease;
+}
+.fh-search::placeholder { color: #4b4e55; }
+.fh-search:focus { border-color: rgba(255, 255, 255, 0.26); }
+
+/* ── 1 · ROSTER ──────────────────────────────────────────────────────
+ * The scatter of coloured tiles was decoration. It is twelve tiles now,
+ * one per fren, each in that fren's own colour — the same object,
+ * except it is the board. */
+
+.fh-roster {
+  display: grid;
+  grid-template-columns: repeat(6, 14px);
+  gap: 6px;
+  flex: none;
+}
+.fh-roster > span { display: block; width: 14px; height: 14px; border-radius: 3px; }
+
+/* ── 2 · PILE ────────────────────────────────────────────────────────
+ * Initials on their own colour, overlapped the way a face pile is. The
+ * only variant where the header names anybody. */
+
+.fh-pile { display: flex; align-items: center; flex: none; }
+.fh-pile > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-left: -7px;
+  border-radius: 999px;
+  /* The ring is the page ground, not a border: it cuts each mark out of
+     the one behind it without adding a stroke to the design. */
+  box-shadow: 0 0 0 2px #000;
+  background: currentColor;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #000;
+}
+.fh-pile > span:first-child { margin-left: 0; }
+/* The initials read black on every hue in the palette, which is why the
+   confetti set works here at all — it has no dark members. */
+.fh-pile > em {
+  margin-left: 10px;
+  font-style: normal;
+  font-size: 11.5px;
+  color: #6e7178;
+}
+
+/* ── 3 · SPECTRUM ────────────────────────────────────────────────────
+ * A segment per fren, sized by their share of the board's volume. The
+ * header stops being decoration and becomes the only place the shape of
+ * the board is visible at a glance. */
+
+.fh-spectrum { display: flex; height: 8px; gap: 2px; margin-top: 22px; }
+.fh-spectrum > span { border-radius: 2px; min-width: 3px; }
+
+@media (max-width: 820px) {
+  .fh-frame { padding: 18px 16px 16px; }
+  .fh-head { flex-direction: column; align-items: flex-start; gap: 22px; }
+  .fh-controls { flex-direction: column; align-items: flex-start; }
+  .fh-right { width: 100%; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .fh-search { width: 100%; }
+}

@@ -1,0 +1,2564 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TRADE PANEL
+ *
+ * The rail down the right of `/trade`: the order you are placing, what
+ * you hold, the preset it is placed under, and what is known about the
+ * coin.
+ *
+ * ── IT HAS NO STYLESHEET DEPENDENCIES ────────────────────────────────
+ *
+ * Everything the panel draws is in this file. `--sans` and `--mono` come
+ * from `globals.css`, which is loaded on every page; nothing here reads
+ * a class or a variable belonging to the board's row or to the header
+ * above it. The one place it borrows a DESIGN — the ring around a
+ * similar token's picture — copies the construction rather than the
+ * class, and says so where it does.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TRADE PANEL
+ *
+ * The right rail of a coin's page. Ten blocks in one column — the flow
+ * strip that used to head it is gone, because the header already carries
+ * those four readings at its right end.
+ *
+ * ── IT IS THE PAGE'S RIGHT EDGE ──────────────────────────────────────
+ *
+ * Not a floating card. No border but one hairline down its left, no
+ * corners, and the page's own ground — see `.tp` below.
+ *
+ * ── THE ONE RULE ─────────────────────────────────────────────────────
+ *
+ * Sections that are part of the same act share a plate; sections that
+ * are different acts are parted by space. Buying is one act — side,
+ * mode, amount, chips, settings and the button are one card. What you
+ * hold is its result and sits outside. What the coin IS is a third
+ * thing, and gets its own headed section.
+ *
+ * Nothing else on the panel draws a box. A rail of eleven bordered
+ * cards is eleven frames competing with what is inside them.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/*
+ * The rail fills whatever height is left under the header, so its left
+ * hairline runs to the bottom of the screen whether the panel's content
+ * reaches there or not. A divider that stops where the content stops is
+ * a divider that says the page ends there.
+ */
+.tp-wrap {
+  display: flex;
+  flex-direction: column;
+  /*
+   * NOT `flex: 1`. The parent is a ROW, so growing this stretches it
+   * sideways and drags the rail off the right edge to the left one —
+   * which is exactly what happened. Height comes from the row's default
+   * `align-items: stretch`; width stays the rail's own.
+   */
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+/*
+ * The rail SCROLLS inside its column rather than setting the page's
+ * height. It is the tallest thing on the trade page, and a page sized to
+ * it pushed the chart's own footer below the window.
+ */
+.tp-wrap > .tp {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.tp-wrap > .tp::-webkit-scrollbar { display: none; }
+
+/*
+ * ── A SIDE, NOT A CARD ───────────────────────────────────────────────
+ *
+ * It had a border, 12px corners and its own darker ground, which made it
+ * a panel floating inside the page. It is not floating — it is the right
+ * edge of the trade page, docked to it and running its full height, and
+ * a card has to justify why it is hovering above what it sits on.
+ *
+ * So: no border, no radius, the page's own ground, and ONE hairline down
+ * the left. That line is not decoration — it is the seam between the
+ * chart and the rail, and it is the only frame either of them needs.
+ *
+ * ── AND IT LINES UP WITH THE HEADER ABOVE IT ─────────────────────────
+ *
+ * 300px, which is the width of the header's flow block — so this rail's
+ * left hairline lands exactly on that block's divider and the two read
+ * as one edge running down the page. The two numbers are one decision:
+ * change this and the header's `.th-flow` moves with it, or the seam
+ * steps sideways halfway down the page.
+ *
+ * It also starts flush against the header's bottom border. Any gap there
+ * is a gap between two halves of the same edge.
+ */
+.tp {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 300px;
+  max-width: 300px;
+  padding: 8px 12px 12px;
+  background: transparent;
+  border-left: 1px solid #1d1d20;
+  font-family: var(--sans);
+}
+
+/* ── the trade card ───────────────────────────────────────────────── */
+
+/*
+ * ── NO PLATE ─────────────────────────────────────────────────────────
+ *
+ * It had a lighter ground and 10px corners, which made the trade block a
+ * card sitting on a rail that is itself not a card. Two nested surfaces
+ * for one column.
+ *
+ * The grouping does not need a background to hold: these six controls
+ * are already the only things on the rail packed at a 10px rhythm, and
+ * everything below them is parted by 12 and a rule. Space groups them.
+ */
+.tp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*
+ * ── ONE OBJECT, TWO SEGMENTS ─────────────────────────────────────────
+ *
+ * Buy and Sell were two separate buttons with a gap between them, each
+ * carrying its own outline. That draws them as two things you can press,
+ * when they are one thing with two positions: choosing Buy is the same
+ * act as un choosing Sell, and nothing on this panel lets you have both.
+ *
+ * So it is one track with one border, and the choice is a filled half
+ * inside it. The gap is gone, because a gap between two halves of a
+ * single switch reads as two switches.
+ */
+.tp-side {
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
+  border: 1px solid #191c21;
+  /*
+   * The two radii are one decision: the inner one is the outer minus the
+   * 3px of padding between them. Set them independently and the filled
+   * half either bulges past the track's corner or leaves a crescent of
+   * ground showing inside it.
+   */
+  border-radius: 7px;
+  background: transparent;
+}
+
+.tp-side-b {
+  flex: 1 1 0;
+  height: 28px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tp-side-b:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tp-side-b[data-on] {
+  background: #22c77e;
+  color: #04120b;
+}
+
+.tp-side-b:nth-child(2)[data-on] {
+  background: #ee4d6f;
+  color: #17050a;
+}
+
+.tp-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.tp-more > svg { width: 13px; height: 13px; }
+
+/*
+ * ── THE MODES, DRAWN AS THE PRESETS ARE ──────────────────────────────
+ *
+ * This has been through three wrong versions: a filled pill, which is
+ * what Buy and Sell wear one row above; then tracked caps; then a
+ * bordered track, which put a boxed control directly beneath another
+ * boxed control and made the top of the rail read as two stacked
+ * switches.
+ *
+ * It is the presets' treatment now, and full width. Both rows ask the
+ * same shape of question — one of three, nothing else changes on screen
+ * when you answer it — so they get the same object, and the panel has
+ * one frame at the top (the side pair) rather than two.
+ *
+ * The rule is the row's own bottom border. The chosen mode lights a
+ * segment OF that line rather than drawing a second line under it.
+ */
+.tp-modes {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #1d1d20;
+}
+
+.tp-tabs {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+}
+
+.tp-tab {
+  flex: 1 1 0;
+  height: 27px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  box-shadow: inset 0 -1px 0 transparent;
+  cursor: pointer;
+  transition: color 130ms ease, box-shadow 130ms ease;
+}
+
+.tp-tab:hover {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.tp-tab[data-on] {
+  background: transparent;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: inset 0 -1px 0 #ffffff;
+}
+
+/*
+ * ── ONE CHIP ─────────────────────────────────────────────────────────
+ *
+ * The wallet count and the balance are one statement — "one wallet, and
+ * it holds nothing" — so they share one border and nothing divides them.
+ * They have been two separate pills and then one pill with a rule down
+ * the middle; both drew a boundary through a single sentence.
+ *
+ * The gap between the two marks is the only separation they need.
+ */
+
+.tp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid #272729;
+  border-radius: 6px;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.tp-chip > svg { width: 12px; height: 12px; }
+
+/*
+ * ── THE AMOUNT PICKER ────────────────────────────────────────────────
+ *
+ * One object with an internal grid, not a field stacked on five loose
+ * buttons. It was six separate outlines — a bordered field, four
+ * bordered chips and a bordered pencil — for what is a SINGLE value: the
+ * shortcuts write into the field above them, so drawing them as
+ * independent controls made you work out the relationship yourself.
+ *
+ * Now the group carries the only border, and everything inside it is
+ * divided by hairlines. The rule between the two halves says the row
+ * below feeds the row above; the rules between the chips say the four
+ * are alternatives to each other.
+ */
+.tp-amt {
+  border: 1px solid #272729;
+  /* Squarer. At 10px the corners were rounder than the field is tall
+     once the height came down, which turns a field into a lozenge. */
+  border-radius: 6px;
+  background: transparent;
+  overflow: hidden;
+  transition: border-color 130ms ease;
+}
+
+/* The ring is on the WHOLE object, not on the input inside it — a
+   rectangle lighting up in the middle of a box reads as a second box. */
+.tp-amt:focus-within { border-color: #3a4150; }
+
+/* The ground is on the FIELD only. The shortcut row below it is the
+   panel's own black — it is a set of buttons, not a second input, and a
+   filled strip under a filled strip made the group read as two fields. */
+.tp-amount {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid #1d1d20;
+  background: #0c0c0d;
+}
+
+/*
+ * ── THE FIELD NAMES CARRY WEIGHT ─────────────────────────────────────
+ *
+ * Every label printed inside an input on this panel was 10.5–11px at
+ * regular weight in #6e7178 — the setting the panel uses for a FOOTNOTE.
+ * Tracked capitals are already the hardest thing here to read: the
+ * letters are further apart and there are no ascenders or descenders to
+ * give the word a shape. Set thin and dim on top of that, "DCA TOTAL
+ * AMOUNT" came out as the faintest type on the rail while naming the
+ * biggest number on it.
+ *
+ * 11.5px at 600 in a grey that is actually a grey. They still sit under
+ * the value beside them — that is what the size and the colour are for —
+ * but they are legible first.
+ */
+.tp-amount-k,
+.tp-field-k,
+.tp-pp-f-k {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #868d97;
+}
+
+/* Stripped back to the type. The box around it belongs to the group. */
+.tp-amount-v {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tp-amount-v::placeholder {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.tp-quick {
+  display: flex;
+  align-items: stretch;
+}
+
+/*
+ * The hairline is a LEFT border on every chip but the first, so the
+ * group's own rounded corners are never cut by a rule running into
+ * them.
+ */
+.tp-q {
+  flex: 1 1 0;
+  /* Shorter, same width. The four shortcuts are stacked under the field
+     they write into, so their height is what makes the group tall — and
+     the group was taller than anything else on the rail. */
+  height: 26px;
+  border: 0;
+  border-left: 1px solid #1d1d20;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  /* The figures only, not the cell. The row's height is set by the field
+     above it and the chips have to keep it; what was oversized was the
+     type, sitting a step above the settings line right under it. */
+  font-size: 10.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tp-q:first-child { border-left: 0; }
+
+.tp-q:hover {
+  color: #ffffff;
+}
+
+/*
+ * ── THE HELD CHIP IS LIT, NOT PLATED ─────────────────────────────────
+ *
+ * A pressed chip stays marked: the shortcuts write into the field above,
+ * and with no held state the panel shows `1` with nothing saying it came
+ * from the chip beside it.
+ *
+ * But it is brightness, not a plate. A filled cell inside a group that
+ * already has hairline divisions turns one of four equal shortcuts into
+ * a block, and the row stops reading as a set of alternatives.
+ */
+.tp-q[data-on] {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/*
+ * ── THE SHORTCUTS, OPEN FOR EDITING ──────────────────────────────────
+ *
+ * A field in the same cell the button was in: same width, same rule,
+ * same type. Nothing moves when the pencil is pressed — the only change
+ * is that the numbers gain a caret and the row gains a ground, which is
+ * the one signal that says these are now inputs rather than buttons.
+ */
+.tp-quick[data-editing] {
+  background: #0c0c0d;
+}
+
+.tp-q-in {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  outline: none;
+  text-align: center;
+  color: #ffffff;
+}
+
+.tp-q-in:focus {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* The pencil is not an amount, so it does not take an amount's width. */
+.tp-q-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.tp-q-edit > svg { width: 12px; height: 12px; }
+
+/* While it is open, the pencil is the tick that closes it. */
+.tp-q-edit[data-on] { color: #22c77e; }
+
+/*
+ * Slippage, priority, bribe, MEV. Four settings that are checked rather
+ * than read, so they get the smallest type on the panel and no plates —
+ * a mark and a value each, on one line.
+ */
+/*
+ * ── PACKED AND RULED, NOT SPREAD ─────────────────────────────────────
+ *
+ * These were `space-between`, which threw four short readings to the
+ * four corners of the panel and left three lakes of black between them.
+ * Spread that wide they stop being a group and become four unrelated
+ * items that happen to share a line.
+ *
+ * They sit together now with a hairline between each — one, rule, one,
+ * rule, one. The rules are what let the spacing be tight without the
+ * values running into each other, and they say the four belong to one
+ * another, which `space-between` cannot say at any distance.
+ */
+.tp-set {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.tp-s + .tp-s {
+  margin-left: 7px;
+  padding-left: 7px;
+  border-left: 1px solid #272729;
+}
+
+/*
+ * ── FOUR READINGS, NOT FOUR CONTROLS ─────────────────────────────────
+ *
+ * This line was once too small and got pushed up. It went too far: at
+ * 11.5px on a 13px mark with 9px of air either side of three dividers,
+ * it was as loud as the amount field above it and wider than the rail
+ * could comfortably hold.
+ *
+ * They are readings. You check them before an order and they do not
+ * change while you look. So: the figure at 10.5 with the mark at 12,
+ * tight dividers, and the whole line settling under the field it
+ * belongs to rather than competing with it.
+ */
+.tp-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tp-s > svg {
+  width: 12.5px;
+  height: 12.5px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+/* Protection on is the one state here worth a colour: it is the only one
+   of the four that is a guard rather than a number. */
+.tp-s.is-on,
+.tp-s.is-on > svg {
+  color: #2fd18a;
+}
+
+/*
+/*
+ * ── SELL INIT. ───────────────────────────────────────────────────────
+ *
+ * The only item on this line that DOES something. The other four report
+ * what the order is set to; this one sells your stake back out and
+ * leaves the rest riding.
+ *
+ * So it is pushed to the far end, away from the four readings, and takes
+ * the down colour — it belongs to the sell side and appears nowhere
+ * else.
+ */
+.tp-s-init {
+  margin-left: auto;
+  /* No divider. The rules between the four settings say "same kind of
+     thing, read across"; this is not one of them, and the space is what
+     parts it. */
+  padding-left: 0;
+  border-left: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  color: #f0567a;
+  transition: color 130ms ease;
+}
+
+.tp-s-init:hover { color: #ff7d99; }
+
+/* Parted from the settings line above it. Those four are readings of
+   the order you are about to place; this is a switch that changes what
+   the order IS, so it does not sit in the same breath as them. */
+.tp-adv {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+}
+
+/*
+ * ── THE EXIT LEGS ────────────────────────────────────────────────────
+ *
+ * A list of rules, each on its own row with its own delete. They sit
+ * indented under the switch that opened them, so it is clear they belong
+ * to it rather than to the buy button below.
+ */
+.tp-exits {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.tp-exit {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+}
+
+/*
+ * A field, drawn as the amount field above it is: a name on the left,
+ * the number hard against the unit on the right. Nothing here needs a
+ * different shape from the field the order size goes in — it is the same
+ * act, applied to a smaller number.
+ */
+.tp-xf {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #0c0c0d;
+  cursor: text;
+  transition: border-color 130ms ease;
+}
+
+.tp-xf.is-wide { flex: 1 1 100%; }
+
+.tp-xf:focus-within { border-color: #3a4150; }
+
+.tp-xf-k {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #838a93;
+  white-space: nowrap;
+}
+
+.tp-xf-k > svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* The arrow takes the direction's colour — up is where you take profit,
+   down is where you stop the loss. It is the one place on the row where
+   a hue says something the words would otherwise have to. */
+.tp-xf[data-kind='tp'] .tp-xf-k > svg { color: #22c77e; }
+.tp-xf[data-kind='sl'] .tp-xf-k > svg { color: #ee4d6f; }
+
+/* Right aligned so the number always meets the unit, however long it
+   is — a left-aligned figure would walk away from its own `%`. */
+.tp-xf-v {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  text-align: right;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tp-xf-u {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #6e7178;
+}
+
+.tp-xdel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.tp-xdel:hover {
+  background: rgba(238, 77, 111, 0.12);
+  color: #ee4d6f;
+}
+
+.tp-xdel > svg { width: 13px; height: 13px; }
+
+/* ── the add row ──────────────────────────────────────────────────── */
+
+.tp-add-wrap { position: relative; }
+
+.tp-add {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #0c0c0d;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+  transition: color 130ms ease, border-color 130ms ease;
+}
+
+.tp-add:hover,
+.tp-add[data-on] {
+  color: #ffffff;
+  border-color: #333a45;
+}
+
+.tp-add-p {
+  display: inline-flex;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.tp-add-p > svg { width: 13px; height: 13px; }
+
+/*
+ * The menu opens UPWARD from the button. It is the last thing in the
+ * trade block and the buy button is directly beneath it — a menu falling
+ * downward would put three click targets over the one control on this
+ * panel that must never be pressed by accident.
+ */
+.tp-add-menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 5px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 168px;
+  padding: 4px;
+  border: 1px solid #272729;
+  border-radius: 9px;
+  background: #101318;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+.tp-add-i {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 28px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.86);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.tp-add-i:hover { background: rgba(255, 255, 255, 0.07); }
+
+.tp-add-i > svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.tp-adv input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tp-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1px solid #2c313a;
+  border-radius: 5px;
+  color: transparent;
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+}
+
+.tp-box > svg { width: 12px; height: 12px; }
+
+/* The TICK is the state, not the fill. A solid green square says
+   something is set here without saying what — a checkbox that never
+   shows a check.
+
+   Keyed off the input alone, not off the row it happens to sit in. This
+   was scoped to `.tp-adv`, so the second checkbox on the panel — Auto
+   Fee — had a box that could never fill. */
+input:checked + .tp-box {
+  background: #22c77e;
+  border-color: #22c77e;
+  color: #04120b;
+}
+
+/*
+ * The submit. A full-width pill, the only object on the panel that is
+ * both filled and the width of its container — which is what makes it
+ * the end of the block rather than one more control in it.
+ */
+/*
+ * Air above it. It sat 10px under the checkbox like every other gap in
+ * the card, so the one irreversible control on the panel was as close to
+ * the thing above it as two settings are to each other.
+ */
+.tp-go {
+  margin-top: 8px;
+  /* 38, down from 44. It is still the tallest control on the rail and
+     the only one that is both filled and full width, which is what makes
+     it the end of the block — it does not also need to be the tallest
+     thing by eight pixels. */
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: #2fd18a;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: #06130d;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.tp-go[data-side='sell'] {
+  background: #f0567a;
+  color: #1a060c;
+}
+
+.tp-go:hover { opacity: 0.88; }
+
+/* ── what each mode adds ──────────────────────────────────────────── */
+
+/*
+ * A labelled value with its unit at the far end. Same shell as the
+ * amount field, because it is the same kind of thing — a number you
+ * type — and giving the second one a different box would say it was
+ * not.
+ */
+.tp-field {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  height: 36px;
+  padding: 0 11px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #0c0c0d;
+  cursor: text;
+  transition: border-color 130ms ease;
+}
+
+.tp-field:focus-within { border-color: #3a4150; }
+
+.tp-field-k {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.tp-field-v {
+  flex: 1 1 auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+/* A placeholder, not a value — "Any" is what the field says when it has
+   not been set, so it takes the tone of an empty input. */
+.tp-field-v.is-dim {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.tp-field-u {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/*
+ * ── THE LEVEL, AS A DISTANCE ─────────────────────────────────────────
+ *
+ * The slider and the market cap above it are the same number twice. A
+ * market cap is absolute and nobody holds one in their head; "down 50%"
+ * is how the decision is actually made. Either can be set and the other
+ * follows.
+ */
+.tp-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px 2px 0;
+}
+
+.tp-track {
+  position: relative;
+  height: 3px;
+  border-radius: 999px;
+  background: #272729;
+}
+
+/* The solid line behind the thumb. It runs from the CENTRE out, not
+   from the left: zero is the middle of this scale, and a bar growing
+   from the left edge would say -100% was the starting point. */
+/* The bar is a muted white — the handle is the bright thing, and a
+   solid white bar growing out of the centre of the track outshouted the
+   number it is setting. */
+.tp-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/*
+ * ── THE RANGE IS REAL, AND INVISIBLE ─────────────────────────────────
+ *
+ * An `<input type="range">` laid over the drawn track at zero opacity:
+ * the dragging, the arrow keys and the screen-reader behaviour come from
+ * the browser, and only the look is ours. The thumb below is the range's
+ * own, styled — so what you grab and what you see are the same object.
+ */
+.tp-range {
+  position: absolute;
+  inset: -8px 0;
+  width: 100%;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: grab;
+}
+
+.tp-range:active { cursor: grabbing; }
+
+.tp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  cursor: grab;
+}
+
+.tp-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  cursor: grab;
+}
+
+.tp-tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  background: #2c313a;
+}
+
+/*
+ * ── THE SCALE IS ONE COLOUR ──────────────────────────────────────────
+ *
+ * The ends used to carry the board's up and down colours. On 10px type
+ * that failed twice over: a saturated red and green at footnote size
+ * against black are the two hardest things on the panel to actually
+ * read, and they said "good" and "bad" about a scale where neither end
+ * is either — a limit 100% below market is not a loss, it is a price.
+ *
+ * White at 11px instead. It is a ruler, and a ruler's numbers are all
+ * the same colour.
+ */
+.tp-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.tp-scale .is-down,
+.tp-scale .is-up {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* ── the advanced strategy pair ───────────────────────────────────── */
+
+/*
+ * ── ONE TRACK, THE SAME AS BUY AND SELL ──────────────────────────────
+ *
+ * Two bordered buttons with a gap between them, which drew Dev Sell and
+ * DCA as two things you can press. They are one thing with two
+ * positions — picking DCA is the same act as un picking Dev Sell — and
+ * that is exactly the question the side pair at the top of the rail
+ * asks, so it is exactly the object it gets.
+ */
+.tp-strat {
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
+  border: 1px solid #191c21;
+  border-radius: 10px;
+}
+
+.tp-strat-b {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tp-strat-b:hover { color: rgba(255, 255, 255, 0.85); }
+
+.tp-strat-b > svg { width: 13px; height: 13px; }
+
+/*
+ * ── LIT, NOT INVERTED ────────────────────────────────────────────────
+ *
+ * This has been solid violet and then solid white. Both were a filled
+ * plate strong enough to be the brightest object on the rail, and this
+ * pair does not deserve that: choosing Dev Sell over DCA changes which
+ * fields are below it, not whether an order goes out.
+ *
+ * A raised plate instead — the panel's own way of marking one of a set,
+ * the same as the held amount chip and the lit MEV cell. The white is
+ * spent on the TYPE, where it costs nothing and reads at a glance.
+ */
+.tp-strat-b[data-on] {
+  background: rgba(255, 255, 255, 0.11);
+  color: #ffffff;
+}
+
+.tp-strat-b[data-on] > svg { color: #ffffff; }
+
+/* ── what a DCA needs ─────────────────────────────────────────────── */
+
+/*
+ * Two rows of two rather than a column of four. They pair off: slices
+ * and interval are how the order is cut up, min and max cap are the
+ * window it may run in — and read as pairs they are two decisions
+ * instead of four settings.
+ */
+.tp-dca {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+/* The figure sits hard against the right edge with its unit, so the
+   four numbers line up down the column however long they are. */
+.tp-field-i {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  text-align: right;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tp-field-i::placeholder {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── your position ────────────────────────────────────────────────── */
+
+/*
+ * ── FOUR CELLS, RULED ────────────────────────────────────────────────
+ *
+ * A rule above the row and one between each pair. Without them the four
+ * figures floated under the button with nothing saying where the trade
+ * block ended and the position began — and nothing grouping them into a
+ * set of four either.
+ */
+/*
+ * ── RULED TOP AND BOTTOM, EDGE TO EDGE ───────────────────────────────
+ *
+ * A rule above only left the block open at the bottom, so the four
+ * figures leaked into the presets under them and read as one stack of
+ * six rows rather than a band of four readings.
+ *
+ * The rules run the full width of the rail — pulled out past the panel's
+ * own 16px of padding — because this is a BAND across the column, not a
+ * box inside it. A rule that stops short of the border it meets draws
+ * attention to the gap instead of the division.
+ */
+.tp-pos {
+  display: flex;
+  margin: 0 -12px;
+  padding: 11px 12px;
+  border-top: 1px solid #1d1d20;
+  border-bottom: 1px solid #1d1d20;
+}
+
+.tp-pos-c {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tp-pos-c + .tp-pos-c {
+  border-left: 1px solid #1d1d20;
+}
+
+/*
+ * The label was 10.5px at #6e7178 — the same setting as the caption
+ * under a token-info cell, which is a footnote. These four head the only
+ * figures on the panel that are about YOUR money, so they are read
+ * first, not last.
+ */
+.tp-pos-k {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  font-size: 10.5px;
+  color: #838a93;
+}
+
+/* The denomination toggle. It spins once on press — the only motion on
+   the panel, and it is there because the four figures below it change
+   meaning rather than value, which a still swap would hide. */
+.tp-denom {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.tp-denom:hover { color: rgba(255, 255, 255, 0.85); }
+
+.tp-denom > svg { width: 12px; height: 12px; }
+
+.tp-denom[data-spin] > svg {
+  animation: tp-spin 420ms ease;
+}
+
+@keyframes tp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/*
+ * ── THE MARK SITS ON THE FIGURE'S CENTRE ─────────────────────────────
+ *
+ * The SOL glyph and the number were both `align-items: center` on a line
+ * box, which centres the MARK against the text's leading rather than
+ * against the digits — it read a pixel high and every one of the four
+ * looked slightly off.
+ *
+ * `line-height: 1` takes the leading out, so centring is centring on the
+ * type itself.
+ */
+.tp-pos-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tp-pos-v > svg {
+  flex-shrink: 0;
+}
+
+/* The dollar takes the SOL mark's width so the four figures do not shift
+   sideways when the denomination flips. */
+.tp-usd {
+  display: inline-flex;
+  justify-content: center;
+  width: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.tp-pos-v.is-up { color: #2fd18a; }
+.tp-pos-v.is-down { color: #f0567a; }
+
+/* ── presets ──────────────────────────────────────────────────────── */
+
+/*
+ * ── THE PRESETS ──────────────────────────────────────────────────────
+ *
+ * Three words on a rule, and nothing else.
+ *
+ * ── WHY NOT A TRACK ──────────────────────────────────────────────────
+ *
+ * They have been violet plates, then a bordered track like the mode
+ * selector. The track was the closer of the two and still wrong: it put
+ * a third boxed control on a rail that already has the mode track eight
+ * rows above it and the wallet chip beside that, so the eye read three
+ * identical objects and had to work out which was which.
+ *
+ * A preset is not the same weight of decision as an order type. It is a
+ * saved set of the numbers already on screen — the quietest control
+ * here, and the only one whose choice changes nothing you can see. So it
+ * gets the quietest treatment on the panel: type on a hairline, with the
+ * chosen one lit and sitting on a lit segment of that same line.
+ *
+ * The rule is the row's own bottom border, not a box around it. One line
+ * that the active tab brightens says "one of these" without adding a
+ * fourth frame to the column.
+ */
+/*
+ * The rule stays INSET — it runs under the three tabs and stops with
+ * them, rather than crossing the rail like the section dividers do.
+ *
+ * That difference is the point. A full-width line is a division of the
+ * column; this one belongs to the control sitting on it. It is the
+ * track the chosen tab lights a segment of, so it has to end where the
+ * tabs end or the lit segment stops reading as part of it.
+ */
+.tp-presets {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #1d1d20;
+}
+
+.tp-preset {
+  flex: 1 1 0;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  cursor: pointer;
+  /* The lit segment sits ON the row's rule rather than under it — a
+     second line below the first reads as two rules; the same line
+     changing colour reads as a position. */
+  box-shadow: inset 0 -1px 0 transparent;
+  transition: color 130ms ease, box-shadow 130ms ease;
+}
+
+.tp-preset:hover {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.tp-preset[data-on] {
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: inset 0 -1px 0 #ffffff;
+}
+
+/*
+ * ── THE PRESET'S OWN SETTINGS ────────────────────────────────────────
+ *
+ * Opened by pressing the preset you are already on, and it hangs
+ * directly under the row that opened it — a preset IS these numbers, so
+ * they are shown at the preset rather than on a settings screen you
+ * have to travel to and come back from.
+ *
+ * It carries no border of its own. The presets row above it already
+ * ends in a rule, and boxing the panel would put a frame inside a
+ * column that is otherwise held together by rules and space alone.
+ */
+/*
+ * ── IT UNROLLS, IT DOES NOT APPEAR ───────────────────────────────────
+ *
+ * The panel used to be mounted on open and thrown away on close, so it
+ * snapped in at full height and vanished the same way. Ten rows of
+ * settings arriving in one frame is a jolt, and it puts everything
+ * below — the token grid, the addresses — 250px down the page with no
+ * sign of where it went.
+ *
+ * A grid row from 0fr to 1fr instead, which animates to the panel's own
+ * height without anyone having to measure it. The clip is what makes
+ * that read as an unroll rather than a squash: the contents stay their
+ * true size and the window over them opens.
+ */
+.tp-pp-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  /* The rail is a flex column, and the clip inside this one has a zero
+     minimum — so flex was free to shrink the whole panel to nothing and
+     the `1fr` row resolved against no space at all. It sizes itself. */
+  flex: 0 0 auto;
+  /* The rail is a flex column with a 12px gap. Closed, this row is
+     nothing but still takes a gap on each side — so it pulls one back,
+     and the pull unwinds as it opens. */
+  margin-bottom: -12px;
+  transition: grid-template-rows 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              margin-bottom 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tp-pp-wrap[data-open] {
+  grid-template-rows: 1fr;
+  margin-bottom: 0;
+}
+
+.tp-pp-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tp-pp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 -12px;
+  padding: 11px 12px 13px;
+  background: transparent;
+  /* The rows fade in a touch behind the roll, so the panel is settled
+     before it is legible rather than sliding while being read. */
+  opacity: 0;
+  transition: opacity 180ms ease 60ms;
+}
+
+.tp-pp-wrap[data-open] .tp-pp { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-pp-wrap,
+  .tp-pp {
+    transition-duration: 0ms;
+  }
+}
+
+/* ── buy / sell ───────────────────────────────────────────────────── */
+
+.tp-pp-side {
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
+  border: 1px solid #191c21;
+  border-radius: 9px;
+}
+
+.tp-pp-sb {
+  flex: 1 1 0;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tp-pp-sb:hover { color: rgba(255, 255, 255, 0.82); }
+
+/*
+ * The active side is tinted, not filled. A solid green plate here would
+ * be the same object as the Buy button at the top of the rail, and this
+ * places no order — it only says which set of numbers you are editing.
+ */
+.tp-pp-sb[data-side='buy'][data-on] {
+  background: rgba(34, 199, 126, 0.14);
+  color: #2fd18a;
+}
+
+.tp-pp-sb[data-side='sell'][data-on] {
+  background: rgba(238, 77, 111, 0.14);
+  color: #f0567a;
+}
+
+/* ── the three fees ───────────────────────────────────────────────── */
+
+.tp-pp-fees {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+/*
+ * Figure over marked name — the same cell the token-info grid uses.
+ * These three are read by comparing them against each other, and a
+ * label-then-value row makes you read three names to find two numbers.
+ */
+/*
+ * ── THE FIGURE AND ITS NAME ARE TWO COMPARTMENTS ─────────────────────
+ *
+ * They were stacked loose inside one padded cell, which left the number
+ * and the word floating at whatever distance the gap happened to be —
+ * and across three cells with different-length numbers, the labels never
+ * lined up with each other.
+ *
+ * A rule between them instead: the figure gets the top half, the name
+ * gets the bottom, and every label in the row sits on the same line
+ * because every cell is divided at the same height.
+ */
+.tp-pp-fee {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid #1d1d20;
+  border-radius: 9px;
+  background: transparent;
+  overflow: hidden;
+  cursor: text;
+  transition: border-color 130ms ease;
+}
+
+.tp-pp-fee:focus-within { border-color: #3a4150; }
+
+.tp-pp-fee-v {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border-bottom: 1px solid #1d1d20;
+  background: #0c0c0d;
+}
+
+.tp-pp-fee-v > input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+/* The unit rides with the number rather than taking a column of its
+   own — it is part of the value, not a second field. */
+.tp-pp-fee-v > i {
+  flex-shrink: 0;
+  font-style: normal;
+  font-size: 11.5px;
+  color: #6e7178;
+}
+
+.tp-pp-fee-k {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 6px;
+  line-height: 1;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #868d97;
+  white-space: nowrap;
+}
+
+/* The mark is the size of the word beside it rather than a footnote to
+   it — it is the fastest way to tell these three cells apart. */
+.tp-pp-fee-k > svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── the labelled rows ────────────────────────────────────────────── */
+
+.tp-pp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tp-pp-k {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  width: 92px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.tp-pp-k > svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.tp-pp-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  width: 92px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+}
+
+.tp-pp-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── the fields ───────────────────────────────────────────────────── */
+
+/*
+ * ── ALIGNED ON THE BASELINE ──────────────────────────────────────────
+ *
+ * The name and the number are different sizes — 10.5px tracked caps
+ * against a 12.5px figure — so centring their boxes left the word
+ * riding about a pixel above the digits. Centring is right for two
+ * marks; for two runs of TYPE the line they are written on is what has
+ * to match.
+ *
+ * The height comes from padding rather than a fixed number, because
+ * baseline alignment in a fixed-height row pins the group to the top.
+ */
+.tp-pp-f {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  min-height: 30px;
+  padding: 7px 11px;
+  border: 1px solid #1d1d20;
+  border-radius: 8px;
+  cursor: text;
+  transition: border-color 130ms ease, opacity 130ms ease;
+}
+
+.tp-pp-f.is-full { flex: 1 1 100%; }
+
+.tp-pp-f:focus-within { border-color: #3a4150; }
+
+/* A field for a setting that is switched off is dimmed and dead rather
+   than hidden — you can still see the number it would use. */
+.tp-pp-f[data-off] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+
+
+.tp-pp-f > input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tp-pp-f > input:disabled { cursor: default; }
+
+.tp-pp-f > input::placeholder { color: rgba(255, 255, 255, 0.28); }
+
+.tp-pp-f-u {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #6e7178;
+}
+
+/* ── the MEV segments ─────────────────────────────────────────────── */
+
+.tp-pp-seg {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.tp-pp-sg {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 27px;
+  border: 1px solid #1d1d20;
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+}
+
+.tp-pp-sg > svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 130ms ease;
+}
+
+.tp-pp-sg:hover { color: rgba(255, 255, 255, 0.85); }
+
+/*
+ * ── LIT, NOT TINTED ──────────────────────────────────────────────────
+ *
+ * This was violet, a hue the panel spends nowhere else except the dev
+ * wallet. It also implied a verdict: whichever of the three you pick is
+ * simply the one that is on, and Off is not a warning any more than Sec.
+ * is a reward.
+ *
+ * So the chosen cell is the bright one — a brighter edge, a faint plate
+ * and white type — which is the panel's own way of saying "this one".
+ */
+.tp-pp-sg[data-on] {
+  border-color: #3a4150;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.tp-pp-sg[data-on] > svg { color: rgba(255, 255, 255, 0.9); }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TIPS
+ *
+ * The header's bubble, in the header's materials — same 11.5px on
+ * #202024 with a hairline and a drop, same 120ms fade, same
+ * `content: attr(data-tip)` so anything that wants one just carries the
+ * attribute. The rail and the bar above it are one page; a second
+ * tooltip design would say they were not.
+ *
+ * ── IT OPENS UPWARD ──────────────────────────────────────────────────
+ *
+ * The header's tips hang below, because that bar is the top of the
+ * window. Here it is the other way round: every marked thing on this
+ * rail has room above it and the ones that matter most — the address
+ * actions — sit near the bottom of the column, where a tip opening
+ * downward would run off the screen.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tp [data-tip] {
+  position: relative;
+}
+
+.tp [data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: #202024;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  color: #ffffff;
+  /* Hidden rather than absent, so nothing reflows to make room. */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.tp [data-tip]:hover::after {
+  opacity: 1;
+}
+
+/*
+ * The last action in a cluster sits against the rail's right edge, so a
+ * centred bubble would hang off the panel. It hangs from its own right
+ * edge instead — the only one that has to.
+ */
+.tp [data-tip-end]::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+/* ── headed sections ──────────────────────────────────────────────── */
+
+/* The rule runs the full width of the rail — pulled out past the
+   panel's own 16px of padding — because it divides the COLUMN. A
+   divider that stops short of the border it meets draws attention to
+   the gap instead of the division. */
+.tp-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 -12px;
+  padding: 9px 12px 0;
+  border-top: 1px solid #1d1d20;
+}
+
+.tp-sec-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tp-sec-t {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.tp-sec-t > svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * The refresh is a round button, not a loose glyph. It is the only
+ * thing you can press in this whole section, and a bare 14px mark in the
+ * corner of a heading reads as part of the heading.
+ */
+/*
+ * ── THE SECTION FOLDS ────────────────────────────────────────────────
+ *
+ * A grid row from 0fr to 1fr, the same mechanism the preset panel uses.
+ * Clipped rather than unmounted so that shutting it is a movement and
+ * not a disappearance — nine cells vanishing in one frame drags the
+ * addresses 130px up the rail with nothing saying why.
+ *
+ * `flex: 0 0 auto` because the rail is a flex column and the clip has a
+ * zero minimum: without it, flex is free to crush the row and the `1fr`
+ * resolves against no space at all.
+ */
+.tp-fold {
+  display: grid;
+  grid-template-rows: 1fr;
+  flex: 0 0 auto;
+  transition: grid-template-rows 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tp-sec:not([data-open]) .tp-fold {
+  grid-template-rows: 0fr;
+}
+
+.tp-fold > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The gap under the header goes with the contents, or a shut section
+   keeps 8px of air where its body used to be. */
+.tp-sec:not([data-open]) { gap: 0; }
+
+.tp-sec-t > svg {
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The arrow points at what it does: down while open — press to close —
+   and turned up to the title it would bring back. */
+.tp-sec:not([data-open]) .tp-sec-t > svg {
+  transform: rotate(-90deg);
+}
+
+.tp-sec-a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: color 130ms ease, border-color 130ms ease, background-color 130ms ease;
+}
+
+.tp-sec-a:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border-color: #333a45;
+}
+
+.tp-sec-a > svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * ── HOVER LEANS, THE PRESS TURNS ─────────────────────────────────────
+ *
+ * Reaching for it nudges the arrow a sixth of a turn — enough to say the
+ * mark is the thing that moves, without starting anything. Pressing it
+ * carries that through a full revolution, which is the only honest way
+ * to draw "fetching": it takes as long as it takes and then it is back
+ * where it started.
+ */
+.tp-sec-a:hover > svg {
+  transform: rotate(-60deg);
+}
+
+.tp-sec-a[data-spin] > svg {
+  animation: tp-spin 600ms cubic-bezier(0.5, 0, 0.3, 1);
+}
+
+@keyframes tp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-fold,
+  .tp-sec-t > svg,
+  .tp-sec-a > svg { transition-duration: 0ms; }
+  .tp-sec-a:hover > svg { transform: none; }
+  .tp-sec-a[data-spin] > svg { animation: none; }
+}
+
+/*
+ * Three across, not nine down. These are read by SCANNING for the bad
+ * one, and a column of nine is a list you have to work through.
+ */
+.tp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.tp-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 4px 10px;
+  border: 1px solid #1d1d20;
+  border-radius: 9px;
+}
+
+.tp-cell-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 15px. These are how you tell one cell from another at a glance —
+   nine cells whose figures are mostly "0%", so the MARK is what carries
+   which reading you are looking at. A hairline glyph doing that job has
+   to be the size of the figure beside it, not a footnote to it. */
+.tp-cell-v > svg { width: 15px; height: 15px; }
+
+.tp-cell-k {
+  font-size: 10px;
+  line-height: 1;
+}
+
+/*
+ * ── THE FIGURE CARRIES THE COLOUR, THE LABEL DOES NOT ────────────────
+ *
+ * The labels were briefly tinted to match their figure, to bind the
+ * pair. On a grid where most cells are the SAME tone that backfires:
+ * nine green words under nine green numbers is eighteen green things,
+ * and the row of labels stops being a quieter second line at all.
+ *
+ * Grey labels put the colour back where it carries information — on the
+ * value, which is the only part that changes.
+ */
+.tp-cell-k {
+  color: #6e7178;
+}
+
+.tp-cell[data-tone='bad'] .tp-cell-v { color: #f0567a; }
+.tp-cell[data-tone='ok'] .tp-cell-v { color: #2fd18a; }
+.tp-cell[data-tone='flat'] .tp-cell-v { color: rgba(255, 255, 255, 0.92); }
+
+/*
+ * The divider inside a split cell. A hairline rather than a slash: the
+ * two figures either side of it are different units — a percentage and a
+ * count — and a slash reads as one over the other.
+ */
+.tp-cell-sep {
+  width: 1px;
+  height: 10px;
+  margin: 0 1px;
+  background: currentColor;
+  opacity: 0.3;
+}
+
+/* ── addresses ────────────────────────────────────────────────────── */
+
+.tp-addr {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 5px 0 11px;
+  border: 1px solid #1d1d20;
+  border-radius: 9px;
+}
+
+.tp-addr-k {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #838a93;
+  white-space: nowrap;
+}
+
+.tp-addr-k > svg {
+  width: 14px;
+  height: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/*
+ * The address is the one string here that is not a word, so it takes the
+ * mono face — even letterfits are what let you compare two of them
+ * character by character, which is the only thing anyone does with an
+ * address.
+ */
+.tp-addr-v {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/*
+ * ── THE ACTIONS ARE ONE CLUSTER ──────────────────────────────────────
+ *
+ * They were three separate items sitting on the ROW's 8px rhythm — the
+ * same spacing that parts the label from the address. So a mark, a mark
+ * and a mark read as three more things on the line rather than as a set
+ * of buttons at the end of it, and on the DA row that made five evenly
+ * spaced objects with no grouping at all.
+ *
+ * The actions touch each other and the group is parted from the address.
+ * Spacing does the grouping; the hit areas stay 28px and overlap nobody.
+ */
+.tp-addr-acts {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.tp-addr-a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 26px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tp-addr-a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Up from 14px. A hairline glyph at 14 inside a 26px circle is mostly
+   circle, which is what made these read as small and scattered. */
+.tp-addr-a > svg { width: 14px; height: 14px; }
+
+
+
+/*
+ * ── THE DEPLOYER BLOCK ───────────────────────────────────────────────
+ *
+ * One border around the address and the three facts about the wallet
+ * behind it. The address row inside gives up its own border — a box
+ * inside a box draws the same edge twice — and keeps its height so the
+ * two rows sit at the rhythm they had.
+ */
+.tp-dev-block {
+  border: 1px solid #1d1d20;
+  border-radius: 9px;
+  padding: 0 6px 9px 11px;
+}
+
+.tp-addr.is-bare {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.tp-dev {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Pulled back level with the address label above it: the action
+     buttons on that row carry 6px of their own, and without this the
+     chip below would start further left than the "DA:" it belongs to. */
+  padding-right: 6px;
+}
+
+.tp-dev-w {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 7px;
+  background: rgba(122, 126, 255, 0.16);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: #a9aaf6;
+}
+
+.tp-dev-w > svg { width: 12px; height: 12px; }
+
+.tp-dev-b,
+.tp-dev-t {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* The dev's age sits at the far end — the one item on this row that is
+   a fact about TIME rather than about the wallet. Space parts it from
+   the two that are; it needs no plate to say so. */
+.tp-dev-t {
+  margin-left: auto;
+}
+
+.tp-dev-t > svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── banner ───────────────────────────────────────────────────────── */
+
+/* A placeholder, not a picture. The sheet is about the panel, and a real
+   banner in the middle of it is the loudest thing on the page. */
+.tp-banner {
+  height: 92px;
+  border-radius: 8px;
+  background:
+    radial-gradient(120% 90% at 50% 60%, rgba(47, 209, 138, 0.35), transparent 70%),
+    #07120d;
+}
+
+/* ── the last row ─────────────────────────────────────────────────── */
+
+/* ── similar tokens ───────────────────────────────────────────────── */
+
+.tp-similar {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * ── EACH ONE IS A ROW, NOT A CARD ────────────────────────────────────
+ *
+ * They were bordered tiles inset from the rail, which put five boxes
+ * inside a section that is itself inside a column — and made a list of
+ * five things read as five separate objects.
+ *
+ * They run the full width of the rail instead, parted by hairlines, the
+ * way the board's own rows are. The border came off with the box: a
+ * list does not need one line per item AND one line between items.
+ */
+.tp-sim {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: auto;
+  margin: 0 -12px;
+  padding: 8px 12px;
+  border: 0;
+  border-top: 1px solid #1d1d20;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 130ms ease;
+}
+
+.tp-sim:first-child { border-top: 0; }
+
+.tp-sim:hover { background: rgba(255, 255, 255, 0.035); }
+
+/*
+ * ── THE RING IS A PAINTED BAND ───────────────────────────────────────
+ *
+ * Lifted from the board's own `.ar`, because a second version of this
+ * ring would be a second answer to a question already settled. The box
+ * carries the paint as its BACKGROUND and its padding makes the band;
+ * the picture lays the row's ground back over the inside of it, leaving
+ * exactly `--ar-ring` of paint showing.
+ *
+ * An outline could only ever be a flat colour. This can be a gradient,
+ * which is what a graduated token needs.
+ */
+.tp-sim-box {
+  --ar-size: 44px;
+  --ar-r: 4px;
+  --ar-gap: 1px;
+  --ar-ring: 1px;
+  --ar-ground: #000000;
+
+  position: relative;
+  box-sizing: content-box;
+  flex-shrink: 0;
+  width: var(--ar-size);
+  height: var(--ar-size);
+  padding: calc(var(--ar-gap) + var(--ar-ring));
+  border-radius: calc(var(--ar-r) + var(--ar-gap) + var(--ar-ring));
+  background: var(--ring);
+}
+
+.tp-sim-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--ar-r);
+  background: #23252b;
+  /* The gap: the row's ground laid back over the inner part of the
+     band, so what is left of the paint is exactly one pixel. */
+  box-shadow: 0 0 0 var(--ar-gap) var(--ar-ground);
+}
+
+/*
+ * The badge is three layers, each doing a job: the ring in the same
+ * paint as the picture's, so the two marks are one statement; the face
+ * in the ROW's ground, not white and not the logo's own background; and
+ * the mark inset inside it with air around it.
+ */
+.tp-sim-pad {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 17px;
+  height: 16px;
+  padding: 1.25px;
+  border-radius: 999px;
+  background: var(--ring);
+}
+
+.tp-sim-pad-face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--ar-ground);
+  color: var(--ring);
+}
+
+/* Inset, whatever the artwork is — the badge's ground is the row's, and
+   a logo covering the face would replace it with the logo file's own. */
+.tp-sim-pad-face > img {
+  display: block;
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+}
+
+.tp-sim-mid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+ * Ticker then name on one line. The ticker is what you are matching and
+ * the name is what tells the near duplicates apart, so they sit
+ * together and are parted by weight rather than by a rule or a break.
+ */
+.tp-sim-l1 {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tp-sim-l1 > b {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tp-sim-l1 > i {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: normal;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.tp-sim-age {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+
+/*
+ * ── THREE FIGURES, ONE COLUMN ────────────────────────────────────────
+ *
+ * Right aligned and stacked with the label after the number, so every
+ * row's figures start and end on the same two lines. A column you can
+ * run your eye down is the whole reason this list is worth opening: the
+ * question is not what these tokens are called, it is which one has
+ * anything in it.
+ */
+.tp-sim-figs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.tp-sim-figs > span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  line-height: 1;
+}
+
+.tp-sim-figs b {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tp-sim-figs i {
+  width: 22px;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Market cap is the one figure here that is a VALUATION rather than a
+   measure of activity, so it is the one that is coloured. */
+.tp-sim-figs .is-mc b { color: #5aa9ff; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE SHEET — 700 AND UNDER
+ *
+ * There is no room for a column beside the chart on a phone, so the rail
+ * stops being a column. It docks to the bottom of the window as a sheet
+ * with three stops: down to the handle, a peek at the order, or the
+ * whole panel.
+ *
+ * ── WHY A SHEET AND NOT A TAB ────────────────────────────────────────
+ *
+ * The alternative was a full screen the chart navigates to. But placing
+ * an order is something you do WHILE watching the price — send the
+ * chart away and the panel is answering a question you can no longer
+ * see. The peek is sized so the amount and the buy button are on screen
+ * without opening anything, and `down` is there for when you want the
+ * chart and nothing else.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* The handle is not drawn on the desktop rail, which has no sheet to
+   pull. It is created here rather than hidden there, so the wide layout
+   carries none of this. */
+.tp-grab { display: none; }
+
+/* On the desktop rail the body is just the panel — it holds no scroll of
+   its own, because the rail scrolls with the page. */
+.tp-body {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+
+@media (max-width: 700px) {
+  .tp-wrap {
+    /* How much of the sheet each stop leaves on screen. They are the
+       same three numbers the component snaps to; if one moves, both
+       move. `100%` is the sheet's own height, so `up` needs no figure. */
+    --tp-down: 34px;
+    /* Measured, not guessed: the buy button's bottom edge sits 316px
+       into the sheet, so 330 clears it with air underneath. A peek that
+       stops above the one control the panel exists for would make every
+       order a two step act. */
+    --tp-peek: 330px;
+    --tp-shown: var(--tp-peek);
+
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    display: block;
+    /*
+     * ── THE WRAPPER IS NOT A SURFACE ───────────────────────────────
+     *
+     * It is as tall as the whole sheet and pinned to the bottom of the
+     * window, and `transform` moves where the sheet PAINTS without
+     * moving this box. So with the sheet down, an invisible 700px pane
+     * still lay over the chart and swallowed every press on the toolbar,
+     * the footer and the candles.
+     *
+     * Nothing here takes the pointer; the sheet and its scrim take it
+     * back. Which is right anyway — the wrapper draws nothing.
+     */
+    pointer-events: none;
+  }
+
+  .tp-wrap > .tp,
+  .tp-wrap .tp-scrim {
+    pointer-events: auto;
+  }
+
+  .tp-wrap[data-sheet='down'] { --tp-shown: var(--tp-down); }
+  .tp-wrap[data-sheet='up'] { --tp-shown: 100%; }
+
+  /* Shut, the scrim is out of the way too — it only takes the pointer
+     once the sheet is up, which is the rule below. */
+  .tp-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    border: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none !important;
+    transition: opacity 220ms ease;
+  }
+
+  .tp-wrap[data-sheet='up'] .tp-scrim {
+    opacity: 1;
+    pointer-events: auto !important;
+  }
+
+  /*
+   * ── THE SHEET ────────────────────────────────────────────────────
+   *
+   * `dvh` with a floor, because `dvh` resolves to ZERO while the view is
+   * not being presented — a sheet that measures itself at that moment
+   * would come back with no height at all.
+   *
+   * It is a COLUMN: the handle, then the body that scrolls. The sheet
+   * itself never scrolls, which is what keeps the handle reachable at
+   * every stop and stops the two gestures fighting.
+   */
+  .tp-wrap > .tp {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    height: max(420px, 86dvh);
+    padding: 0 12px 12px;
+    border-left: 0;
+    /*
+     * ── THE EDGE IS THE HANDLE ───────────────────────────────────
+     *
+     * The border is kept DIM on purpose. What you see is the lit strip
+     * across the middle of it, drawn by `.tp-grab::before` — an edge
+     * that brightens where you are meant to take hold of it, rather
+     * than a uniform line with an object sitting on top.
+     *
+     * A pill in the middle of the edge was the obvious answer and it
+     * read as a badge stuck to the sheet. This is the same information
+     * with nothing added to the sheet at all: the edge simply gets
+     * brighter where the handle is.
+     */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px 15px 0 0;
+    background: #000000;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.06),
+      0 -20px 48px rgba(0, 0, 0, 0.75);
+    transform: translateY(calc(100% - var(--tp-shown) + var(--tp-drag, 0px)));
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* While a thumb is on it the sheet follows the thumb exactly. A
+     transition here would put the sheet behind the finger dragging it. */
+  .tp-wrap[data-dragging] > .tp {
+    transition: none;
+  }
+
+  /*
+   * The contents scroll, not the sheet. `overscroll-behavior: contain`
+   * so reaching the end of the panel does not start scrolling the page
+   * underneath it.
+   */
+  .tp-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /*
+   * ── THE HANDLE ───────────────────────────────────────────────────
+   *
+   * Full width of the sheet including its padding: the bar is the SIGN,
+   * the whole strip is the target. At the `down` stop it is the only
+   * thing on screen, so it is also the entire hit area for getting the
+   * panel back — 34px, which is a thumb.
+   */
+  .tp-grab {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% + 24px);
+    height: 34px;
+    margin: 0 -12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: grab;
+    /* The browser must not claim the vertical drag for a scroll, or the
+       sheet never sees the gesture that moves it. */
+    touch-action: none;
+  }
+
+  .tp-grab:active { cursor: grabbing; }
+
+  /*
+   * The lit part of the edge. It sits ON the border, fading out to
+   * nothing at both ends, so there is no start and no finish to it —
+   * which is what keeps it reading as the edge rather than as a very
+   * wide bar laid across it.
+   */
+  .tp-grab::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.62) 32%,
+      rgba(255, 255, 255, 0.62) 68%,
+      transparent
+    );
+    transition: opacity 130ms ease;
+  }
+
+  /*
+   * And the seam, inside it. Long and thin — 76 by 2.5 rather than 40 by
+   * 4 — so it reads as a line in the sheet rather than a pill on it, and
+   * so the two marks are the same KIND of thing: an edge, and a seam
+   * under it.
+   */
+  .tp-grab > span {
+    width: 76px;
+    height: 2.5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: background-color 130ms ease;
+  }
+
+  .tp-grab:hover > span,
+  .tp-wrap[data-dragging] .tp-grab > span {
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .tp-grab:hover::before,
+  .tp-wrap[data-dragging] .tp-grab::before {
+    opacity: 0.75;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tp-wrap > .tp,
+    .tp-scrim { transition-duration: 0ms; }
+  }
+}

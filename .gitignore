@@ -1,0 +1,14 @@
+node_modules
+.next
+.next-alt
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Local secrets. `.env.local` carries the runtime config this sandbox
+# reads, including keys, and must never leave the machine.
+.env
+.env.local
+.env*.local
+
+# Local TLS material for the https dev server.
+certificates

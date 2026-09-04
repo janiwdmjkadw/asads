@@ -1,0 +1,192 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TWEET, AS A FEED ROW
+ *
+ * The tracker was rendering the HOVER CARD in a list. That card is built
+ * for a different job: it opens over a token you have never seen, on an
+ * author you have never heard of, so it spends its space introducing
+ * them — a bordered plate, a divider under the identity, a "joined Nov
+ * 2019 · 184k followers" line, four metric icons in four brand colours,
+ * and a "Read more on X" button at the bottom. Stack six of those and
+ * you get six business cards, not a feed.
+ *
+ * A feed is one column. So: no plate, no fill, no shadow, no divider
+ * inside the post — one hairline BETWEEN posts, the way a tape has rows.
+ * The identity is one line. The metrics are one quiet line in the
+ * panel's own grey rather than pink, green, blue and purple. What is
+ * left is the text and the pictures, which is what the reader came for.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tw-feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.tw {
+  display: flex;
+  gap: 10px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--hairline);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 130ms ease;
+}
+
+/* Nothing moves. The row lifts by a few percent of white and that is the
+   whole affordance — the same one the ledger rows use. */
+.tw:hover { background: rgba(255, 255, 255, 0.025); }
+
+.tw-pfp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-3, #17171a);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tw-pfp > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.tw-main { display: flex; flex-direction: column; gap: 7px; min-width: 0; flex: 1 1 auto; }
+
+/* ── one identity line ────────────────────────────────────────────── */
+
+.tw-who {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.tw-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--ink-0);
+}
+
+.tw-at {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.tw-dot { flex-shrink: 0; color: var(--ink-3); }
+
+.tw-age {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.tw-x {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--ink-3);
+  transition: color 130ms ease;
+}
+
+.tw:hover .tw-x { color: var(--ink-1); }
+
+.tw-check { flex-shrink: 0; width: 13px; height: 13px; display: block; }
+
+/* ── the text ─────────────────────────────────────────────────────── */
+
+.tw-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ── the pictures ─────────────────────────────────────────────────── */
+
+.tw-media {
+  display: grid;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--hairline);
+}
+
+.tw-media[data-n='1'] { grid-template-columns: 1fr; }
+.tw-media[data-n='2'],
+.tw-media[data-n='3'],
+.tw-media[data-n='4'] { grid-template-columns: 1fr 1fr; }
+
+.tw-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--surface-3, #17171a);
+}
+
+.tw-media[data-n='1'] img { aspect-ratio: 16 / 9; }
+.tw-media:not([data-n='1']) img { aspect-ratio: 1 / 1; }
+
+.tw-video {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-3, #17171a);
+}
+
+/* ── the numbers ──────────────────────────────────────────────────── */
+
+/*
+ * One grey line. The card this replaces painted the heart pink, the
+ * repost green, the reply blue and the views purple — four hues to
+ * label four counts nobody acts on from inside our product, since none
+ * of these are buttons here. They are a footnote, so they are set like
+ * one.
+ */
+/*
+ * ── IT HAS TO SURVIVE 280px ──────────────────────────────────────────
+ *
+ * A docked panel goes down to `DOCK_MIN_WIDTH`, which leaves this line
+ * 194px after the avatar, the gap and the padding. Four counts at a
+ * fixed 16px gap need about 230, so the line ran off the end: the last
+ * figure was cut in half, and because the overflow was on the ROW, the
+ * whole feed became horizontally scrollable. That is what "breaking"
+ * looked like.
+ *
+ * `space-between` with a small floor gap is what fixes it. The counts
+ * keep their own size and the SPACE between them takes the loss, down
+ * to 6px, which is the narrowest this can get before two numbers start
+ * reading as one. The cap stops them flying apart on a 480px panel,
+ * where an evenly distributed row would put 90px between figures that
+ * belong to the same post.
+ */
+.tw-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  max-width: 300px;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+/* 12 and 4, from 13 and 5. Eight pixels back across the line, which is
+   the difference between fitting at 280 and not. */
+.tw-stat { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+.tw-stat > svg { width: 12px; height: 12px; flex-shrink: 0; }

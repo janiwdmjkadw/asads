@@ -1,0 +1,586 @@
+/*
+ * THE STRIP UNDER THE TOP NAV — "rail", off the `/whatever` sheet.
+ *
+ * The arrangement was already right and is not touched: the positions
+ * tape on the left, then settings, Groups, and ONE wallet chip carrying
+ * the count, the aggregate SOL and the aggregate USDC behind a single
+ * caret. What changes is what the bar DRAWS.
+ *
+ * ── WHAT WAS WRONG ───────────────────────────────────────────────────
+ *
+ * Three capsules in a row, each a fill inside its own 1px border with an
+ * inset highlight on top, and both pickers lighting up in the accent when
+ * open. On a 30px strip over a live board that is six hairlines and two
+ * accent states competing with a tape that moves. Every other surface in
+ * the product settled on one hairline weight, a 6% plate instead of a
+ * fill-plus-border, and white — never the accent — for open.
+ *
+ * ── WHAT KEEPS ITS COLOUR ────────────────────────────────────────────
+ *
+ * The SOL and USDC marks. They are the one place colour earns its keep
+ * here: they say WHICH balance you are reading without you reading the
+ * number. Nothing below repaints them.
+ *
+ * Scoped to `[data-subheader-v2]` on the strip, because `--input-bg` and
+ * the chip classes are shared with surfaces nobody asked me to move.
+ */
+
+[data-subheader-v2] {
+  /*
+   * ── THE CONTROL PLATE, DOUBLED ───────────────────────────────────
+   *
+   * `f-05` off the `/whatever` sheet. `--input-bg` is the plate under
+   * the hidden tokens button, the lists button, the cog, the group chip
+   * and the wallet chip; globally it is `rgba(255,255,255,0.025)`, which
+   * over this black bar resolves to about #060606. Six values off the
+   * ground it sits on is no plate at all, so the hairline ring was doing
+   * all of the work and a dim glyph inside an empty ring read as a
+   * disabled control.
+   *
+   * REDEFINED, NOT OVERRIDDEN. Every one of those controls sets
+   * `background: var(--input-bg)` as an INLINE style, and an inline
+   * style beats any rule this file could write for the same property.
+   * It does not beat the variable it reads: re-pointing `--input-bg` on
+   * the bar changes what those inline styles resolve to, with no
+   * `!important` and no per control selector.
+   *
+   * Scoped to the strip on purpose. `--input-bg` is the fill for every
+   * text field in the product, and those sit on lighter surfaces where
+   * 0.025 is already correct.
+   */
+  --input-bg: rgba(255, 255, 255, 0.05);
+
+  background: #000000 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  /* The blur was doing nothing over an opaque black bar and costs a
+     compositing layer on every scroll of the board underneath. */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* ── the three controls ───────────────────────────────────────────── */
+
+/*
+ * `rounded-full` is a Tailwind class and the surface is inline, so both
+ * need overriding. 6px, matching the pills in the top nav and the plates
+ * on the footer — a 22px capsule at full round reads as a lozenge next to
+ * a row of square-ish token chips.
+ */
+[data-subheader-v2] [data-testid='subheader-hidden-tokens'],
+[data-subheader-v2] [data-testid='subheader-blacklists'],
+[data-subheader-v2] [data-testid='subheader-trading-settings'],
+[data-subheader-v2] [data-testid='subheader-group-chip'],
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] {
+  border-radius: 6px !important;
+  /*
+   * ── THE RING IS BACK ─────────────────────────────────────────────
+   *
+   * This said `border: 0`, from the pass that argued a plate and a ring
+   * were two ways of saying the same thing. With the plate at 0.025 that
+   * was true — there was no plate, so the ring was the control and
+   * removing it left nothing. At 0.05 they do different jobs: the plate
+   * gives the control a body and the ring gives it an EDGE, which is
+   * what separates one 26px square from the one 6px away from it.
+   *
+   * `--input-border` rather than a literal, so it moves with the same
+   * token every other field on the page draws its edge from.
+   *
+   * `box-shadow: none` stays. The inline style ships an inset top
+   * highlight as well, and a lit edge on top of a ring on top of a plate
+   * is the third way of saying it.
+   */
+  border: 1px solid var(--input-border) !important;
+  box-shadow: none !important;
+  /*
+   * 0.05, the `f-05` plate, and the same value `--input-bg` is set to at
+   * the top of this file.
+   *
+   * These three already carried their own fill, so the variable only
+   * reached the FOURTH control, the bookmark — leaving four plates at
+   * 0.06 and one at 0.05. A one value difference nobody can see is still
+   * two numbers to keep in step, and they had already drifted apart once.
+   */
+  background: rgba(255, 255, 255, 0.05) !important;
+  transition: background-color 130ms ease !important;
+}
+
+[data-subheader-v2] [data-testid='subheader-hidden-tokens']:hover,
+[data-subheader-v2] [data-testid='subheader-blacklists']:hover,
+[data-subheader-v2] [data-testid='subheader-hidden-tokens']:hover,
+[data-subheader-v2] [data-testid='subheader-blacklists']:hover,
+[data-subheader-v2] [data-testid='subheader-trading-settings']:hover,
+[data-subheader-v2] [data-testid='subheader-group-chip']:hover,
+[data-subheader-v2] [data-testid='subheader-wallet-chip']:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  /* The shipped hover was `brightness-110` on a near-black fill, which is
+     a change of about two values and reads as nothing. */
+  filter: none !important;
+}
+
+/*
+ * OPEN IS A WHITE PLATE.
+ *
+ * `ChipPopover` swaps the trigger to `--accent-soft` with an accent
+ * border while its popover is up. That is the only accent chrome left on
+ * the strip, and the panel it opens is already the thing telling you it
+ * is open.
+ */
+[data-subheader-v2] [aria-expanded='true'] {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: transparent !important;
+}
+
+/* ── the glyphs ───────────────────────────────────────────────────── */
+
+/*
+ * The folder and the wallet are sized and coloured INLINE, and the folder
+ * turns accent when a group is picked. They are chrome: they name the
+ * control, they do not report anything.
+ *
+ * Deliberately NOT `[data-subheader-v2] svg` — that would catch the SOL
+ * and USDC marks, which are the two things on this strip allowed to carry
+ * colour.
+ */
+/*
+ * ── 0.68, UP FROM 0.45 ───────────────────────────────────────────────
+ *
+ * 45% white on this strip's ground is about 3.4:1, which is under the
+ * 4.5:1 a small glyph needs and it showed: the eye, the bookmark and the
+ * gear read as disabled rather than as quiet. They are all live controls.
+ *
+ * 0.68 clears 5:1 and still sits a clear step under the 0.92 the type
+ * uses, so the hierarchy the strip was going for survives — these are
+ * still quieter than the words beside them, just no longer invisible.
+ */
+[data-subheader-v2] [data-testid='subheader-group-chip'] > svg:first-child,
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] > svg:first-child {
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
+[data-subheader-v2] [data-testid='subheader-hidden-tokens'],
+[data-subheader-v2] [data-testid='subheader-blacklists'],
+[data-subheader-v2] [data-testid='subheader-trading-settings'] {
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
+[data-subheader-v2] [data-testid='subheader-trading-settings']:hover,
+[data-subheader-v2] [data-testid='subheader-group-chip']:hover > svg:first-child,
+[data-subheader-v2] [data-testid='subheader-wallet-chip']:hover > svg:first-child {
+  color: #ffffff !important;
+}
+
+/* The caret is still the quietest thing in each control, but 0.35 was
+   below the point where a 10px chevron reads at all. */
+[data-subheader-v2] [data-testid$='-chip'] > svg:last-child {
+  color: rgba(255, 255, 255, 0.52) !important;
+}
+
+/* ── the type ─────────────────────────────────────────────────────── */
+
+[data-subheader-v2] [data-testid='subheader-group-chip'] span {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+}
+
+/*
+ * The three figures in the wallet chip. `Numeral` renders them in the
+ * theme's own face; these tick, so they want tabular Geist and the same
+ * ink as everything else that is read rather than pressed.
+ */
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] span {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+  font-size: 11.5px !important;
+  letter-spacing: -0.005em !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* How many wallets are selected is the one figure that is a COUNT rather
+   than a balance, and it leads the chip. */
+[data-subheader-v2] [data-testid='subheader-wallet-count'] {
+  font-weight: 600 !important;
+}
+
+/* The two rules inside the chip, down to the one hairline weight. */
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] span[aria-hidden] {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ══ THE LEFT SIDE ══════════════════════════════════════════════════
+ *
+ * The two mode buttons and the tape's scroll arrows. Same language as
+ * the controls opposite them — a plate, never a border, white when on.
+ */
+
+[data-subheader-v2] .sub-mode {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+[data-subheader-v2] .sub-modebtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+[data-subheader-v2] .sub-modebtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* On is a white plate — the same way the nav pills and the footer
+   toggles say it. The pair used to mark the active mode in the accent. */
+[data-subheader-v2] .sub-modebtn[data-on='true'] {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/*
+ * The arrows only exist while there IS overflow, so they never sit dead
+ * on a wide window. They match the caret on the pickers opposite.
+ */
+[data-subheader-v2] .sub-arrow {
+  width: 20px;
+  height: 24px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+[data-subheader-v2] .sub-arrow:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ══ NARROW SCREENS ═════════════════════════════════════════════════
+ *
+ * 560, the same breakpoint the top nav uses — see `topnav-v2.css`. The
+ * cluster shipped as `hidden sm:flex`, so below 640 the settings, the
+ * groups and the whole SOL/USDC reading simply were not there.
+ *
+ * They are the most useful things on the strip on a phone: which wallets
+ * you are trading with and what is in them. What gives way instead is
+ * the LABEL on the group chip — the folder glyph names it, and a phone
+ * has no room for a word that a 12px icon already says.
+ */
+@media (max-width: 560px) {
+  [data-subheader-v2] {
+    gap: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Thumb-sized, matching what the nav does below this width. */
+  [data-subheader-v2] .sub-modebtn,
+  [data-subheader-v2] .sub-arrow {
+    width: 28px;
+    height: 28px;
+  }
+
+  [data-subheader-v2] [data-testid='subheader-trading-settings'],
+  [data-subheader-v2] [data-testid='subheader-wallet-chip'] {
+    height: 26px !important;
+  }
+
+  /*
+   * ── THE GROUP CHIP IS GONE ON A PHONE ────────────────────────────
+   *
+   * It dropped its label first and kept a glyph and a caret, which left
+   * a control that took real width to say nothing you could read. The
+   * whole chip goes now.
+   *
+   * Groups pick WHICH WALLETS the strip aggregates. That is a setup
+   * decision, not something anyone makes mid-trade on a phone, and the
+   * selection persists — whatever was chosen on a desktop is still what
+   * the wallet chip beside this is reading from. So nothing is lost at
+   * this width; it is only unreachable until the window is wider.
+   *
+   * The wallet chip and the SOL/USDC figures stay, because those are the
+   * two things worth the room here: which wallets you are trading with
+   * and what is in them.
+   */
+  [data-subheader-v2] [data-testid='subheader-group-chip'] {
+    display: none !important;
+  }
+
+  [data-subheader-v2] [data-subheader-cluster] {
+    gap: 4px;
+  }
+}
+
+/*
+ * NO `scroll-behavior: smooth` HERE.
+ *
+ * It was added so an arrow press would animate, and it did the opposite:
+ * in an embedded webview the smooth path never ran the animation, so
+ * `scrollLeft` assignments landed on a scroller that then sat at zero.
+ * The tween lives in `AppSubHeader` now, on rAF, where it cannot be
+ * switched off by the host.
+ */
+
+/* ══ THE TAPE'S POSITIONS ═══════════════════════════════════════════
+ *
+ * ── ONE HOVER FOR THE WHOLE POSITION ────────────────────────────────
+ *
+ * A position is art, ticker, value, PnL and a sell button. Only the
+ * first four were inside the hovered element, so the plate stopped
+ * halfway through the thing it was highlighting and the sell button sat
+ * outside it looking like it belonged to the next position along. The
+ * plate now goes on the ROW.
+ */
+
+[data-subheader-v2] [data-position-row] {
+  border-radius: 7px;
+  padding: 1px 4px 1px 2px;
+  transition: background-color 130ms ease, box-shadow 130ms ease;
+}
+
+/*
+ * THE HOVER IS "WARM" — colour arrives, brightness does not.
+ *
+ * Three versions of this were wrong. 6% white on black computes to about
+ * rgb(15,15,15) and was invisible. Answering that with 12% and a hairline
+ * ring drew a hard rectangle around every chip the pointer passed, and
+ * the box was louder than the position inside it. A pure brightness lift
+ * read as the row being selected rather than pointed at.
+ *
+ * So the plate stays very quiet and the row WARMS: the token art comes
+ * out of its grayscale and saturates, and the PnL figure goes to full
+ * strength. The position gains colour rather than light, which is the
+ * one change a strip full of white text and grey chrome cannot confuse
+ * with anything else — and nothing changes shape or size under the
+ * pointer.
+ */
+[data-subheader-v2] [data-position-row]:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/*
+ * The token art is desaturated at rest so six of them in a row do not
+ * read as a sticker sheet. Under the pointer it is the picture of the
+ * thing you are about to open, so it gets to be itself.
+ */
+[data-subheader-v2] [data-position-row] img {
+  opacity: 0.82;
+  filter: grayscale(0.35);
+  transition: opacity 130ms ease, filter 130ms ease;
+}
+
+[data-subheader-v2] [data-position-row]:hover img {
+  opacity: 1;
+  filter: grayscale(0) saturate(1.3);
+}
+
+/* The PnL is the one coloured figure on the row; hovering turns it up
+   rather than turning the row white. */
+[data-subheader-v2] [data-position-row] span[style*='--up'],
+[data-subheader-v2] [data-position-row] span[style*='--down'] {
+  transition: filter 130ms ease;
+}
+
+[data-subheader-v2] [data-position-row]:hover span[style*='--up'],
+[data-subheader-v2] [data-position-row]:hover span[style*='--down'] {
+  filter: saturate(1.6) brightness(1.15);
+}
+
+/* The ticker still comes to full white — it names what is being pointed
+   at, and it is the only part of the row with no colour of its own. */
+[data-subheader-v2] [data-position-row]:hover span[style*='--ink-1'] {
+  color: #ffffff !important;
+}
+
+/* The coin button's own plate is redundant now — two nested plates read
+   as a box inside a box. It keeps the pointer and loses the fill. */
+[data-subheader-v2] [data-position-row] > button:first-child:hover {
+  background: transparent !important;
+}
+
+/* ── THE SELL BUTTON: REVEAL, THEN GHOST ────────────────────────────
+ *
+ * At rest there is NO button. The tape carries six positions rather than
+ * six positions and six buttons, and the one control here that cannot be
+ * undone is never sitting under a stray click. It arrives only once the
+ * row is hovered.
+ *
+ * And it arrives as a bare glyph — no plate, no border, nothing drawn.
+ * The shipped box put a bordered 18px square beside every position and
+ * spent its hover changing the colour of a one pixel outline, which is
+ * about four visible pixels of feedback on the most destructive control
+ * on the strip.
+ *
+ * `width` and `opacity` do the revealing rather than `display`, so the
+ * chip does not jump — the space is taken as the glyph fades in.
+ */
+[data-subheader-v2] [data-position-row] > button:last-child {
+  width: 0 !important;
+  height: 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 130ms ease, width 130ms ease, color 130ms ease;
+}
+
+/*
+ * THE ARROW IS ACTUALLY VISIBLE.
+ *
+ * Ghost is the lightest treatment on the strip and the temptation is to
+ * take it all the way down; the shipped glyph sat at `--ink-3`, which on
+ * this surface is a smudge. 62% is unmistakably present the moment the
+ * row is hovered, still quieter than the ticker four pixels away, and it
+ * has no plate to lean on for legibility.
+ */
+[data-subheader-v2] [data-position-row]:hover > button:last-child {
+  width: 20px !important;
+  opacity: 1;
+  pointer-events: auto;
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+
+/* The glyph carries the whole button now, so it is not left at 10px. */
+[data-subheader-v2] [data-position-row] > button:last-child svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/*
+ * On its own hover it reddens and nothing else happens. No fill, no
+ * lift, no box — the colour IS the warning, and on a bare glyph there is
+ * nothing for it to compete with.
+ */
+[data-subheader-v2] [data-position-row] > button:last-child:hover {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--sub-down) !important;
+}
+
+[data-subheader-v2] [data-position-row] > button:last-child:active {
+  color: var(--sub-down) !important;
+  filter: brightness(0.85);
+}
+
+/* ── THE PnL COLOURS ────────────────────────────────────────────────
+ *
+ * `--up` and `--down` are the theme's own pair, mixed to sit on the
+ * board's raised surfaces. This strip is pure black, where that green
+ * goes muddy and that red goes brown — both lose against a white ticker
+ * sitting four pixels away.
+ *
+ * These two are picked for BLACK: a mint that stays green at 10px
+ * instead of drifting olive, and a rose that reads as red rather than as
+ * dark orange.
+ *
+ * They are applied by REDEFINING the variables for this subtree, not by
+ * overriding each `color`. The PnL figure sets its colour inline off
+ * `--up` / `--down`, and an inline style beats any selector — but it
+ * cannot beat a redefinition of the variable it is reading. That also
+ * carries the pair to the sell button's hover above and to anything else
+ * on the strip reaching for either token.
+ *
+ * Scoped to the strip, so the board below keeps its own pair.
+ */
+[data-subheader-v2] {
+  --up: #2fe0a0;
+  --down: #ff5f6e;
+  --sub-down: #ff5f6e;
+}
+
+/* ══ BELOW 600: THE TAPE STAYS ══════════════════════════════════════
+ *
+ * It used to go. The strip held two unrelated things — a scrolling tape
+ * on the left and the wallet cluster on the right — and below 600 there
+ * was not room for both, so the tape was hidden, and the mode toggles
+ * and scroll arrows that steer it went with it.
+ *
+ * The cluster is not on this line any more: it moved to `AppPageBar`,
+ * one row down. Nothing is competing for the width, so nothing has to
+ * lose it. The tape, its toggles and its arrows are visible at every
+ * width now, which is the whole reason the cluster was moved.
+ *
+ * What is left is the bezel gap. A control against the edge of the
+ * screen is a mis-tap on a phone in a way it is not under a cursor.
+ */
+@media (max-width: 600px) {
+  [data-subheader-v2] {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+/* ══ THE CLUSTER, AT THE SHEET'S SIZE ═════════════════════════════════
+ *
+ * Three things were still off the sheet after the plate was doubled.
+ *
+ * 1 · TWO OF THE FIVE WERE STILL ROUND. The radius rule above named the
+ *     cog, the group and the wallet, so the hidden tokens eye and the
+ *     bookmark kept `rounded-full` from their own class and sat as two
+ *     circles beside three rounded squares.
+ *
+ * 2 · 22px IS TOO SMALL FOR A 12px GLYPH. There is 5px of plate around
+ *     the mark on every side, so the button reads as a dot rather than
+ *     as a target, and it is under every touch minimum there is. 26 with
+ *     a 14px glyph is the sheet's `big`.
+ *
+ * 3 · THE GLYPHS WERE STILL THIN. 1.6 stroke at 12px on a 68% grey is
+ *     the faintest thing on the bar. 1.9 at 14px is what makes them read
+ *     as marks rather than as smudges.
+ * ══════════════════════════════════════════════════════════════════ */
+
+/*
+ * The THREE icon buttons only. This named `[data-subheader-cluster] >
+ * button` as well, which is every child of the cluster — so the Groups
+ * chip and the wallet chip were forced to 26px WIDE and collapsed from
+ * pills into squares with their labels clipped out of existence. A chip
+ * is sized by its text; only the icon buttons are square.
+ */
+[data-subheader-v2] [data-testid='subheader-hidden-tokens'],
+[data-subheader-v2] [data-testid='subheader-blacklists'],
+[data-subheader-v2] [data-testid='subheader-trading-settings'] {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+[data-subheader-v2] [data-testid='subheader-group-chip'],
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] {
+  height: 26px !important;
+}
+
+/*
+ * The glyph inside each of them. `:not(.cx-sol)` style exclusion is not
+ * needed here because the SOL and USDC marks are filled paths with no
+ * stroke, so a stroke width has no effect on them — but the SIZE does,
+ * which is why this names the stroked icons by their buttons rather
+ * than reaching for every svg on the bar.
+ */
+[data-subheader-v2] [data-testid='subheader-hidden-tokens'] svg,
+[data-subheader-v2] [data-testid='subheader-blacklists'] svg,
+[data-subheader-v2] [data-testid='subheader-trading-settings'] svg,
+[data-subheader-v2] [data-testid='subheader-group-chip'] > svg:first-child,
+[data-subheader-v2] [data-testid='subheader-wallet-chip'] > svg:first-child {
+  width: 14px !important;
+  height: 14px !important;
+  stroke-width: 1.9 !important;
+}

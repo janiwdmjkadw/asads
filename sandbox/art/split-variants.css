@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE THREE WAY SPLIT — FIVE WAYS
+ *
+ * SOL, stablecoins, everything else. It sits between the wallet filter
+ * and the holdings tape, and the open question is not how it looks but
+ * whether it earns the room: the total above it already says what the
+ * book is worth, and the tape below already lists every position.
+ *
+ * So one of these five is the block removed.
+ *
+ * All of them keep the Spot tab's rules: black, left aligned, sentence
+ * case, one ink scale, no plate, no glow, and white bars — the point of
+ * this row is comparing LENGTHS, and different hues are the one thing
+ * that makes lengths harder to compare.
+ *
+ *   1  Columns   what ships: label, figure, bar, share
+ *   2  One bar   a single stacked bar and a legend
+ *   3  Line      figures on one line, no bars at all
+ *   4  Shares    the percentages only; the dollars are said twice already
+ *   5  Gone      the block removed, and what the page looks like without
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.sv {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.sv h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.sv p.sv-note {
+  margin: 0 0 22px;
+  max-width: 660px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.sv-stack { display: flex; flex-direction: column; gap: 26px; }
+.sv-slot { display: flex; flex-direction: column; gap: 9px; }
+
+.sv-cap { display: flex; align-items: baseline; gap: 7px; }
+.sv-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.sv-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+/* The page around it: the rule above, and the holdings head below, so
+   each variant is judged in the gap it actually occupies. */
+.sp {
+  width: 100%;
+  max-width: 900px;
+  padding: 18px 24px 20px;
+  border-radius: 12px;
+  background: #000000;
+  color: var(--ink-0);
+  font-variant-numeric: tabular-nums;
+}
+
+.sp-rule { border-top: 1px solid var(--hairline); margin-bottom: 18px; }
+.sp-after { display: flex; align-items: baseline; gap: 8px; margin-top: 22px; }
+.sp-after > b { font-size: 12.5px; font-weight: 600; }
+.sp-after > small { font-size: 11px; color: var(--ink-3); }
+
+.sp-lab { font-size: 11px; font-weight: 500; color: var(--ink-3); }
+.sp-usd { font-size: 19px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
+.sp-pct { font-size: 11px; color: var(--ink-3); }
+
+/* ══ 1 · COLUMNS ─ what ships ══════════════════════════════════════ */
+
+.c1 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.c1 > span { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.c1-bar { display: block; height: 3px; margin-top: 3px; border-radius: 2px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.c1-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.55); }
+
+/* ══ 2 · ONE BAR ═══════════════════════════════════════════════════
+ *
+ * The three lengths in ONE object rather than three, so the comparison
+ * the row exists to make is made by the row itself instead of by the
+ * reader measuring three bars against three different baselines.
+ *
+ * Three weights of the same white, not three hues: it is one quantity
+ * cut three ways, and a hue would say they are three kinds of thing.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.c2-bar { display: flex; height: 8px; gap: 2px; }
+.c2-bar > span { border-radius: 2px; }
+.c2-key { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 14px; font-size: 12px; }
+.c2-key > span { display: inline-flex; align-items: baseline; gap: 7px; }
+.c2-key i { width: 7px; height: 7px; border-radius: 2px; align-self: center; font-style: normal; }
+.c2-key b { font-weight: 500; color: var(--ink-0); }
+.c2-key u { text-decoration: none; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+/* ══ 3 · LINE ══════════════════════════════════════════════════════
+ *
+ * No bars. Three figures on one line with their names, at the size the
+ * page sets a secondary figure.
+ *
+ * The case: a bar comparing 44 to 11 to 45 tells you what the numbers
+ * already tell you, and this is the only version that costs a single
+ * line of the page.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.c3 { display: flex; flex-wrap: wrap; gap: 10px 34px; }
+.c3 > span { display: inline-flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.c3 b { font-weight: 500; color: var(--ink-0); }
+.c3 u { text-decoration: none; color: var(--ink-3); font-size: 12px; }
+
+/* ══ 4 · SHARES ════════════════════════════════════════════════════
+ *
+ * The percentages, big, and no dollars at all.
+ *
+ * Every dollar figure here is said twice already: the total is directly
+ * above, and each token's value is in the tape below. What is NOT said
+ * anywhere else is the shape — how much of this book is SOL, how much
+ * is parked in stables — and that is a ratio, so it is set as one.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.c4 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.c4 > span { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.c4-pct { font-size: 26px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+.c4-bar { display: block; height: 3px; margin-top: 6px; border-radius: 2px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.c4-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.55); }
+
+/* ══ 5 · GONE ══════════════════════════════════════════════════════
+ *
+ * No block. The rule under the wallet filter, then the holdings.
+ *
+ * The argument: the total says what the book is worth, the tape says
+ * what is in it, and this row is a summary of the thing directly below
+ * it. If a reader wants to know how much is in stables, USDC is a line
+ * in that tape with its own share on it.
+ *
+ * The counter-argument is real and it is the reason this is a variant
+ * rather than a deletion: the tape sorts by value, so "how much of me
+ * is SOL" takes reading several rows and adding, and the split answers
+ * it at a glance.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.c5-none { font-size: 12px; color: var(--ink-3); }
+
+/* ── the tape stub every variant is judged above ──────────────────── */
+
+.sp-tr {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 92px 74px 92px 54px;
+  align-items: center;
+  column-gap: 12px;
+  height: 38px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+}
+
+.sp-art { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.14); background: #131316; }
+.sp-tick { font-weight: 500; }
+.sp-sub { font-size: 11px; color: var(--ink-3); }
+.sp-num { text-align: right; }
+.sp-dim { text-align: right; font-size: 11.5px; color: var(--ink-3); }
+.sp-bar2 { display: block; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.sp-bar2 > span { display: block; height: 100%; border-radius: 2px; background: rgba(255,255,255,0.5); }

@@ -1,0 +1,151 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * YOUR FRENS, WITH NO FRENS
+ *
+ * The section that ships shows one grey sentence, on a tab that has
+ * just given its top half to a link nobody has used.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.fe {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+.fe h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+.fe-note { margin: 0 0 12px; max-width: 700px; font-size: 11.5px; line-height: 1.55; color: #4b4e55; }
+.fe-note:last-of-type { margin-bottom: 24px; }
+
+.fe-stack { display: flex; flex-direction: column; gap: 28px; }
+.fe-slot { display: flex; flex-direction: column; gap: 10px; }
+.fe-cap { display: flex; align-items: baseline; gap: 8px; }
+.fe-cap > b { font-size: 11.5px; font-weight: 600; color: #e6e7ea; }
+.fe-cap > small { font-size: 10.5px; line-height: 1.4; color: #4b4e55; }
+
+.fe-frame {
+  padding: 22px;
+  border: 1px solid #1c1c20;
+  border-radius: 8px;
+  background: #000;
+  font-variant-numeric: tabular-nums;
+}
+
+.fe-sec { margin-bottom: 18px; font-size: 14px; font-weight: 500; color: #fff; }
+.fe-sec > small { margin-left: 8px; font-size: 11.5px; font-weight: 400; color: #4b4e55; }
+
+.fe-go {
+  height: 28px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: #000;
+  font: 600 11.5px/1 var(--sans);
+  cursor: pointer;
+}
+.fe-go:hover { background: #dcdde0; }
+
+/* ── 1 · now ─────────────────────────────────────────────────────── */
+.fe-line { margin: 0; padding: 22px 0; font-size: 13px; color: #6e7178; }
+
+/* ── 2 · ask ─────────────────────────────────────────────────────── */
+
+.fe-ask { padding: 6px 0 4px; max-width: 520px; }
+.fe-ask > b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -0.015em; color: #fff; }
+.fe-ask > p { margin: 8px 0 16px; font-size: 12.5px; line-height: 1.55; color: #6e7178; }
+
+/* ── 3 · worth ───────────────────────────────────────────────────────
+ * `30% of the 1% fee` is true and means nothing until somebody turns it
+ * into SOL. This does the arithmetic the reader would otherwise do. */
+
+.fe-worth > b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -0.015em; color: #fff; }
+
+.fe-figs { display: flex; flex-wrap: wrap; gap: 18px 40px; margin: 18px 0 0; }
+.fe-figs > span { display: inline-flex; flex-direction: column; gap: 4px; }
+.fe-figs i { font-style: normal; font-size: 11px; font-weight: 500; color: #6e7178; }
+.fe-figs b { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; color: #fff; }
+.fe-figs u { text-decoration: none; font-size: 11px; color: #4b4e55; }
+
+/* A worked example presented as a forecast is a promise the product
+   cannot keep, so it is labelled as one. */
+.fe-eg { margin: 16px 0 16px; font-size: 11px; color: #4b4e55; }
+
+/* ── 4 · shape ───────────────────────────────────────────────────────
+ * A ghost of the board that will be here, so the section answers `what
+ * goes in this space` and keeps its height for the day the first fren
+ * arrives. The real sentence sits over it, because a skeleton that
+ * never resolves reads as a page still loading. */
+
+.fe-shape { position: relative; }
+
+.fe-ghost { opacity: 0.5; pointer-events: none; display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; }
+
+.fe-ghost-top { display: flex; align-items: center; gap: 16px; }
+.fe-ghost-owl {
+  display: block;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-mask-image: url('/assets/logo.svg');
+  mask-image: url('/assets/logo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.fe-ghost-top > span { display: flex; flex-direction: column; gap: 8px; }
+.fe-ghost-top i { display: block; height: 14px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); }
+
+.fe-ghost-list { display: flex; flex-direction: column; }
+.fe-ghost-list > span {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.fe-ghost-list em,
+.fe-ghost-list i,
+.fe-ghost-list u { display: block; height: 12px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); }
+.fe-ghost-list em { width: 14px; }
+.fe-ghost-list u { width: 100%; }
+
+/* The words sit over the ghost rather than beside it, so the section is
+   one object and not a message next to a placeholder. */
+.fe-over {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  background: radial-gradient(60% 70% at 50% 50%, #000 55%, transparent 100%);
+}
+.fe-over > b { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; color: #fff; }
+.fe-over > p { margin: 0; font-size: 12.5px; color: #6e7178; }
+
+/* ── the other empty state ───────────────────────────────────────── */
+
+.fe-second { margin-top: 34px; padding-top: 26px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 10px; }
+
+.fe-win { display: inline-flex; align-items: center; gap: 16px; }
+.fe-win > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 12px/1 var(--sans);
+  color: #6e7178;
+  cursor: pointer;
+}
+.fe-win > button[data-on] { color: #fff; }
+
+@media (max-width: 820px) {
+  .fe-frame { padding: 16px; }
+  .fe-ghost { grid-template-columns: 1fr; gap: 18px; }
+  .fe-figs { gap: 16px 28px; }
+}

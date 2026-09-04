@@ -1,0 +1,29 @@
+/*
+ * THE FOOTER'S MARK.
+ *
+ * One rule in its own file for the same reason `header.css` and
+ * `roost.css` have one: a CSS mask is six declarations with vendor
+ * prefixes on half of them, and that belongs in a stylesheet rather than
+ * inline on an element or spelled out in arbitrary Tailwind values.
+ *
+ * `mark.svg` ships with a baked gradient, so it cannot take a colour as an
+ * `img`. The silhouette is punched out of a filled box instead, which is
+ * what lets it be ink here, metal in the roost, and anything else on any
+ * other ground. Everything else in this band is Tailwind on the page's own
+ * `--lp-*` tokens.
+ */
+
+[data-lp-footer] .lpf-mark {
+  display: block;
+  width: 26px;
+  height: 26px;
+  background: var(--lp-ink-1);
+  -webkit-mask-image: url(/landing/svg/mark.svg);
+  mask-image: url(/landing/svg/mark.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}

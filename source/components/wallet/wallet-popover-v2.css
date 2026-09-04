@@ -1,0 +1,316 @@
+/*
+ * THE BALANCES POPOVER, REDESIGNED — "bare, black".
+ *
+ * Picked off the `/whatever` sheet: the two assets side by side with no
+ * plates under them, one vertical hairline between the columns, on the
+ * same black surface and invite card shadow the deposit modal now uses.
+ *
+ * ── WHY THE PLATES CAME OFF ──────────────────────────────────────────
+ *
+ * The shipped panel put a bordered inset card around the asset rows.
+ * That card sits inside a panel that is already a card, on a page that
+ * is already dark: a box in a box in a box, three materials deep before
+ * you reach a number. One hairline separates the columns for a single
+ * pixel of ink and leaves the figures as the only thing with weight.
+ *
+ * ── THE TYPE RULE, same as the deposit modal and the nav ─────────────
+ *
+ *   AMOUNTS are Geist Sans with tabular figures. Tabular locks the digit
+ *   widths so a balance that ticks cannot jitter, without dragging a
+ *   monospace into a panel that is mostly words.
+ *
+ *   ADDRESSES are Geist Mono, because a pubkey is read character by
+ *   character and a proportional face makes l and 1 the same shape.
+ *
+ * Nothing here uses `--mono` or `--sans`. Those are THEME AXES a person
+ * picks, so anything built on them renders in whatever face the active
+ * theme happens to carry — which is the bug this panel shipped with.
+ */
+
+/*
+ * ── WHITE, LIKE THE WALLET MODAL ─────────────────────────────────────
+ *
+ * It was black, and the two buttons at its foot open a modal that is
+ * not: you pressed Deposit on a black panel and a white one arrived.
+ * The pill, the panel and the dialog it leads to are one errand, so
+ * they are one material — the Flash palette, #0B0E14 on #FFFFFF with
+ * #E8ECEA plates.
+ *
+ * The ink scale is remapped on this scope for the same reason it is in
+ * the modal: the markup reads `--ink-3` in a dozen places, so moving
+ * the tokens repaints the panel rather than chasing every rule.
+ */
+[data-wallet-popover] {
+  --wp-line: #e1e6e4;
+  --wp-hair: #e8ecea;
+  --wp-ink: #0b0e14;
+  --wp-rest: #3e4a47;
+  --wp-plate: #e8ecea;
+
+  --ink-0: #0b0e14;
+  --ink-1: #1f2a28;
+  --ink-2: #3e4a47;
+  --ink-3: #8a9591;
+  --ink-4: #b6bfbc;
+
+  width: 296px;
+  border-radius: 18px;
+  overflow: hidden;
+  /*
+   * `border: 0` and the rim in the shadow. A same-pixel border under a
+   * ring would double-stroke it, which is why the shipped panel drew its
+   * rim this way too.
+   */
+  border: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  color: var(--wp-ink);
+  box-shadow:
+    0 0 0 1px #d3dad8,
+    0 24px 80px #00000099 !important;
+}
+
+/* ── Type ─────────────────────────────────────────────────────────── */
+
+[data-wallet-popover] .wp-total,
+[data-wallet-popover] .wp-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+[data-wallet-popover] .wp-total {
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--wp-ink);
+}
+
+[data-wallet-popover] .wp-num {
+  letter-spacing: -0.005em;
+}
+
+[data-wallet-popover] .wp-key {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  letter-spacing: -0.01em;
+  /*
+   * ── NOT --ink-4 ──────────────────────────────────────────────────
+   *
+   * The truncated address under each wallet name ships as
+   * `text-[var(--ink-4)]`, and `--ink-4` is #2a2d36 — the token this
+   * product uses for DISABLED and placeholder text. On the popover's
+   * ground that is about 1.4:1: not quiet, not subtle, actually
+   * unreadable, and it is the one string on the row that tells you which
+   * wallet you are looking at when two of them share a name.
+   *
+   * `--ink-3` is the caption step and is what every other secondary
+   * string in this panel already uses. `!important` because the value it
+   * replaces is a Tailwind arbitrary utility on the element itself.
+   */
+  color: var(--ink-3) !important;
+}
+
+[data-wallet-popover] .wp-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+/* ── Head ─────────────────────────────────────────────────────────── */
+
+[data-wallet-popover] .wp-head {
+  padding: 14px 14px 10px;
+}
+
+[data-wallet-popover] .wp-total-wrap {
+  margin-top: 7px;
+}
+
+/* Balances still resolving: a breathing placeholder, not a dash. A dash
+   claims "no value"; this claims "loading". */
+[data-wallet-popover] .wp-pulse {
+  height: 24px;
+  width: 96px;
+  border-radius: 6px;
+  background: #e1e6e4;
+}
+
+/* ── Bare columns ─────────────────────────────────────────────────── */
+
+[data-wallet-popover] .wp-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 14px 12px;
+}
+
+[data-wallet-popover] .wp-col {
+  min-width: 0;
+  padding-right: 12px;
+}
+
+/*
+ * The divider is an inset shadow on the second column, not a border.
+ * A border would add a pixel of width and knock the right column out of
+ * line with the wallet figures below it.
+ */
+[data-wallet-popover] .wp-col + .wp-col {
+  padding-right: 0;
+  padding-left: 13px;
+  box-shadow: inset 1px 0 0 var(--wp-hair);
+}
+
+[data-wallet-popover] .wp-coin {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: #e8ecea;
+}
+
+[data-wallet-popover] .wp-sym {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+[data-wallet-popover] .wp-amt {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--wp-ink);
+}
+
+[data-wallet-popover] .wp-usd {
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+/* ── Wallets ──────────────────────────────────────────────────────── */
+
+[data-wallet-popover] .wp-rule {
+  height: 1px;
+  margin: 0 14px;
+  background: #e8ecea;
+}
+
+[data-wallet-popover] .wp-wallets {
+  padding-top: 8px;
+}
+
+[data-wallet-popover] .wp-wallet {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  padding: 0 14px 4px;
+}
+
+[data-wallet-popover] .wp-copy {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+[data-wallet-popover] .wp-copy:hover {
+  background: #dfe5e3;
+  color: var(--wp-ink);
+}
+
+/* ── Actions ──────────────────────────────────────────────────────── */
+
+[data-wallet-popover] .wp-acts {
+  display: flex;
+  gap: 8px;
+  padding: 12px 10px 10px;
+}
+
+[data-wallet-popover] .wp-btn {
+  height: 36px;
+  flex: 1 1 0;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: opacity 150ms ease, background-color 150ms ease;
+}
+
+/*
+ * PRIMARY is white, not the accent gradient this panel shipped with.
+ * The gradient spent the surface's only colour telling you where to
+ * click on a panel with one obvious place to click, and it matched
+ * neither the deposit modal's action nor the nav's. One white button
+ * per surface, everywhere.
+ */
+[data-wallet-popover] .wp-btn.is-primary {
+  background: #0b0e14;
+  color: #ffffff;
+}
+
+[data-wallet-popover] .wp-btn.is-primary:hover {
+  opacity: 0.86;
+}
+
+[data-wallet-popover] .wp-btn.is-ghost {
+  background: #e8ecea;
+  box-shadow: inset 0 0 0 1px var(--wp-line);
+  color: var(--wp-ink);
+}
+
+[data-wallet-popover] .wp-btn.is-ghost:hover {
+  background: #d3dad8;
+}
+
+/* ── narrow screens: centred, 1rem gutters ────────────────────────── */
+
+/*
+ * EVERY POPUP IS CENTRED ON A PHONE AND NONE OF THEM TOUCH AN EDGE.
+ *
+ * A popover cannot do that from the content, because Radix leaves the
+ * content `position: static` inside a `position: fixed` popper wrapper
+ * and drives the placement with a transform on that wrapper. Anything
+ * set on the content — `left`, `right`, `margin` — is inert.
+ *
+ * So below 420 the wrapper stops being a popper: its transform is
+ * dropped, it spans the viewport under the nav, and it centres its one
+ * child. The panel then takes the width minus two 1rem gutters, which
+ * needs no `vw` — just as well, since `vw` resolves against the layout
+ * viewport and silently fails under device emulation and inside some
+ * embedded browser views.
+ */
+@media (max-width: 420px) {
+  [data-radix-popper-content-wrapper]:has([data-wallet-popover]) {
+    transform: none !important;
+    inset: 64px 0 auto 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  [data-wallet-popover] {
+    width: calc(100% - 2rem) !important;
+    max-width: none !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  /*
+   * The open animation zooms from `--radix-popper-transform-origin`,
+   * which the popper sets to the corner nearest its trigger — the right
+   * edge, for a bell in the top right. A sheet that is now centred must
+   * grow from its own top centre, or it visibly slides in from one side.
+   */
+  [data-wallet-popover] {
+    transform-origin: top center !important;
+  }
+}

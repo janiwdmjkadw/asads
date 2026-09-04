@@ -1,0 +1,147 @@
+/*
+ * Eight ARCTIC MINT treatments of the invite ground.
+ *
+ * The monochrome version reads as dead: white chips at 8% on pure black is
+ * one value of one hue, and a field with no colour temperature in it has
+ * nothing for the eye to travel between. The welcome page already went
+ * arctic mint, so the invite has a palette to borrow rather than invent.
+ *
+ * WHAT VARIES is WHERE the mint goes — into the ground, into the ink, into
+ * the chip fill, only into the moment a chip arms, or into the light
+ * around the card. Those are genuinely different pages, not one page at
+ * eight saturations.
+ *
+ * ARCTIC IS THE OPERATIVE WORD. Mint at full strength on a dark screen
+ * reads as a 1987 terminal. The ink here is a white walked a few steps
+ * toward mint; where the hue gets to be obvious it is in the GROUND, which
+ * is colour in the air rather than colour in the type.
+ *
+ * Everything else holds: chips are the product's own plate, the grammar is
+ * stripped out, the stack stays opaque and in front, rectangles only, no
+ * chart.
+ */
+
+:root {
+  /* The welcome page's own two values, so the two surfaces cannot drift. */
+  --mint-ground: #04100f;
+  --mint-ink: 206, 240, 229;
+  /* One step further in, for the moments that need to read as lit. */
+  --mint-live: 138, 226, 200;
+}
+
+.gr-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000000;
+  font-family: var(--font-geist-mono, ui-monospace, monospace);
+  pointer-events: none;
+  --gr-card-w: 640px;
+  --gr-card-h: 600px;
+}
+
+.gr-wall {
+  position: absolute;
+  inset: -3%;
+  overflow: hidden;
+  animation: gr-drift 90s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes gr-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33%      { transform: translate3d(-1.6%, 0.9%, 0); }
+  66%      { transform: translate3d(1.2%, -1.3%, 0); }
+}
+
+.gr-chip {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+  padding: 0.34em 0.72em;
+  border: 1px solid;
+  border-radius: 8px;
+  line-height: 1.2;
+  will-change: opacity, transform;
+}
+
+/*
+ * A chip ARRIVES, holds, and settles back. Opacity alone read as a bulb
+ * flickering; the rise and the 3% growth make it a thing being picked up
+ * and put down. Both are small on purpose — forty chips drifting at once
+ * is a page that will not sit still behind a card someone is reading.
+ */
+@keyframes gr-arm {
+  0%, 8% {
+    opacity: var(--gr-base);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  18%, 38% {
+    opacity: var(--gr-lit);
+    transform: translate3d(0, -5px, 0) scale(1.03);
+  }
+  50%, 100% {
+    opacity: var(--gr-base);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/*
+ * A kaomoji, free standing beside its chip.
+ *
+ * `white-space: nowrap` and no padding: a face is not a plate, and giving
+ * it the chip's box would make it read as another rule rather than as a
+ * reaction to one.
+ */
+.gr-face {
+  position: absolute;
+  white-space: nowrap;
+  line-height: 1.2;
+  will-change: opacity, transform;
+}
+
+/* The stack, in front. Opaque, or the card appears to float on the wall. */
+.gr-plate {
+  position: absolute;
+  box-sizing: border-box;
+  left: 50%;
+  top: 50%;
+  width: var(--gr-card-w);
+  height: var(--gr-card-h);
+  margin-left: calc(var(--gr-card-w) / -2);
+  margin-top: calc(var(--gr-card-h) / -2);
+  border: 1px solid;
+  border-radius: 12px;
+  will-change: transform, opacity;
+}
+
+@keyframes gr-recede {
+  0%, 100% { transform: translate3d(var(--gr-dx), var(--gr-dy), 0) scale(1); }
+  50%      { transform: translate3d(calc(var(--gr-dx) * 1.55), calc(var(--gr-dy) * 1.55), 0) scale(1.035); }
+}
+
+/* A pool of mint light behind the card, for the treatments that use one.
+   Set once, never animated: an animated blur re-rasters every frame. */
+.gr-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  margin: -75% 0 0 -75%;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--mint-live), 0.13),
+    rgba(var(--mint-live), 0.04) 52%,
+    transparent 74%
+  );
+  will-change: transform;
+}
+
+@keyframes gr-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) { .gr-root * { animation: none !important; } }

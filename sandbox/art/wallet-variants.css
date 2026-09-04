@@ -1,0 +1,714 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WALLET POPUP, SIX WAYS — AT FULL SIZE
+ *
+ * The first pass shrank this to a 420px card and took the colour out.
+ * Both were wrong: the shipping modal is a DOSSIER, it takes most of the
+ * window, and its colour is half of why it feels like something.
+ *
+ * These are 1040px — the width the real one opens at — and every card
+ * spends colour deliberately: Listen's five, the two direction hues, and
+ * nothing else. What changed from what ships is the TYPE (sans, not mono
+ * capitals and italic serif) and the greys, so it belongs to the page it
+ * opens over.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.wv {
+  min-height: 100vh;
+  padding: 30px 20px 70px;
+  background: #060608;
+  font-family: var(--sans);
+}
+
+.wv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.wv-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wv-name {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-left: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.wv-name > em {
+  font-style: normal;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── the card ─────────────────────────────────────────────────────── */
+
+.wv-modal {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #2a2a30;
+  border-radius: 12px;
+  background: #0d0d10;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+}
+
+/* Listen's five as a rule. It replaces the shipping modal's rainbow
+   gradient sweep — same gesture, except these are the actual five and
+   not a hue rotation. */
+.wv-band {
+  display: flex;
+  height: 2px;
+}
+
+.wv-band > i { flex: 1 1 0; }
+
+/* ── header ───────────────────────────────────────────────────────── */
+
+.wv-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #1e1e23;
+}
+
+.wv-head.is-over { border-bottom: 0; }
+
+.wv-gap { flex: 1 1 auto; }
+
+/*
+ * ── THE AVATAR CARRIES THE CONFETTI ──────────────────────────────────
+ *
+ * Not a corner sticker. The wallet has no picture, so the space where
+ * one would go is where Listen's mark lives — which makes the colour
+ * part of the identity rather than a decoration beside it.
+ */
+.wv-av {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #17171c;
+  box-shadow: inset 0 0 0 1px #2a2a30;
+}
+
+.wv-av.is-lg { width: 64px; height: 64px; border-radius: 14px; }
+
+.wv-id {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/*
+ * The name is set like a name, not a byline. It was 22px italic serif —
+ * a magazine treatment on a control panel — and it is a BUTTON: it
+ * renames the wallet. So it reads as one.
+ */
+.wv-id > b,
+.wv-split b {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.wv-id > b:hover { color: #8ee6ff; }
+
+.wv-id > code,
+.wv-split code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.36);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wv-x {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 19px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.wv-x:hover { background: rgba(255, 255, 255, 0.09); color: #ffffff; }
+
+/* ── the confetti ─────────────────────────────────────────────────── */
+
+.wv-mosaic { position: relative; display: inline-block; flex-shrink: 0; }
+
+.wv-mosaic > i {
+  position: absolute;
+  border-radius: 1px;
+  animation: wv-twinkle 3.4s ease-in-out infinite;
+}
+
+@keyframes wv-twinkle {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* ── ranges ───────────────────────────────────────────────────────── */
+
+.wv-ranges {
+  display: inline-flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid #26262c;
+  border-radius: 7px;
+}
+
+.wv-ranges > button {
+  height: 22px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.wv-ranges.is-sm > button { height: 20px; padding: 0 7px; font-size: 10px; }
+
+.wv-ranges > button:hover { color: rgba(255, 255, 255, 0.85); }
+
+.wv-ranges > button[data-on] {
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ── the three sections ───────────────────────────────────────────── */
+
+.wv-sections {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  border-bottom: 1px solid #1e1e23;
+}
+
+.wv-sections > section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-left: 1px solid #1e1e23;
+}
+
+.wv-sections > section:first-child { border-left: 0; }
+
+.wv-sections > section.is-mid { background: rgba(255, 255, 255, 0.015); }
+
+/*
+ * ── THE TICK STAYS, THE CAPITALS GO ──────────────────────────────────
+ *
+ * The eyebrow was mono capitals at 0.14em with a coloured tick before
+ * it. The tick is doing real work — it is how the three sections read as
+ * three at a glance, and it is where Listen's palette gets spent. The
+ * capitals were not; they made a one-word label the loudest type in the
+ * panel.
+ */
+.wv-sections h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.wv-sections h4 > i {
+  width: 3px;
+  height: 12px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.wv-sections > section > b {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.wv-sections > section > em {
+  font-style: normal;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.wv-sub {
+  display: flex;
+  gap: 18px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.wv-sub i {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── the performance bars ─────────────────────────────────────────── */
+
+.wv-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.wv-bars > span {
+  display: grid;
+  grid-template-columns: 66px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+}
+
+.wv-bars i {
+  font-style: normal;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.wv-bars u {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.wv-bars s {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.wv-bars b {
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── the curve ────────────────────────────────────────────────────── */
+
+.wv-curve {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 2px;
+}
+
+/* ── the hero panel ───────────────────────────────────────────────── */
+
+.wv-hero {
+  position: relative;
+  padding: 26px 18px 22px;
+  border-bottom: 1px solid #1e1e23;
+  background:
+    radial-gradient(120% 140% at 50% 120%, rgba(240, 86, 122, 0.14), transparent 62%);
+}
+
+.wv-hero .wv-curve {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 88px;
+  opacity: 0.7;
+}
+
+.wv-hero-in {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.wv-hero-in > i {
+  font-style: normal;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wv-hero-in > b {
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+}
+
+.wv-hero-in > em {
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the chart head ───────────────────────────────────────────────── */
+
+.wv-charthead {
+  position: relative;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #1e1e23;
+  background: radial-gradient(120% 160% at 70% 120%, rgba(240, 86, 122, 0.12), transparent 60%);
+}
+
+.wv-charthead .wv-curve {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 118px;
+  opacity: 0.55;
+}
+
+.wv-charthead-n {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 26px 18px 0;
+}
+
+.wv-charthead-n > b {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.wv-charthead-n > i {
+  font-style: normal;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── the stat band ────────────────────────────────────────────────── */
+
+.wv-band-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid #1e1e23;
+}
+
+.wv-band-stats > span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+  border-left: 1px solid #1e1e23;
+}
+
+.wv-band-stats > span:first-child { border-left: 0; }
+
+.wv-band-stats i {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.wv-band-stats b {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.wv-band-stats em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* ── the split rail ───────────────────────────────────────────────── */
+
+.wv-split {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+}
+
+.wv-split > aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 18px;
+  border-right: 1px solid #1e1e23;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.wv-rail-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.wv-rail-stats i {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.wv-right { display: flex; flex-direction: column; }
+
+/* ── stat cards ───────────────────────────────────────────────────── */
+
+.wv-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #1e1e23;
+}
+
+.wv-cards.is-4 { grid-template-columns: repeat(4, 1fr); }
+
+/*
+ * ── EACH CARD TAKES ONE OF THE FIVE ──────────────────────────────────
+ *
+ * The confetti pulled apart and used as a system: a coloured edge per
+ * card, in Listen's own order. It is the same palette the mosaic wears,
+ * so the card set and the mark read as one family rather than as a
+ * decoration sitting next to some boxes.
+ */
+.wv-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 13px;
+  border: 1px solid #22222a;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.wv-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+}
+
+.wv-card[data-hue='0']::before { background: #f052d2; }
+.wv-card[data-hue='1']::before { background: #8b5cf6; }
+.wv-card[data-hue='2']::before { background: #fbbf24; }
+.wv-card[data-hue='3']::before { background: #37d67a; }
+.wv-card[data-hue='4']::before { background: #38bdf8; }
+
+.wv-card.is-tinted[data-hue='0'] { background: rgba(240, 82, 210, 0.07); }
+.wv-card.is-tinted[data-hue='1'] { background: rgba(139, 92, 246, 0.07); }
+.wv-card.is-tinted[data-hue='2'] { background: rgba(251, 191, 36, 0.07); }
+.wv-card.is-tinted[data-hue='4'] { background: rgba(56, 189, 248, 0.07); }
+
+.wv-card i {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wv-card b {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.wv-card em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* ── the compact bar ──────────────────────────────────────────────── */
+
+.wv-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  border-bottom: 1px solid #1e1e23;
+}
+
+.wv-inline {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.wv-inline i {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── tabs ─────────────────────────────────────────────────────────── */
+
+/*
+ * No underline. White against grey says which is live, the same as the
+ * tape's strip, and it survives the row reflowing to any shape.
+ */
+.wv-tabs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 40px;
+  padding: 0 18px;
+  border-bottom: 1px solid #1e1e23;
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.wv-tabs > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.wv-tabs > button > em { font-style: normal; font-size: 10px; }
+
+.wv-tabs > button:hover { color: rgba(255, 255, 255, 0.7); }
+
+.wv-tabs > button[data-on] { font-weight: 600; color: #ffffff; }
+
+/* ── the ledger ───────────────────────────────────────────────────── */
+
+.wv-ledger { display: flex; flex-direction: column; }
+
+.wv-lrow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 0.8fr;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 18px;
+  border-bottom: 1px solid #17171b;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.wv-lrow.is-head {
+  height: 30px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.wv-lrow:hover:not(.is-head) { background: rgba(255, 255, 255, 0.025); }
+
+.wv-lrow > span:last-child { text-align: right; font-weight: 600; }
+
+.wv-tok {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.wv-tok > i {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  background: linear-gradient(150deg, #2a2f36, #4a5360 55%, #23272d);
+}
+
+/* ── the credit ───────────────────────────────────────────────────── */
+
+.wv-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 18px;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.wv-foot-px { display: inline-flex; gap: 2px; }
+
+.wv-foot-px > i {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  opacity: 0.85;
+}
+
+/* ── tones ────────────────────────────────────────────────────────── */
+
+[data-tone='up'] { color: #22c77e; }
+[data-tone='down'] { color: #f0567a; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wv-mosaic > i { animation: none; }
+}

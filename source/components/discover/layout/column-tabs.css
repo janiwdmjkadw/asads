@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE NARROW BOARD
+ *
+ * Under 1200 the three columns become one column and a strip of tabs.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.ct-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ── the strip ──────────────────────────────────────────────────── */
+
+.ct-bar {
+  display: flex;
+  flex-shrink: 0;
+  /*
+   * The whole width, split evenly. Tabs sized to their labels put
+   * "Graduated" three times the width of "New", and a strip you have to
+   * aim at is worse than one you can hit anywhere along its third.
+   */
+  border-bottom: 1px solid #2a2a2e;
+}
+
+.ct-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  /*
+   * Tighter above than below. The strip sits directly under the board's
+   * own control row, and 11px there plus the space that row already
+   * leaves read as a gap nobody put in — while the underline still
+   * needs room beneath the label to be a separate mark.
+   */
+  padding: 5px 8px 9px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  /*
+   * The underline is drawn on the tab itself, sitting ON the strip's
+   * own rule rather than under it. A second line below the first reads
+   * as two rules; the same line changing colour reads as a position.
+   */
+  box-shadow: inset 0 -1px 0 transparent;
+  transition:
+    color 130ms ease,
+    box-shadow 130ms ease;
+}
+
+.ct-tab:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/*
+ * WHITE, not green. Green is a value on this board — it is what a good
+ * holder percentage and a rising figure look like — and a tab is not a
+ * reading, it is where you are. Borrowing the palette's one meaningful
+ * colour to say "you are here" spends it on navigation.
+ */
+.ct-tab[data-on] {
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 #ffffff;
+}
+
+/* ── the one column that is showing ─────────────────────────────── */
+
+.ct-body {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/*
+ * `display: none` on the ones that are off, not `visibility` and not an
+ * offscreen transform: an invisible column that still takes layout
+ * makes the flex row three columns wide again, which is the whole thing
+ * this is here to stop.
+ *
+ * They stay MOUNTED though — each holds a live feed and a scroll
+ * position, and remounting on every tab switch would reconnect the one
+ * and lose the other.
+ */
+.ct-panel {
+  display: none;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ct-panel[data-on] {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  /*
+   * Air between the strip and the column it selects.
+   *
+   * They were touching, so the column's own top edge sat directly under
+   * the tab's underline and the two rules read as one thick line — the
+   * strip looked like part of the column's chrome rather than the thing
+   * choosing which column you are looking at.
+   */
+  padding-top: 10px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * EDGE TO EDGE ON ONE COLUMN
+ *
+ * The board's shell keeps 10px down each side, which is the gutter
+ * between columns when there are several. With one column there is
+ * nothing to gutter, and 10px of dead ground on a phone is 10px the row
+ * does not get.
+ *
+ * 3px, not 0. Flush to the glass reads as a rendering fault rather than
+ * as a decision — and the column has a 1px edge of its own, which needs
+ * something behind it to be an edge at all.
+ *
+ * Pulled back with a negative margin rather than by changing the shell:
+ * the shell is shared with the wide board, and the tabs are the only
+ * thing that knows there is one column.
+ */
+.ct-wrap {
+  margin-inline: -7px;
+  width: calc(100% + 14px);
+}
+
+/* The strip keeps its own breathing room — a tab whose hit area runs
+   off the edge of the screen is a tab you cannot press the far half
+   of. */
+.ct-bar {
+  padding-inline: 10px;
+}

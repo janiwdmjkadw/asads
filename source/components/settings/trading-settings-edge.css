@@ -1,0 +1,234 @@
+/*
+ * TRADING SETTINGS — "edge", off the `/whatever` sheet.
+ *
+ * ── THE IDEA ─────────────────────────────────────────────────────────
+ *
+ * Structure comes from EDGES, emphasis from the one filled thing in each
+ * row. Every box on the panel loses its fill and keeps a hairline; the
+ * selected control is the only thing filled, and it fills white.
+ *
+ * The shipped panel says "selected" five times in three different shapes
+ * — a solid accent preset tab, a green tinted Buy tab, a solid accent
+ * send-mode pill, a solid accent MEV pill and a solid accent Continue
+ * slab. Nothing on it is quiet, so nothing on it is loud, and the control
+ * that actually commits looks exactly like two mode pills that do not.
+ *
+ * ── HOW IT IS APPLIED ────────────────────────────────────────────────
+ *
+ * The active states are set INLINE (`background: var(--accent-primary)`),
+ * and an inline style beats any selector, so every override here needs
+ * `!important`. `aria-pressed` is the discriminator on the preset tabs
+ * and both pill rows — they already carry it for screen readers.
+ *
+ * Scoped to `.trading-settings-modal` because `--surface-2`, `.seg` and
+ * `--input-border` are shared with surfaces nobody asked me to move.
+ */
+
+/*
+ * #111111 — the same surface the Groups dropdown takes.
+ *
+ * Both are panels that float over the board, so they are the same kind
+ * of thing and should be made of the same thing. `--surface-1` is a
+ * THEME token that moves with whatever palette is active, which meant
+ * two floating surfaces opened over the same board in two different
+ * greys.
+ */
+.trading-settings-modal {
+  background: #111111 !important;
+}
+
+/* ── every box: hairline, no fill ─────────────────────────────────── */
+
+/*
+ * The figure boxes are a two tier stack — a value band filled with
+ * `--surface-2` over a label band filled with `--surface-1` — and the
+ * lift between them is what "edge" replaces with a single outline.
+ */
+.trading-settings-modal .flex.flex-col.rounded-md > div:first-child {
+  background: transparent !important;
+}
+
+.trading-settings-modal .flex.flex-col.rounded-md {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* The hairline splitting value from label inside each figure box. */
+.trading-settings-modal .flex.flex-col.rounded-md > .h-px {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* The preset strip and the two pill tracks. */
+.trading-settings-modal .grid.grid-cols-4,
+.trading-settings-modal .flex.flex-1.rounded-md {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* ── selected is the only fill, and it is white ───────────────────── */
+
+.trading-settings-modal [aria-pressed='true'] {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Unpressed sits on the panel's own ground with nothing drawn behind it,
+   so the track's outline is the only edge in the row. */
+.trading-settings-modal [aria-pressed='false'] {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.trading-settings-modal [aria-pressed='false']:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #ffffff !important;
+}
+
+/* ── the Buy / Sell tabs ──────────────────────────────────────────── */
+
+/*
+ * These reuse `.seg__btn--buy/--sell` from `listen.css` so the modal
+ * matches the Trade page pixel for pixel. Here they take the same white
+ * fill as everything else that is selected.
+ */
+.trading-settings-modal .seg__btn {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: none !important;
+}
+
+/*
+ * A NORMAL HOVER.
+ *
+ * Sell shipped a hover that tinted the text red, washed the fill red and
+ * lit a red glow behind it — a full destructive treatment fired by the
+ * pointer merely passing over, before anything had been chosen. Hovering
+ * is not a decision. Both tabs now hover the same way every other control
+ * on this panel does: a plate and white text.
+ */
+.trading-settings-modal .seg__btn:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.trading-settings-modal .seg__btn.active {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Sell selects WHITE, the same as Buy.
+ *
+ * It shipped red on selection as well as on hover, and red is the
+ * product's word for a loss — a position down, a sell on the tape. Which
+ * SIDE of a trade you are configuring is not a loss and not a warning;
+ * it is a mode, and both modes are equally ordinary. One selected
+ * treatment for the whole panel means one selected treatment here too.
+ */
+.trading-settings-modal .seg__btn--sell.active {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* ── the commit ───────────────────────────────────────────────────── */
+
+/*
+ * White, and now the only filled thing on the panel that is not a
+ * selected state — which is the whole reason it reads as the commit.
+ */
+.trading-settings-modal .rounded-full.h-12,
+.trading-settings-modal .h-12.w-full.rounded-full {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* ── type ─────────────────────────────────────────────────────────── */
+
+/* `--sans` is a THEME AXIS the user picks, and it is set inline on nearly
+   every control in this file, so the panel rendered in whatever face the
+   active theme happened to carry. */
+.trading-settings-modal,
+.trading-settings-modal button,
+.trading-settings-modal input,
+.trading-settings-modal span {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* The figures are read, not pressed, and they tick. */
+.trading-settings-modal input {
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: 'tnum' 1 !important;
+}
+
+/* The RPC line is the one string here read character by character. */
+.trading-settings-modal input[placeholder*='http'] {
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * NEVER WIDER THAN THE SCREEN, WITH 10px EACH SIDE.
+ *
+ * `DialogContent` carries `max-w-md` — a flat 448px — and Tailwind's own
+ * centring puts it at `left: 50%` with a translate. On a 360 wide phone
+ * that is 44px hanging off each edge.
+ *
+ * `min()` against a PERCENTAGE rather than `vw`: the dialog is
+ * `position: fixed`, so the percentage resolves against the viewport,
+ * and `vw` fails silently under device emulation and inside embedded
+ * webviews. The `!important` is load bearing too — Tailwind's `max-w-md`
+ * is a layered declaration, and a layered rule beats an unlayered
+ * `!important`, so this file has to shout to be heard.
+ */
+/*
+ * CENTRED BY AUTO MARGINS, NOT BY A PERCENTAGE TRANSLATE.
+ *
+ * `DialogContent` centres with `left-[50%] translate-x-[-50%]`, and a
+ * percentage translate resolves against the element's OWN width. Capping
+ * that width left the transform holding a value computed from the width
+ * it used to have — measured on a 360px screen, a 333px dialog sat at
+ * `left: 86` with its right edge 58px off the side of the screen.
+ *
+ * Pinning both edges and letting the margins do the centring removes the
+ * dependency entirely: the dialog is exactly 10px from each side until it
+ * reaches 460, then it stops growing and centres. Nothing has to know how
+ * wide it is.
+ *
+ * The vertical translate is kept — height is not being capped, so that
+ * percentage still resolves against a stable number. The doubled class
+ * is for specificity: Tailwind's `max-w-md` and `left-[50%]` are layered
+ * utilities, and this has to outrank them.
+ */
+.trading-settings-modal.trading-settings-modal {
+  left: 10px !important;
+  right: 10px !important;
+  width: auto !important;
+  max-width: 460px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: translateY(-50%) !important;
+}
+
+@media (max-width: 560px) {
+  /* Four preset tabs at 42px tall do not fit across a phone; they wrap
+     to two by two rather than shrinking their labels to nothing. */
+  .trading-settings-modal .grid.grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* The send mode row is six pills. Below this width the label moves
+     above them and they take the full width underneath. */
+  .trading-settings-modal .flex.items-center.gap-3 {
+    flex-wrap: wrap !important;
+    row-gap: 8px !important;
+  }
+
+  .trading-settings-modal .flex.flex-1.rounded-md {
+    flex: 1 1 100% !important;
+  }
+}

@@ -1,0 +1,301 @@
+/*
+ * THE RUN BAND.
+ *
+ * The sentence you gave it, the trace across, and the order writing
+ * itself out underneath. Run.tsx says why there is no card anywhere in
+ * here; this file is the shape and the states.
+ */
+
+/* ── the sentence it was given ───────────────────────────────────────
+ *
+ * Set at reading size and given the whole column, because everything
+ * below is a consequence of this one line. It is quoted by position
+ * rather than by quote marks: the label above it does that work.
+ */
+.run-said {
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--lp-hairline);
+}
+
+.run-said > span {
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+.run-said > p {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  color: var(--lp-ink-1);
+  overflow-wrap: anywhere;
+}
+
+/* ── the trace, running across ───────────────────────────────────────
+ *
+ * Five steps in a row under one rail. The rail is drawn on the list
+ * rather than per item, so it is one continuous line rather than five
+ * stubs with seams between them.
+ */
+.run-trace {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 40px 0 44px;
+  list-style: none;
+}
+
+.run-trace::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 44px;
+  height: 1px;
+  background: var(--lp-hairline);
+}
+
+.run-trace > li {
+  position: relative;
+  padding-top: 22px;
+}
+
+/*
+ * THE NODE IS THE ONLY MARK THAT CHANGES.
+ *
+ * Ahead is a hairline ring, live is filled and slightly larger, done is
+ * filled and back to size. No pulse and no glow: the band already has
+ * motion in it, and a throbbing dot beside moving text is the thing that
+ * makes an interface look cheap.
+ */
+.run-node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--lp-ground);
+  box-shadow: inset 0 0 0 1px var(--lp-hairline);
+  transition:
+    background-color 380ms ease-out,
+    box-shadow 380ms ease-out,
+    transform 380ms ease-out;
+}
+
+.run-trace > li[data-state='live'] .run-node,
+.run-trace > li[data-state='done'] .run-node {
+  background: var(--lp-ink-1);
+  box-shadow: inset 0 0 0 1px var(--lp-ink-1);
+}
+
+.run-trace > li[data-state='live'] .run-node {
+  transform: scale(1.35);
+}
+
+/*
+ * A step that has not been reached is held back, not hidden. Seeing what
+ * is still to come is half of what a trace is for, so it stays legible.
+ */
+.run-trace > li[data-state='ahead'] .run-name,
+.run-trace > li[data-state='ahead'] .run-note {
+  opacity: 0.38;
+}
+
+.run-name,
+.run-note {
+  transition: opacity 420ms ease-out;
+}
+
+.run-name {
+  margin: 0;
+  font-size: 16px;
+  line-height: 23px;
+  letter-spacing: -0.015em;
+  color: var(--lp-ink-1);
+}
+
+.run-note {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--lp-ink-3);
+}
+
+/*
+ * WHAT IT FOUND.
+ *
+ * Always in the layout, revealed by opacity. Mounting it on arrival grows
+ * the row by two lines at every beat, and the order underneath walks down
+ * the screen while somebody is reading it.
+ */
+.run-found {
+  margin: 12px 0 0;
+  min-height: 63px;
+  font-size: 14.5px;
+  line-height: 21px;
+  color: var(--lp-ink-2);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 420ms ease-out,
+    transform 420ms ease-out;
+}
+
+.run-trace > li[data-state='live'] .run-found,
+.run-trace > li[data-state='done'] .run-found {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── the order, as one sentence ──────────────────────────────────────
+ *
+ * NOT A CARD. Two earlier versions of this put the order in a panel, one
+ * white and one black, and a panel is a picture of an order. This is the
+ * order itself: full width, at headline size, on the page's own ground.
+ */
+.run-order {
+  border-top: 1px solid var(--lp-hairline);
+  padding-top: 34px;
+}
+
+.run-label {
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+  transition: color 400ms ease-out;
+}
+
+.run-order[data-done='true'] .run-label {
+  color: var(--lp-ink-1);
+}
+
+.run-sentence {
+  margin: 14px 0 0;
+  max-width: 30ch;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.24;
+  letter-spacing: -0.03em;
+
+  /*
+   * THE SCAFFOLDING IS GREY AND THE VALUES ARE INK.
+   *
+   * The words that were always going to be there sit at the middle ink;
+   * the words a tool had to go and find land at full black as it finds
+   * them. Reading the difference tells you how much of the original
+   * sentence was doing no work at all.
+   */
+  color: var(--lp-ink-2);
+}
+
+.run-part {
+  color: var(--lp-ink-3);
+  transition: color 520ms ease-out;
+}
+
+.run-part[data-in='true'] {
+  color: var(--lp-ink-1);
+}
+
+.run-decide {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 34px;
+}
+
+/*
+ * APPROVE IS DEAD UNTIL THE SENTENCE IS FINISHED. That is the claim the
+ * section is making rather than a detail.
+ */
+.run-approve {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lp-ink-1);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    opacity 320ms ease-out,
+    transform 200ms ease-in-out,
+    box-shadow 200ms ease-in-out;
+}
+
+.run-approve:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px -10px rgba(11, 11, 11, 0.55);
+}
+
+.run-approve:disabled {
+  opacity: 0.26;
+  cursor: default;
+}
+
+.run-decidenote {
+  margin: 0;
+  max-width: 52ch;
+  padding-top: 3px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--lp-ink-3);
+}
+
+/*
+ * ── BELOW `lg` ───────────────────────────────────────────────────────
+ *
+ * The trace stacks and the rail turns back into a vertical one. Five
+ * columns at 900 gives each about 150px, which breaks every step name
+ * onto three lines.
+ */
+@media (max-width: 1023px) {
+  .run-trace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 36px 0 40px 26px;
+  }
+
+  .run-trace::before {
+    left: 4px;
+    right: auto;
+    top: 42px;
+    bottom: 46px;
+    width: 1px;
+    height: auto;
+  }
+
+  .run-trace > li {
+    padding: 0 0 26px;
+  }
+
+  .run-trace > li:last-child {
+    padding-bottom: 0;
+  }
+
+  .run-node {
+    left: -26px;
+    top: 6px;
+  }
+
+  .run-found {
+    min-height: 0;
+  }
+
+  .run-decide {
+    flex-direction: column;
+    gap: 14px;
+  }
+}

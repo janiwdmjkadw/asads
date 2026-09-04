@@ -1,0 +1,664 @@
+/* Certificate invite modal — tokens, veils, and choreography.
+
+   Everything Tailwind can express lives in the component. This file holds
+   only what it cannot: the `--ci-*` design tokens (so no Paper-measured
+   constant is repeated across the markup), the two oklab radial veils,
+   the ice-ink filter chain, and the phase keyframes with their triggers.
+
+   THE SCALING MODEL. The composition is drawn at exactly 1080x700 and
+   every dimension in it is `N * var(--ci-u)`, where `--ci-u` is one
+   design pixel. It resolves to 1px whenever the panel fits with room to
+   breathe and shrinks on whichever axis runs out first, so a 1280x700
+   laptop gets the same certificate, smaller — never a clipped one. No
+   transform, no resize listener: the panel's layout box is its real
+   size, so the invisible input keeps a full-size hit area at every
+   width. Below 768px the tokens are redefined for the reflowed mobile
+   composition instead.
+
+   The unit is measured against the OVERLAY, not the viewport. Viewport
+   units ignore CSS zoom, and this app zooms: globals.css puts
+   `zoom: var(--ui-scale)` on <html> below 1.5dppx, while the landing —
+   the surface this modal actually opens over — neutralises that zoom for
+   its own subtree without resetting the variable. So neither `100vw` nor
+   `--ui-scale` can be trusted to say how big the screen really is.
+   Container units are resolved in the overlay's own coordinate space,
+   which is already whatever the zoom made it, so they are simply right
+   under every combination. */
+
+.stage {
+  container-type: size;
+
+  /* The scrim belongs to the OVERLAY, not the panel, so its token has to
+     be declared here. It lived in `.cert` until 2026-08-17, where the
+     scrim div — an ancestor of `.cert` — could never see it: custom
+     properties inherit downward only, so `var(--ci-scrim)` resolved to
+     nothing and the backdrop painted fully transparent. Half dim, not
+     near-black: the certificate floats OVER the landing and the landing
+     is meant to stay visible behind it. The panel carries its own ground
+     and veils, so nothing inside depends on this. */
+  --ci-scrim: rgba(2, 4, 5, 0.5);
+}
+
+.cert {
+  --ci-u: min(1px, (100cqw - 64px) / 1080, (100cqh - 64px) / 700);
+
+  /* Serial row */
+  --ci-cell-w: calc(56 * var(--ci-u));
+  --ci-cell-h: calc(78 * var(--ci-u));
+  --ci-cell-r: calc(10 * var(--ci-u));
+  --ci-cell-gap: calc(8 * var(--ci-u));
+  --ci-group-h: calc(102 * var(--ci-u));
+  --ci-group-pad: calc(12 * var(--ci-u));
+  --ci-group-r: calc(16 * var(--ci-u));
+  --ci-dash-w: calc(20 * var(--ci-u));
+  --ci-glyph: calc(56 * var(--ci-u));
+  --ci-glyph-lh: calc(64 * var(--ci-u));
+
+  /* Type */
+  --ci-head: calc(78 * var(--ci-u));
+  --ci-head-lh: calc(90 * var(--ci-u));
+  --ci-head-dx: calc(3 * var(--ci-u));
+  --ci-head-dy: calc(2 * var(--ci-u));
+  --ci-eyebrow: calc(17 * var(--ci-u));
+  --ci-eyebrow-track: 0.34em;
+  --ci-eyebrow-rule: calc(52 * var(--ci-u));
+  --ci-eyebrow-gap: calc(18 * var(--ci-u));
+  /* The affordance line takes the headline's press, printed small: same
+     serif, same three-plate misregistration, same inks. The offsets are
+     NOT a strict 26/78 scaling of the headline's 3/2 — that would land at
+     1/0.67u and read as a soft edge rather than a slipped plate. Small
+     type needs proportionally more slip to say "misprint", so they run a
+     touch wide of scale. The glow radius does scale straight down. */
+  --ci-hint: calc(26 * var(--ci-u));
+  --ci-hint-lh: calc(30 * var(--ci-u));
+  --ci-hint-dx: calc(1.5 * var(--ci-u));
+  --ci-hint-dy: calc(1 * var(--ci-u));
+  --ci-hint-glow-r: calc(14 * var(--ci-u));
+
+  /* The misprint's status line takes the same press, inked red. It is
+     sized UNDER the affordance it sits above (21u to the hint's 26u) for
+     two reasons: the failure names itself once and leaves, so it must not
+     outrank the standing label, and a 26u serif line here would be 30u
+     tall and land on the hint 14u below it. Offsets and glow scale off
+     the hint's by 21/26. */
+  --ci-fail: calc(21 * var(--ci-u));
+  --ci-fail-lh: calc(25 * var(--ci-u));
+  --ci-fail-dx: calc(1.2 * var(--ci-u));
+  --ci-fail-dy: calc(0.8 * var(--ci-u));
+  --ci-fail-glow-r: calc(11 * var(--ci-u));
+
+  /* Ink */
+  --ci-mint: #7fe9d6;
+  --ci-mint-line: #5eead4;
+  --ci-mint-dash: #5eead4a6;
+  --ci-mint-bracket: #5eead4b8;
+  --ci-tick-major: #5eead4e6;
+  --ci-tick-minor: #5eead494;
+  --ci-ink: #f5f7fa;
+  --ci-group-bg: #05070ad1;
+  --ci-group-border: #ffffff24;
+  --ci-cell-bg: #ffffff0a;
+  --ci-cell-border: #ffffff2e;
+  --ci-head-mint: #5eead485;
+  --ci-head-pink: #ec53d057;
+  --ci-head-face: #f4fbff;
+  --ci-head-glow: #bae6fd80;
+  --ci-eyebrow-ink: #a0e0d3;
+  --ci-eyebrow-glow: #5ab8a88c;
+  --ci-eyebrow-line: #35baa759;
+  --ci-caption-ink: #ffffffc4;
+  --ci-caption-rule: #ffffff4d;
+  --ci-danger-line: rgba(251, 83, 116, 0.55);
+  --ci-danger-wash: rgba(251, 83, 116, 0.06);
+  --ci-danger-ink: rgba(251, 83, 116, 0.8);
+
+  /* The misprint's three plates. Same construction as the headline's
+     mint/pink/lit-face, run in the danger red's own family (#fb5374):
+     a deeper crimson behind up-left, a hotter orange-red ahead
+     down-right, and a lit face between, carrying a red glow at half the
+     headline's strength — the failure should read hot, not radiant. */
+  --ci-fail-deep: #8c0b2f9e;
+  --ci-fail-hot: #ff5a2e63;
+  --ci-fail-face: #ff5f7e;
+  --ci-fail-glow: #fb537466;
+
+  /* Success: the mint the row and the stamp resolve to. */
+  --ci-bloom-line: rgba(127, 233, 214, 0.65);
+  --ci-bloom-halo: rgba(127, 233, 214, 0.22);
+
+  /* The ADMITTED stamp. Its scale is a token so mobile can print the same
+     stamp smaller without a second set of keyframes. */
+  --ci-stamp-rot: -11deg;
+  --ci-stamp-scale: 1;
+  --ci-stamp-ink: rgba(127, 233, 214, 0.86);
+  --ci-stamp-line: rgba(127, 233, 214, 0.62);
+
+  /* Misprint registration error, in design pixels so the desktop row's 75%
+     scale shrinks the slip along with the glyph it slipped off. */
+  --ci-mis-dx: calc(2 * var(--ci-u));
+  --ci-mis-dy: calc(1 * var(--ci-u));
+  --ci-mis-drift: calc(0.6 * var(--ci-u));
+
+  /* The shader ground's flat stand-in wherever WebGL is unavailable —
+     the same ice-teal field, so a dead canvas reads as the design. */
+  --ci-ground-fallback: radial-gradient(circle at 22% 28%, #007475 0%, transparent 58%),
+    radial-gradient(circle at 78% 22%, #00bfff 0%, transparent 52%),
+    radial-gradient(circle at 34% 82%, #43e2c2 0%, transparent 55%),
+    radial-gradient(circle at 84% 78%, #3a907d 0%, transparent 52%);
+}
+
+/* Mobile: the panel reflows rather than scaling, and the pieces take
+   their own smaller sizes — but the same unit model still governs them,
+   now referenced to the widest line the composition has to fit: the
+   second serial row, two 160px group boxes either side of a 12px dash,
+   inside the panel's 20px gutters. A 360px phone therefore shrinks the
+   row a hair instead of wrapping it into three. The subtracted gutter is
+   48 rather than 40 because the group hairlines stay 1px however far the
+   unit shrinks, so the row runs a few px wide of 332 * u. */
+@media (max-width: 767px) {
+  .cert {
+    --ci-u: min(1px, (100cqw - 48px) / 332);
+    --ci-cell-w: calc(44 * var(--ci-u));
+    --ci-cell-h: calc(62 * var(--ci-u));
+    --ci-cell-r: calc(8 * var(--ci-u));
+    --ci-cell-gap: calc(5 * var(--ci-u));
+    --ci-group-h: auto;
+    --ci-group-pad: calc(8 * var(--ci-u));
+    --ci-group-r: calc(14 * var(--ci-u));
+    --ci-dash-w: calc(12 * var(--ci-u));
+    --ci-glyph: calc(36 * var(--ci-u));
+    --ci-glyph-lh: calc(44 * var(--ci-u));
+    --ci-head: calc(38 * var(--ci-u));
+    --ci-head-lh: calc(46 * var(--ci-u));
+    --ci-head-dx: calc(2 * var(--ci-u));
+    --ci-head-dy: calc(1 * var(--ci-u));
+    --ci-eyebrow: calc(12 * var(--ci-u));
+    --ci-eyebrow-track: 0.3em;
+    --ci-eyebrow-rule: calc(40 * var(--ci-u));
+    --ci-eyebrow-gap: calc(14 * var(--ci-u));
+    --ci-hint: calc(18 * var(--ci-u));
+    --ci-hint-lh: calc(22 * var(--ci-u));
+    --ci-hint-dx: calc(1 * var(--ci-u));
+    --ci-hint-dy: calc(0.7 * var(--ci-u));
+    --ci-hint-glow-r: calc(10 * var(--ci-u));
+    /* The same 18/26 step the affordance takes, applied to the misprint. */
+    --ci-fail: calc(15 * var(--ci-u));
+    --ci-fail-lh: calc(18 * var(--ci-u));
+    --ci-fail-dx: calc(0.9 * var(--ci-u));
+    --ci-fail-dy: calc(0.6 * var(--ci-u));
+    --ci-fail-glow-r: calc(8 * var(--ci-u));
+
+    /* The row is 1:1 here rather than 75%, and its glyphs are smaller, so
+       both the stamp and the registration slip take their own scale to keep
+       the same proportion against the cell they sit on. */
+    --ci-stamp-scale: 0.72;
+    --ci-mis-dx: calc(1.3 * var(--ci-u));
+    --ci-mis-dy: calc(0.65 * var(--ci-u));
+    --ci-mis-drift: calc(0.4 * var(--ci-u));
+  }
+}
+
+/* Owner-approved 75% study of the serial row, desktop only. Mobile is
+   intentionally excluded: it reflows into two rows on its own token
+   scale and stays at 1:1. */
+@media (min-width: 768px) {
+  .serialRow {
+    transform: scale(0.75);
+    transform-origin: center center;
+  }
+}
+
+/* ── Veils + ice ink ───────────────────────────────────────────────── */
+
+/* Sinks the shader behind the serial row so the glyphs have ground. */
+.veilInterior {
+  background-image: radial-gradient(
+    ellipse 47% 40% at 51.4% 71.7% in oklab,
+    oklab(10.3% -0.006 -0.006 / 92%) 0%,
+    oklab(10.3% -0.006 -0.006 / 86%) 22%,
+    oklab(10.3% -0.006 -0.006 / 66%) 44%,
+    oklab(10.3% -0.006 -0.006 / 36%) 64%,
+    oklab(10.3% -0.006 -0.006 / 13%) 80%,
+    oklab(10.3% -0.006 -0.006 / 0%) 93%
+  );
+}
+
+/* The same treatment, centred behind the serif block. */
+.veilHead {
+  background-image: radial-gradient(
+    ellipse 54% 44% at 50% 50% in oklab,
+    oklab(10.3% -0.006 -0.006 / 90%) 0%,
+    oklab(10.3% -0.006 -0.006 / 82%) 24%,
+    oklab(10.3% -0.006 -0.006 / 60%) 46%,
+    oklab(10.3% -0.006 -0.006 / 30%) 66%,
+    oklab(10.3% -0.006 -0.006 / 10%) 82%,
+    oklab(10.3% -0.006 -0.006 / 0%) 94%
+  );
+}
+
+/* The carved frame as ice ink. The spec applies this to four band crops
+   of the source scan; our asset carries a transparent interior, so one
+   full-bleed layer is equivalent — screen over nothing is a no-op, and
+   none of these filters touch alpha. */
+.iceInk {
+  filter: invert(100%) grayscale(100%) brightness(78%) contrast(205%) brightness(120%)
+    sepia(100%) hue-rotate(128deg) saturate(185%);
+  mix-blend-mode: screen;
+}
+
+/* ── Decode scramble ───────────────────────────────────────────────────
+   The brand cryptography motion. An unresolved cipher glyph reads neutral
+   white and drops its resting tint — ghosts also shed their half strength,
+   so a cipher frame carries the same weight it does in the source — then
+   settles back into its resting ink. CSS only styles the state; each
+   cell's loop is imperative (see useDecodeScramble.ts). */
+.ghostGlyph[data-decoding='true'],
+.monoGlyph[data-decoding='true'] {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 9px rgba(255, 255, 255, 0.18);
+}
+
+/* ── The socket ────────────────────────────────────────────────────────
+   The leftmost unfilled cell holds no glyph at all — it is a socket
+   waiting for a character, and the pulse is what says so. Fill luminance
+   and outer halo swell together on one slow loop, purely in CSS: no JS
+   timer drives this, and it keeps running on its own unbroken rhythm
+   while the rest of the row bursts and rests around it. */
+.cell[data-socket='true'] {
+  animation: certSocketPulse 1800ms ease-in-out infinite;
+}
+
+@keyframes certSocketPulse {
+  0%,
+  100% {
+    background-color: rgba(94, 234, 212, 0.05);
+    box-shadow: 0 0 0 rgba(127, 233, 214, 0);
+  }
+  50% {
+    background-color: rgba(94, 234, 212, 0.16);
+    box-shadow: 0 0 24px rgba(127, 233, 214, 0.35);
+  }
+}
+
+/* ── Phase choreography ────────────────────────────────────────────── */
+
+/* Validating: the group boxes breathe their borders. Nothing moves. */
+.cert[data-phase='validating'] .group {
+  animation: certPulse 1200ms ease-in-out infinite;
+}
+
+@keyframes certPulse {
+  0%,
+  100% {
+    border-color: var(--ci-group-border);
+  }
+  50% {
+    border-color: #5eead48c;
+  }
+}
+
+/* ── Success: the bloom, then the stamping ──────────────────────────────
+   The cells bloom mint immediately, the group boxes take the same mint and
+   a soft halo, and at +250ms the ADMITTED stamp comes down. */
+
+.cert[data-phase='success'] .cell {
+  animation: certBloom 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes certBloom {
+  0% {
+    border-color: var(--ci-cell-border);
+    background-color: var(--ci-cell-bg);
+    box-shadow: 0 0 0 rgba(127, 233, 214, 0);
+  }
+  45% {
+    border-color: var(--ci-mint);
+    background-color: rgba(127, 233, 214, 0.2);
+    box-shadow: 0 0 26px rgba(127, 233, 214, 0.55);
+  }
+  100% {
+    border-color: var(--ci-bloom-line);
+    background-color: rgba(127, 233, 214, 0.09);
+    box-shadow: 0 0 14px rgba(127, 233, 214, 0.24);
+  }
+}
+
+.cert[data-phase='success'] .group {
+  animation: certGroupBloom 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes certGroupBloom {
+  0% {
+    border-color: var(--ci-group-border);
+    box-shadow: 0 0 0 rgba(127, 233, 214, 0);
+  }
+  100% {
+    border-color: var(--ci-bloom-line);
+    box-shadow: 0 0 28px var(--ci-bloom-halo);
+  }
+}
+
+/* The stamp's anchor is pure geometry — it holds the centre point the
+   board measures, and never animates, so the slam below is free to own
+   the whole transform property. */
+.stampAnchor {
+  transform: translate(-50%, -50%);
+}
+
+.stamp {
+  display: block;
+  border: 1px solid var(--ci-stamp-line);
+  border-radius: calc(8 * var(--ci-u));
+  padding: calc(4 * var(--ci-u));
+  /* The resting pose. Reduced motion never leaves it. */
+  transform: rotate(var(--ci-stamp-rot)) scale(var(--ci-stamp-scale));
+  opacity: 0.95;
+}
+
+.stampInner {
+  display: block;
+  border: 1px solid var(--ci-stamp-line);
+  border-radius: calc(5 * var(--ci-u));
+  padding: calc(6 * var(--ci-u)) calc(9 * var(--ci-u));
+  white-space: nowrap;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 600;
+  /* 14, not 15: at 15 the printed stamp measured 258.6 design px against
+     the board's 240 and ran into the frame's right edge. */
+  font-size: calc(14 * var(--ci-u));
+  line-height: calc(17 * var(--ci-u));
+  letter-spacing: 0.22em;
+  color: var(--ci-stamp-ink);
+}
+
+/* THE SLAM. Three animations, sequenced by delay off one impact moment at
+   250 + 220 = 470ms:
+     certStampSlam    — 1.7x and invisible, driving down onto the paper on a
+                        hard ease-in so it is still accelerating at contact;
+     certStampSettle  — the overshoot rebound, +1.2deg then a touch under,
+                        120ms, the way a hand-stamp rocks as it lifts;
+     certStampPress   — the ink squeezing out under the pressure.
+   The settle takes `forwards`, not `both`, so it contributes nothing during
+   its delay and cannot backwards-fill over the slam it follows. */
+.cert[data-phase='success'] .stamp {
+  animation:
+    certStampSlam 220ms cubic-bezier(0.7, 0, 0.9, 0.2) 250ms both,
+    certStampSettle 120ms ease-out 470ms forwards,
+    certStampPress 260ms ease-out 450ms both;
+}
+
+@keyframes certStampSlam {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--ci-stamp-rot)) scale(calc(var(--ci-stamp-scale) * 1.7));
+  }
+  100% {
+    opacity: 0.95;
+    transform: rotate(var(--ci-stamp-rot)) scale(var(--ci-stamp-scale));
+  }
+}
+
+@keyframes certStampSettle {
+  0% {
+    transform: rotate(calc(var(--ci-stamp-rot) + 1.2deg)) scale(var(--ci-stamp-scale));
+  }
+  45% {
+    transform: rotate(calc(var(--ci-stamp-rot) - 0.9deg)) scale(var(--ci-stamp-scale));
+  }
+  100% {
+    transform: rotate(var(--ci-stamp-rot)) scale(var(--ci-stamp-scale));
+  }
+}
+
+@keyframes certStampPress {
+  0% {
+    box-shadow: 0 0 0 rgba(127, 233, 214, 0);
+  }
+  25% {
+    box-shadow: 0 0 26px rgba(127, 233, 214, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(127, 233, 214, 0.12);
+  }
+}
+
+/* THE FLINCH. The whole certificate takes the blow for one frame at the
+   moment of contact. No fill mode on purpose: outside its 90ms the rule
+   must contribute nothing, or it would pin the panel's transform and
+   freeze framer-motion's exit animation. */
+.cert[data-phase='success'] {
+  animation: certFlinch 90ms ease-out 470ms;
+}
+
+@keyframes certFlinch {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(1.5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* ── Error: the misprint ────────────────────────────────────────────────
+   The plate slips out of registration, holds wrong, and comes back. The
+   paper itself does NOT move — the shudder that used to live here shook the
+   certificate, which said "error" but not "misprint". Its keyframes are
+   kept below for any other caller; the error phase no longer uses them. */
+
+.cert[data-phase='error'] .cell {
+  background-color: var(--ci-danger-wash);
+}
+
+.misGhost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  text-align: center;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: var(--ci-glyph);
+  line-height: var(--ci-glyph-lh);
+  opacity: 0;
+}
+
+.misGhostRed {
+  color: rgba(251, 83, 116, 0.35);
+}
+
+.misGhostCyan {
+  color: rgba(56, 189, 248, 0.3);
+}
+
+/* 1400ms total: 120ms slipping (0 → 8.6%), 1100ms misregistered hold with a
+   slow sub-pixel wander (→ 87.1%), 180ms converging back. The dwell before
+   the row resets is the same 1400ms, so the reset lands as it re-registers. */
+.cert[data-phase='error'] .misGhostRed {
+  animation: certMisprintRed 1400ms ease-in-out both;
+}
+
+.cert[data-phase='error'] .misGhostCyan {
+  animation: certMisprintCyan 1400ms ease-in-out both;
+}
+
+@keyframes certMisprintRed {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  8.6% {
+    opacity: 1;
+    transform: translate(calc(-1 * var(--ci-mis-dx)), calc(-1 * var(--ci-mis-dy)));
+  }
+  30% {
+    transform: translate(
+      calc(-1 * var(--ci-mis-dx) - var(--ci-mis-drift)),
+      calc(-1 * var(--ci-mis-dy) - var(--ci-mis-drift))
+    );
+  }
+  55% {
+    transform: translate(
+      calc(-1 * var(--ci-mis-dx) + var(--ci-mis-drift)),
+      calc(-1 * var(--ci-mis-dy) + var(--ci-mis-drift))
+    );
+  }
+  75% {
+    transform: translate(
+      calc(-1 * var(--ci-mis-dx) - var(--ci-mis-drift)),
+      calc(-1 * var(--ci-mis-dy))
+    );
+  }
+  87.1% {
+    opacity: 1;
+    transform: translate(calc(-1 * var(--ci-mis-dx)), calc(-1 * var(--ci-mis-dy)));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes certMisprintCyan {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  8.6% {
+    opacity: 1;
+    transform: translate(var(--ci-mis-dx), var(--ci-mis-dy));
+  }
+  30% {
+    transform: translate(
+      calc(var(--ci-mis-dx) + var(--ci-mis-drift)),
+      calc(var(--ci-mis-dy) + var(--ci-mis-drift))
+    );
+  }
+  55% {
+    transform: translate(
+      calc(var(--ci-mis-dx) - var(--ci-mis-drift)),
+      calc(var(--ci-mis-dy) - var(--ci-mis-drift))
+    );
+  }
+  75% {
+    transform: translate(calc(var(--ci-mis-dx) + var(--ci-mis-drift)), var(--ci-mis-dy));
+  }
+  87.1% {
+    opacity: 1;
+    transform: translate(var(--ci-mis-dx), var(--ci-mis-dy));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+/* The misprint's status line — what the press got wrong. It is set the way
+   the headline and the affordance are, in the serif and on three plates,
+   because it is the press failing rather than a caption reporting: the
+   type and the plates are Tailwind on the nodes, and only the structural
+   bits live here. The flanking rules stay mono-furniture hairlines. */
+.statusRule {
+  height: 1px;
+  width: calc(34 * var(--ci-u));
+  flex-shrink: 0;
+  background-color: var(--ci-danger-line);
+}
+
+/* The plate stack: the two fringe copies are lifted onto the lit face,
+   which stays in flow so this span keeps the line's height and the flex
+   row can measure it. */
+.statusText {
+  position: relative;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── The affordance line ───────────────────────────────────────────────
+   A row of char boxes does not announce itself as a field, so the plate
+   says what it is — in the headline's own voice rather than a caption's,
+   because it answers the headline. The type and the three plates are
+   Tailwind on the nodes, exactly as "Welcome To The Future." builds them;
+   only the phase behaviour lives here. */
+.enterHint {
+  /* Same 200ms the row's own chrome transitions on. */
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+/* Misprinted: the status line above is a 25u serif plate where it used to
+   be a 14u mono rule, so it would eat the 14u the affordance keeps clear.
+   The affordance steps down one 14u rhythm unit for the length of the
+   error and steps back when the row is enterable again — both lines stay
+   readable, which is the point of saying what went wrong under a label
+   that says what to do about it. Desktop only: mobile stacks the two in
+   flow, where the 14u margins already hold them apart. */
+@media (min-width: 768px) {
+  .cert[data-phase='error'] .enterHint {
+    transform: translateY(calc(14 * var(--ci-u)));
+  }
+}
+
+/* Stamped: the invitation has been spent, so the hint leaves rather than
+   sitting under a certificate that no longer wants input. It never
+   overlaps the stamp — it just has nothing left to say. */
+.cert[data-phase='success'] .enterHint {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Freeze the pulse on its lit half rather than dropping the cue. */
+  .cert[data-phase='validating'] .group {
+    animation: none;
+    border-color: #5eead48c;
+  }
+
+  /* The socket keeps its invitation, held still: fill at the loop's
+     midpoint, halo at half amplitude. The cue survives; the motion does
+     not. */
+  .cell[data-socket='true'] {
+    animation: none;
+    background-color: rgba(94, 234, 212, 0.105);
+    box-shadow: 0 0 12px rgba(127, 233, 214, 0.18);
+  }
+
+  /* The stamp is placed, not thrown: no slam, no rebound, no ink press,
+     and no flinch from the panel. It fades up in its resting pose. */
+  .cert[data-phase='success'] {
+    animation: none;
+  }
+
+  .cert[data-phase='success'] .stamp {
+    animation: certStampFade 260ms ease-out 250ms both;
+  }
+
+  @keyframes certStampFade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.95;
+    }
+  }
+
+  /* The misprint states itself rather than performing: the two ghosts sit
+     at full offset for the dwell and leave, with no slip and no drift. */
+  .cert[data-phase='error'] .misGhostRed,
+  .cert[data-phase='error'] .misGhostCyan {
+    animation: none;
+    opacity: 1;
+  }
+
+  .cert[data-phase='error'] .misGhostRed {
+    transform: translate(calc(-1 * var(--ci-mis-dx)), calc(-1 * var(--ci-mis-dy)));
+  }
+
+  .cert[data-phase='error'] .misGhostCyan {
+    transform: translate(var(--ci-mis-dx), var(--ci-mis-dy));
+  }
+}

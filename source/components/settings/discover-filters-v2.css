@@ -1,0 +1,709 @@
+/*
+ * THE DISCOVER FILTERS MODAL.
+ *
+ * The treatment designed on `/whatever` and applied here over the real
+ * store-backed modal. Same materials as every other floating panel in
+ * this product: the #111111 surface the trading settings, the groups
+ * dropdown, the wallets dropdown and the search overlay all take, one
+ * hairline weight, the board's caps, and neutral greys with equal
+ * channels.
+ *
+ * Nothing about which filters exist or what they do changed. This file
+ * is shape and colour only.
+ */
+
+/*
+ * `DialogContent` ships its own `grid gap-4 border bg-background p-6`.
+ * The doubled class outranks those single-class utilities, and the
+ * `!important` covers the case where they land in a later stylesheet.
+ * Everything that is not fighting a utility is left to say itself once.
+ */
+.df.df {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  background: #111111 !important;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+
+  --df-line: rgba(255, 255, 255, 0.07);
+  --df-cap: #7c7c7c;
+}
+
+.df *,
+.df *::before,
+.df *::after {
+  box-sizing: border-box;
+}
+
+.df-cap {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--df-cap);
+  white-space: nowrap;
+}
+
+.df-grow {
+  flex: 1 1 auto;
+}
+
+/* ── head ─────────────────────────────────────────────────────────── */
+
+.df-head {
+  display: flex;
+  align-items: center;
+  padding: 15px 14px 13px 18px;
+}
+
+.df-title {
+  flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+.df-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.df-icon:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── lane tabs ────────────────────────────────────────────────────── */
+
+/*
+ * Underlined, not filled — the way the dock marks its open tab. A filled
+ * tab would be the third filled thing on a panel that already has
+ * selected chips and a commit button.
+ */
+.df-lanes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--df-line);
+}
+
+.df-lane {
+  position: relative;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.df-lane:hover {
+  color: #ffffff;
+}
+
+.df-lane.is-on {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* The rule sits ON the strip's own hairline, so the active tab reads as a
+   tick in that line rather than as a second line under it. */
+.df-lane.is-on::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+
+/* ── keywords ─────────────────────────────────────────────────────── */
+
+.df-keywords {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--df-line);
+}
+
+.df-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.df-field input {
+  width: 100%;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--df-line);
+  border-radius: 8px;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #ffffff;
+  transition: border-color 130ms ease;
+}
+
+.df-field input::placeholder {
+  color: var(--df-cap);
+}
+
+.df-field input:focus {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* ── group tabs ───────────────────────────────────────────────────── */
+
+.df-groups {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 18px 0;
+}
+
+.df-group {
+  height: 28px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.df-group:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.df-group.is-on {
+  color: #000000;
+  background: #ffffff;
+  font-weight: 600;
+}
+
+/* ── the body ─────────────────────────────────────────────────────── */
+
+.df-body {
+  padding: 4px 18px 16px;
+  /* The three groups are different heights. A floor keeps the panel from
+     resizing under the pointer every time you change tab. */
+  min-height: 300px;
+  max-height: min(420px, 46vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.df-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.df-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.df-body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* ── section headings inside a group ─────────────────────────────── */
+
+.df-sect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 0 10px;
+}
+
+.df-clear {
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--df-line);
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 130ms ease, border-color 130ms ease;
+}
+
+.df-clear:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── the chips ────────────────────────────────────────────────────── */
+
+.df-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+/*
+ * SELECTION IS WHAT IS STILL LIT.
+ *
+ * Nothing is added to a selected chip. Colour and contrast are taken
+ * away from the unselected ones instead: the label drops to a third and
+ * the logo goes grey, so the three you have chosen are the three that
+ * still look alive. A grid of sixteen carries no plates, no outlines and
+ * no second white primary competing with Apply.
+ *
+ * Hovering restores a chip in full, which is also how you read a logo
+ * you cannot place.
+ */
+
+.df-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease, border-color 130ms ease;
+}
+
+.df-chip .df-mark {
+  filter: grayscale(1);
+  opacity: 0.4;
+  transition: filter 150ms ease, opacity 150ms ease;
+}
+
+.df-chip:hover {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.df-chip:hover .df-mark,
+.df-chip.is-on .df-mark {
+  filter: none;
+  opacity: 1;
+}
+
+/* Nothing is drawn on a selected chip. Full label, full logo, and no
+   line: the border stays transparent so the grid carries no boxes at
+   all, only sixteen marks of which three are lit. */
+.df-chip.is-on {
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/*
+ * The mark, and the only place brand colour appears on the chip. It is
+ * what tells Bonk from Bags before the word is read.
+ *
+ * It carries its own dark ground so a logo with transparency reads the
+ * same whether it is lit or grey.
+ */
+.df-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #1b1b1b;
+}
+
+.df-mark img {
+  width: 18px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+
+/* One segmented control, hairlines between the parts, so three choices
+   read as one setting rather than three buttons. */
+.df-seg {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 28px;
+  border: 1px solid var(--df-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.df-segbtn {
+  height: 100%;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.df-segbtn + .df-segbtn {
+  box-shadow: inset 1px 0 0 var(--df-line);
+}
+
+.df-segbtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.df-segbtn.is-on {
+  color: #000000;
+  background: #ffffff;
+  font-weight: 600;
+}
+
+/* ── the rows ─────────────────────────────────────────────────────── */
+
+/*
+ * One row shape for everything the other four groups are made of: a
+ * label on the left, the control on the right. No lines between them —
+ * the label column already reads as a list, and a hairline under every
+ * row would put twelve more lines on a panel that has four.
+ */
+
+.df-rows {
+  display: flex;
+  flex-direction: column;
+  padding-top: 14px;
+}
+
+.df-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+}
+
+/* Only the ones that are a single toggle take the whole row as the
+   target; a row with two fields in it must not swallow the clicks. */
+button.df-row {
+  cursor: pointer;
+}
+
+.df-rowlabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ── the tick box ─────────────────────────────────────────────────── */
+
+.df-box {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 5px;
+  color: #000000;
+  transition: background-color 130ms ease, border-color 130ms ease;
+}
+
+button.df-row:hover .df-box {
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.df-box.is-on {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
+/* ── the min and max pairs ────────────────────────────────────────── */
+
+/*
+ * The same field the keywords use. The reference draws these as dark
+ * pills and the keyword boxes as squared plates, so one panel ends up
+ * with two unrelated ideas of what a field is.
+ */
+
+.df-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: 248px;
+}
+
+.df-num {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.df-num input {
+  width: 100%;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--df-line);
+  border-radius: 8px;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  transition: border-color 130ms ease;
+}
+
+.df-num input::placeholder {
+  color: var(--df-cap);
+}
+
+.df-num input:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.df-num input:focus {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* The unit, not a value: grey, and it does not take the caret. */
+.df-unit {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  transform: translateY(-50%);
+  font-size: 11.5px;
+  color: var(--df-cap);
+  pointer-events: none;
+}
+
+/* ── the foot ─────────────────────────────────────────────────────── */
+
+.df-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--df-line);
+}
+
+.df-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid var(--df-line);
+  border-radius: 8px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: color 130ms ease, border-color 130ms ease, background-color 130ms ease;
+}
+
+.df-ghost:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/*
+ * The one press that commits, and so the one filled thing in the foot.
+ * The reference fills Apply green, Show green and every selected chip
+ * green, which leaves the button that closes the panel looking like a
+ * toggle.
+ */
+.df-apply {
+  height: 32px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.df-apply:hover {
+  opacity: 0.9;
+}
+
+/* ── the dialog itself ────────────────────────────────────────────── */
+
+/*
+ * CENTRED BY AUTO MARGINS, NOT BY A PERCENTAGE TRANSLATE.
+ *
+ * `DialogContent` centres with `left-[50%] translate-x-[-50%]`, and a
+ * percentage translate resolves against the element's OWN width. Capping
+ * that width leaves the transform holding a value computed from the
+ * width it used to have, which is how the trading settings modal ended
+ * up 58px off the side of a 360 wide screen.
+ *
+ * Pinning both edges and letting the margins centre it removes the
+ * dependency: 10px from each side until it reaches 490, then it stops
+ * growing. Nothing has to know how wide it is.
+ *
+ * The doubled class is for specificity. Tailwind's `max-w-lg` and
+ * `left-[50%]` are layered utilities, and a layered rule beats an
+ * unlayered `!important`, so this has to shout to be heard.
+ */
+.df.df {
+  left: 10px !important;
+  right: 10px !important;
+  width: auto !important;
+  max-width: 490px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: translateY(-50%) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 32px 90px #000000b0 !important;
+}
+
+/* ── the hidden token strip ───────────────────────────────────────── */
+
+.df-hidden {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 12px;
+  border: 1px solid var(--df-line);
+  border-radius: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.df-hidden button {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.df-hidden button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── the foot's disabled ghost ────────────────────────────────────── */
+
+.df-ghost:disabled {
+  color: rgba(255, 255, 255, 0.28);
+  cursor: default;
+}
+
+.df-ghost:disabled:hover {
+  color: rgba(255, 255, 255, 0.28);
+  border-color: var(--df-line);
+  background: transparent;
+}
+
+/* A lane that already has filters set carries a dot, so you can see
+   which of the three rows you have narrowed without opening each. */
+.df-lanedot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 5px;
+  border-radius: 999px;
+  vertical-align: middle;
+  background: #ffffff;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+@media (max-width: 520px) {
+  /* Two keyword fields side by side leave about 120px each. They stack. */
+  .df-keywords {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Three chips across a phone leaves about 100px each, and `Dynamic BC`
+     needs 115. Two columns, rather than a grid of truncated names. */
+  .df-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The label and its two fields stop competing for one line. */
+  .df-row {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 10px 0;
+  }
+
+  .df-pair {
+    width: 100%;
+  }
+
+  .df-lanes,
+  .df-groups {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .df-lanes::-webkit-scrollbar,
+  .df-groups::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,0 +1,61 @@
+/*
+ * Motion for the onboarding artwork.
+ *
+ * `ArtFadeLoop` measures nothing and writes one custom property per
+ * stroke — `--d`, its delay in the sequence. These rules do the rest,
+ * which means the JS runs once at mount and the browser owns every frame
+ * after it. Nothing here is per-illustration, so the deposit drawing gets
+ * the same treatment for free.
+ *
+ * Same division of labour as the landing's `art.css`, and the same reason:
+ * a stagger driven from JS is a stagger that costs main thread on every
+ * tick of a loop that never ends.
+ */
+
+.art-fade [data-stroke] {
+  /* NOT optional. An SVG child transforms about the ROOT svg's origin by
+     default, so a stroke in the corner would travel across the whole
+     drawing instead of rising in place. */
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: opacity, transform;
+  animation: art-fade 6s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+  animation-delay: var(--d);
+}
+
+/*
+ * Up, HOLD, out, and round again.
+ *
+ * The hold is the whole design. It runs from 14% to 62% — a little under
+ * half the cycle — because this drawing sits beside a heading someone has
+ * to read and an action they have to take, and an illustration that never
+ * resolves turns the panel into something that will not sit still. The
+ * fade out is slower than the fade in on purpose: arriving should feel
+ * deliberate, leaving should feel like it is getting out of the way.
+ */
+@keyframes art-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  14%,
+  62% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Nothing moves, and the art is simply there — which is what it did
+   before any of this. */
+@media (prefers-reduced-motion: reduce) {
+  .art-fade [data-stroke] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

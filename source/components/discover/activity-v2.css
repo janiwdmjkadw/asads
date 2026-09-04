@@ -1,0 +1,288 @@
+/*
+ * WALLET ACTIVITY — the wide dock, as picked off the `/whatever` sheet.
+ *
+ * Scoped to `[data-activity-v2]` on the panel, NOT to `.ledger-row`
+ * itself: that class is shared with the /tracker page, which reads the
+ * same grid through `.ledger-row--tracker`. Editing it there would move a
+ * surface nobody asked me to touch.
+ *
+ * ── THE MARGIN TICK IS GONE ──────────────────────────────────────────
+ *
+ * The shipped row states direction twice — a 2px coloured rule flush to
+ * the panel edge AND the amount, both at full tone. One of them had to
+ * go, and it is the rule: side is read off the FIGURE, where the eye
+ * already is, and the margin costs a column to say the same thing again.
+ *
+ * ── AND THE ROW READS AGE FIRST ──────────────────────────────────────
+ *
+ *   age · name · token · amount · market cap
+ *
+ * When a trade happened is the first thing checked on a live tape, and it
+ * shipped at the far right behind four columns. It keeps its dotted
+ * underline, the board's own mark for a computed value.
+ *
+ * ── AND THE WALLET CARRIES ITS OWN COLOUR ────────────────────────────
+ *
+ * Hashed from the address, from the same fixed palette the frens surfaces
+ * sign their callers with. On a tape where one wallet fires three times in
+ * a row, colour is what lets you see that at a glance without reading a
+ * single name.
+ */
+
+/* ── the grid, read by the head and every row ─────────────────────── */
+
+/*
+ * At 420 there are 356px of track after the gutters and gaps. An early
+ * cut gave the token 132 and left the NAME 52, which ellipsised every
+ * wallet in the panel — the one column whose whole job is to be read. The
+ * token yields instead: a ticker can truncate, a name cannot.
+ */
+[data-activity-v2] .ledger-row {
+  grid-template-columns:
+    34px              /* age */
+    minmax(0, 1fr)    /* wallet */
+    18px              /* token art */
+    minmax(0, 84px)   /* ticker */
+    52px              /* market cap */
+    78px !important;  /* amount */
+  column-gap: 10px !important;
+  padding: 0 12px !important;
+}
+
+/* The MC column only exists above the panel's own threshold, and the
+   head must lose it with the rows. */
+[data-activity-v2] .ledger-row:not(.ledger-row--mc) {
+  grid-template-columns: 34px minmax(0, 1fr) 18px minmax(0, 84px) 78px !important;
+}
+
+/* No striping. The shipped rows carry a diagonal hatch on every even
+   line, borrowed from a manager table and painted behind live figures. */
+[data-activity-v2] .dock-rows > a:nth-child(even),
+[data-activity-v2] .dock-rows--ledger > a:nth-child(even) {
+  background-image: none !important;
+}
+
+[data-activity-v2] .dock-rows--ledger > a.ledger-row:hover {
+  background-color: rgba(255, 255, 255, 0.045) !important;
+}
+
+/* ── the head ─────────────────────────────────────────────────────── */
+
+[data-activity-v2] .ledger-head {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  background: rgba(255, 255, 255, 0.015) !important;
+}
+
+/* The board's column head, from `.ledger-head > span` in discover.css. */
+[data-activity-v2] .ledger-head > span {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.13em !important;
+  color: #4b4f5b !important;
+}
+
+/* ── age, first and dotted ────────────────────────────────────────── */
+
+[data-activity-v2] .ledger-age {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px !important;
+  color: #6b7180 !important;
+  text-align: left !important;
+  justify-self: start;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.22);
+  line-height: 1.5;
+}
+
+/* ── the wallet ───────────────────────────────────────────────────── */
+
+[data-activity-v2] .ledger-wallet {
+  gap: 7px !important;
+  font-size: 12px !important;
+}
+
+/* Desaturated: a full colour cartoon against a monochrome ledger reads as
+   a sticker rather than as a mark that tells one wallet from another. */
+[data-activity-v2] .ledger-wallet-emoji {
+  filter: grayscale(1);
+  opacity: 0.8;
+}
+
+/* The identity colour, handed in per row as `--wa-id`. */
+[data-activity-v2] .ledger-wallet-label {
+  font-weight: 500 !important;
+  color: var(--wa-id, rgba(255, 255, 255, 0.92)) !important;
+}
+
+[data-activity-v2] .ledger-wallet-label:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── token, amount, market cap ────────────────────────────────────── */
+
+[data-activity-v2] .ledger-art {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+}
+
+[data-activity-v2] .ledger-ticker {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+[data-activity-v2] .ledger-amount {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px !important;
+}
+
+/* Magnitude is weight, on the same baseline, so a big fill is findable
+   without any row growing taller than its neighbours. */
+[data-activity-v2] .ledger-amount--whale {
+  font-weight: 600 !important;
+}
+
+[data-activity-v2] .ledger-mc {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* ── the manager tab ──────────────────────────────────────────────── */
+
+/*
+ * The Manager body sets `fontFamily: var(--mono)` INLINE on its wrapper —
+ * a theme axis the user picks, so every field in it rendered in whatever
+ * face the active theme carried. An inline style beats a selector, so
+ * this needs `!important`, and it is scoped to the panel because the same
+ * body also mounts in the top nav popover and on /tracker.
+ */
+[data-activity-v2] form,
+[data-activity-v2] form input,
+[data-activity-v2] form button {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* The address is the one string here read character by character. */
+[data-activity-v2] form input[placeholder='Wallet address'] {
+  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+  font-size: 12px !important;
+}
+
+/* ══ THE PANEL ITSELF ════════════════════════════════════════════════
+ *
+ * The first pass restyled the ROWS and nothing else, so the panel still
+ * opened as the old surface: #101114, a 4px radius, a 0.85px border and a
+ * flat drop shadow, with a 9.5px tab strip. The rows were right and
+ * everything around them was not.
+ *
+ * The two chrome strips are reached by position — `> div:nth-child(1)`
+ * and `(2)`. Their own classes are utility soup (`h-[32px] shrink-0
+ * select-none`), which needs CSS escapes and breaks the moment one
+ * utility changes; their ORDER is structural and does not.
+ */
+/*
+ * ── THE SHELL IS NOT DEFINED HERE ANY MORE ───────────────────────────
+ *
+ * This file used to set the panel's whole surface with `!important`: a
+ * 14px radius, a 13% border, a translucent ground over `blur(22px)
+ * saturate(1.45)`, an inset top light and a two part drop. Copied off
+ * the tweet dock so the siblings would match, and it did that job.
+ *
+ * Then the shell went Flat, and it went Flat in the COMPONENT — where
+ * the docked variants live, because whether a panel has a radius, and
+ * how many borders it draws, depends on whether it is snapped and to
+ * which side. `!important` here beat all of it. The wallet dock kept
+ * its glass and its 14px corners while the tweet dock beside it went
+ * flat and square, which is the exact "two products" problem this block
+ * was written to solve, achieved from the other direction.
+ *
+ * So it is gone. `WalletActivityFeed.tsx` owns the shell, the same way
+ * `TweetTrackerDock.tsx` owns its own, and the two are kept identical
+ * by being written identically rather than by one file shouting over
+ * the other.
+ */
+
+/* ── the title bar ────────────────────────────────────────────────── */
+
+/* 40px and a 14px left inset, the sibling's exact header. It was 28,
+   which is what made the two panels read as different weights before
+   anything inside them was compared. */
+[data-activity-v2] > div:nth-child(1) {
+  height: 40px !important;
+  padding: 0 8px 0 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* The title, and the live dot that already sits beside it. */
+[data-activity-v2] > div:nth-child(1) > :first-child {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em !important;
+}
+
+[data-activity-v2] > div:nth-child(1) button {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.4) !important;
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+[data-activity-v2] > div:nth-child(1) button:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── the tab strip ────────────────────────────────────────────────── */
+
+[data-activity-v2] > div:nth-child(2) {
+  height: 24px !important;
+  padding: 0 10px !important;
+  gap: 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+
+[data-activity-v2] > div:nth-child(2) button {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  border-bottom: 1px solid transparent !important;
+  transition: color 130ms ease, border-color 130ms ease;
+}
+
+[data-activity-v2] > div:nth-child(2) button:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/*
+ * The active tab is white with a white rule under it. It ships with an
+ * accent underline; the accent is not spent on chrome anywhere else in
+ * the product any more.
+ */
+[data-activity-v2] > div:nth-child(2) button[aria-selected='true'],
+[data-activity-v2] > div:nth-child(2) button[data-active='true'],
+[data-activity-v2] > div:nth-child(2) button.is-active {
+  color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+}
+
+/* ── the empty state ──────────────────────────────────────────────── */
+
+[data-activity-v2] .ledger-empty {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+[data-activity-v2] .ledger-empty-line {
+  font-size: 12px !important;
+  color: #4b4f5b !important;
+}

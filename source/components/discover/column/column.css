@@ -1,0 +1,962 @@
+/*
+ * THE COLUMN, REMADE FROM THE REFERENCE.
+ *
+ * ── COLOUR IS SPENT ONLY ON RISK ─────────────────────────────────────
+ *
+ * The reference greens the age, the market cap, the fee, the buy button
+ * and all four stat pills. Six unrelated things in one hue, so being
+ * green stops meaning anything — a 31% dev holding and a one second age
+ * are the same colour, and only one of them is telling you something.
+ *
+ * Here the four risk percentages keep green and red, because those are
+ * the only values on the row where the COLOUR is the reading rather than
+ * decoration on a number you were going to read anyway. Everything else
+ * is white, grey, or the board's caps.
+ *
+ * ── AND THE BUY IS WHITE ─────────────────────────────────────────────
+ *
+ * It is the one press on the row and the only filled thing on it, which
+ * is what makes it read as the action rather than as a fifth pill.
+ *
+ * ── THE GREYS ARE NEUTRAL ────────────────────────────────────────────
+ *
+ * Equal channels throughout. Board #050607, lane #0d0d0d, row set by the
+ * variant. Every panel in this product has started blue-grey and had to
+ * be corrected; this one starts neutral.
+ */
+
+.cl {
+  box-sizing: border-box;
+  /*
+   * NO FIXED WIDTH IN THE APP.
+   *
+   * The sheet pinned this to 740, the reference's own width, because a
+   * mockup has nothing else to size it. In the board the panel decides:
+   * `PanelStack` hands each column a flex basis and the user can drag it,
+   * so a width here would fight both. Full height too, so the list
+   * scrolls inside the column rather than the column growing past it.
+   */
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /*
+   * SQUARE. The sheet rounded the column because it was one object
+   * floating on a page. In the board three of them sit hard against each
+   * other and against the window edges, so a radius leaves a notch of
+   * ground at every corner where two columns meet.
+   */
+  border-radius: 0;
+  /*
+   * ── AN EDGE ON ALL FOUR SIDES ────────────────────────────────────
+   *
+   * The columns sit flush against each other with no gutter, and they
+   * are all the same ground, so without this there is nothing to say
+   * where one ends and the next begins — the board reads as a single
+   * wide surface with rows floating in it.
+   *
+   * A full border rather than a left rule on each: `PanelStack` puts a
+   * drag handle between neighbours, so two adjacent columns each draw
+   * their own side and the seam is a hairline either way. It also means
+   * the outermost column is closed at the window edge rather than
+   * running off it, and the top and bottom edges close against the sub
+   * header and the footer.
+   */
+  border: 1px solid #2a2a2e;
+  overflow: hidden;
+  /* The head's own ground, so the column is one surface from top to
+     bottom rather than a lighter strip sitting on a darker lane. */
+  background: #131316;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+
+  --cl-row: #1f1f23;
+  /*
+   * 0.045, down from 0.07. On the sheet this line sat on one panel in
+   * the middle of a page; in the board it draws the outside of three
+   * columns AND the search pill AND the tools group AND every row seam,
+   * so the same value that read as a hairline there reads as a grid of
+   * light lines here. Low enough to say where a thing ends and no louder.
+   */
+  /* The head's border value, used everywhere this column draws a line. */
+  --cl-line: #2a2a2e;
+  --cl-cap: #7c7c7c;
+  --cl-good: #2fe0a0;
+  --cl-bad: #ff5f6e;
+}
+
+.cl *,
+.cl *::before,
+.cl *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * THE SPACER THAT MAKES THE HEAD A HEAD.
+ *
+ * It was lost in a rewrite, and without it every flex child collapsed to
+ * its own width — title, search and tools all bunched against the left
+ * edge with three hundred pixels of nothing after them. Two of these
+ * either side of the search is what puts the title hard left, the search
+ * in the middle and the tools hard right, which is the reference's whole
+ * layout.
+ */
+.cl-grow {
+  flex: 1 1 auto;
+}
+
+/* ── the lane head ────────────────────────────────────────────────── */
+
+/*
+ * ROOM UNDER THE CONTROLS.
+ *
+ * The head was a fixed 48 with everything vertically centred in it, which
+ * left the search pill and the tools group about nine pixels off the rule
+ * underneath — close enough that the rule read as their border rather
+ * than as the edge of the head.
+ *
+ * Padding instead of a height: 14 above and 16 below, so the controls sit
+ * ON a band rather than being squeezed into a bar, and the extra pixel or
+ * two goes underneath where the eye reads the gap.
+ */
+/* ══ THE HEAD ══════════════════════════════════════════════════════════
+ *
+ * Settled on `/whatever` against the reference, then measured off it
+ * pixel by pixel. Every number here is one of those measurements.
+ *
+ * ── WHY EVERY VALUE IS DIVIDED ───────────────────────────────────────
+ *
+ * `globals.css` puts `zoom: var(--ui-scale)` on <html> and it resolves
+ * to 1.18 on this board. The sheet these values came from has no zoom,
+ * so writing them raw here would paint the whole head 18% bigger than
+ * the thing that was approved. Dividing by the same variable cancels it
+ * exactly, and if the scale ever moves the head tracks it.
+ *
+ *   band        48 tall, #131316, 1px #2a2a2e top and bottom
+ *   name        16px / 500, white, 26 from the left
+ *   search      158 x 28, fully round, 1px #2a2a2e, no fill
+ *   gap         16 between the field and the tools box
+ *   tools box   28 tall, 1px #2a2a2e, 10px radius, holding the bolt,
+ *               the amount, the SOL mark, a full height divider, then
+ *               the preset and its glyph
+ *   funnel      loose outside the box, 14px, bare
+ *
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.cl-head {
+  display: flex;
+  align-items: center;
+  /*
+   * 10, down from 16. The sheet is 734px wide and the gap reads as air
+   * there; a real column is 419 and the same number reads as the cluster
+   * falling apart.
+   */
+  gap: calc(10px / var(--ui-scale, 1));
+  /*
+   * 48. It was 38, on the argument that a 419px column cannot spare the
+   * pixels and every one here is a pixel of rows.
+   *
+   * That was the wrong trade. The controls inside are 28 tall, so 38
+   * left FIVE pixels above and below them — less air than the gap
+   * between the controls themselves, which made the whole band read as
+   * one compressed strip rather than as a head with things in it.
+   *
+   * 48 gives 10 above and 10 below, which matches the gap between the
+   * controls and costs one row of the lane.
+   */
+  height: calc(48px / var(--ui-scale, 1));
+  /*
+   * 12 each side, down from 26/25. Same reason: those came off a 734px
+   * sheet. At 419 they pushed the name away from the left edge and the
+   * funnel away from the right, so the whole head floated in the middle
+   * of a column instead of sitting against its edges.
+   */
+  padding: 0 calc(12px / var(--ui-scale, 1));
+  background: #131316;
+  /*
+   * NO BORDER-TOP.
+   *
+   * `.cl` already draws a 1px border around the whole column, so a top
+   * border here landed directly on top of it and every column read as
+   * having a 2px edge along its top and nowhere else.
+   */
+  border-bottom: 1px solid #2a2a2e;
+  color: #ffffff;
+}
+
+.cl-title {
+  flex: 0 0 auto;
+  font-size: calc(16px / var(--ui-scale, 1));
+  /* 500. The reference's "N" stem is 3px on a 12px cap; 600 is heavier
+     than that at the same size. */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+ * ONE spacer, and it goes between the name and the field.
+ *
+ * Measured: the name ends at 60, the field starts at 334, the field ends
+ * at 492 and the tools box starts at 508. The empty run is on the LEFT.
+ * The field belongs to the right hand cluster, 16px off the box.
+ */
+.cl-grow {
+  flex: 1 1 auto;
+}
+
+.cl-search {
+  display: flex;
+  align-items: center;
+  /*
+   * `0 1`, not `0 0`.
+   *
+   * The sheet is 734px wide and can hold 158 flat. A real column is
+   * about 419 at 1280 and narrower than that on a small window, and with
+   * a fixed field the tools box was pushed off the end and clipped by
+   * the column's `overflow: hidden`. The field is the one thing here
+   * that can give: the name has to stay readable and the box is already
+   * at its content width.
+   */
+  flex: 0 1 calc(158px / var(--ui-scale, 1));
+  /*
+   * Load bearing. A flex item defaults to `min-width: auto` and refuses
+   * to shrink below its content — the content is an `<input>` with a
+   * ~177px intrinsic width, so the declared basis is otherwise ignored.
+   */
+  min-width: 0;
+  box-sizing: border-box;
+  height: calc(28px / var(--ui-scale, 1));
+  padding: 0 calc(13px / var(--ui-scale, 1));
+  border: 1px solid #2a2a2e;
+  border-radius: 999px;
+  background: transparent;
+  cursor: text;
+}
+
+.cl-search input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: calc(13px / var(--ui-scale, 1));
+  color: #ffffff;
+}
+
+.cl-search input::placeholder {
+  color: #6e7178;
+}
+
+/* ── the tools box ────────────────────────────────────────────────── */
+
+/*
+ * All five live in here: the bolt, the amount, the SOL mark, the divider
+ * and the preset. Only the funnel sits outside.
+ *
+ * NO uniform gap — the reference's internal spacing is not even, and
+ * averaging it made the box measurably too wide. Each is set on the item.
+ */
+.cl-tools {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0;
+  height: calc(28px / var(--ui-scale, 1));
+  padding: 0 calc(9px / var(--ui-scale, 1));
+  border: 1px solid #2a2a2e;
+  border-radius: calc(10px / var(--ui-scale, 1));
+  overflow: visible;
+}
+
+.cl-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5px / var(--ui-scale, 1));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: calc(13px / var(--ui-scale, 1));
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* The bolt stands clear of the figure; the SOL mark sits tight against
+   it, because the amount and its unit are one reading. */
+.cl-bolt {
+  flex-shrink: 0;
+  /*
+   * 6, down from 12. The 12 came off the reference, where the figure can
+   * be several characters wide; here it is usually a single "0", so the
+   * bolt sat a long way from a very short number and the whole quick buy
+   * segment read as the widest thing in the head.
+   */
+  margin-right: calc(6px / var(--ui-scale, 1));
+  /*
+   * ── OPTICALLY UP, NOT GEOMETRICALLY ──────────────────────────────
+   *
+   * The bolt's box is already centred: it, the figure and the SOL mark
+   * all sit on the same midline. What is low is the MARK inside the box.
+   * The path runs from y=2 to y=22 in a 24 unit viewBox, but its visual
+   * weight is in the lower half — the wide head of the bolt is at the
+   * top and the thin tail at the bottom, so the centre of ink sits below
+   * the centre of the box and it reads as dropped next to a figure whose
+   * weight is even.
+   *
+   * A transform rather than a margin: a margin would move the box and
+   * change the spacing to the number beside it, and the box is where it
+   * should be.
+   */
+  transform: translateY(calc(-1.5px / var(--ui-scale, 1)));
+  color: #ffffff;
+}
+
+/* Full height, splitting the quick buy from the preset. */
+.cl-toolrule {
+  width: 1px;
+  align-self: stretch;
+  background: #2a2a2e;
+  margin: 0 calc(9px / var(--ui-scale, 1)) 0 calc(12px / var(--ui-scale, 1));
+}
+
+.cl-loose {
+  display: grid;
+  place-items: center;
+  /* Bare, and the same size as the other marks in the head. */
+  width: calc(20px / var(--ui-scale, 1));
+  height: calc(20px / var(--ui-scale, 1));
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  /* WHITE. It was at 50% and was the one thing in the head that read as
+     disabled. Every other mark up there is white. */
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.cl-loose:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/*
+ * The funnel inks when this section actually has a filter set. It is the
+ * only state on the head, and it has to be: a filtered lane and an
+ * unfiltered one hold different numbers of tokens, and nothing else on
+ * screen says which you are looking at.
+ */
+.cl-loose[data-on='true'] {
+  color: var(--cl-good);
+}
+
+.cl-sol {
+  flex: 0 0 auto;
+  display: block;
+}
+
+/* ── the list ─────────────────────────────────────────────────────── */
+
+.cl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* 10 at the top so the first row clears the head's rule, and 10 at the
+     bottom so the last one is not flush to the lane's own edge. */
+  padding: 10px 8px;
+  /* The sheet capped this at 620 to keep the mockup on screen. In the
+     board the column is already viewport locked, so the list simply
+     takes what is left under the head. */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ── a row ────────────────────────────────────────────────────────── */
+
+.cl-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 9px;
+  background: var(--cl-row);
+  cursor: pointer;
+  transition: background-color 130ms ease, filter 130ms ease;
+}
+
+.cl-row:hover {
+  filter: brightness(1.4);
+}
+
+/* ── the art column ───────────────────────────────────────────────── */
+
+/*
+ * THE BADGES ARE INLINE NOW.
+ *
+ * They were absolutely positioned on the corners of a 56px image. With
+ * the image gone they sit in the flow of the line that names the token,
+ * where they need no ring to separate them from anything.
+ */
+.cl-pad {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  align-self: center;
+}
+
+.cl-pad.is-pump {
+  background: var(--cl-good);
+}
+
+.cl-pad.is-bonk {
+  background: #ffb020;
+}
+
+.cl-tick {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.cl-mint {
+  flex: 0 0 auto;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  color: var(--cl-cap);
+  white-space: nowrap;
+}
+
+/* ── the body ─────────────────────────────────────────────────────── */
+
+.cl-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cl-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cl-ticker {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.cl-name {
+  /* The name is the one thing on this line that may truncate: the
+     ticker, the badges and the mint are all identity. */
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * The run of marks. Every metric on this row is an icon and a number
+ * rather than a labelled field — which is the only reason twenty values
+ * fit in a row this tall at all.
+ */
+.cl-marks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  color: var(--cl-cap);
+}
+
+.cl-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--cl-cap);
+}
+
+/*
+ * The age is white, not green. It is a reading like every other number
+ * here, and the reference's green says nothing that "1s" does not
+ * already say.
+ */
+.cl-age {
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cl-dev {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* ── the four risk pills ──────────────────────────────────────────── */
+
+.cl-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+.cl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  /* Tinted from the value's own colour, so the pill and its number are
+     one statement rather than a coloured number in a grey box. */
+  color: var(--cl-good);
+  background: color-mix(in srgb, var(--cl-good) 12%, transparent);
+}
+
+.cl-pill.is-bad {
+  color: var(--cl-bad);
+  background: color-mix(in srgb, var(--cl-bad) 14%, transparent);
+}
+
+/* The trailing "1mo" / "1yr" is context on the value, not the value. */
+.cl-note {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── the figures and the buy ──────────────────────────────────────── */
+
+.cl-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.cl-fig {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 3px 6px;
+  justify-items: end;
+}
+
+.cl-cap {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cl-cap);
+}
+
+.cl-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* Market cap is the figure being scanned, so it takes weight — not a
+   colour, which is spent on the pills. */
+.cl-num.is-mc {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/*
+ * The one press on the row, and the only filled thing on it. The
+ * reference makes it a fifth green pill sitting among four others.
+ */
+.cl-buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 11px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000000;
+  background: #ffffff;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.cl-buy:hover {
+  opacity: 0.88;
+}
+
+/* ══ THE EIGHT GROUNDS ══════════════════════════════════════════════
+ *
+ * The row is identical in all of them. Only `--cl-row` moves, plus how
+ * one row separates from the next.
+ */
+
+.cl.is-g10 {
+  --cl-row: #101010;
+}
+
+.cl.is-g14 {
+  --cl-row: #1f1f23;
+}
+
+.cl.is-g1a {
+  --cl-row: #1a1a1a;
+}
+
+.cl.is-g20 {
+  --cl-row: #202020;
+}
+
+.cl.is-tint {
+  --cl-row: rgba(255, 255, 255, 0.05);
+}
+
+.cl.is-zebra .cl-list,
+.cl.is-edge .cl-list {
+  gap: 0;
+  padding: 0;
+}
+
+.cl.is-zebra .cl-row,
+.cl.is-edge .cl-row,
+.cl.is-none .cl-row {
+  --cl-row: transparent;
+}
+
+.cl.is-zebra .cl-row,
+.cl.is-edge .cl-row {
+  border-radius: 0;
+  padding: 8px 12px;
+}
+
+.cl.is-zebra .cl-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.cl.is-edge .cl-row {
+  border-bottom: 1px solid var(--cl-line);
+}
+
+/*
+ * The four with no fill have nothing for `brightness` to act on, so they
+ * take a plate on hover instead — the same 5% every other surface in the
+ * product uses for a hovered row.
+ */
+.cl.is-tint .cl-row:hover,
+.cl.is-zebra .cl-row:hover,
+.cl.is-edge .cl-row:hover,
+.cl.is-none .cl-row:hover {
+  filter: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+
+
+/* ── the scrollbar ────────────────────────────────────────────────── */
+
+/*
+ * A thin dark bar, as the reference has it. The platform default is a
+ * light 15px chrome bar that lands on a black column like a strip of
+ * masking tape — and on a lane that scrolls constantly it is on screen
+ * the whole time.
+ *
+ * `scrollbar-width` and `scrollbar-color` are the standard pair, honoured
+ * by Firefox; the `::-webkit-` block is the same result for Chromium and
+ * Safari. Both are given because neither covers everything, and a lane
+ * with a default bar in one browser and a hairline in another is worse
+ * than either on its own.
+ */
+.cl-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.cl-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cl-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cl-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  /* A transparent border with `background-clip` insets the thumb without
+     narrowing the track, so the bar has air around it at rest and still
+     takes the full 8px of hit area. */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.cl-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+  background-clip: content-box;
+}
+
+/*
+ * THE BOLT IS FULLY WHITE.
+ *
+ * It inherits the tool's 85% like the rest of the group, which leaves it
+ * a shade under the number beside it — and it is the mark for the one
+ * thing in this head that spends money. Full white, and heavier, so it
+ * reads as a bolt rather than as a grey tick.
+ */
+.cl-tool > svg:first-child {
+  color: #ffffff;
+}
+
+.cl-tool .cl-num {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ── the editable buy size ────────────────────────────────────────── */
+
+/*
+ * The one setting on this lane you change most often, so it is typed
+ * rather than displayed. The bolt and the SOL mark are its label and its
+ * unit; the field between them carries no chrome of its own, so the
+ * three read as one control instead of a form dropped into the head.
+ */
+.cl-tool.is-field {
+  cursor: text;
+}
+
+.cl-size {
+  min-width: 0;
+  width: auto;
+  border: 0;
+  padding: 0;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: calc(13px / var(--ui-scale, 1));
+  font-weight: 600;
+  color: #ffffff;
+  text-align: right;
+}
+
+/*
+ * The quick buy segment, matching the sheet exactly.
+ *
+ * No padding and no gap of its own: the bolt sets its own 12px to the
+ * figure and the figure sets 5px to the SOL mark, which is what the
+ * reference measures. A uniform gap here made the segment visibly wider
+ * than the original.
+ */
+.cl-tool.is-field {
+  gap: 0;
+  padding: 0;
+}
+
+.cl-tool.is-field .cl-size {
+  /*
+   * 2ch, down from 3. Three characters of room for a value that is one
+   * character nearly all the time is 9px of empty field, and it is empty
+   * on the RIGHT, so the SOL mark floated away from its own number.
+   *
+   * It still holds its width while the number changes — 2ch covers "0"
+   * and "2.5" clips rather than reflowing the head, which is the thing
+   * the fixed width is actually for.
+   */
+  width: 2ch;
+  margin-right: calc(4px / var(--ui-scale, 1));
+  text-align: right;
+}
+
+/* Focus is a rule under the number — the field only draws itself while
+   it is being used, which keeps the head quiet at rest. */
+.cl-size:focus {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * ── GLYPH SIZES, DIVIDED LIKE EVERYTHING ELSE ────────────────────────
+ *
+ * An SVG `width` attribute cannot do the division, so the JSX asks for a
+ * nominal box and these set the real one. Measured off the reference:
+ * the funnel is 14, the chart is 13, the SOL mark is 12 and the bolt is
+ * 15 — the bolt being the one that read as a speck at 11.
+ */
+.cl-head .cl-loose svg {
+  width: calc(14px / var(--ui-scale, 1));
+  height: calc(14px / var(--ui-scale, 1));
+}
+
+.cl-head .cl-tool svg:not(.cl-sol):not(.cl-bolt) {
+  width: calc(13px / var(--ui-scale, 1));
+  height: calc(13px / var(--ui-scale, 1));
+}
+
+.cl-head .cl-bolt {
+  width: calc(15px / var(--ui-scale, 1));
+  height: calc(15px / var(--ui-scale, 1));
+}
+
+.cl-head .cl-sol {
+  width: calc(12px / var(--ui-scale, 1));
+  height: calc(12px / var(--ui-scale, 1));
+}
+
+/* ══ THE PRESET MENU ═══════════════════════════════════════════════════
+ *
+ * Opened by `P1` in the head. Sized in the same `calc(px / --ui-scale)`
+ * idiom as the head above, so it paints at the sheet's scale rather than
+ * the board's 1.18 zoom.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.cl-presetwrap {
+  position: relative;
+  display: inline-flex;
+  align-self: stretch;
+}
+
+.cl-presets {
+  /*
+   * FIXED, and portalled to <body>. `top` and `right` are set inline by
+   * `PresetMenu` from the button's rect — see the note in that file for
+   * why this cannot be `position: absolute` inside the head.
+   *
+   * Sized in unscaled px here because it is OUTSIDE the column but still
+   * inside the zoomed <html>, so it picks up the same 1.18 as everything
+   * else and stays the same size as the head it hangs from.
+   */
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: calc(230px / var(--ui-scale, 1));
+  padding: calc(4px / var(--ui-scale, 1));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: calc(8px / var(--ui-scale, 1));
+  /* One step above the lane, not the lane's own ground: a menu that
+     matches what is behind it has no edge except its border. */
+  background: #17191d;
+  box-shadow: 0 calc(14px / var(--ui-scale, 1)) calc(34px / var(--ui-scale, 1)) rgba(0, 0, 0, 0.55);
+}
+
+.cl-preset {
+  display: flex;
+  align-items: center;
+  gap: calc(10px / var(--ui-scale, 1));
+  padding: 0 calc(8px / var(--ui-scale, 1));
+  height: calc(30px / var(--ui-scale, 1));
+  border: 0;
+  border-radius: calc(6px / var(--ui-scale, 1));
+  background: transparent;
+  font-family: inherit;
+  font-size: calc(11.5px / var(--ui-scale, 1));
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.cl-preset:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/*
+ * The chosen row is the only white one. No tick, no fill, no accent:
+ * three rows of identical shape need exactly one difference to say which
+ * is live, and contrast is the cheapest one to read.
+ */
+.cl-preset[data-on='true'] {
+  color: #ffffff;
+}
+
+.cl-preset-id {
+  flex: 0 0 auto;
+  min-width: calc(18px / var(--ui-scale, 1));
+  font-weight: 600;
+  text-align: left;
+}
+
+.cl-preset-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4px / var(--ui-scale, 1));
+  font-variant-numeric: tabular-nums;
+}
+
+.cl-preset-cell svg {
+  color: var(--cl-cap);
+  flex: 0 0 auto;
+}
+
+.cl-preset[data-on='true'] .cl-preset-cell svg,
+.cl-preset:hover .cl-preset-cell svg {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ══ THE BOARD'S OUTER CORNERS ═════════════════════════════════════════
+ *
+ * Square where a column meets another column, curved where it meets the
+ * outside. Three columns flush against each other should read as one
+ * surface divided, not as three cards, so only the two corners at the
+ * ends of the row are rounded and only along the top, where the board
+ * meets the header. The bottom stays square against the footer.
+ *
+ * Keyed off the stack rather than the column: a column does not know
+ * whether it is first, and `PanelStack` is the only thing that does. The
+ * spacer element renders only BETWEEN panels, so the last panel is
+ * genuinely the last child.
+ * ══════════════════════════════════════════════════════════════════ */
+
+/* 5, down from 10. At 10 the curve ate into the head's own band and read
+   as a rounded card sitting on the board rather than as the board's own
+   outside corner; 5 softens the edge without the corner becoming a
+   feature. */
+.listen-root [data-panel-stack='horizontal'] > div:first-child .cl {
+  border-top-left-radius: 5px;
+}
+
+.listen-root [data-panel-stack='horizontal'] > div:last-child .cl {
+  border-top-right-radius: 5px;
+}

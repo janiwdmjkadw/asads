@@ -1,0 +1,603 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * REWARDS, FOUR WAYS
+ *
+ * All four run the Spot tab's rules: black, one ink scale, sentence
+ * case, type doing the hierarchy through size and weight, no plates, no
+ * glow, no accent, and colour only where the colour IS the meaning.
+ *
+ *   1  Ledger     the Spot tab's language, applied straight
+ *   2  Claim      the amount and the button are the page
+ *   3  Stacked    no tabs, three earners on one page
+ *   4  Statement  one table, no hero at all
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.rw {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.rw h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: #6e7178; }
+
+.rw-note {
+  margin: 0 0 12px;
+  max-width: 700px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: #4b4e55;
+}
+.rw-note:last-of-type { margin-bottom: 24px; }
+
+.rw-stack { display: flex; flex-direction: column; gap: 30px; }
+.rw-slot { display: flex; flex-direction: column; gap: 10px; }
+
+.rw-cap { display: flex; align-items: baseline; gap: 8px; }
+.rw-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1, #e6e7ea); }
+.rw-cap > small { font-size: 10.5px; line-height: 1.4; color: #4b4e55; }
+
+/* The page ground, so each variant is judged on black rather than on
+   the sheet's own slightly lifted card. */
+.rw-frame {
+  padding: 20px 22px 22px;
+  border: 1px solid #1c1c20;
+  border-radius: 8px;
+  background: #000;
+}
+
+.rw-p { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+
+/* ── tabs are words ──────────────────────────────────────────────── */
+/* The live one is the white one. It was `01 02 03` with an icon each
+   and a coloured underline: three marks per tab to say which of three
+   you had clicked. */
+.rw-tabs { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
+
+.rw-tabs > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 13px/1 var(--sans);
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.rw-tabs > button[data-on] { color: var(--rw-live, #fff); }
+.rw-tabs > button:hover { color: #b9bcc4; }
+
+/* ── the figure ──────────────────────────────────────────────────── */
+
+.rw-lab {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #6e7178;
+}
+
+.rw-total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.rw-total-lg { font-size: 52px; }
+
+/* The unit is not part of the number. Set at the size of the label it
+   sits next to, so the digits are what you read. */
+.rw-unit { font-size: 15px; font-weight: 500; letter-spacing: 0; color: rgba(255, 255, 255, 0.4); }
+
+.rw-sub { margin-top: 8px; font-size: 12.5px; color: #6e7178; }
+/* The one place a hue is allowed: a figure that actually went up. */
+.rw-pos { color: var(--up, #34d399); }
+
+/* ── the claim ───────────────────────────────────────────────────── */
+
+.rw-actions { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+
+/* One filled control per page, and this is it — the page exists so you
+   can press it. */
+.rw-go {
+  height: 32px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  font: 600 12.5px/1 var(--sans);
+  cursor: pointer;
+  transition: background-color 130ms ease;
+}
+.rw-go:hover { background: #dcdde0; }
+.rw-go-lg { height: 40px; padding: 0 26px; font-size: 14px; border-radius: 9px; }
+
+.rw-quiet { font-size: 11.5px; color: #4b4e55; }
+
+.rw-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 6px 0 4px;
+}
+
+/* ── the figures row ─────────────────────────────────────────────── */
+/* Names under numbers, no pips, no capitals, no track, and no rules
+   between them. Space says these are separate things at least as well
+   as furniture does. */
+.rw-figs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 34px;
+  margin-top: 22px;
+}
+.rw-figs > span { display: inline-flex; flex-direction: column; gap: 5px; }
+.rw-figs i { font-style: normal; font-size: 11px; font-weight: 500; color: #6e7178; }
+.rw-figs b { font-size: 15px; font-weight: 500; line-height: 1.1; color: #fff; }
+
+.rw-rule { height: 1px; margin: 22px 0 18px; background: rgba(255, 255, 255, 0.08); }
+
+/* ── 3 · the earner lines ────────────────────────────────────────── */
+/* One row per thing that pays you. The figure is the column you scan,
+   so it is right aligned against the claim word and everything else
+   gets out of its way. */
+.rw-earner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.rw-earner:last-of-type { border-bottom: 0; }
+
+.rw-earner-l { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.rw-earner-l > b { font-size: 13px; font-weight: 500; color: #fff; }
+.rw-earner-l > small { font-size: 11.5px; color: #6e7178; }
+
+.rw-earner-n { font-size: 14.5px; font-weight: 500; color: #fff; white-space: nowrap; }
+
+/* A word, not a button. Four plates down the right of a page reads as a
+   fence; the one thing that gets a fill is the total's. */
+.rw-word {
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  font: 500 12px/1 var(--sans);
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.rw-word:hover { color: #fff; }
+.rw-word-go { color: #fff; font-weight: 600; }
+
+/* ── 4 · the statement table ─────────────────────────────────────── */
+
+.rw-st-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
+.rw-st-head > b { font-size: 15px; font-weight: 600; color: #fff; }
+
+.rw-st { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+
+.rw-st th {
+  padding: 0 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: left;
+  color: #4b4e55;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.rw-st th:nth-child(3),
+.rw-st th:nth-child(4) { text-align: right; }
+
+.rw-st td {
+  padding: 12px 0;
+  font-size: 12.5px;
+  color: #b9bcc4;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.rw-st td:nth-child(3),
+.rw-st td:nth-child(4) { text-align: right; }
+.rw-st td:last-child { text-align: right; padding-left: 20px; }
+
+.rw-st .rw-strong { color: #fff; font-weight: 500; }
+.rw-dim { color: #6e7178; }
+
+/* The total is the row you were looking for, so it is the only one in
+   full ink and the rule above it is the heavier one. */
+.rw-st-total td {
+  border-bottom: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ── the evidence under all four ─────────────────────────────────── */
+
+.rw-th,
+.rw-tr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px 120px;
+  gap: 16px;
+  align-items: center;
+}
+
+.rw-th {
+  padding-bottom: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4b4e55;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.rw-th > span:not(:first-child),
+.rw-tr > span:not(:first-child) { text-align: right; }
+
+.rw-rows { display: flex; flex-direction: column; }
+
+.rw-tr {
+  padding: 11px 0;
+  font-size: 12.5px;
+  color: #e6e7ea;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.rw-tr:last-child { border-bottom: 0; }
+
+@media (max-width: 640px) {
+  .rw-frame { padding: 16px; }
+  .rw-total { font-size: 32px; }
+  .rw-total-lg { font-size: 38px; }
+  .rw-th,
+  .rw-tr { grid-template-columns: minmax(0, 1fr) 92px; }
+  .rw-th > span:nth-child(2),
+  .rw-tr > span:nth-child(2) { display: none; }
+  .rw-earner { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; }
+}
+
+/* ── the header line and the window toggle ───────────────────────── */
+
+.rw-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-bottom: 22px;
+}
+
+/* No coloured 4px tick in front of it, and the share is not bold in the
+   section's hue. It is one sentence. */
+.rw-line { margin: 0; font-size: 12.5px; color: #b9bcc4; }
+
+.rw-win { display: inline-flex; align-items: center; gap: 14px; }
+.rw-win > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 12px/1 var(--sans);
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+.rw-win > button[data-on] { color: var(--rw-live, #fff); }
+.rw-win > button:hover { color: #b9bcc4; }
+
+/* ── the fren link ───────────────────────────────────────────────── */
+
+.rw-link { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; }
+.rw-link-l { min-width: 0; flex: 1; }
+
+/* The base is quiet and the slug carries the light. Same idea the
+   original had, without the serif italic, the 28px glow of the section
+   hue, the 170px ghost @ behind it, the collage off the top edge and
+   the radial wash from the right. */
+.rw-url {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+.rw-url-b { color: #6e7178; }
+.rw-url-s { color: var(--rw-slug, #fff); font-weight: 500; }
+
+.rw-copy { margin: 10px 0 0; max-width: 460px; font-size: 12px; line-height: 1.5; color: #6e7178; }
+
+.rw-qr { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: none; }
+/* Stands in for the real code. White plate, because a QR has to be. */
+.rw-qr-box {
+  width: 84px;
+  height: 84px;
+  border-radius: 8px;
+  background:
+    repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 12px 12px;
+  outline: 6px solid #fff;
+  outline-offset: 0;
+  margin: 6px;
+}
+
+.rw-actions-t { margin-top: 18px; }
+
+/* ── the figures row, with the claim on the end ──────────────────── */
+
+.rw-figs > span > u { text-decoration: none; font-size: 11px; color: #4b4e55; }
+.rw-figs-go { justify-content: flex-end; }
+
+/* ── section names ───────────────────────────────────────────────── */
+/* A word. It was an icon in a tinted rounded plate, a coloured pip and
+   a title, per section. */
+.rw-sec { margin-bottom: 14px; font-size: 13px; font-weight: 500; color: #fff; }
+
+
+.rw-sec > small { margin-left: 8px; font-size: 11.5px; font-weight: 400; color: #4b4e55; }
+
+.rw-delta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-size: 12.5px; }
+.rw-up { color: #34d399; font-weight: 500; }
+.rw-dimdec { color: rgba(255, 255, 255, 0.4); }
+
+.rw-under {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.rw-copy-w { max-width: 560px; margin-top: 14px; font-size: 13px; color: #b9bcc4; }
+
+/* ── 1 · the invite ──────────────────────────────────────────────────
+ *
+ * The link is the product of this page, so it is set at display size.
+ * The base is quiet and the slug carries the light: the part that is
+ * yours is the part that is lit. No serif italic, no 28px glow of the
+ * section hue, no ghost glyph behind it.
+ * ─────────────────────────────────────────────────────────────────── */
+
+.rw-inv { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 10px 0 4px; }
+.rw-inv-l { min-width: 0; flex: 1; }
+
+.rw-inv-url {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-family: var(--sans);
+  font-size: clamp(24px, 3.4vw, 38px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.rw-inv-b { color: #4b4e55; }
+.rw-inv-s { color: #fff; }
+
+.rw-qr-lg .rw-qr-box { width: 128px; height: 128px; }
+
+/* ── the money strip ─────────────────────────────────────────────── */
+
+.rw-money { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px 40px; }
+.rw-money > span { display: inline-flex; flex-direction: column; gap: 5px; }
+.rw-money i { font-style: normal; font-size: 11px; font-weight: 500; color: #6e7178; }
+.rw-money b { font-size: 17px; font-weight: 500; line-height: 1.1; color: #fff; }
+.rw-money .rw-go { margin-left: auto; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE BANNER, AS A SURFACE
+ *
+ * It was a black rectangle with a big number in it, which is not
+ * restraint, it is absence. A raised surface is made of three things
+ * and this has all three:
+ *
+ *   a ground a shade off the page, so it has an EDGE
+ *   a one pixel light along the top, which is how anything raised
+ *     behaves under a light source above it
+ *   a slow falloff down the face, so the plate has a direction
+ *
+ * All three are white at single digit percentages. You feel them and
+ * you do not see them, and that is the difference between a card that
+ * looks made and one that looks drawn.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.rw-frame-flush { padding: 0; overflow: hidden; }
+.rw-frame-flush .rw-p { padding: 24px; }
+
+/*
+ * Black, like the rest of the page.
+ *
+ * It was a grey plate lifted off the ground with a light along its top
+ * edge. That is a real technique and it was the wrong one here: it made
+ * the top of the page a CARD, so the page opened on a box sitting on a
+ * page rather than on the number. The whole product is one black
+ * surface and the banner is part of it.
+ *
+ * What separates it from the tab strip below is the space around the
+ * figure and the hairline at the bottom. Nothing else is needed.
+ */
+.rw-bn {
+  position: relative;
+  padding: 42px 40px 38px;
+  background: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.rw-bn-in {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+}
+
+/* The tracking closes as the size grows. Type set large at the
+   tracking it had at 13px reads loose and unresolved. */
+.rw-total-xl { font-size: 76px; letter-spacing: -0.035em; line-height: 1; }
+
+.rw-bn-sub {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 12.5px;
+}
+
+.rw-bn-r { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FRENS LIST
+ *
+ * It was five grey discs, five names, four columns of figures and a
+ * thin line floating under each row. The discs carried nothing, the
+ * line belonged to no column, and every row weighed the same as every
+ * other — on a list whose entire point is that some frens are worth
+ * more than others.
+ *
+ * The share IS the row now. Each is filled from the left in proportion
+ * to what that fren paid you, so the shape of the list is the answer
+ * and no column has to be spent on a percentage.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.rw-roll-r {
+  display: grid;
+  /* rank · name · movement · volume · earned */
+  grid-template-columns: 30px minmax(0, 1fr) 46px 120px 120px;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The head has no rank or movement cell, so its first column spans
+   them and lines up with the names. */
+.rw-fh {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 46px 120px 120px;
+  align-items: center;
+  gap: 12px;
+}
+.rw-fh {
+  padding: 0 12px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4b4e55;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.rw-fh > span:first-child { grid-column: 1 / 4; }
+.rw-fh > span:nth-child(2),
+.rw-fh > span:nth-child(3) { text-align: right; }
+
+.rw-roll { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+
+.rw-roll-r {
+  position: relative;
+  padding: 13px 12px;
+  border-radius: 7px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/*
+ * The fill. Five percent, and it fades out toward its own right edge
+ * rather than stopping on a hard vertical: a flat block would draw a
+ * second column boundary down the middle of the row and fight the
+ * figures sitting on it.
+ */
+.rw-roll-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 7px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02));
+}
+
+.rw-roll-r:hover .rw-roll-fill { background: linear-gradient(90deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03)); }
+
+/*
+ * ── THE RANK ─────────────────────────────────────────────────────────
+ *
+ * 19px, tabular, and set in the ink `rankInk` hands it: white at the
+ * top of the board, then two steps down, then everybody else. That
+ * brightness ramp IS the podium — no gold, no silver, no bronze, no
+ * trophy. This is a list of people paying you money, and dressing it as
+ * a sports result is the fastest way to make a finance screen look like
+ * a game.
+ *
+ * Large enough to be a numeral you read rather than a label you skip,
+ * and dim enough at rank four that it never competes with the name.
+ */
+.rw-roll-rank {
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/*
+ * ── MOVEMENT ─────────────────────────────────────────────────────────
+ *
+ * Places gained or lost since last week, and the thing that makes this
+ * a board rather than a sorted table: a ranking with no movement in it
+ * is only an order, and the reason anybody looks twice is to see what
+ * changed.
+ *
+ * Held back to 62%. The carets are on every row, so at full strength
+ * five of them become the loudest column on a list whose subject is the
+ * figure at the other end.
+ */
+.rw-move {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.62;
+}
+.rw-move-up { color: var(--up, #34d399); }
+.rw-move-down { color: var(--down, #fb5374); }
+/* A dash, not a zero. Zero is a quantity; holding your place is an
+   absence of one. */
+.rw-move-flat { color: #3a3d43; opacity: 1; }
+
+.rw-roll-n { font-size: 13.5px; font-weight: 500; color: #fff; }
+.rw-roll-v { font-size: 13px; color: #9a9ea8; text-align: right; }
+.rw-roll-e { font-size: 13px; font-weight: 500; color: #fff; text-align: right; }
+
+/* ── payout history ─────────────────────────────────────────────── */
+
+.rw-ph { display: flex; flex-direction: column; }
+.rw-ph-r {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 140px;
+  gap: 16px;
+  padding: 11px 12px;
+  font-size: 12.5px;
+  color: #e6e7ea;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.rw-ph-r:last-child { border-bottom: 0; }
+.rw-ph-r > span:not(:first-child) { text-align: right; }
+
+@media (max-width: 720px) {
+  .rw-bn { padding: 30px 18px 26px; }
+  .rw-total-xl { font-size: 46px; }
+  /* Volume goes first. The board is ranked on what you EARNED, and that
+     is the column that has to survive. */
+  .rw-fh,
+  .rw-roll-r { grid-template-columns: 26px minmax(0, 1fr) 40px 96px; }
+  .rw-fh > span:first-child { grid-column: 1 / 4; }
+  .rw-fh > span:nth-child(2),
+  .rw-roll-v { display: none; }
+  .rw-roll-rank { font-size: 16px; }
+  .rw-ph-r { grid-template-columns: minmax(0, 1fr) 96px; }
+  .rw-ph-r > span:nth-child(2) { display: none; }
+}

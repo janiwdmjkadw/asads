@@ -1,0 +1,518 @@
+/*
+ * AGENT WALLET SETUP — "gate".
+ *
+ * The screen answers two questions and only two: am I done, and what
+ * does it cost. So the panel is a figure, a three segment rule, three
+ * rows and one button.
+ *
+ * ── WHY IT IS WHITE ──────────────────────────────────────────────────
+ *
+ * This panel is an ERRAND. You open it three times in the life of an
+ * account and then never again, and while it is open you are not reading
+ * the board behind it. The wallet modal, the deposit sheet, the wallet
+ * dropdown and both nav menus already settled on the Flash palette for
+ * exactly that class of surface, and a setup gate that stayed black was
+ * the last errand still dressed as chrome.
+ *
+ * The palette, verbatim: #0B0E14 ink on #FFFFFF, #3E4A47 for body,
+ * #8A9591 for quiet, #E8ECEA and #E1E6E4 for the recessed and the
+ * hairline, #134E4A for a step that is settled.
+ *
+ * ── WHAT THE FLIP ALSO TOOK OUT ──────────────────────────────────────
+ *
+ * Every label on this panel was 9.5px, uppercase, at 0.13em tracking:
+ * the board's treatment, borrowed onto a dialog that is not the board.
+ * TO FINISH SETUP, 0 OF 3 DONE, AWAITING, WAITING, HELD were five
+ * shouted captions on a screen with four sentences on it. They are
+ * sentence case at a size a person can read, which is what every other
+ * surface in this palette already does.
+ *
+ * ── TYPE ─────────────────────────────────────────────────────────────
+ *
+ *   FIGURES are Geist Sans with tabular numerals. ADDRESSES are Geist
+ *   Mono. Never `--mono` or `--sans`, which are theme axes a person
+ *   picks and would render this in whatever face is active.
+ */
+
+[data-agent-gate] {
+  --ag-ink: #0b0e14;
+  --ag-body: #3e4a47;
+  --ag-faint: #8a9591;
+  --ag-held: #b6bfbc;
+  --ag-line: #e1e6e4;
+  --ag-rim: #d3dad8;
+  --ag-panel: #e8ecea;
+  --ag-met: #134e4a;
+
+  width: 380px !important;
+  max-width: calc(100vw - 2rem) !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden;
+  background: #ffffff !important;
+  color: var(--ag-body) !important;
+  box-shadow:
+    0 0 0 1px var(--ag-rim),
+    0 24px 80px #00000059 !important;
+}
+
+/* The dialog's own close control is drawn for a dark panel. */
+[data-agent-gate] > button[type='button']:last-child,
+[data-agent-gate] [data-radix-dialog-close] {
+  color: var(--ag-faint) !important;
+  opacity: 1 !important;
+}
+
+[data-agent-gate] > button[type='button']:last-child:hover,
+[data-agent-gate] [data-radix-dialog-close]:hover {
+  color: var(--ag-ink) !important;
+}
+
+/* Blink paints an amber ring on anything focusable. */
+[data-agent-gate] :focus,
+[data-agent-gate] :focus-visible {
+  outline: none !important;
+}
+
+/*
+ * The label, in sentence case. It used to be the board's 9.5px uppercase
+ * caption, which on a panel this quiet was the loudest thing on it.
+ */
+[data-agent-gate] .agx-cap {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ag-faint);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+[data-agent-gate] .agx-cap.is-lit {
+  color: var(--ag-ink);
+  font-weight: 600;
+}
+
+[data-agent-gate] .agx-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.005em;
+}
+
+[data-agent-gate] .agx-key {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  color: var(--ag-ink);
+}
+
+[data-agent-gate] .agx-head {
+  padding: 18px 18px 16px;
+}
+
+[data-agent-gate] .agx-fig {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin-top: 7px;
+  color: var(--ag-ink);
+}
+
+/* The hero slot also carries words, and a word at 30px in a panel this
+   narrow wraps. Words come in smaller. */
+[data-agent-gate] .agx-fig.is-word {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+/*
+ * Three segments, one per precondition. A bar is the only honest way to
+ * say two of three without a row of numbered circles saying it in forty
+ * times the space.
+ */
+[data-agent-gate] .agx-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 15px;
+}
+
+[data-agent-gate] .agx-seg > span {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--ag-rim);
+}
+
+[data-agent-gate] .agx-seg > span.is-met {
+  background: var(--ag-met);
+}
+
+[data-agent-gate] .agx-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+[data-agent-gate] .agx-foot {
+  padding: 13px 18px 16px;
+  border-top: 1px solid var(--ag-line);
+}
+
+[data-agent-gate] .agx-btn {
+  width: 100%;
+  height: 38px;
+  border-radius: 9px;
+  background: var(--ag-ink);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 150ms ease;
+}
+
+[data-agent-gate] .agx-btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+[data-agent-gate] .agx-btn:disabled {
+  background: var(--ag-panel);
+  color: var(--ag-faint);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+[data-agent-gate] .agx-quiet {
+  background: none;
+  color: var(--ag-faint);
+  font-size: 11.5px;
+  font-weight: 500;
+  transition: color 140ms ease;
+}
+
+[data-agent-gate] .agx-quiet:hover {
+  color: var(--ag-ink);
+}
+
+/* The address is the thing you paste, so it gets the one plate on the
+   panel rather than sitting loose under the button. */
+[data-agent-gate] .agx-addr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 11px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: var(--ag-panel);
+}
+
+[data-agent-gate] .agx-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 11px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ag-body);
+  cursor: pointer;
+}
+
+[data-agent-gate] .agx-check input {
+  margin-top: 1px;
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  accent-color: var(--ag-met);
+}
+
+/* Pending and notes are the only places this panel is allowed a
+   sentence. */
+[data-agent-gate] .agx-note {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ag-faint);
+}
+
+[data-agent-gate] .agx-spin {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1.5px solid var(--ag-rim);
+  border-top-color: var(--ag-ink);
+  animation: agx-spin 700ms linear infinite;
+}
+
+@keyframes agx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-agent-gate] .agx-pending {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--ag-line);
+}
+
+/* ── the three steps ─────────────────────────────────────────────────
+ *
+ * The segment rule says HOW MANY are behind you. It cannot say which,
+ * and a person who opened this screen wants to know what the three
+ * things are, so the rows carry the detail the rule cannot.
+ *
+ * They are rows, not cards: mark, name, figure, state, on one line each,
+ * which costs 34px apiece against the six hundred the three cards spent.
+ */
+[data-agent-gate] .agx-steps {
+  padding: 3px 0 5px;
+  border-top: 1px solid var(--ag-line);
+}
+
+[data-agent-gate] .agx-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+}
+
+[data-agent-gate] .agx-step + .agx-step {
+  box-shadow: inset 0 1px 0 var(--ag-line);
+}
+
+[data-agent-gate] .agx-step-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--ag-body);
+}
+
+/* Awaiting, Ready and Held are three different widths, so without a
+   fixed column every figure would land on a different x. */
+[data-agent-gate] .agx-step-val {
+  width: 74px;
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 12px;
+  color: var(--ag-faint);
+}
+
+[data-agent-gate] .agx-step-state {
+  width: 62px;
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/*
+ * A square that is filled, hollow or barely there carries three states
+ * in six pixels, and the ORDER is already given by the rows being in an
+ * order, which is what the numbered circles were for.
+ */
+[data-agent-gate] .agx-mark {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 1px;
+}
+
+[data-agent-gate] .agx-mark.is-met {
+  background: var(--ag-met);
+}
+
+[data-agent-gate] .agx-mark.is-open {
+  box-shadow: inset 0 0 0 1px var(--ag-ink);
+}
+
+[data-agent-gate] .agx-mark.is-held {
+  box-shadow: inset 0 0 0 1px var(--ag-rim);
+}
+
+[data-agent-gate] .agx-step.is-met .agx-step-name {
+  color: var(--ag-faint);
+}
+
+[data-agent-gate] .agx-step.is-met .agx-step-state {
+  color: var(--ag-met);
+  font-weight: 600;
+}
+
+[data-agent-gate] .agx-step.is-open .agx-step-name {
+  color: var(--ag-ink);
+  font-weight: 500;
+}
+
+[data-agent-gate] .agx-step.is-open .agx-step-state {
+  color: var(--ag-body);
+}
+
+[data-agent-gate] .agx-step.is-held .agx-step-name,
+[data-agent-gate] .agx-step.is-held .agx-step-val,
+[data-agent-gate] .agx-step.is-held .agx-step-state {
+  color: var(--ag-held);
+}
+
+/*
+ * The optional row's own action. A text button, not a pill: an upgrade
+ * that looks like the panel's primary button is competing with the step
+ * that actually finishes setup.
+ */
+[data-agent-gate] .agx-run {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ag-ink);
+  transition: color 140ms ease;
+}
+
+[data-agent-gate] .agx-run:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+[data-agent-gate] .agx-run:disabled {
+  color: var(--ag-held);
+  cursor: not-allowed;
+}
+
+/*
+ * ── PREVIEW STRIP · DEV ONLY ─────────────────────────────────────────
+ *
+ * Deliberately ugly: dashed, off palette, unmistakably not part of the
+ * panel. Scaffolding that looks designed is scaffolding somebody ships.
+ */
+[data-agent-gate] .agx-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px dashed rgba(180, 72, 46, 0.4);
+  background: rgba(180, 72, 46, 0.07);
+}
+
+[data-agent-gate] .agx-preview-tag {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b4482e;
+  margin-right: 2px;
+}
+
+[data-agent-gate] .agx-preview-btn {
+  flex: 1 1 0;
+  height: 24px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #b4482e;
+  box-shadow: inset 0 0 0 1px rgba(180, 72, 46, 0.35);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+[data-agent-gate] .agx-preview-btn:hover {
+  background: rgba(180, 72, 46, 0.12);
+}
+
+[data-agent-gate] .agx-preview-btn.is-on {
+  background: #b4482e;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* ══ NARROW SCREENS ══════════════════════════════════════════════════
+ *
+ * The panel shipped at a fixed 380px with `max-width: calc(100vw - 2rem)`
+ * meant to clamp it. It does not: `vw` resolves against the layout
+ * viewport, which under device emulation, and inside some embedded
+ * browser views, is NOT the width the page is being laid out at. The
+ * computed max-width came back as 1252px on a 360px screen, so the panel
+ * kept its 380 and hung ten pixels off the left edge.
+ *
+ * Media queries do not have that problem, so the clamp is expressed as
+ * one. Below 420 the panel stops being a centred fixed width box and
+ * pins to both gutters instead, which needs no `vw` at all.
+ */
+@media (max-width: 420px) {
+  [data-agent-gate] {
+    width: auto !important;
+    max-width: none !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    /* Horizontal centring is what the gutters now do, so the transform
+       keeps only its vertical half. Leaving the X translate in place
+       would shove the pinned box half its own width off screen. */
+    transform: translateY(-50%) !important;
+  }
+
+  [data-agent-gate] .agx-head {
+    padding: 16px 15px 14px;
+  }
+
+  [data-agent-gate] .agx-step {
+    padding: 10px 15px;
+    gap: 8px;
+  }
+
+  [data-agent-gate] .agx-foot,
+  [data-agent-gate] .agx-pending {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* The two fixed columns are 136px of a 300px row. They can give a
+     little before the name has nowhere to go. */
+  [data-agent-gate] .agx-step-val {
+    width: 66px;
+  }
+
+  [data-agent-gate] .agx-step-state {
+    width: 56px;
+  }
+
+  /* Touch targets. 38px is what the nav settles on below 560, and a
+     panel with a checkbox and two buttons has no excuse to be smaller. */
+  [data-agent-gate] .agx-btn {
+    height: 42px;
+    font-size: 13.5px;
+  }
+
+  [data-agent-gate] .agx-check input {
+    width: 16px;
+    height: 16px;
+  }
+
+  [data-agent-gate] .agx-quiet {
+    padding: 6px 0 6px 10px;
+  }
+}
+
+/* The preview strip is scaffolding, but scaffolding that overflows hides
+   the thing being reviewed. It wraps. */
+@media (max-width: 420px) {
+  [data-agent-gate] .agx-preview {
+    flex-wrap: wrap;
+    padding: 7px 8px;
+  }
+
+  [data-agent-gate] .agx-preview-btn {
+    flex: 1 1 26%;
+    min-width: 72px;
+  }
+}

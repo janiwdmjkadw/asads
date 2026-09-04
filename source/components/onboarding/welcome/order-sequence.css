@@ -1,0 +1,229 @@
+/*
+ * The onboarding ground: a chart running, and a condition firing on it.
+ *
+ * ONE TIMELINE. Every element runs an 18s animation starting at the same
+ * moment and does its work inside its own percentage window of it. That is
+ * what keeps the beats in step — there are no independent durations to
+ * drift apart, and moving a beat means editing two numbers in one block
+ * here rather than retiming everything after it.
+ *
+ * The windows, in order:
+ *
+ *  always        the chart scrolls, one viewport per cycle
+ *    5 – 12%     the tap: the candle rings
+ *   12 – 44%     the conditions are set, staggered by a per-element delay
+ *   50 – 68%     approved
+ *   70 – 90%     THEN the order: the line drops into that price and rests
+ *   90 – 95%     it clears, and the chart runs on alone
+ *
+ * THE ORDER COMES LAST. It used to drop in at 11%, before the conditions
+ * had even appeared — which said the order was already resting there and
+ * the conditions were describing something that had already happened. You
+ * set the conditions, they are approved, and THEN the order is placed.
+ *
+ * THE CYCLE LENGTH IS THE SCROLL SPEED. A seamless loop travels exactly
+ * one copy of the series per cycle, so the two cannot be tuned apart —
+ * shortening the cycle to get the beats out faster also speeds the chart
+ * up, which is the trade this 18s makes against the 30s before it. The
+ * story now finishes in sixteen seconds rather than twenty seven, and the
+ * approval lands at nine seconds rather than twenty four.
+ *
+ * `os-scroll` and `os-scroll-mark` are that one speed written twice: the
+ * chart is 200% wide and travels -50% of itself, the marker sits in a
+ * 100vw box and travels -100vw. Both cover exactly one viewport per cycle,
+ * which is what glues the marker to its candle instead of letting it float
+ * over a line sliding underneath.
+ *
+ * The scroll is seamless because the series is a walk closed into a loop
+ * and drawn twice — see `OrderSequence.tsx`. There is no reveal and no
+ * wipe; the chart is simply always running, the way a chart does.
+ *
+ * `transform` and `opacity` only, on nine elements. Both are compositor
+ * properties, which is the entire reason this runs: an earlier ground
+ * animated `stroke-dashoffset` across every stroke of forty objects,
+ * measured 1,571 running animations on one screen, and moved nothing —
+ * browsers cap accelerated animations and re-raster the rest on the main
+ * thread.
+ *
+ * No cursor. A pointer implies a person clicking, which is the opposite of
+ * what this product does: the claim is that the agent acts while you are
+ * not there.
+ */
+
+@keyframes os-scroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes os-scroll-mark {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100vw, 0, 0); }
+}
+
+/* The ring the trigger throws off. It stops at 2.2 rather than opening
+   further: the marked candle sits low in the band, so a wider ring runs
+   off the bottom of the screen. */
+@keyframes os-click {
+  0%, 5%    { transform: scale(0.25); opacity: 0; }
+  6.5%      { opacity: 0.9; }
+  12%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* The order line DROPS INTO its price, rests there, and clears with
+   everything else.
+
+   It arrives AFTER the tap, not with it: the ring is the condition firing
+   on that candle, and the order is what the agent does about it. Placing
+   the line first said the order was already sitting there waiting, which
+   is a limit order — a different product than the one this page is
+   selling.
+
+   It rests for 72% of the cycle, which is the point: long enough to read
+   as a standing order rather than another thing blinking past, but it
+   still belongs to the loop. Taking it off the loop entirely was worse —
+   the line simply never left, and a sequence with one element pinned
+   forever stops reading as a sequence at all.
+
+   It comes from above, where the order sits relative to the dip it is
+   waiting for, and it eases, unlike everything else here. The point of the
+   beat is that the line ARRIVES at a price and stops, and a constant-speed
+   arrival does not stop, it just ends. The easing is declared inside the
+   keyframe because it governs the segment that STARTS there, which is the
+   only way to shape one leg of an animation sharing its clock with nine
+   others.
+
+   Vertical only. It is a full-width rule, so anything that moves it
+   sideways or scales it reads as the price itself moving. */
+@keyframes os-level {
+  0%, 70% {
+    opacity: 0;
+    transform: translate3d(0, -46px, 0);
+    animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1);
+  }
+  76%, 90%  { opacity: 1; transform: translate3d(0, 0, 0); }
+  95%, 100% { opacity: 0; transform: translate3d(0, 0, 0); }
+}
+
+/* The band the chart draws in, and the band anything pinned to the chart
+   measures against. Defined here so a media query can move both at once —
+   see the note in `OrderSequence.tsx`. */
+.os-root {
+  --os-band: 40%;
+}
+
+/* A drawn dash pattern rather than `border-style: dashed`, which renders
+   about a 3px dash at this width — a dotted hairline that reads as busy
+   next to a chart made of the same thin strokes. Longer segments with
+   clear gaps is what an order line looks like in a terminal. */
+.os-level {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    currentcolor 0 7px,
+    transparent 7px 15px
+  );
+}
+
+/* Every condition line runs this; the stagger is a per-element delay, so
+   a fourth line costs a line of markup and nothing else. */
+@keyframes os-line {
+  0%, 12% { opacity: 0; transform: translate3d(0, 10px, 0); }
+  16%     { opacity: 1; transform: translate3d(0, 0, 0); }
+  40%     { opacity: 1; transform: translate3d(0, 0, 0); }
+  44%     { opacity: 0; transform: translate3d(0, -8px, 0); }
+  100%    { opacity: 0; transform: translate3d(0, -8px, 0); }
+}
+
+@keyframes os-ok {
+  0%, 50%   { opacity: 0; transform: scale(0.92); }
+  53%, 64%  { opacity: 1; transform: scale(1); }
+  68%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* THE CONDITIONS sit in the LEFT GUTTER, not across the middle.
+   Centred, they rendered behind the card — the panel is a fixed 752px and
+   at 1440 it covers x 342–1098, which is exactly where three centred lines
+   of monospace land. So they live beside it, in the margin the panel
+   leaves, and they are shown only from the width where that margin is
+   actually wide enough to hold them. */
+.os-conditions {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .os-conditions {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: flex;
+    width: calc((100vw - 752px) / 2);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-left: clamp(24px, 2.6vw, 64px);
+    font-size: clamp(14px, 1.15vw, 20px);
+    transform: translateY(-50%);
+  }
+}
+
+/* Below that width the conditions are cut rather than shrunk: three lines
+   of monospace set small enough to clear the card are three lines nobody
+   reads, and a condition that wraps reads as two conditions. What is left
+   still tells the story — a chart running, a candle triggering, a fill.
+   Cutting them leaves a hole in the middle of the timeline, so the cycle
+   runs at 13s here. Every window is a percentage of the duration, so one
+   override retimes the whole sequence in proportion, the beats stay in
+   step, and the chart keeps the same unhurried feel. */
+@media (max-width: 1279px) {
+  .os-anim { animation-duration: 13s !important; }
+}
+
+/* A taller band on phones, where the chart is most of what is visible.
+   Setting the variable moves the chart AND everything pinned to a point on
+   it; the two cannot drift apart. */
+@media (max-width: 640px) {
+  .os-root { --os-band: 52%; }
+}
+
+/* PHONE: the conditions go to the TOP.
+   There is no gutter here — the card is full width — but centring the card
+   left a clear strip above it, and that strip is the only place three
+   lines can sit without landing on the card or on the chart.
+
+   THE HEIGHT BOUND IS LOAD BEARING. The strip is (viewport - card) / 2 and
+   the card is auto height, so the space is roughly 85px on a 640-tall
+   phone and 171px on an 812. Three lines at 12px come to about 80px: they
+   fit the short one with a few pixels to spare and nothing below it does,
+   so under 620 the block is dropped rather than sat on the card. The
+   approval goes for the same reason — a fourth line does not fit anywhere
+   in this range, and the tap and the order still carry the ending. */
+@media (max-width: 640px) and (min-height: 620px) {
+  .os-conditions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    width: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 10px 16px 0;
+    font-size: 12px;
+    transform: none;
+  }
+
+  .os-ok { display: none; }
+}
+
+/* Frozen rather than dropped, the same freeze-don't-drop policy the shader
+   ground had: the scene stays, it simply stops telling its story. */
+@media (prefers-reduced-motion: reduce) {
+  .os-anim {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

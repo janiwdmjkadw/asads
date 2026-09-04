@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * ACCOLADES, AS MEDALS
+ *
+ * The product's own owl, struck in a metal set by what the accolade is
+ * WORTH. Same palette as the cashback ladder, doing the same job in
+ * both places: saying how much something is worth before a number has
+ * to be read. Not a code — nobody has to be taught gold beats bronze.
+ *
+ * What it replaced: a bordered tile with an inset etch, a coloured
+ * status strip across its top edge, a gradient SVG progress ring, a
+ * tinted icon tile and a `+N pts` chip. Five decorations per accolade,
+ * six to a screen.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.acm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 18px 14px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+  transition: background-color 130ms var(--ease, ease);
+}
+
+.acm:hover { background: rgba(255, 255, 255, 0.055); }
+
+/* The one you can collect is the only lit card, which is what makes it
+   findable in a grid without a coloured strip on its edge. */
+.acm[data-ready] { background: rgba(255, 255, 255, 0.08); }
+.acm[data-ready]:hover { background: rgba(255, 255, 255, 0.105); }
+
+.acm-owl {
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 3px;
+  -webkit-mask-image: url('/assets/logo.svg');
+  mask-image: url('/assets/logo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: opacity 200ms var(--ease, ease);
+}
+
+.acm-n { font-size: 13px; font-weight: 500; color: var(--ink-1); }
+.acm-d { font-size: 11.5px; line-height: 1.4; color: var(--ink-3); }
+
+.acm-p {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+/* The metal's name, so the ranking is readable rather than something
+   you infer from the colour alone. */
+.acm-p > em { font-style: normal; font-size: 10.5px; color: var(--ink-3); opacity: 0.8; }
+
+.acm[data-ready] .acm-n { color: var(--ink-0); }
+
+/* Locked steps back, but only the type — the medal keeps its metal so
+   you can see what you are working toward. */
+.acm[data-locked] .acm-n,
+.acm[data-locked] .acm-d,
+.acm[data-locked] .acm-p { color: var(--ink-3); }
+
+.acm-go {
+  height: 26px;
+  margin-top: 6px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--ink-0);
+  color: #000;
+  font: 600 11.5px/1 var(--sans);
+  cursor: pointer;
+  transition: background-color 130ms var(--ease, ease), opacity 130ms var(--ease, ease);
+}
+.acm-go:hover:not(:disabled) { background: #dcdde0; }
+.acm-go:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.acm-s { margin-top: 6px; font-size: 11.5px; color: var(--ink-3); }
+
+/* Progress on the locked ones only. A claimed accolade sits at 100%
+   forever, and a full bar on it reads as something still running. */
+.acm-bar {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+}
+.acm-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* The figure hangs under the bar rather than taking a line of its own,
+   so a locked card is the same height as a claimed one. */
+.acm-bar > u {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  right: 0;
+  text-decoration: none;
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+/* The grid the medals sit in. */
+.acm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 860px) {
+  .acm-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .acm { padding: 16px 10px 14px; }
+  .acm-owl { width: 44px; height: 44px; }
+}

@@ -1,0 +1,639 @@
+@import './scrollbars.css';
+/*
+ * ── ONE HEIGHT FOR THE WHOLE ROW ────────────────────────────────────
+ *
+ * The field, Track and Import are the same object at three jobs, so
+ * their height is declared ONCE and every one of them takes it — as a
+ * fixed height AND as a min and max, so no padding, border, line-height
+ * or flex stretch anywhere downstream can add or remove a pixel from
+ * any of them independently.
+ */
+.tk-row,
+.tk-field,
+.tk-go,
+.tk-alt {
+  --tk-h: 30px;
+}
+
+.tk-field,
+.tk-go,
+.tk-alt {
+  box-sizing: border-box;
+  height: var(--tk-h);
+  min-height: var(--tk-h);
+  max-height: var(--tk-h);
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TRACKER'S FIELDS
+ *
+ * The add-field on both panels was built out of the theme's `--input-*`
+ * pair: a 5% white wash inside an 8% white border, with an inset white
+ * highlight along the top edge. That is a RAISED field — a chip you type
+ * into — and it is the one shape left over from the old surface. Every
+ * field we have taken since (the trade rail, the instant box) is the
+ * opposite: a near black well, RECESSED into the panel, ringed in a
+ * solid grey that is actually grey, and the ring is the only thing that
+ * moves on focus.
+ *
+ * The numbers here are the trade rail's own, not new ones.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* The bar itself is in `scrollbars.css` — shared with the docked
+   panels, which are the same object on another page. The import has to
+   be at the top of the file: CSS ignores an `@import` that follows a
+   rule, and this one spent a moment sitting mid file doing nothing. */
+
+/* ── the tape's gear, and what it opens ───────────────────────────── */
+
+/* No box. Every ringed control on this line is something you press to
+   make something happen; the gear only changes what is already there,
+   so it is the icon and nothing else until the pointer is on it. */
+.tk-gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #6e7178;
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tk-gear:hover,
+.tk-gear[data-on] { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+
+.tk-gear > svg { width: 14px; height: 14px; }
+
+/* Opens RIGHTWARDS. The gear moved next to the title, which is the
+   panel's left edge — hanging the menu off its right edge sent it into
+   the panel's own overflow clip and cut the checkboxes off. */
+/* ── the settings modal ───────────────────────────────────────────── */
+
+.tk-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+/* Tight. Nothing in here is content — it is a list of switches and a
+   list of names, and every pixel the card spends is panel it covers. */
+.tk-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100%);
+  max-height: min(440px, 76vh);
+  overflow: hidden;
+  border: 1px solid #272729;
+  border-radius: 12px;
+  background: #0c0c0d;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.7);
+}
+
+.tk-modal > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 9px 10px;
+  border-bottom: 1px solid #1c1c1f;
+}
+
+.tk-modal > header > b {
+  flex: 1 1 auto;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tk-modal > header > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #6e7178;
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.tk-modal > header > button:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.tk-modal > header > button > svg { width: 14px; height: 14px; }
+
+.tk-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 10px 10px;
+}
+
+/* A named run inside a settings menu. */
+.tk-sec {
+  padding: 8px 2px 4px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #55585f;
+}
+
+.tk-sec:not(:first-child) {
+  margin-top: 6px;
+  border-top: 1px solid #1c1c1f;
+  padding-top: 9px;
+}
+
+
+
+/* ── the tracked list inside a menu ───────────────────────────────── */
+
+/* Sticky, so the one control that makes a long list usable is still
+   there after you have scrolled into it. */
+.tk-find {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  margin: 1px 0 6px;
+  padding: 0 8px;
+  border: 1px solid #232326;
+  border-radius: 6px;
+  /* Opaque, and painting over the gap beside it: it rides above the
+     rows it filters while the card scrolls. */
+  background: #0c0c0d;
+  box-shadow: 0 0 0 5px #0c0c0d;
+}
+
+.tk-find > svg { width: 13px; height: 13px; flex: none; color: #4b4e55; }
+
+.tk-find > input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tk-find > input::placeholder { color: #4b4e55; }
+
+/*
+ * COLUMNS, not one running line. This is the whole reason the settings
+ * became a modal: a hundred wallets in a single column is a hundred rows
+ * to scroll, and in three columns it is thirty four — most of a tracked
+ * list is on screen at once, and finding one is looking rather than
+ * hunting.
+ */
+/*
+ * A PILL IS AS WIDE AS ITS NAME.
+ *
+ * This was a grid of equal 128px columns, so `kessel` got the same box
+ * as `deep pockets` and most of the card was empty pill. It wraps
+ * instead: each one takes the width of the word in it, and the row
+ * breaks when it runs out — a dozen short names now fit on three lines
+ * where the grid spent nine.
+ */
+.tk-plist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 1px 0 2px;
+}
+
+/*
+ * Each entry is an OUTLINED PILL with its cross inside it.
+ *
+ * They were bare rows in a grid: nothing bounded one wallet from the
+ * next, so three columns of them read as a block of text with crosses
+ * scattered through it and no line telling you which cross belonged to
+ * which name. A pill draws that line. It is also the shape a tracked
+ * thing already wears everywhere else in this product.
+ */
+.tk-prow {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 3px 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: #868d97;
+  transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+.tk-prow:hover {
+  border-color: #3a4150;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.tk-prow > span {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The cross is the button, and it is the only thing here that is. A row
+   in a list of a hundred cannot be a click target for a destructive
+   verb — one stray press and a wallet is gone. */
+/* The cross sits in its own round well at the end of the pill. */
+.tk-prow > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #3f4148;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.tk-prow:hover > button { color: #6e7178; }
+
+.tk-prow > button:hover {
+  background: color-mix(in srgb, var(--down) 22%, transparent);
+  color: var(--down);
+}
+
+.tk-prow > button > svg { width: 9px; height: 9px; }
+
+.tk-pempty {
+  margin: 0;
+  padding: 10px 9px;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: #4b4e55;
+}
+
+/* The switches wrap across the card rather than running one per line.
+   Five words stacked down the left edge of a 440px card is four fifths
+   of that card holding nothing. */
+.tk-switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 5px;
+  padding: 1px 0 2px;
+}
+
+.tk-col {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 24px;
+  padding: 0 9px 0 7px;
+  border-radius: 999px;
+  border: 1px solid #232326;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 120ms ease;
+}
+
+.tk-col:hover { border-color: #3a4150; background: rgba(255, 255, 255, 0.05); }
+
+/* A column that is off keeps its place in the list and loses its ink —
+   the list is the same five every time it opens, in the same order. */
+.tk-col[data-off] { color: #6e7178; }
+
+.tk-col > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tk-col > i {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #33333b;
+  border-radius: 4px;
+  background: transparent;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.tk-col > input:checked + i {
+  border-color: #ffffff;
+  background: #ffffff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7'/%3E%3C/svg%3E")
+    center / 10px 10px no-repeat;
+}
+
+/* The last one standing cannot be turned off — an empty tape is a bug,
+   not a preference. */
+.tk-col > input:disabled + i { opacity: 0.45; }
+.tk-col:has(> input:disabled) { cursor: default; }
+
+/* ── the tracked chips ────────────────────────────────────────────── */
+
+/*
+ * These are the only way to untrack a wallet or a handle, and they gave
+ * no sign of it: a flat pill with a `×` that lit slightly, in a popout
+ * you open specifically to remove something. Now the whole chip answers
+ * — its ring comes up, its label goes white — and the × turns the down
+ * red under the pointer, which is the one place on this page where red
+ * means "this button removes something" rather than "this trade sold".
+ *
+ * THE WHOLE CHIP IS THE BUTTON. Lighting the whole pill while only a
+ * 17px cross could be clicked is what made it feel chopped: the hover
+ * promised one target and the cursor only found it at the very end.
+ * Removal is the only thing this popout does, so the pill does it.
+ */
+.tk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 3px 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: #868d97;
+  cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+}
+
+.tk-chip:hover {
+  border-color: #3a4150;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.tk-chip > span:first-child { transition: color 130ms ease; }
+.tk-chip:hover > span:first-child { color: #ffffff; }
+
+/* The cross is a MARK of what the pill does, not a target inside it. It
+   still reddens, but on the pill's hover rather than its own. */
+.tk-chip > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  color: #55585f;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.tk-chip:hover > span:last-child {
+  background: color-mix(in srgb, var(--down) 22%, transparent);
+  color: var(--down);
+}
+
+/* The panel is a container so the tape inside can size to the SPLIT
+   rather than to the viewport. */
+.tk-panel {
+  container-type: inline-size;
+  container-name: tracker;
+}
+
+/*
+ * Field, Track, Import: one line, one centre.
+ *
+ * The gap has to be wide enough that the buttons read as SEPARATE
+ * objects. At 6px, against a field of the same height, they still
+ * looked like they were sitting in the well's right end — the same
+ * complaint they drew when they genuinely were inside it. 10px, and
+ * the buttons stand a few pixels shorter than the field, so nothing
+ * about the arrangement suggests one box.
+ */
+.tk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 30px, not 34. The field was sized like a form control on a page; it
+   is a one-line entry on a dense panel, and the tape under it runs at
+   34px rows — the thing you type into was taller than the rows it adds
+   to. Track and Import match it exactly, so the line is one height. */
+.tk-field {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #0c0c0d;
+  cursor: text;
+  transition: border-color 130ms ease;
+}
+
+/* No focus ring. The caret is already blinking in the field and the
+   status line under it is already answering what was typed — lighting
+   the border on top of that is a third thing saying the same thing. */
+
+.tk-in {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tk-in::placeholder { color: #6e7178; }
+
+/*
+ * ── THE ONE FILLED THING IN THE ROW ─────────────────────────────────
+ *
+ * Primary is a white plate with black type, and there is exactly one on
+ * each panel. It is ALWAYS that plate. It used to drop to 30% until the
+ * field held something valid, which is most of the time this panel is on
+ * screen — so the one control the panel exists for spent its life
+ * greyed out, reading as broken rather than as waiting. It cannot be
+ * submitted empty either way; it just no longer says so by going dead.
+ * Nothing here grows or shifts on hover.
+ */
+/* Track and Import are the SAME BUTTON at two jobs: one height, one
+   radius, one minimum width. They sat at different widths because one
+   had an icon and the other did not, and two buttons of different sizes
+   on one line read as two levels of importance rather than one primary
+   and one secondary. */
+.tk-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 88px;
+  height: 30px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 7px;
+  background: #ffffff;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: opacity 130ms ease, background-color 130ms ease, box-shadow 130ms ease;
+}
+
+/* The plate warms rather than moves. Nothing about the button changes
+   size or shape on hover — the only thing a white object can do to say
+   it is under the cursor is get brighter, so it does. */
+.tk-go:hover {
+  background: #f4f4f5;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.tk-go:active {
+  background: #e4e4e7;
+  box-shadow: none;
+}
+
+.tk-go:disabled { opacity: 1; }
+
+/*
+ * The secondary beside Track. It carried the field's own ring and the
+ * field's own grey — which is right for a control sitting IN a row of
+ * fields, and wrong for one sitting next to a white plate: at #272729 on
+ * #868d97 it read as part of the input, not as a button.
+ *
+ * The ring comes up and the label with it. Its mark is brighter than its
+ * word, because a tray with an arrow into it is what tells you at a
+ * glance that this one takes a list.
+ */
+.tk-alt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-width: 88px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid #272729;
+  border-radius: 7px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  border-color: #3a3a42;
+  color: #c3c7cd;
+  cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+}
+
+.tk-alt > svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: #ffffff;
+  stroke-width: 1.9;
+}
+
+.tk-alt:hover,
+.tk-alt[data-on] {
+  border-color: #5a5a66;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+/* Open also takes a plate, so a popout that is showing is legible as
+   showing without looking at what it opened. */
+.tk-alt[data-on] { background: rgba(255, 255, 255, 0.06); }
+
+/* The emoji picker's trigger, wearing the same ring as everything else
+   in the row so the field reads as one object. */
+.tk-lead {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #272729;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 130ms ease;
+}
+
+.tk-lead:hover { border-color: #3a4150; }
+
+/* The status line under the field. */
+.tk-note {
+  margin-top: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* The suggestions, on the field's own ground rather than the popover's. */
+.tk-menu {
+  overflow: hidden;
+  border: 1px solid #272729;
+  border-radius: 8px;
+  background: #0c0c0d;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.55);
+}
+
+.tk-menu button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.tk-menu button:hover { background: rgba(255, 255, 255, 0.06); }
+
+.tk-menu button > s {
+  margin-left: auto;
+  text-decoration: none;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: #6e7178;
+}

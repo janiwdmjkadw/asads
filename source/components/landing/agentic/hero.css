@@ -1,0 +1,167 @@
+/*
+ * THE CONSOLE IN THE AGENTIC HERO.
+ *
+ * A sheet of paper with a sentence being written on it. Not a terminal:
+ * no black ground, no monospace, no window chrome. The product accepts
+ * English, so the thing that shows it accepting English should look like
+ * writing rather than like a shell.
+ */
+
+.ah-console {
+  position: relative;
+  margin-top: 44px;
+  max-width: 940px;
+  border: 1px solid var(--lp-hairline);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(160%) blur(14px);
+
+  /*
+   * The lift is what holds it off the panels drifting behind the band. On
+   * a flat white ground the border alone was enough; with a moving field
+   * back there the sheet has to sit above it or the two read as one plane.
+   */
+  box-shadow:
+    0 1px 2px rgba(11, 11, 11, 0.04),
+    0 18px 44px -22px rgba(11, 11, 11, 0.22);
+}
+
+.ah-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--lp-hairline);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+/*
+ * THE STATE IS A WORD.
+ *
+ * Listening, then Read. No dot, no ring, no pill. The bands on the
+ * landing page settled this same argument the same way: the only thing
+ * separating a live state from a waiting one is how far forward the ink
+ * is.
+ */
+.ah-state {
+  color: var(--lp-ink-3);
+  transition: color 400ms ease-out;
+}
+
+.ah-console[data-read='true'] .ah-state {
+  color: var(--lp-ink-1);
+}
+
+/*
+ * THE SENTENCE.
+ *
+ * `min-height` holds three lines whatever is currently typed, so the
+ * console does not grow and shrink under the buttons while it types. The
+ * longest prompt in the set wraps to three at 940 and to five on a phone,
+ * which is what the media query at the bottom is for.
+ *
+ * `overflow-wrap: anywhere` because one of these prompts carries a 42
+ * character contract address, and a single unbreakable token runs
+ * straight out of the sheet.
+ */
+.ah-line {
+  margin: 0;
+  padding: 26px 22px 22px;
+  min-height: 132px;
+  font-size: clamp(17px, 2vw, 24px);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  color: var(--lp-ink-1);
+  overflow-wrap: anywhere;
+}
+
+/* The caret is the writing. It blinks only between keystrokes, which is
+   why it is a step animation rather than a fade. */
+.ah-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.16em;
+  background: var(--lp-ink-1);
+  animation: ah-blink 1s steps(1) infinite;
+}
+
+@keyframes ah-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * THE READ.
+ *
+ * Three rows naming what came out of the sentence. It is always in the
+ * layout and only its opacity changes: unmounting it costs the console
+ * the height of three rows every few seconds and the page jumps.
+ */
+.ah-read {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--lp-hairline);
+  opacity: 0;
+  transition: opacity 420ms ease-out;
+}
+
+.ah-console[data-read='true'] .ah-read {
+  opacity: 1;
+}
+
+.ah-read > div {
+  padding: 16px 22px 18px;
+}
+
+.ah-read > div + div {
+  border-left: 1px solid var(--lp-hairline);
+}
+
+.ah-read span {
+  display: block;
+  font-size: 12.5px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+.ah-read b {
+  display: block;
+  margin-top: 5px;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 21px;
+  color: var(--lp-ink-1);
+}
+
+/*
+ * ── BELOW 720 ────────────────────────────────────────────────────────
+ *
+ * The read stacks. Three columns on a phone gives each about 90px, which
+ * breaks "the first new mint about it" across five lines and turns the
+ * clearest part of the band into a wall.
+ */
+@media (max-width: 719px) {
+  .ah-line {
+    min-height: 176px;
+  }
+
+  .ah-read {
+    grid-template-columns: 1fr;
+  }
+
+  .ah-read > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--lp-hairline);
+  }
+}

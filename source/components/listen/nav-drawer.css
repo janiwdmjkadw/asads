@@ -1,0 +1,479 @@
+/*
+ * THE NAV DRAWER — the `vault` treatment off the `/whatever` sheet.
+ *
+ * Black, white and grey. No accent: the drawer is chrome, and the accent
+ * belongs to the board.
+ *
+ * ── THE RAMP ─────────────────────────────────────────────────────────
+ *
+ *   11    the second currency, a keycap
+ *   13    the account glyph row
+ *   15    a destination
+ *   38    the balance
+ *
+ * One 4px spacing step, one hairline weight, and radii of 999 for a
+ * chip, 13 for a press, 14 for the card, 20 for the sheet.
+ */
+
+[data-nav-drawer-scrim] {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(2px);
+  animation: nvd-fade 160ms ease-out;
+}
+
+[data-nav-drawer] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(340px, calc(100% - 44px));
+  padding: 12px 16px 14px;
+  background: #0b0b0c;
+  box-shadow: -1px 0 0 rgba(255, 255, 255, 0.08);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.92);
+  -webkit-font-smoothing: antialiased;
+  animation: nvd-slide 200ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* 0.07, up from 0.05. Now that the card's fill is gone the rules sit
+     on the drawer's own black rather than on a 3.5% plate, and at 5%
+     they were a hairline you could not see, which is a hairline that
+     should not have been written. */
+  --nvd-line: rgba(255, 255, 255, 0.07);
+  --nvd-ink-2: rgba(255, 255, 255, 0.58);
+  --nvd-ink-3: rgba(255, 255, 255, 0.34);
+}
+
+[data-nav-drawer] *,
+[data-nav-drawer] *::before,
+[data-nav-drawer] *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * THE RESET, AND THE TRAP IN IT.
+ *
+ * `[data-nav-drawer] button` is an attribute plus an element, which
+ * outranks a bare class: `.nvd-act { background: #fff }` lost to the
+ * `transparent` here and Ask Soren rendered as a label floating on the
+ * drawer's own ground. Anything below that sets a background on a button
+ * in its RESTING state has to carry the attribute too, and the ones that
+ * do say so where they are.
+ */
+[data-nav-drawer] button {
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+@keyframes nvd-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes nvd-slide {
+  from {
+    transform: translateX(12px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-nav-drawer-scrim],
+  [data-nav-drawer] {
+    animation: none;
+  }
+}
+
+/* ── the identity row ─────────────────────────────────────────────── */
+
+.nvd-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 40px;
+  flex: 0 0 auto;
+}
+
+.nvd-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px 0 4px;
+  border-radius: 999px;
+  color: var(--nvd-ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.nvd-who:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nvd-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nvd-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nvd-whoname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+.nvd-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: var(--nvd-ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.nvd-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── the balance ──────────────────────────────────────────────────── */
+
+/*
+ * The biggest thing in the drawer, because on a phone it is what the
+ * menu gets opened to check. It is a press, and it goes to the portfolio
+ * — the page where the figure is explained.
+ */
+.nvd-bal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  flex: 0 0 auto;
+  margin: 18px -8px 0;
+  padding: 12px 8px;
+  border-radius: 14px;
+  text-align: left;
+  transition: background-color 140ms ease;
+}
+
+.nvd-bal:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nvd-balrow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* 34, down from 38. At 38 with the tracking it was carrying, the figure
+   ran within a few pixels of the drawer's right edge on a 360 screen. */
+.nvd-balfig {
+  font-size: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* No tracking. Three letters spread apart beside a figure that is
+   tightened is two type treatments fighting inside one line. */
+.nvd-balunit {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--nvd-ink-3);
+}
+
+/*
+ * USDC on its own line rather than beside the first figure: they are not
+ * the same currency, and setting them at one size invites reading the
+ * second as the first one's conversion.
+ *
+ * IN THE SANS. It was monospaced, which drew a slashed zero directly
+ * under a balance set in the sans — two faces, two zeros, one column of
+ * money.
+ */
+.nvd-balsub {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--nvd-ink-3);
+}
+
+/* ── the presses ──────────────────────────────────────────────────── */
+
+.nvd-acts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  flex: 0 0 auto;
+}
+
+/*
+ * ASK SOREN IS THE ONE FILLED PRESS.
+ *
+ * It was a 6% plate, which at this size on this ground is very close to
+ * nothing: the label read as centred text floating between the balance
+ * and the list. It is the only action in the drawer, so it is the only
+ * white thing in it.
+ */
+/* Carries the attribute so it beats the reset above. */
+[data-nav-drawer] .nvd-act {
+  /* The head takes `currentColor`, which is black on this plate, so the
+     eyes have to go the other way or the face is one silhouette. */
+  --nvd-eye: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 44px;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #000000;
+  transition: background-color 140ms ease;
+}
+
+[data-nav-drawer] .nvd-act.is-solo {
+  grid-column: 1 / -1;
+}
+
+[data-nav-drawer] .nvd-act:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+/* The inert form the drawer renders when the bar has no opener to give
+   it. It must not look pressable, so it gives up the fill entirely. */
+[data-nav-drawer] div.nvd-act {
+  cursor: default;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--nvd-ink-3);
+}
+
+[data-nav-drawer] div.nvd-act:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nvd-face {
+  flex: 0 0 auto;
+}
+
+/*
+ * The bar's one conditional action, on its own row: it is the only thing
+ * here that is sometimes offered, and pairing it with a permanent
+ * control would make the pair jump between widths.
+ *
+ * Outlined, not filled. Ask Soren above it is already the white one, and
+ * two filled presses in a column is two primaries.
+ */
+/* Carries the attribute for the same reason `.nvd-act` does. */
+[data-nav-drawer] .nvd-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  margin-top: 8px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+
+[data-nav-drawer] .nvd-action:hover {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+
+/* ── the destinations ─────────────────────────────────────────────── */
+
+/*
+ * NO CARD.
+ *
+ * The list used to sit in a rounded box with its own 3.5% fill and a 5%
+ * ring, and inside that box every row had a hairline, and the current
+ * row had a plate as well. Four ways of drawing structure stacked on one
+ * list of seven words — and the box was set to `flex: 1 1 auto` so it
+ * swallowed the leftover height, which meant a fifth of the drawer was
+ * an empty grey rectangle with a border on it.
+ *
+ * It is a list. Full bleed to the drawer's edges, one hairline weight
+ * between rows, and nothing behind it. The leftover space at the bottom
+ * is the drawer's own ground, which needs no explanation.
+ */
+.nvd-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  /* Out to the drawer's padding, so the rules run edge to edge and the
+     marker on the current row can sit on the edge itself. */
+  margin: 18px -16px 0;
+  border-top: 1px solid var(--nvd-line);
+  overflow: hidden auto;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
+.nvd-list::-webkit-scrollbar {
+  display: none;
+}
+
+.nvd-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  height: 50px;
+  flex: 0 0 auto;
+  padding: 0 16px;
+  text-align: left;
+  color: var(--nvd-ink-2);
+  border-bottom: 1px solid var(--nvd-line);
+  transition: background-color 140ms ease-in-out, color 140ms ease-in-out;
+}
+
+.nvd-row:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/*
+ * WHERE YOU ARE, IN ONE SIGNAL.
+ *
+ * It was a 7% plate, which is the hover plate at a slightly different
+ * strength — so "the page you are on" and "the row under your finger"
+ * were the same picture twice over. It is a rule on the edge and full
+ * ink, and hover keeps the plate to itself.
+ */
+.nvd-row[aria-current='page'] {
+  color: #ffffff;
+  box-shadow: inset 2px 0 0 #ffffff;
+}
+
+.nvd-rowglyph {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  flex: 0 0 auto;
+  color: var(--nvd-ink-3);
+  transition: color 140ms ease-in-out;
+}
+
+.nvd-row:hover .nvd-rowglyph,
+.nvd-row[aria-current='page'] .nvd-rowglyph {
+  color: #ffffff;
+}
+
+.nvd-rowlabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.nvd-row[aria-current='page'] .nvd-rowlabel {
+  font-weight: 600;
+}
+
+/* ── the account foot ─────────────────────────────────────────────── */
+
+/*
+ * Three equal columns, each a glyph over its word. The words are why
+ * this is a row of three and not a row of three guesses.
+ */
+.nvd-foot {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin: 0 -6px;
+  padding-top: 8px;
+  flex: 0 0 auto;
+}
+
+.nvd-footbtn {
+  display: inline-flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 9px 4px;
+  border-radius: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--nvd-ink-3);
+  transition: background-color 140ms ease-in-out, color 140ms ease-in-out;
+}
+
+.nvd-footbtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+@media (max-width: 380px) {
+  [data-nav-drawer] {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .nvd-list {
+    margin-left: -14px;
+    margin-right: -14px;
+  }
+
+  .nvd-row {
+    padding: 0 14px;
+  }
+
+  .nvd-balfig {
+    font-size: 31px;
+  }
+}

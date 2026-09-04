@@ -1,0 +1,193 @@
+/*
+ * THE CONDITIONALS BAND: TWO LEGS, RUNNING.
+ *
+ * The layout and the states. What each leg is doing at any moment comes
+ * from Agent.tsx; this file only says how the pair sits and what a live
+ * state looks like against a waiting one.
+ */
+
+/*
+ * THE DIPTYCH TAKES THE FULL COLUMN.
+ *
+ * It was capped at 1080 and centred, which made the band the only thing
+ * on the page narrower than the page. Full 1400 now, like every other
+ * band.
+ *
+ * The GUTTER is what keeps the two halves feeling chained rather than
+ * merely adjacent, and it stays narrow: 76px between two 660px legs
+ * reads as one order in two parts. Widening the gap along with the
+ * columns is what would have made them look unrelated.
+ */
+[data-lp-run] .run-dip {
+  display: grid;
+  grid-template-columns: 1fr 76px 1fr;
+  width: 100%;
+  border-top: 1px solid var(--lp-hairline);
+  padding-top: 40px;
+}
+
+[data-lp-run] .run-leg {
+  padding-right: 10px;
+  transition: opacity 500ms ease-out;
+}
+
+[data-lp-run] .run-leg.is-right {
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+/*
+ * A leg that has not been released yet is held back, not hidden. Seeing
+ * it sit there waiting is the argument the band is making, so it has to
+ * stay legible.
+ */
+[data-lp-run] .run-leg.is-waiting {
+  opacity: 0.46;
+}
+
+[data-lp-run] .run-legtop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 14px;
+}
+
+/*
+ * THE STATE IS A WORD, NOT A CHIP.
+ *
+ * Armed, searching, match, bought, queued. The only thing separating a
+ * state that is happening from one that is waiting is how far back the
+ * ink is. This band used to carry ringed chips with dots in them and
+ * they were the most dated object on the page.
+ */
+[data-lp-run] .run-state {
+  color: var(--lp-ink-3);
+  transition: color 400ms ease-out;
+}
+
+[data-lp-run] .run-state.is-live {
+  color: var(--lp-ink-1);
+}
+
+/* the meter, the same rail every band on this page is drawn with */
+[data-lp-run] .run-track {
+  position: relative;
+  height: 3px;
+  margin: 20px 0 12px;
+  border-radius: 2px;
+  background: rgba(11, 11, 11, 0.05);
+  box-shadow: inset 0 0 0 1px var(--lp-hairline);
+  overflow: hidden;
+}
+
+[data-lp-run] .run-track > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 2px;
+  background: var(--lp-ink-1);
+  transition: width 260ms linear;
+}
+
+/* the two exits, each on its own stub */
+[data-lp-run] .run-either span {
+  position: relative;
+  display: block;
+  padding-left: 20px;
+}
+
+[data-lp-run] .run-either span::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 10px;
+  height: 1px;
+  background: var(--lp-hairline);
+}
+
+/*
+ * THE CHAIN, IN THE GUTTER.
+ *
+ * It lights at the exact moment leg one settles, because that is the
+ * moment the dependency is discharged. Every static version of this band
+ * had to SAY that leg two waits on settlement; here the line does it.
+ */
+[data-lp-run] .run-chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+[data-lp-run] .run-chainline {
+  flex: 1 1 auto;
+  width: 1px;
+  background: var(--lp-hairline);
+  transition: background-color 500ms ease-out;
+}
+
+[data-lp-run] .run-chaindot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--lp-hairline);
+  transition:
+    background-color 500ms ease-out,
+    transform 500ms ease-out;
+}
+
+[data-lp-run] .run-chain.is-on .run-chainline,
+[data-lp-run] .run-chain.is-on .run-chaindot {
+  background: var(--lp-ink-1);
+}
+
+[data-lp-run] .run-chain.is-on .run-chaindot {
+  transform: scale(1.25);
+}
+
+/*
+ * ── BELOW `lg` ───────────────────────────────────────────────────────
+ *
+ * The legs stack and the gutter becomes a row between them, so the chain
+ * still sits physically between the two things it connects rather than
+ * beside them. Side by side at 375 gives each leg about 160px, which is
+ * narrower than the sentences inside them.
+ */
+@media (max-width: 1023px) {
+  [data-lp-run] .run-dip {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  [data-lp-run] .run-leg,
+  [data-lp-run] .run-leg.is-right {
+    padding: 0;
+  }
+
+  [data-lp-run] .run-chain {
+    flex-direction: row;
+    height: 46px;
+    padding: 6px 0;
+  }
+
+  [data-lp-run] .run-chainline {
+    width: auto;
+    height: 1px;
+    flex: 1 1 auto;
+  }
+}
+
+@keyframes runsay {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,1880 @@
+/*
+ * ── THE TRADE PAGE'S TOKEN HEADER ────────────────────────────────────
+ *
+ * Everything the band is made of. It was written on the `/whatever`
+ * sheet and moved here whole, unchanged.
+ *
+ * ── ONE SHEET, TWO SURFACES ──────────────────────────────────────────
+ *
+ * `sandbox/art/art.css` imports this file rather than keeping a copy, so
+ * the mock on `/whatever` and the real header cannot drift. Same
+ * arrangement `token-row.css` already has with the Discover row: the
+ * sheet you design on and the thing you ship are the same CSS.
+ *
+ * ── IT IMPORTS THE ROW'S SHEET, ON PURPOSE ───────────────────────────
+ *
+ * The header leans on `token-row.css` for the picture (`.ar`), its badge
+ * (`.ar-pad`) and the audit leaf (`.arc-leaf`). Those are the row's and
+ * are not duplicated here — but a dependency you rely on and do not
+ * declare is one that works by luck.
+ *
+ * It did, briefly: the header rendered correctly on `/trade` because
+ * Discover loads that sheet on the same layout, and rendered with a
+ * 300px picture on `/whatever` where nothing else had. The import makes
+ * it true on any page that mounts the component.
+ */
+
+@import '../discover/column/token-row.css';
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TRADE HEADER
+ *
+ * The band across the top of a coin's page. Left half only so far.
+ *
+ * ── IT BORROWS THE ROW'S PARTS ───────────────────────────────────────
+ *
+ * The picture is `.ar`, the badge is `.ar-pad`, the leaf is `.arc-leaf`
+ * — all `token-row.css`, all unchanged. What is below is the band around
+ * them and the two sizes that differ, and nothing else.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.th-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /*
+   * ── THE BAND MEASURES ITSELF, NOT THE WINDOW ──────────────────────
+   *
+   * Every responsive rule below was written against the viewport, back
+   * when the header ran the full width of it. It does not any more: a
+   * docked tracker takes up to 480px off the side of the page, and the
+   * header gives that up with everything else. On a 1200px window with
+   * a panel out, this band is 720 wide while `@media` still reads 1200,
+   * so nothing fires and the figures crowd into each other.
+   *
+   * So each `@media` block gets a `@container header` twin at the same
+   * breakpoint. The media rule is still the one that matters on a
+   * phone, where the window IS the band; the container rule is what
+   * fires on a desk when a panel is docked. They carry identical
+   * declarations on purpose — the reasoning for each stays with the
+   * media block, and the twin is a copy, not a variant.
+   *
+   * Safe to make a container here because nothing inside the header is
+   * `position: fixed` — an inline-size container would become the
+   * containing block for it, which is the trap that keeps the page
+   * wrapper from being one (the docks themselves are fixed and live
+   * there).
+   */
+  container-type: inline-size;
+  container-name: header;
+}
+
+/* The sheet's own label keeps the page inset the bar gives up. */
+.th-wrap > .qs-title {
+  padding-inline: 20px;
+}
+
+/*
+ * ── FULL BLEED, AND SQUARE ───────────────────────────────────────────
+ *
+ * It ran as a rounded card inset from the page. It is not a card — it is
+ * the top edge of the trade page, the way the nav above it is the top
+ * edge of the app, and a band that runs to both bezels has no corners to
+ * round and no left or right edge to draw.
+ *
+ * So: no radius, and the border is TOP AND BOTTOM ONLY. A vertical
+ * hairline at each end of a full width bar is a line drawn against the
+ * screen edge, which reads as a rendering fault rather than as a frame.
+ *
+ * 20px inside, up from 14. With the whole page width to sit in, the
+ * content was starting a thumb's width from the glass.
+ */
+/*
+ * ── THE TWO HALVES SIT TOGETHER, NOT AT THE ENDS ─────────────────────
+ *
+ * This was `space-between`, which threw the figures to the far right of
+ * a full width bar and left a lake of black in the middle. On a wide
+ * screen that is two separate objects with nothing between them, and the
+ * price ends up further from the coin it belongs to than from the edge
+ * of the window.
+ *
+ * They are ONE statement — this coin, and what it is worth — so the
+ * figures start where the identity ends and the empty space goes to the
+ * right of both, where it costs nothing.
+ *
+ * 17 between them, halved from 34. The wide gap was a hedge against the
+ * old layout: with the halves at opposite ends it never showed, and set
+ * beside each other it re-opened the hole it was meant to close. It only
+ * has to be larger than the 22 inside the figures to read as the seam
+ * between two groups — which it is not, and does not need to be, because
+ * the market cap's size already marks where the second group starts.
+ */
+.th {
+  /* Above the chart. The bar comes first in the document, so without a
+     stacking order of its own its tooltips opened UNDER the pane below
+     it — which is what made them look like they were not opening. */
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 17px;
+  min-height: 54px;
+  /*
+   * NO RIGHT PADDING. The flow block carries it instead — see
+   * `.th-flow`. The rail below this bar is flush to the screen edge, so
+   * for its left hairline to continue this block's divider, this block
+   * has to reach the edge too. With the padding out here it stopped 18px
+   * short and the two edges were 12px apart.
+   */
+  padding: 9px 0 9px 18px;
+  background: #000000;
+  border-top: 1px solid #1c1c20;
+  border-bottom: 1px solid #1c1c20;
+  font-family: var(--sans);
+}
+
+/* ── identity ─────────────────────────────────────────────────────── */
+
+.th-id {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  /* The picture is its own object; the two lines beside it are one
+     block. 12 keeps them apart without breaking the pair. */
+  gap: 12px;
+}
+
+/*
+ * The row's art block is 52px and carries a contract address under it.
+ * Here it is 38 and there is no address — the mint is not on this bar,
+ * because the page IS the mint.
+ */
+.th .ar {
+  --ar-size: 34px;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+/* The badge scales with it: 17px on a 52px block is 13 on a 38. */
+.th .ar-pad {
+  width: 12px;
+  height: 12px;
+  right: -4px;
+  bottom: -4px;
+}
+
+.th-lines {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  /* 3px. Two lines about the same coin want to read as one block; at 6
+     they start to read as two rows. */
+  gap: 3px;
+}
+
+/*
+ * ── THE GAPS ARE WIDE ────────────────────────────────────────────────
+ *
+ * 11px on the first line and 13 on the second, up from 7 and 8.
+ *
+ * The tight numbers came from a Discover row, where a line of marks is
+ * competing with two more lines and a set of figures for about 600px —
+ * every pixel there is spent. This bar has the whole width of the page
+ * and holds a name, a sentence and nine marks, so the same spacing made
+ * a cramped little cluster in the corner of an empty band.
+ *
+ * The SECOND line is wider than the first, not tighter. Its items are
+ * bare marks with nothing between them but space, where the first line
+ * has words doing part of the separating — so the marks need more of it
+ * to stop reading as one strip of texture.
+ */
+.th-line {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+}
+
+.th-line-2 {
+  gap: 13px;
+}
+
+/*
+ * ── THE ROW'S TICKER TREATMENT, NOT A NEW ONE ────────────────────────
+ *
+ * This was 700 and untracked, which is a weight nothing else in the
+ * product uses. `.arc-ticker` on a Discover row is 550 with -0.01em, and
+ * its own comment explains why it came down: four bold things on one row
+ * is four things shouting, and the ticker only needs enough weight to
+ * lead the line it is on.
+ *
+ * The same holds here with one word and a sentence — 700 was doing the
+ * job of a headline for a thing that is not one.
+ *
+ * 15px rather than the row's 12: this is the page's subject, where on a
+ * row it is one of a hundred.
+ */
+.th-tick {
+  font-size: 13.5px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.th-desc {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/*
+ * 0.62, up from 0.38.
+ *
+ * These were set at the grey a Discover ROW uses, and that grey is
+ * calibrated for a row: a mark there sits among a ticker, a name, four
+ * figures and three coloured pills, so it can afford to be the quietest
+ * thing on the line.
+ *
+ * This bar holds almost nothing — a name, a sentence, an age, and these.
+ * At 0.38 with nothing to be quiet against they read as disabled rather
+ * than as restrained, which is the same trap the footer marks fell into.
+ */
+.th-i {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/*
+ * ── THE MARKS ARE A POINT UP FROM THE ROW'S ──────────────────────────
+ *
+ * 16, against the 15.5 they take on a Discover row. A row is 61px tall
+ * with three lines; this bar is 56 with two, so the marks have more air
+ * around them and read smaller at the same number.
+ *
+ * The leaf comes in at its row size and is lifted with the rest —
+ * `.arc-leaf` sets its own dimensions, so it is named explicitly here
+ * rather than inheriting.
+ */
+.th .th-i > svg,
+.th .arc-leaf > svg {
+  width: 13.5px !important;
+  height: 13.5px !important;
+}
+
+.th-age {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #f0a03c;
+  white-space: nowrap;
+}
+
+/* Wide: it heads the marks line. The copy beside the ticker is not
+   drawn. */
+.th-age-top {
+  display: none;
+}
+
+.th-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.th-watch > svg {
+  width: 13px;
+  height: 13px;
+  /* A step under the figure it introduces, and lifted with the rest. */
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/*
+ * The only bordered element on the bar. Everything else on this line is
+ * a fact about the coin; this is the one thing you press, so it is the
+ * one thing drawn as a control.
+ */
+.th-fund {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+  padding: 0 5px;
+  border: 1px solid rgba(232, 179, 61, 0.4);
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #e8b33d;
+  white-space: nowrap;
+}
+
+.th-fund > svg {
+  width: 9.5px;
+  height: 9.5px;
+  /* The owl is a filled mark taking `currentColor`, so it inherits the
+     pill's gold without being told. */
+  color: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * HOVER
+ *
+ * ── THE ROW'S HOVER, NOT A NEW ONE ───────────────────────────────────
+ *
+ * `opacity: 0.5` over 130ms, which is exactly what `.arc-web`,
+ * `.arc-attr` and `.arc-stat` do on a Discover row. Nothing moves,
+ * nothing changes colour, no plate appears behind anything.
+ *
+ * That matters more here than on a row: this bar sits under a live
+ * chart, and a mark that grew, shifted or lit up on hover would be
+ * motion in the corner of your eye while a price is moving. Fading is
+ * the only feedback that says "this is pressable" without competing.
+ *
+ * The whole identity block is one target for the pointer, so the
+ * picture, the ticker and the sentence take it too — clicking any of
+ * them goes to the same place.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.th-i,
+.th-watch,
+.th-fund,
+.th .arc-leaf,
+.th-art-hit {
+  cursor: pointer;
+}
+
+.th-i > svg,
+.th-watch > svg,
+.th-fund,
+.th .arc-leaf > svg,
+.th-art-hit {
+  transition: opacity 130ms ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * WHAT IT IS WORTH — the right half
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.th-figs {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  /* 22px between readings: wide enough that five stacked pairs read as
+     five columns rather than as one block of small type. */
+  gap: 22px;
+}
+
+/*
+ * 19px against the stats' 12.5. The gap is deliberate and large — this
+ * is the number the page exists to show, and at 14 or 15 it was simply
+ * the first of six figures rather than the headline over five.
+ */
+.th-mc {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.th-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+/*
+ * ── THE LABELS ARE GREY ──────────────────────────────────────────────
+ *
+ * They were pink, then arctic mint, and the honest answer is that they
+ * should not be a colour at all.
+ *
+ * ── WHY NOT ──────────────────────────────────────────────────────────
+ *
+ * Every hue on this board already means something. Green is a rising
+ * figure and a healthy holder count, red is a fall, gold is graduation
+ * and the dev's record, pink is a charity coin, violet is a boost, teal
+ * is SOL. The palette is nearly spent, and each one is spent on a VALUE
+ * — something true about the coin that the colour is reporting.
+ *
+ * The word "Price" is not a value. Tinting it puts a signal colour on
+ * furniture, and every hue that goes to furniture is one the board can
+ * no longer use to mean something. The mint had the extra problem of
+ * sitting a step from the up green, close enough that a label could read
+ * as a verdict on the number under it.
+ *
+ * ── WHAT REPLACES IT ─────────────────────────────────────────────────
+ *
+ * Tone and tracking, which is what `.arc-key` on a Discover row already
+ * does: a grey label, tracked, under a near white figure. The contrast
+ * between the two lines is what says which is the reading — no colour
+ * needed, and it holds in a theme where the accents change.
+ */
+.th-stat-k {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #6e7178;
+}
+
+/* Wide: the label is written out over its figure. The short form is in
+   the DOM but not shown — see the narrow block at the end of this file. */
+.th-k-short {
+  display: none;
+}
+
+.th-stat-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+/*
+ * The subscript in a sub-cent price is a COUNT of leading zeros. It sits
+ * on the baseline rather than under it, a step down in size and tone, so
+ * it cannot be misread as a digit of the number it is describing.
+ */
+.th-stat-v sub {
+  bottom: -0.12em;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/*
+ * The SOL mark carries its own gradient and ignores `currentColor` — it
+ * is the one mark on this bar that is not tinted by the text around it,
+ * because it is a brand mark rather than a glyph.
+ */
+.th-sol {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Supply is the one reading you can ask to be recalculated, so it is the
+   one that carries a control inside it. */
+.th-re {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+.th-re > svg {
+  width: 12px;
+  height: 12px;
+}
+
+/*
+ * ── THE CALLS ARE NOT A READING ──────────────────────────────────────
+ *
+ * A count of who called this coin, and the button that broadcasts your
+ * own. Neither is a market figure, so they sit past the stats with more
+ * air than anything between them — 28 against 22 — and neither carries a
+ * pink label, because neither is one of the five.
+ */
+/*
+ * The marks-line copy only exists under 480 — see the tight block near
+ * the end of this file.
+ *
+ * Written as `.th-calls.th-calls-line2` rather than the class alone: the
+ * element carries BOTH classes, and `.th-calls` below sets
+ * `display: inline-flex`. At equal specificity the later rule wins, so a
+ * single-class hide here was overridden and the count rendered twice —
+ * once on the marks line and once with the figures.
+ */
+.th-calls.th-calls-line2 {
+  display: none;
+}
+
+.th-calls {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 6px;
+  font-size: 11.5px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+/* Gold, the same value the board already spends on graduation and on the
+   dev's record — this is the same crown. */
+.th-crown {
+  display: inline-flex;
+  align-items: center;
+  color: #e8b33d;
+}
+
+.th-crown > svg {
+  width: 13px;
+  height: 13px;
+}
+
+/*
+ * ── THE CALL BUTTON IS SOLID WHITE ───────────────────────────────────
+ *
+ * It started as a hairline and a 10% violet tint, borrowed from the Fund
+ * pill. Fund is right to have that: funding a listing is a thing you do
+ * once, if ever, and it should not compete with the price beside it.
+ *
+ * Calling a coin is the opposite — it is what this bar wants from you —
+ * and in that treatment it was the faintest object at the end of six
+ * figures drawn louder than it. It read as dead because it was.
+ *
+ * ── WHY WHITE AND NOT A COLOUR ───────────────────────────────────────
+ *
+ * Every hue on this board is spoken for: green is a rising figure, gold
+ * is graduation and the dev's record, red is a fall, teal is SOL. White
+ * is the one value left that can only mean "this is the control", and it
+ * is the ONLY white object on the bar — the figures are near white, the
+ * labels grey, so nothing else can be mistaken for it.
+ *
+ * Green was the tempting alternative and the one to argue against: a
+ * call is a bet the number goes up, so the hue fits, but spending a
+ * signal colour on a button is how a palette stops meaning anything.
+ */
+.th-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  /*
+   * 28, up from 24, with a 15px mark up from 14.
+   *
+   * Same reason it grew on a phone: this is the only thing on the bar
+   * you press, and at 24 among six readings it was reading as a seventh
+   * one. A control needs to be identifiable before it is read — the
+   * megaphone has to look like a megaphone, not like a mark in a row of
+   * marks.
+   *
+   * The band has 40px of content height, so 28 sits in it with air
+   * either side rather than filling it.
+   */
+  height: 25px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  /* Not pure black. #08080a is the ground the bar sits on, so the label
+     reads as the bar showing through rather than as ink on a plate. */
+  color: #08080a;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 130ms ease;
+}
+
+.th-call > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.th-call:hover {
+  opacity: 0.82;
+}
+
+.th-re > svg,
+.th-calls {
+  transition: opacity 130ms ease;
+}
+
+.th-re:hover > svg,
+.th-calls:hover {
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE FLOW — far right
+ *
+ * What is happening to the coin in a five minute window, against the
+ * price group's what it is worth. `margin-left: auto` throws it to the
+ * far end: the whole width of the bar is the separator between two
+ * different kinds of fact.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE SCROLLING STRIP
+ *
+ * Identity and price live in here. It scrolls sideways and its contents
+ * never shrink — the bar gives up nothing as the window closes, it just
+ * shows less of itself.
+ *
+ * The scrollbar is hidden. This is a 60px band and a horizontal bar
+ * inside it would take a fifth of its height; the arrows on the flow
+ * block are the affordance instead.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.th-scroll {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  /*
+   * ── AND EXPLICITLY NOT VERTICALLY ──────────────────────────────────
+   *
+   * `overflow-x: auto` alone makes the OTHER axis compute to `auto` as
+   * well — the spec does not allow one axis to clip while the other
+   * stays visible. So this strip was a vertical scroller too, and the
+   * tooltips hanging below its marks gave it 68px of scrollable content
+   * inside a 45px box: the bar could be scrolled down, and doing so cut
+   * the identity off the top.
+   */
+  overflow-y: hidden;
+  /*
+   * ── AND THE CLIP EDGE IS PUSHED OUT OF THE WAY ─────────────────────
+   *
+   * A scroll container clips at its padding box, so with the strip the
+   * height of its content everything that hangs OUTSIDE a mark was cut:
+   * the launchpad badge overhanging the picture's bottom corner, and
+   * every tooltip on the bar.
+   *
+   * The padding makes the clip box 34px taller top and bottom and the
+   * negative margin takes the space straight back, so the layout is
+   * unchanged and the overhangs are simply inside the box now.
+   */
+  padding-top: 34px;
+  padding-bottom: 34px;
+  margin-top: -34px;
+  margin-bottom: -34px;
+  /*
+   * ── AND THE PADDING DOES NOT CATCH THE POINTER ─────────────────────
+   *
+   * That padding is 34px of empty box hanging over whatever is under the
+   * bar — which on the trade page is the chart's toolbar. Together with
+   * this header's stacking order it swallowed every click on the
+   * timeframe, the toggles and the icon buttons: they were there, they
+   * were painted, and nothing reached them.
+   *
+   * The strip stops taking pointer events and its contents take them
+   * back. The overhangs stay visible, and the empty air around them is
+   * air again.
+   */
+  pointer-events: none;
+  scrollbar-width: none;
+  /* The strip runs to the bar's own right padding and then under the
+     flow block; the padding keeps the last item off the divider when
+     there is room for everything. */
+  padding-right: 8px;
+}
+
+.th-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Nothing inside gives up width — and everything inside is pressable
+   again, which the strip itself no longer is. */
+.th-scroll > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/*
+ * A rule down its left edge.
+ *
+ * The empty space `margin-left: auto` opens up separates the two groups
+ * on a wide screen and does nothing on a narrow one — as the window
+ * closes the gap shrinks to nothing and the flow runs straight on from
+ * the price, which is the exact reading the separation exists to
+ * prevent. The rule holds the seam at every width.
+ *
+ * It is the bar's own hairline, and it spans the full height rather than
+ * just the figures: a short rule beside a group reads as a decoration
+ * hanging off it, a full one reads as the edge between two things.
+ */
+/*
+ * ── IT HOLDS THE RIGHT END, AND THE STRIP ENDS AT ITS EDGE ───────────
+ *
+ * This was absolutely positioned over the strip, which looked right and
+ * did not work: taken out of the flow it left the strip spanning the
+ * whole bar, so `scrollWidth` equalled `clientWidth` and the content it
+ * covered could never be scrolled back out. About 350px of the row was
+ * hidden with no way to reach it, and the arrows moved nothing.
+ *
+ * In the flow it takes its width from the bar, the strip gets what is
+ * left, and the strip can overflow and scroll inside it. The content
+ * still disappears at this block's edge — which is the whole effect —
+ * but now it is clipped rather than buried.
+ */
+.th-flow {
+  position: relative;
+  /* Full height of the band, so the rule down its edge can reach both
+     borders — centred, the block is only as tall as its contents and the
+     divider floated in the middle of the bar. */
+  align-self: stretch;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  margin-left: auto;
+  /*
+   * A fixed 300 including its padding, which is the rail's width below.
+   * The divider is this block's left edge, so pinning the width is what
+   * makes the seam continue straight down the page instead of stepping
+   * sideways under the header.
+   *
+   * It is one number in two files. If this changes, `.tp` in
+   * `trade-panel.css` changes with it.
+   */
+  box-sizing: border-box;
+  width: 300px;
+  padding-left: 10px;
+  padding-right: 12px;
+  background: #000000;
+  /*
+   * The whole block is the target, not just the cells inside it.
+   * Pointing anywhere on it swaps the readings for the windows, so the
+   * cursor has to say so anywhere on it — including over the split bar
+   * and the gaps, which are part of what you are hovering even though
+   * nothing is drawn there.
+   */
+  cursor: pointer;
+}
+
+/*
+ * Out through the band's own padding to meet the top and bottom borders.
+ * `align-self: stretch` gives this block the bar's CONTENT height, which
+ * stops 10px short of each edge — a divider that stops short reads as a
+ * decoration hanging inside the bar rather than as the line between two
+ * halves of it.
+ */
+.th-flow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -9px;
+  bottom: -9px;
+  width: 1px;
+  background: #1c1c20;
+}
+
+/* ── the arrows ───────────────────────────────────────────────────── */
+
+/*
+ * ── OUTSIDE THE FLOW BLOCK, NOT INSIDE IT ────────────────────────────
+ *
+ * They started as children of it, and hovering one swapped the four
+ * readings for the four windows — reaching for an arrow changed what
+ * the block said. They are their own element beside it now, so the two
+ * hovers cannot collide.
+ *
+ * Stacked rather than side by side: the band is 60px, and two 17px
+ * buttons in a column fit where two in a row would take another 22px
+ * off the strip.
+ */
+.th-nav {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 2px;
+  margin-left: auto;
+}
+
+/*
+ * ── THE ARROWS SIT CLOSE TO THE DIVIDER ──────────────────────────────
+ *
+ * They were 27px off it: the bar's own 17px gap between children, plus
+ * 10 of margin on the block. That put the arrow adrift in the middle of
+ * the seam, closer to the figures it scrolls than to the edge it
+ * belongs to.
+ *
+ * The negative margin cancels most of the bar's gap for this ONE seam
+ * without changing the gap for every other pair on the row — the arrows
+ * and the divider are a single object visually, and everything else on
+ * the bar still wants its 17.
+ */
+.th-nav {
+  margin-right: -11px;
+}
+
+.th-flow {
+  margin-left: 0;
+}
+
+.th-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 17px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.th-arrow > svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* One chevron drawn once and turned, rather than two paths that have to
+   be kept mirror images of each other by hand. */
+.th-arrow.is-right > svg {
+  transform: rotate(180deg);
+}
+
+.th-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.th-flow-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/*
+ * ── THE COLUMNS DO NOT MOVE WHEN THE WINDOW CHANGES ──────────────────
+ *
+ * Every window has figures of a different length — $150K against $12.6M,
+ * "1.3K / $73.3K" against "121K / $6.38M" — so switching one re-flowed
+ * the whole group: four columns shifted, the block changed width, and
+ * the divider beside it jumped. The one thing that SHOULD move on a
+ * window change is the split bar, and it was the least noticeable thing
+ * happening.
+ *
+ * Each column is pinned to its own widest case instead. The numbers
+ * below are measured, not guessed — every window rendered and the
+ * largest width taken per column, rounded up:
+ *
+ *   vol    35.4 → 42.3   (24h, "$12.6M")
+ *   buys   87.8 → 94.7   (6h,  "48.2K / $2.44M")
+ *   sells  83.6 → 94.7   (6h,  "46.1K / $2.36M")
+ *   net    43.4 → 47.1   (5m,  "+$3.29K")
+ *
+ * ── AND THEY CAME DOWN WITH THE RAIL ─────────────────────────────────
+ *
+ * Those figures were measured at 11.5px, when the block was 368 wide.
+ * The rail is 300 now and the type is 10, so the pins are scaled by the
+ * same ratio — otherwise the columns hold widths their contents no
+ * longer need and the last reading, Net Vol., falls off the end.
+ *
+ * Buys and Sells are given the SAME width even though their content
+ * differs. They are a pair read against each other, and two columns of a
+ * pair at different widths reads as a misalignment rather than as two
+ * numbers of different length.
+ */
+/*
+ * ── EACH COLUMN CENTRES ON ITS OWN FIGURE ────────────────────────────
+ *
+ * The pins above hold every column at its widest case, which means most
+ * of the time a column is wider than what is in it. Left aligned, the
+ * label and the figure both sat against the left wall of a box with
+ * empty space to the right — so "Buys" hung off the front of
+ * "1.41K / $76.6K" and the four columns read as ragged.
+ *
+ * Centring puts the label over the middle of its own number, whatever
+ * length that number happens to be this window.
+ */
+.th-flow-row > .th-stat {
+  align-items: center;
+  text-align: center;
+}
+
+.th-flow-row > .th-stat:nth-child(1) { min-width: 39px; }
+.th-flow-row > .th-stat:nth-child(2),
+.th-flow-row > .th-stat:nth-child(3) { min-width: 84px; }
+.th-flow-row > .th-stat:nth-child(4) { min-width: 44px; }
+
+/*
+ * ── THE SPLIT ────────────────────────────────────────────────────────
+ *
+ * One rule under all four readings, green from the left and red from the
+ * right, meeting where the buying stops. It is the same four numbers as
+ * a proportion — buys and sells are two long strings you would otherwise
+ * compare digit by digit, and the bar says which way it went before
+ * either is read.
+ *
+ * 2px, and hard against the figures. A thicker rule reads as a progress
+ * bar, which would say the window is filling up rather than that it is
+ * split.
+ */
+.th-split {
+  position: relative;
+  height: 2px;
+  border-radius: 999px;
+  /* The sells side is the ground; the buys side is drawn over it, so the
+     two always meet exactly and never leave a seam. */
+  background: #f0567a;
+  overflow: hidden;
+}
+
+.th-split > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #2fd18a;
+}
+
+/*
+ * ── ONE WHITE LABEL, AND THREE GREY ONES ─────────────────────────────
+ *
+ * "5m Vol" is not a field like the other three. It names the WINDOW all
+ * four readings are measured over — the buys, the sells and the net are
+ * all "in the last five minutes" — so it is a heading for the group
+ * rather than a label for its own figure.
+ *
+ * White says that. The three beside it are ordinary field names and stay
+ * the grey every other label on this bar uses.
+ *
+ * Buys and Sells were briefly tinted green and red on the argument that
+ * the word IS the direction. The figures already carry that, and three
+ * label colours in a group four columns wide is a legend competing with
+ * the numbers it labels.
+ */
+.th-stat-k[data-lead] {
+  color: #ffffff;
+}
+
+.th-stat-v[data-tone='up'] {
+  color: #2fd18a;
+}
+
+.th-stat-v[data-tone='down'] {
+  color: #f0567a;
+}
+
+/* The slash between a count and its value is a separator, not a digit,
+   so it drops back and takes the air a piece of punctuation needs. */
+.th-stat-v > i {
+  margin: 0 3px;
+  font-style: normal;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE WINDOWS — IN PLACE
+ *
+ * What the coin did over five minutes, an hour, six hours and a day.
+ *
+ * ── IT DOES NOT HANG ─────────────────────────────────────────────────
+ *
+ * It was a panel dropping out of the bottom of the bar, which is wrong
+ * twice over: it covers the top of whatever is under the header, and it
+ * makes a bar of readings behave like a menu.
+ *
+ * It swaps IN PLACE instead. The windows sit in the same box as the four
+ * readings, stacked on them, and hovering crossfades one for the other.
+ * Nothing appears outside the band, nothing moves, and the block keeps
+ * exactly the size it had.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* The two layers share a box, so the row that is not showing must not
+   take part in sizing it — the readings own the height. */
+.th-flow-row {
+  transition: opacity 130ms ease;
+}
+
+.th-flow:hover .th-flow-row {
+  opacity: 0;
+}
+
+.th-tf {
+  position: absolute;
+  /* Pinned to the readings above the split, not to the whole block: the
+     bar underneath stays put and keeps reading while the figures swap. */
+  top: 0;
+  right: 0;
+  left: 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 130ms ease;
+}
+
+/* Pointer events come back with it, so the cells beneath can take their
+   own hover once the row is actually showing. */
+.th-flow:hover .th-tf {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.th-tf-c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+/*
+ * The plate is a HOVER, not a mark on one of them.
+ *
+ * It was pinned to 5m, which said that window was selected — nothing
+ * selects it and nothing here is a control that could. All four are the
+ * same kind of reading, and one of them wearing a permanent plate reads
+ * as a state the row does not have.
+ */
+.th-tf-c:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.th-tf-c > b {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.th-tf-c:hover > b {
+  color: #ffffff;
+}
+
+/*
+ * ── THE ONE THAT IS SHOWING ──────────────────────────────────────────
+ *
+ * A tone on the label, not a plate. The plate is the hover, and a cell
+ * wearing both at once says the pointer is on it — which is exactly the
+ * confusion a permanent plate on 5m caused before these became
+ * selectable.
+ *
+ * It also does not need to shout: the readings behind this panel are
+ * already labelled with the window's name, so the moment the panel fades
+ * the selection is written out in full.
+ */
+.th-tf-c[data-on] > b {
+  color: #ffffff;
+}
+
+.th-tf-c > em {
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+  color: #2fd18a;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * UNDER 700 — TWO ROWS, AND NO FLOW
+ *
+ * ── THE FLOW BLOCK GOES ──────────────────────────────────────────────
+ *
+ * Four readings and a split bar is the widest thing on the bar, and it
+ * is the one part that is a comparison rather than a fact you need
+ * before you can act. Kept, it would take most of a phone's width and
+ * push identity and price off the side; dropped, everything else fits.
+ *
+ * The arrows go with it, because with the bar stacked there is nothing
+ * left running off the end for them to bring back.
+ *
+ * ── AND THE LEFT SIDE STACKS ─────────────────────────────────────────
+ *
+ * Identity on one row, price on the next. Side by side they are one long
+ * line that has to be scrolled to be read, which is the wrong shape for
+ * a screen that is tall and narrow — stacked, both halves are whole and
+ * the bar simply gets taller, which a phone has room for.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  .th-flow,
+  .th-nav {
+    display: none;
+  }
+
+  .th {
+    align-items: stretch;
+    /* The band stops being a band. Its height is whatever the rows need,
+       so the fixed minimum comes off. */
+    min-height: 0;
+    padding: 11px 14px;
+  }
+
+  /*
+   * No sideways scrolling here any more: the two halves are stacked, and
+   * a column that scrolls horizontally is a column with a scrollbar it
+   * can never use.
+   */
+  .th-scroll {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  /*
+   * ── THE READINGS GO INLINE, WITH SHORT KEYS ──────────────────────
+   *
+   * Wide, each figure has its name written out above it and the column
+   * of two is easy to read across. Narrow, that same shape is six
+   * two-line blocks wrapping into three rows of stacked pairs — twelve
+   * lines of type for six numbers, and most of the height is labels.
+   *
+   * So the pair goes on ONE line and the label shrinks to its initial:
+   * `L $6.65K`, `F 31.53`. A key of one or three characters is not a
+   * word being read, it is a tag being recognised, which is what these
+   * are once you have seen the bar twice.
+   *
+   * The market cap picks up a key here that it does not have wide. Set
+   * large and alone it needs no label; run inline among five labelled
+   * figures it is the one bare number in the row, which reads as a
+   * label that failed to render.
+   */
+  .th-stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .th-k-long {
+    display: none;
+  }
+
+  .th-k-short {
+    display: inline;
+  }
+
+  .th-stat-k {
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  /* The market cap keeps its size but stops being a headline: inline it
+     is the first reading in the row rather than a figure the others hang
+     under. */
+  .th-mc {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 15px;
+  }
+
+  .th-mc .th-k-short {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #6e7178;
+  }
+
+  /*
+   * ── NOTHING IS CUT OFF. IT WRAPS. ────────────────────────────────
+   *
+   * These rows scrolled sideways first, which is not the same thing as
+   * fitting: the readings past the edge were still invisible, and a
+   * horizontal scroller inside a page that scrolls vertically is a
+   * gesture nobody makes. On a phone the ATH and the call button simply
+   * were not there.
+   *
+   * Wrapping puts them on the next line instead. The bar gets taller,
+   * which is the one dimension a phone has to spare, and every figure is
+   * on screen without being looked for.
+   */
+  .th-figs {
+    /*
+     * Stretched, not content sized. `.th-scroll` is a column with
+     * `align-items: flex-start`, so this row was only as wide as its
+     * figures — which meant the `margin-left: auto` below had no free
+     * space to push into and the actions sat against the last reading.
+     */
+    align-self: stretch;
+    max-width: 100%;
+    flex-wrap: wrap;
+    /* Tighter across than down: on one line the pairs are separated by
+       their own keys, so they need less air between them than the rows
+       need between each other. */
+    gap: 8px 16px;
+    align-items: baseline;
+  }
+
+  /*
+   * ── THE IDENTITY BLOCK TAKES THE BAR'S WIDTH, NOT ITS OWN ────────
+   *
+   * Stacked, `.th-scroll` is a column with `align-items: flex-start`, so
+   * its children size to their CONTENT. That left the identity block as
+   * wide as the longest thing in it, and the sentence on the first line
+   * never received a width to truncate against — it just ran past the
+   * screen with nothing scrolling to reach it.
+   *
+   * Stretching it back to the parent gives the truncation something to
+   * bite on.
+   */
+  .th-id {
+    align-self: stretch;
+    max-width: 100%;
+  }
+
+  .th-lines {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  /*
+   * ── THREE ROWS, AND ONLY THREE ────────────────────────────────────
+   *
+   *   1  ticker · name · age
+   *   2  socials · protocol · website · search · watchers
+   *   3  market cap · price · liquidity · fees
+   *
+   * The bar was carrying all fourteen desktop items down onto a phone
+   * and letting them wrap into four or five rows. Shrinking the type was
+   * the wrong answer to that — it is not a size problem, it is a count
+   * problem, and the fix is fewer things rather than smaller ones.
+   *
+   * WHAT COMES OFF, and why each is the right one to lose:
+   *
+   *   copy, website, watchlist   three page actions on the line that
+   *                              names the coin. They belong to the
+   *                              page, not to its identity, and the
+   *                              first row is identity.
+   *
+   *   Fund                       an action, and the widest object on the
+   *                              marks line. Row two is what the coin
+   *                              HAS, not what you can do to it.
+   *
+   *   Supply, ATH                the two readings you do not act on.
+   *                              Market cap, price, liquidity and fees
+   *                              are what a decision is made from.
+   *
+   *   calls, Call                the same argument as Fund: row three is
+   *                              figures, and a button in it is the only
+   *                              thing there you press.
+   *
+   * Nothing is deleted — every one of them is still on the wide bar. A
+   * phone gets the three rows that answer "what is this and what is it
+   * worth", which is the whole job at that size.
+   */
+
+  /* `:not(.th-line-2)` is load bearing: the marks line carries BOTH
+     classes, so a bare `.th-line > .th-i` took the socials with it and
+     left row two holding a leaf and nothing else. */
+  .th-line:not(.th-line-2) > .th-i,
+  .th-fund,
+  .th-figs > .th-stat:nth-child(4),
+  .th-figs > .th-stat:nth-child(6) {
+    display: none;
+  }
+
+  /*
+   * ── THE CALL COUNT SITS WITH THE EYE ─────────────────────────────
+   *
+   * Stacked, it moves off the figures row and onto the marks line,
+   * immediately after the watch count — not pushed to the right edge.
+   *
+   * That is where it belongs by kind: watchers and callers are both
+   * tallies of people paying attention to this coin, and the marks line
+   * is already the row of facts about the coin. Held out at the far
+   * right it read as a control, which it is not.
+   *
+   * ── AND THE BUTTON TAKES THE RIGHT END ───────────────────────────
+   *
+   * The one thing on these rows you press. It keeps the far edge, which
+   * also fills the space the flow block used to hold — at 690 the bar
+   * would otherwise trail off into a dead right half.
+   */
+  .th-calls.th-calls-line2 {
+    display: inline-flex;
+  }
+
+  .th-calls.th-calls-figs {
+    display: none;
+  }
+
+  .th-call {
+    margin-left: auto;
+  }
+
+  /*
+   * ── AND WHAT IS LEFT GETS BIGGER, NOT SMALLER ────────────────────
+   *
+   * There was a pass here that took every dimension DOWN — 32px picture,
+   * 13px ticker, 13px marks, 12px figures. That was solving the wrong
+   * problem twice: the bar was too crowded, and shrinking it made a
+   * crowded bar into a crowded bar you also had to squint at.
+   *
+   * Cutting to three rows fixed the crowding. What is left is eleven
+   * items on a whole phone width, and at desktop sizes they sat in it
+   * with room to spare — so they go UP instead. A phone is held closer
+   * than a monitor but it is read in a glance, and the figures on row
+   * three are the reason the page is open.
+   */
+
+  .th .ar {
+    --ar-size: 37px;
+  }
+
+  .th .ar-pad {
+    width: 13px;
+    height: 13px;
+    right: -4px;
+    bottom: -4px;
+  }
+
+  .th-id {
+    gap: 11px;
+  }
+
+  .th-lines {
+    gap: 6px;
+  }
+
+  .th-tick {
+    font-size: 14.5px;
+  }
+
+  .th-desc {
+    font-size: 12px;
+  }
+
+  .th-age {
+    font-size: 11.5px;
+  }
+
+  .th-art-hit {
+    gap: 8px;
+  }
+
+  /* 18, against the 16 the wide bar gives them. Row two is nothing but
+     these now, so they are the row rather than a detail in it. */
+  .th .th-i > svg,
+  .th .arc-leaf > svg {
+    width: 15.5px !important;
+    height: 15.5px !important;
+  }
+
+  /*
+   * The age moves up beside the name and off the marks line. Both copies
+   * are in the DOM and CSS shows one — see `.th-age-top`.
+   *
+   * These two rules have now been deleted twice by rewrites of the block
+   * below them, so they sit here, directly above the line they move it
+   * to, rather than at the top of the query where they read as
+   * unrelated.
+   */
+  .th-age-top {
+    display: inline;
+  }
+
+  .th-age-line2 {
+    display: none;
+  }
+
+  .th-line {
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  .th-line-2 {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+
+  .th-watch {
+    font-size: 11.5px;
+    gap: 5px;
+  }
+
+  .th-watch > svg {
+    width: 14.5px;
+    height: 14.5px;
+  }
+
+  /* The figures are what the page is open for, so they take the most. */
+  .th-mc {
+    font-size: 12.5px;
+  }
+
+  .th-stat-k {
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+
+  .th-mc .th-k-short {
+    font-size: 9px;
+  }
+
+  .th-stat-v {
+    font-size: 10.5px;
+    gap: 4px;
+  }
+
+  .th-stat {
+    gap: 5px;
+  }
+
+  .th-stat-v sub {
+    font-size: 8px;
+  }
+
+  .th-sol > svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* The same rules again for a docked page — see `.th-wrap`.
+   Identical declarations, deliberately: this is a copy of the
+   block above, not a second opinion about it. */
+@container header (max-width: 700px) {
+  .th-flow,
+  .th-nav {
+    display: none;
+  }
+
+  .th {
+    align-items: stretch;
+    min-height: 0;
+    padding: 11px 14px;
+  }
+
+  .th-scroll {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .th-stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .th-k-long {
+    display: none;
+  }
+
+  .th-k-short {
+    display: inline;
+  }
+
+  .th-stat-k {
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .th-mc {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 15px;
+  }
+
+  .th-mc .th-k-short {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #6e7178;
+  }
+
+  .th-figs {
+    align-self: stretch;
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: baseline;
+  }
+
+  .th-id {
+    align-self: stretch;
+    max-width: 100%;
+  }
+
+  .th-lines {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .th-line:not(.th-line-2) > .th-i,
+  .th-fund,
+  .th-figs > .th-stat:nth-child(4),
+  .th-figs > .th-stat:nth-child(6) {
+    display: none;
+  }
+
+  .th-calls.th-calls-line2 {
+    display: inline-flex;
+  }
+
+  .th-calls.th-calls-figs {
+    display: none;
+  }
+
+  .th-call {
+    margin-left: auto;
+  }
+
+  .th .ar {
+    --ar-size: 37px;
+  }
+
+  .th .ar-pad {
+    width: 13px;
+    height: 13px;
+    right: -4px;
+    bottom: -4px;
+  }
+
+  .th-id {
+    gap: 11px;
+  }
+
+  .th-lines {
+    gap: 6px;
+  }
+
+  .th-tick {
+    font-size: 14.5px;
+  }
+
+  .th-desc {
+    font-size: 12px;
+  }
+
+  .th-age {
+    font-size: 11.5px;
+  }
+
+  .th-art-hit {
+    gap: 8px;
+  }
+
+  .th .th-i > svg,
+  .th .arc-leaf > svg {
+    width: 15.5px !important;
+    height: 15.5px !important;
+  }
+
+  .th-age-top {
+    display: inline;
+  }
+
+  .th-age-line2 {
+    display: none;
+  }
+
+  .th-line {
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  .th-line-2 {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+
+  .th-watch {
+    font-size: 11.5px;
+    gap: 5px;
+  }
+
+  .th-watch > svg {
+    width: 14.5px;
+    height: 14.5px;
+  }
+
+  .th-mc {
+    font-size: 12.5px;
+  }
+
+  .th-stat-k {
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+
+  .th-mc .th-k-short {
+    font-size: 9px;
+  }
+
+  .th-stat-v {
+    font-size: 10.5px;
+    gap: 4px;
+  }
+
+  .th-stat {
+    gap: 5px;
+  }
+
+  .th-stat-v sub {
+    font-size: 8px;
+  }
+
+  .th-sol > svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * UNDER 480 — THE COUNT MOVES UP AND THE BUTTON STAYS PUT
+ *
+ * ── THE MEASUREMENT ──────────────────────────────────────────────────
+ *
+ * At 375 the figures row has 347px and its four readings take 315 — 32
+ * left. The call count needs 33 and the button 56, so both dropped onto
+ * a fourth line, one item wide. That is the chopped look: not a wrap,
+ * but a row that exists to hold one thing.
+ *
+ * ── SO THE ROW IS TIGHTENED ──────────────────────────────────────────
+ *
+ * The count is already up on the marks line at every stacked width, so
+ * what is left is making room for the button: gaps from 16 to 10, and
+ * the figures down a point. That buys about 45px, which is what the
+ * button costs.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .th-figs {
+    gap: 8px 10px;
+  }
+
+  .th-mc {
+    font-size: 12px;
+  }
+
+  .th-stat-v {
+    font-size: 10px;
+  }
+
+  .th-mc .th-k-short,
+  .th-stat-k {
+    font-size: 9px;
+  }
+
+  /*
+   * ── THE BUTTON GOES UP, NOT DOWN ─────────────────────────────────
+   *
+   * It was 21px tall with a 12px megaphone, shrunk to fit the row. At
+   * that size the mark stops reading as a megaphone at all — it is a
+   * grey wedge — and the one thing on these rows you press ends up the
+   * smallest object on them.
+   *
+   * A control has a floor the readings around it do not: it has to be
+   * hittable with a thumb and identifiable at a glance. So it takes 28
+   * and a 15px mark, and the row's gaps give up the width instead.
+   */
+  .th-call {
+    height: 20px;
+    padding: 0 8px;
+    font-size: 9.5px;
+    gap: 3px;
+  }
+
+  .th-call > svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* The marks line has to be full width for the count's auto margin to
+     have anything to push into. */
+  .th-line-2 {
+    align-self: stretch;
+  }
+}
+
+/* The same rules again for a docked page — see `.th-wrap`.
+   Identical declarations, deliberately: this is a copy of the
+   block above, not a second opinion about it. */
+@container header (max-width: 480px) {
+  .th-figs {
+    gap: 8px 10px;
+  }
+
+  .th-mc {
+    font-size: 12px;
+  }
+
+  .th-stat-v {
+    font-size: 10px;
+  }
+
+  .th-mc .th-k-short,
+  .th-stat-k {
+    font-size: 9px;
+  }
+
+  .th-call {
+    height: 20px;
+    padding: 0 8px;
+    font-size: 9.5px;
+    gap: 3px;
+  }
+
+  .th-call > svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .th-line-2 {
+    align-self: stretch;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * UNDER 400 — ONE READING FEWER
+ *
+ * ── THE MEASUREMENT ──────────────────────────────────────────────────
+ *
+ * At 330 the figures row has 292px and wants 340; the marks row has 235
+ * and wants 243. Both overflow, so the button dropped to a fourth line
+ * and the call count to a fifth — five rows for a header that is
+ * supposed to be three.
+ *
+ * Row two is 8px over, which is a gap. Row three is 48px over, which is
+ * a whole reading.
+ *
+ * ── SO FEES COMES OFF ────────────────────────────────────────────────
+ *
+ * Of market cap, price, liquidity and fees paid, fees is the one a
+ * decision is least often made from — the other three say what the coin
+ * is worth, how much it costs and whether you can get out. Fees paid is
+ * history.
+ *
+ * That is 63px plus its gap, which is more than the 48 needed, so the
+ * button sits on the row with room to spare rather than exactly fitting
+ * and breaking again at 310.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 400px) {
+  /* Global Fees Paid. Supply and ATH are already off above. */
+  .th-figs > .th-stat:nth-child(5) {
+    display: none;
+  }
+
+  /* The 8px row two needs, taken from the gaps rather than the marks —
+     a glyph a point smaller is a glyph you notice; 3px of air is not. */
+  .th-line-2 {
+    gap: 8px 11px;
+  }
+}
+
+/* The same rules again for a docked page — see `.th-wrap`.
+   Identical declarations, deliberately: this is a copy of the
+   block above, not a second opinion about it. */
+@container header (max-width: 400px) {
+  .th-figs > .th-stat:nth-child(5) {
+    display: none;
+  }
+
+  .th-line-2 {
+    gap: 8px 11px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE TIPS
+ *
+ * The row's bubble, in the row's materials — same 11.5px Geist on
+ * #202024 with a hairline and a drop, same 120ms fade, same
+ * `content: attr(data-tip)` so a mark that wants one just carries the
+ * attribute.
+ *
+ * ── IT OPENS DOWNWARD ────────────────────────────────────────────────
+ *
+ * A row's tip sits ABOVE its mark, which is right in the middle of a
+ * scrolling board. This bar is the top of the page: a tip above it would
+ * open into the nav, or off the top of the window entirely on the first
+ * row of a maximised screen. So it hangs below instead.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.th [data-tip] {
+  position: relative;
+}
+
+.th [data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: #202024;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  /* White on every mark, including the gold pill. The bubble is chrome —
+     it says what the thing IS — and tinting it would read as part of the
+     value rather than as a label for it. */
+  color: #ffffff;
+  /* Hidden rather than absent, so the bar does not reflow to show it. */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.th [data-tip]:hover::after {
+  opacity: 1;
+}
+
+/*
+ * ── THE GLYPH FADES, NOT THE ELEMENT ─────────────────────────────────
+ *
+ * The row fades the whole mark on hover. That cannot work here, because
+ * the tooltip is an `::after` on the same element — fading the element
+ * fades the bubble with it, and a label at half opacity is a label you
+ * squint at.
+ *
+ * So the fade moved INWARD, onto the contents. The wrapper stays at full
+ * opacity and carries the tip; what dims is the thing you are pointing
+ * at. Same feedback, and the explanation stays legible.
+ */
+.th-i:hover > svg,
+.th-watch:hover > svg,
+.th-fund:hover > svg,
+.th-fund:hover,
+.th .arc-leaf:hover > svg,
+.th-art-hit:hover {
+  opacity: 0.5;
+}
+
+/* The pill is a filled control rather than a glyph on the ground, so it
+   dims as a whole — and its tip is unaffected because `::after` opacity
+   is set explicitly below. */
+.th-fund[data-tip]:hover::after {
+  opacity: 1;
+}
+
+/*
+ * The art block and the two words beside it are ONE target: they all go
+ * to the same coin, and three separately hovering pieces of the same
+ * link is three answers to one question.
+ */
+/*
+ * Inside the name group the spacing STAYS tight — 7px. The ticker and
+ * the sentence are one phrase read together, and opening them to the
+ * line's 11 would separate the two halves of a single thought while
+ * grouping each of them with a mark instead.
+ */
+.th-art-hit {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}

@@ -1,0 +1,539 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * THE REWARDS PAGE
+ *
+ * Black, one ink scale, sentence case, type doing the hierarchy through
+ * size and weight. The only colour is the green and red that already
+ * mean a gain and a loss everywhere else in the product.
+ *
+ * The page it replaced ran on two typefaces the terminal never uses
+ * elsewhere and seven hues, and spent about a third of the first screen
+ * on decoration. See `RewardsPage.tsx` for the full inventory.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.rwp { padding: 0; }
+
+.rwp-in {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 34px 24px 40px;
+}
+
+/* ── the masthead ────────────────────────────────────────────────────
+ * No plate, no aurora, no ordinal, no wordmark in a second face. What
+ * makes it an entrance is the room around it.
+ * ─────────────────────────────────────────────────────────────────── */
+
+.rwp-mast > h1 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--ink-0);
+}
+
+.rwp-mast > p {
+  margin: 10px 0 0;
+  max-width: 520px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* ── tabs ────────────────────────────────────────────────────────── */
+
+.rwp-tabs { display: flex; align-items: center; gap: 20px; margin: 28px 0 26px; }
+
+.rwp-tabs > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 14px/1 var(--sans);
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms var(--ease, ease);
+}
+.rwp-tabs > button[data-on] { color: var(--ink-0); }
+.rwp-tabs > button:hover { color: var(--ink-1); }
+.rwp-tabs > button:focus-visible {
+  outline: none;
+  color: var(--ink-0);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.rwp-body { display: flex; flex-direction: column; }
+
+/* The sentence about the fee, and the four window words at the far
+   end. */
+.rw-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+/* ── the four figures, and the claim ─────────────────────────────────
+ * Names under numbers. No pips, no mono capitals on a wide track, no
+ * corner icons, no plates and no rules between them: 40px of space says
+ * these are four separate things at least as well as furniture does.
+ * ─────────────────────────────────────────────────────────────────── */
+
+/*
+ * ── THEY ALIGN AT THE TOP, NOT THE BOTTOM ────────────────────────────
+ *
+ * This was `align-items: flex-end`, and `Claimable` is the one figure
+ * carrying a third line — `0.4 SOL pending`. A taller item aligned to
+ * the bottom pushes its own top UP, so that one label and its figure
+ * floated a line above the other three and the row looked broken.
+ *
+ * Aligned to the top, all four labels sit on one line and all four
+ * figures on the next. The pending line hangs off the bottom of its
+ * own column, which is where an extra fact belongs.
+ */
+.rw-figs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 18px 40px;
+  margin-top: 26px;
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.rw-figs > span { display: inline-flex; flex-direction: column; gap: 5px; }
+.rw-figs i { font-style: normal; font-size: 11px; font-weight: 500; color: var(--ink-3); }
+.rw-figs b { font-size: 17px; font-weight: 500; line-height: 1.1; color: var(--ink-0); }
+/* Hangs under the figure without adding to the gap that the other three
+   columns are spaced by. */
+.rw-figs u { text-decoration: none; margin-top: 1px; font-size: 11px; color: var(--ink-3); }
+
+/* The claim is pushed to the far end, so the row reads left to right as
+   four facts and then the one thing you can do about them. It sits on
+   the FIGURE line rather than the label line, because it belongs beside
+   the numbers and not beside their names. */
+.rw-claim { display: inline-flex; flex-direction: column; gap: 6px; margin-left: auto; margin-top: 15px; }
+.rw-claim-msg { font-size: 11px; color: var(--ink-3); }
+
+/*
+ * Solid, never a gradient: a gradient on a control says the control
+ * needed help.
+ *
+ * 28px, not 34. These sit beside 11px labels and a 12.5px sentence, and
+ * at 34 with 20px of side padding the Claim was physically the largest
+ * object in a row of four figures it is subordinate to. A button is
+ * sized against the type around it, not against how important the
+ * action feels.
+ */
+.rw-go {
+  height: 28px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--ink-0);
+  color: #000;
+  font: 600 11.5px/1 var(--sans);
+  cursor: pointer;
+  transition: background-color 130ms var(--ease, ease), opacity 130ms var(--ease, ease);
+}
+.rw-go:hover:not(:disabled) { background: #dcdde0; }
+.rw-go:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── the window words ────────────────────────────────────────────── */
+
+.rw-win { display: inline-flex; align-items: center; gap: 16px; }
+.rw-win > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 12px/1 var(--sans);
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms var(--ease, ease);
+}
+.rw-win > button[data-on] { color: var(--ink-0); }
+.rw-win > button:hover { color: var(--ink-1); }
+
+/* ── the fren link ───────────────────────────────────────────────────
+ * The biggest thing on the tab, because it is what the page is FOR:
+ * everything else here is a consequence of somebody using it.
+ *
+ * The slug was 36px serif italic in the section hue under a 28px glow
+ * of that hue, over a 170px ghost `@`, a collage bleeding off the top
+ * edge and a radial wash from the right. The base is quiet and the slug
+ * is lit, which is the same idea without the four decorations.
+ * ─────────────────────────────────────────────────────────────────── */
+
+/* The link sits under the figures now, so the rule above it is doing
+   the separating and it does not need a margin of its own. */
+.rw-inv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.rw-inv-l { min-width: 0; flex: 1; }
+
+.rw-lab { display: block; font-size: 11.5px; font-weight: 500; color: var(--ink-3); }
+
+.rw-url {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-family: var(--sans);
+  font-size: clamp(22px, 3.2vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.rw-url-b { color: var(--ink-3); }
+.rw-url-s { color: var(--ink-0); }
+
+.rw-inv-say { margin: 12px 0 0; max-width: 460px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
+
+.rw-inv .rw-go { margin-top: 18px; }
+
+/* The code on a white plate, because a QR has to be. No coloured
+   border and no hue matched glow around it. */
+.rw-qr { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: none; }
+.rw-qr-box { padding: 8px; border-radius: 10px; background: #fff; }
+.rw-qr-box > img { display: block; border-radius: 4px; }
+.rw-qr-cap { font-size: 11px; color: var(--ink-3); }
+
+/* ── section names ───────────────────────────────────────────────────
+ * A word. It was an icon in a tinted rounded plate, a coloured pip and
+ * a title, per section.
+ * ─────────────────────────────────────────────────────────────────── */
+
+.rw-sec-wrap { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--hairline); }
+
+.rw-sec { margin-bottom: 18px; font-size: 14px; font-weight: 500; color: var(--ink-0); }
+/*
+ * No `text-transform: capitalize` here. It was added so the window name
+ * would read `Weekly` rather than `weekly`, and it then capitalised
+ * every word of every other caption — `2 Of 6 Collected`. The window is
+ * capitalised at its call site instead, where it is the only string
+ * that needs it.
+ */
+.rw-sec > small {
+  margin-left: 8px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* ── payout history ─────────────────────────────────────────────── */
+
+.rw-ph { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+.rw-ph-r {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 140px;
+  gap: 16px;
+  padding: 11px 0;
+  font-size: 12.5px;
+  color: var(--ink-0);
+  border-bottom: 1px solid var(--hairline);
+}
+.rw-ph-r:last-child { border-bottom: 0; }
+.rw-ph-r > span:not(:first-child) { text-align: right; }
+.rw-dim { color: var(--ink-3); text-transform: capitalize; }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE PHONE
+ *
+ * The desktop page is one column of full width blocks, so most of it
+ * survives a narrow viewport untouched. Four things do not, and each is
+ * fixed by the same rule: nothing here may set a width the screen
+ * cannot give it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 860px) {
+  .rwp-in { padding: 24px 16px 32px; }
+  .rwp-mast > h1 { font-size: 26px; }
+  .rwp-tabs { margin: 22px 0 20px; }
+
+  /*
+   * The sentence and the window words stop sharing a line. At 375px
+   * `space-between` left one word per line and a ragged four line
+   * block; stacked, the sentence reads and the windows sit under it.
+   *
+   * This targeted `.rwp-body > div:first-child`, which is not this row
+   * — it is the TAB'S ROOT, and setting `align-items: flex-start` on it
+   * shrink wrapped every section in the tab to its own content, so the
+   * frens list and its rule ran to half the screen. A positional
+   * selector was the wrong tool; the row has a name now.
+   */
+  .rw-topline { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .rw-win { gap: 18px; }
+
+  /*
+   * The link, and the QR under it rather than beside it.
+   *
+   * `clamp(22px, 3.2vw, 36px)` resolves to its 22px floor on a phone,
+   * and a 22px URL still overflows 340px of content width. It drops to
+   * 19px here and `overflow-wrap: anywhere` lets the slug break rather
+   * than push the page sideways.
+   */
+  .rw-inv { flex-direction: column; align-items: flex-start; gap: 22px; }
+  .rw-url { font-size: 19px; }
+  .rw-qr { align-self: flex-start; }
+  .rw-qr-box > img { width: 96px; height: 96px; }
+
+  /*
+   * The four figures wrap to two per line, and the claim comes off the
+   * end of the row onto its own line.
+   *
+   * `margin-left: auto` is what pins it right on desktop, and once the
+   * row wraps that same rule strands it alone on a line with the whole
+   * width to itself. It goes full width instead, which is also the
+   * easiest thing to hit with a thumb.
+   */
+  .rw-figs { gap: 16px 28px; margin-top: 24px; }
+  .rw-figs > span { min-width: calc(50% - 14px); }
+  .rw-claim { width: 100%; margin-left: 0; margin-top: 6px; }
+  .rw-claim .rw-go { width: 100%; height: 34px; }
+
+  /* Status drops out. Amount and date are what a payout row is; the
+     status is the one of the three you can infer from the date. */
+  .rw-ph-r { grid-template-columns: minmax(0, 1fr) 96px; }
+  .rw-ph-r > span:nth-child(2) { display: none; }
+}
+
+/* The copy control and the rate beside it. It was an accent filled
+   capsule next to a bordered chip carrying a gift icon. */
+.rw-inv-do { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 18px; }
+.rw-inv-do .rw-go { margin-top: 0; }
+.rw-inv-fee { font-size: 11.5px; color: var(--ink-3); }
+
+/* ── the roost, and the cashback wallet rows ─────────────────────── */
+
+.rw-roost-wrap { margin-top: 30px; }
+
+.cbw-h,
+.cbw-r {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px 128px 72px;
+  align-items: center;
+  gap: 14px;
+}
+.cbw-h > :not(:first-child),
+.cbw-r > :not(:first-child) { text-align: right; }
+
+.cbw-h {
+  padding: 0 12px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cbw { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; font-variant-numeric: tabular-nums; }
+
+.cbw-r {
+  position: relative;
+  padding: 13px 12px;
+  border-radius: 7px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* The share of volume, filling the row behind the type, the way the
+   fren board does it — so the biggest wallet is found by shape rather
+   than by reading down a column. It fades toward its own right edge so
+   it never draws a second column boundary through the row. */
+.cbw-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 7px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02));
+}
+
+.cbw-n { display: inline-flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink-0); }
+/* A word, not a bordered chip with an accent fill. */
+.cbw-n > em { font-style: normal; font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+.cbw-e { font-size: 13px; font-weight: 500; color: var(--ink-0); }
+
+@media (max-width: 860px) {
+  .rw-roost-wrap { margin-top: 24px; }
+  .cbw-h,
+  .cbw-r { grid-template-columns: minmax(0, 1fr) 104px 60px; }
+  .cbw-h > :nth-child(2),
+  .cbw-r > :nth-child(3) { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * POINTS
+ *
+ * Accolades were cards in a four column grid: bordered plates with a
+ * tinted icon tile, a name, a description, a `+N pts` chip and either a
+ * Claim button or a percentage.
+ *
+ * They are rows, for the reason the fren board is rows: these are a
+ * LIST of things at different stages, and a grid of equal plates claims
+ * they are equal. In a row the ones you can claim are found instantly.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.acc { display: flex; flex-direction: column; gap: 2px; }
+
+.acc-r {
+  position: relative;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) 84px 92px;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 12px;
+  border-radius: 7px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.acc-r > :nth-child(3),
+.acc-r > :nth-child(4) { text-align: right; }
+
+/* Progress fills the row, the same object the fren board and the
+   cashback wallets use, so the three tabs read as one product. */
+.acc-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 7px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015));
+}
+
+.acc-n { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.acc-d { font-size: 12px; color: var(--ink-3); }
+.acc-p { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.acc-s { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+.acc-s > b { font-weight: 500; color: var(--ink-0); }
+
+/* The ones you can collect are the only rows with a white name, which
+   is what makes them findable without a coloured chip. */
+.acc-r[data-ready] { background: rgba(255, 255, 255, 0.05); }
+.acc-r[data-ready] .acc-n { color: var(--ink-0); }
+.acc-r[data-ready] .acc-p { color: var(--ink-2); }
+
+/* Collected is done, so it steps back rather than getting a tick and a
+   badge. It is the only state that needs nothing from you. */
+.acc-r[data-claimed] .acc-n,
+.acc-r[data-claimed] .acc-d,
+.acc-r[data-claimed] .acc-p,
+.acc-r[data-claimed] .acc-s { color: var(--ink-4, #3a3d43); }
+
+/* ── the points board ───────────────────────────────────────────── */
+
+.plb { display: flex; flex-direction: column; }
+
+.plb-r {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 110px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-variant-numeric: tabular-nums;
+}
+.plb-r > :last-child { text-align: right; }
+
+.plb-k { font-size: 12px; color: var(--ink-3); opacity: 0.75; }
+.plb-n { font-size: 13px; font-weight: 500; color: var(--ink-1); }
+.plb-v { font-size: 13px; font-weight: 500; color: var(--ink-0); }
+
+/* Your own row, found without a hue: a plate and full ink. */
+.plb-r[data-me] { background: rgba(255, 255, 255, 0.06); }
+.plb-r[data-me] .plb-n,
+.plb-r[data-me] .plb-k { color: var(--ink-0); opacity: 1; }
+
+@media (max-width: 860px) {
+  .acc-r { grid-template-columns: minmax(0, 1fr) 68px 72px; }
+  .acc-d { display: none; }
+  .plb-r { grid-template-columns: 28px minmax(0, 1fr) 88px; }
+}
+
+/* ── tap targets ─────────────────────────────────────────────────────
+ *
+ * The tabs and the window words are bare text: 14px tall, which is a
+ * fine target for a cursor and a bad one for a thumb.
+ *
+ * Padding grows the hit box to 40px and an equal negative margin takes
+ * the space straight back out, so the row looks identical and only the
+ * area that responds to a touch changes. Sizing them up instead would
+ * have moved every element under them.
+ * ─────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .rwp-tabs > button,
+  .rw-win > button {
+    padding: 13px 0;
+    margin: -13px 0;
+  }
+
+  /* The row keeps its real gap now that each button carries its own
+     vertical padding into it. */
+  .rwp-tabs { gap: 22px; }
+}
+
+/* The partner card. A partner has no rung on the ladder — their rate is
+   an override, not a position — so this stands where the roost would
+   be. One hairline, no aurora and no 120px ghost word behind it. */
+.rw-partner {
+  margin-top: 30px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+}
+.rw-partner-h { display: flex; align-items: center; gap: 10px; }
+.rw-partner-t { font-size: 12.5px; font-weight: 500; color: var(--ink-2); }
+.rw-partner .rw-figs { margin-top: 18px; }
+
+/* The one divider on the referral tab: between the money and the link
+   that generates it. */
+.rw-rule { height: 1px; margin: 28px 0 24px; background: var(--hairline); }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * THE PHONE, TIGHTENED
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 860px) {
+  /*
+   * ── THE QR COMES OFF ─────────────────────────────────────────────
+   *
+   * A referral QR exists so somebody ELSE can point a camera at your
+   * screen. On a phone the screen IS the camera, so the code is being
+   * shown to the one device that cannot use it — and at 96px it is the
+   * hardest version of itself to scan even if a second phone turns up.
+   *
+   * Copy link does the whole job here. The code comes back at 860,
+   * where a laptop is a thing somebody can lean over.
+   */
+  .rw-qr { display: none; }
+
+  /*
+   * ── AND THE AIR COMES OUT ────────────────────────────────────────
+   *
+   * The vertical rhythm was set on a 1,150px screen where a 34px gap
+   * between sections is a beat. Stacked into a 375px column with every
+   * row now full width, the same gaps read as the page falling apart:
+   * you scroll through a screen of nothing between two lines of type.
+   *
+   * Everything structural comes down by roughly a third. The type sizes
+   * do not move — this is spacing, not scale.
+   */
+  .rw-figs { margin-top: 20px; gap: 16px 28px; }
+  .rw-rule { margin: 20px 0 18px; }
+  .rw-sec-wrap { margin-top: 22px; padding-top: 18px; }
+  .rw-sec { margin-bottom: 14px; }
+  .rw-roost-wrap { margin-top: 18px; }
+  .rw-inv { gap: 16px; }
+  .rw-inv-say { margin-top: 10px; }
+  .rw-inv-do { margin-top: 14px; }
+  .rwp-body > * + * { margin-top: 0; }
+}

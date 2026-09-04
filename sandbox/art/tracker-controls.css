@@ -1,0 +1,332 @@
+/* Import · Tracked · Settings, as buttons. And the dropdown card. */
+
+.tcv {
+  min-height: 100vh;
+  padding: 40px;
+  background: #050506;
+  font-family: var(--sans);
+}
+
+.tcv h2 {
+  margin: 40px 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6e7178;
+}
+
+.tcv h2:first-child { margin-top: 0; }
+
+.tcv-set { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 22px; }
+.tcv-one { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.tcv-one > small { font-size: 10.5px; color: #4b4e55; }
+
+/* Track, settled. */
+.b-plate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  background: #ffffff;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 130ms ease, box-shadow 130ms ease;
+}
+
+.b-plate:hover { background: #f4f4f5; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12); }
+
+/* ── the shared skeleton every secondary button starts from ───────── */
+
+.x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #868d97;
+  cursor: pointer;
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease, box-shadow 130ms ease;
+}
+
+.x > svg { width: 14px; height: 14px; flex: none; }
+.x > svg.caret { width: 11px; height: 11px; color: #55585f; }
+
+/* ── IMPORT ───────────────────────────────────────────────────────── */
+
+/* A · no box. Just the word, until you touch it. */
+.i-ghost { border-radius: 7px; padding: 0 10px; }
+.i-ghost:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+
+/* B · a full pill, ringed. */
+.i-pill { border: 1px solid #33333b; border-radius: 999px; padding: 0 14px; }
+.i-pill:hover { border-color: #5a5a66; color: #ffffff; }
+
+/* C · squared and solid. A slab of the panel's own material. */
+.i-slab { border-radius: 4px; background: #1c1c20; color: #b9bdc4; }
+.i-slab:hover { background: #26262c; color: #ffffff; }
+
+/* D · the mark alone, square. */
+.i-sq {
+  width: 28px;
+  padding: 0;
+  border: 1px solid #272729;
+  border-radius: 7px;
+}
+.i-sq:hover { border-color: #3a4150; color: #ffffff; }
+
+/* E · the mark and the word, ringed. */
+.i-mark { border: 1px solid #272729; border-radius: 7px; padding: 0 11px 0 9px; }
+.i-mark:hover { border-color: #3a4150; color: #ffffff; }
+
+/* ── TRACKED ──────────────────────────────────────────────────────── */
+
+.x[data-open] > svg.caret { transform: rotate(180deg); }
+.x > svg.caret { transition: transform 160ms ease; }
+
+/* A · the number alone. No word, no box — the panel's title already
+   says "Wallets", so the figure beside it needs nothing but a caret. */
+.t-bare { padding: 0 6px; border-radius: 6px; font-size: 12px; color: #ffffff; }
+.t-bare:hover, .t-bare[data-open] { background: rgba(255, 255, 255, 0.08); }
+
+/* B · the wallets themselves, overlapping. The list is four faces, so
+   the button is four faces — you can see WHO before opening it. */
+.t-faces {
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px 0 3px;
+  border-radius: 999px;
+}
+.t-faces:hover, .t-faces[data-open] { background: rgba(255, 255, 255, 0.07); color: #ffffff; }
+.t-faces > span { display: inline-flex; }
+.t-faces u {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1.5px solid #050506;
+  background: #17171a;
+  text-decoration: none;
+  font-size: 11px;
+}
+.t-faces u + u { margin-left: -9px; }
+
+/* C · the one you would name, and how many others. */
+.t-lead {
+  height: 26px;
+  padding: 0 4px 0 10px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  gap: 7px;
+}
+.t-lead:hover, .t-lead[data-open] { border-color: #3a4150; color: #ffffff; }
+.t-lead > em {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* D · one mark, with the count as its badge. The smallest thing that
+   can still say both. */
+.t-badge {
+  position: relative;
+  width: 28px;
+  padding: 0;
+  border-radius: 8px;
+  background: #17171a;
+  font-size: 13px;
+}
+.t-badge:hover, .t-badge[data-open] { background: #23232a; }
+.t-badge > em {
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  display: grid;
+  place-items: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 999px;
+  border: 2px solid #050506;
+  background: #ffffff;
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #000000;
+}
+
+/* E · a word you press, not a control you find. Set in white so it
+   reads as the one live thing on a row of grey. */
+.t-link { padding: 0; border-radius: 0; color: #ffffff; gap: 5px; }
+.t-link > svg.caret { color: #6e7178; }
+.t-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── SETTINGS ─────────────────────────────────────────────────────── */
+
+.g-sq { width: 28px; padding: 0; border: 1px solid #272729; border-radius: 7px; }
+.g-sq:hover, .g-sq[data-open] { border-color: #3a4150; color: #ffffff; }
+
+.g-slab { width: 28px; padding: 0; border-radius: 4px; background: #1c1c20; }
+.g-slab:hover, .g-slab[data-open] { background: #26262c; color: #ffffff; }
+
+.g-round { width: 28px; padding: 0; border: 1px solid #272729; border-radius: 999px; }
+.g-round:hover, .g-round[data-open] { border-color: #3a4150; color: #ffffff; }
+
+.g-ghost { width: 28px; padding: 0; border-radius: 7px; }
+.g-ghost:hover, .g-ghost[data-open] { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+
+.g-word { border: 1px solid #272729; border-radius: 7px; padding: 0 11px 0 9px; }
+.g-word:hover, .g-word[data-open] { border-color: #3a4150; color: #ffffff; }
+
+/* ── THE DROPDOWN CARD ────────────────────────────────────────────── */
+
+.pop {
+  width: 218px;
+  border: 1px solid #272729;
+  border-radius: 9px;
+  background: #0c0c0d;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+/* A · pills, wrapping. */
+.pop-pills { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 3px 0 9px;
+  border: 1px solid #272729;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: #868d97;
+  cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
+}
+
+.pill:hover { border-color: #3a4150; background: rgba(255, 255, 255, 0.04); color: #ffffff; }
+.pill > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  color: #55585f;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.pill:hover > i { background: rgba(240, 86, 122, 0.22); color: #f0567a; }
+.pill > i > svg { width: 9px; height: 9px; }
+
+/* B · a list, address at the end. */
+.pop-list { display: flex; flex-direction: column; padding: 4px; }
+
+.li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: #868d97;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.li:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+.li > b { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.li > s { flex: none; text-decoration: none; font-size: 10.5px; font-variant-numeric: tabular-nums; color: #4b4e55; }
+.li > u {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  font-size: 11px;
+}
+.li > i { flex: none; display: inline-flex; width: 17px; height: 17px; align-items: center; justify-content: center; border-radius: 999px; color: #3f4148; }
+.li:hover > i { color: #f0567a; background: rgba(240, 86, 122, 0.2); }
+.li > i > svg { width: 9px; height: 9px; }
+
+/* C · ruled rows, no padding, edge to edge. */
+.pop-ruled { display: flex; flex-direction: column; }
+.pop-ruled > .li {
+  height: 34px;
+  padding: 0 11px;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.pop-ruled > .li:last-child { border-bottom: 0; }
+
+/* D · headed, with the one bulk verb. */
+.pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 11px;
+  border-bottom: 1px solid #1c1c1f;
+  font-size: 11px;
+  color: #6e7178;
+}
+
+.pop-head > button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: #6e7178;
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.pop-head > button:hover { color: #f0567a; }
+
+/* E · searchable, for a list that is long. */
+.pop-find {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 11px;
+  border-bottom: 1px solid #1c1c1f;
+  font-size: 11.5px;
+  color: #4b4e55;
+}
+
+.pop-find > svg { width: 13px; height: 13px; color: #3f4148; }

@@ -1,0 +1,717 @@
+/*
+ * THE BURGER MENU.
+ *
+ * Black, white and grey. No accent: the drawer is chrome, the accent
+ * belongs to the board.
+ *
+ * ── THE THREE DEFECTS THIS FIXES ─────────────────────────────────────
+ *
+ * A WHITE SLAB. Ask Soren was a full width filled button at the top, so
+ * the loudest thing on the screen was the thing you press least. It is
+ * inside the field now.
+ *
+ * DEAD SPACE. The list ran out, the footer was pinned, and eighty pixels
+ * of nothing sat between them — the largest single area in the drawer.
+ * The wallet lives there now.
+ *
+ * NO RHYTHM. Eleven rows at one height and one weight. Destinations are
+ * 46 and lit; the account rows are 40 and quiet.
+ *
+ * ── THE RAMP ─────────────────────────────────────────────────────────
+ *
+ *   11    a chip, a caption, a keycap
+ *   13    the account rows
+ *   15    a destination
+ *   30    the balance
+ *
+ * One 4px spacing step, one hairline weight, and radii of 999 for a
+ * chip, 12 for a row, 14 for a card, 18 for the sheet.
+ */
+
+.bgv-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 34px;
+
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.05);
+  --ink-0: #ffffff;
+  --ink-1: rgba(255, 255, 255, 0.92);
+  --ink-2: rgba(255, 255, 255, 0.58);
+  --ink-3: rgba(255, 255, 255, 0.34);
+  --mono: var(--font-geist-mono), ui-monospace, monospace;
+  --sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.bgv-case {
+  width: 360px;
+}
+
+.bgv-casehead {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.bgv-caseno,
+.bgv-casekind {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bgv-caseno {
+  color: #4b4f5b;
+}
+
+.bgv-casekind {
+  color: #ffffff;
+}
+
+.bgv-casetitle {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: #a3a3a3;
+}
+
+.bgv-casenote {
+  margin-top: 7px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #7c7c7c;
+}
+
+.bgv-stage {
+  position: relative;
+  margin-top: 14px;
+  width: 360px;
+  height: 680px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #000000;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.bgv {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0b0b0c;
+  font-family: var(--sans);
+  color: var(--ink-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bgv *,
+.bgv *::before,
+.bgv *::after {
+  box-sizing: border-box;
+}
+
+.bgv button {
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.bgv-av {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(150deg, #353842, #17181c);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+/* The address, as a chip you can press. Mono, because it is a value. */
+.bgv-addr {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  height: 22px;
+  padding: 0 7px 0 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.bgv-addr:hover,
+.bgv-addr.is-copied {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ══ 1 · COMMAND ═════════════════════════════════════════════════════ */
+
+.cm {
+  padding: 0;
+}
+
+.cm-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 64px;
+  padding: 0 14px 0 16px;
+  flex: 0 0 auto;
+}
+
+.cm-who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cm-name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink-0);
+}
+
+.cm-x {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: var(--ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.cm-x:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/*
+ * ONE FIELD THAT DOES BOTH.
+ *
+ * Soren's face is the field's own mark, which is what carries the fact
+ * that this asks as well as searches — no second control, and no white
+ * slab shouting above a list you actually came for.
+ */
+.cm-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  margin: 0 12px;
+  padding: 0 12px;
+  flex: 0 0 auto;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.055);
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+
+.cm-field:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.cm-fieldface {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: var(--ink-1);
+}
+
+.cm-field input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.cm-field input::placeholder {
+  color: var(--ink-3);
+}
+
+.cm-kbd {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.24);
+}
+
+.cm-clear {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: var(--ink-3);
+}
+
+.cm-clear:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.cm-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 12px 8px;
+  scrollbar-width: none;
+}
+
+.cm-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * The two blocks are separated by weight, not by a caps label. `PAGES`
+ * and `ACCOUNT` were two lines of chrome saying what the rows already
+ * said, on a screen with eleven rows on it.
+ */
+.cm-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.cm-block.is-quiet {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-2);
+}
+
+.cm-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  height: 46px;
+  padding: 0 12px;
+  border-radius: 12px;
+  text-align: left;
+  color: var(--ink-2);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.cm-row > svg {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  transition: color 120ms ease;
+}
+
+.cm-row:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cm-row:hover > svg,
+.cm-row.is-on > svg {
+  color: var(--ink-0);
+}
+
+/* Where you are: a plate and a ring. In a list this tight a fill alone
+   reads as a hover that got stuck. */
+.cm-row.is-on {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.cm-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+/* The account block: smaller, dimmer, same shape. The destinations are
+   what the eye should land on. */
+.cm-block.is-quiet .cm-row {
+  height: 40px;
+  color: var(--ink-3);
+}
+
+.cm-block.is-quiet .cm-label {
+  font-size: 13.5px;
+}
+
+.cm-block.is-quiet .cm-row:hover {
+  color: var(--ink-0);
+}
+
+/* The phrase named nothing, so it is a question. */
+.cm-ask {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  height: 52px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-1);
+  transition: background-color 140ms ease;
+}
+
+.cm-ask:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.cm-asktext {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cm-asktext em {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+.cm-ask > svg:last-child {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+}
+
+/*
+ * THE FOOT IS THE WALLET.
+ *
+ * What used to be eighty pixels of nothing between the last row and a
+ * thin name strip. The balance is the last thing on the screen and the
+ * first thing a phone is opened to check, which is the same argument.
+ */
+.cm-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding: 14px 14px 16px;
+  border-top: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cm-balrow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cm-balfig {
+  font-size: 30px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.cm-balunit {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+.cm-balusd {
+  flex: 1 1 100%;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.cm-deposit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 16px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #000000;
+  transition: background-color 140ms ease;
+}
+
+.cm-deposit:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+/* ══ 2 · VAULT ═══════════════════════════════════════════════════════
+ *
+ * The wallet is the header rather than the foot, and navigation is one
+ * grouped card under it.
+ */
+
+.v {
+  padding: 12px 16px 14px;
+}
+
+.v-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 40px;
+  flex: 0 0 auto;
+}
+
+.v-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 10px 0 4px;
+  border-radius: 999px;
+  color: var(--ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.v-who:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.v-whoname {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink-0);
+}
+
+.v-x {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.v-x:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.v-bal {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 2px 0;
+  flex: 0 0 auto;
+}
+
+.v-balrow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.v-balfig {
+  font-size: 38px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.v-balunit {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+.v-balusd {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 9px 0 13px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+/* The day's move is a caption on the dollar line, not a badge. */
+.v-balpnl {
+  color: var(--ink-3);
+}
+
+.v-acts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 18px;
+  flex: 0 0 auto;
+}
+
+.v-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-1);
+  transition: background-color 140ms ease;
+}
+
+.v-act:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* One filled press. Deposit is what an empty wallet needs and what a
+   full one does most. */
+.v-act.is-primary {
+  background: #ffffff;
+  color: #000000;
+}
+
+.v-act.is-primary:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+/*
+ * ONE CARD, WITH THE RULES INSET.
+ *
+ * Six loose rows read as six buttons. One card with hairlines between
+ * them reads as a list, and starting those hairlines at the label rather
+ * than at the card's edge is what makes it a grouped list rather than a
+ * table.
+ */
+.v-card {
+  margin-top: 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.v-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  padding: 0 14px;
+  text-align: left;
+  color: var(--ink-2);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.v-row + .v-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 48px;
+  right: 0;
+  height: 1px;
+  background: var(--line-2);
+}
+
+.v-row:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.v-row.is-on {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.v-rowglyph {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  flex: 0 0 auto;
+  color: var(--ink-3);
+}
+
+.v-row:hover .v-rowglyph,
+.v-row.is-on .v-rowglyph {
+  color: var(--ink-0);
+}
+
+.v-rowlabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.v-row > svg:last-child {
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.v-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-2);
+  flex: 0 0 auto;
+}
+
+.v-footbtn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--ink-3);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.v-footbtn:hover {
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.v-footbtn.is-out {
+  margin-left: auto;
+}

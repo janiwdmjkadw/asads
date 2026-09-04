@@ -1,0 +1,513 @@
+/**
+ * Post-redemption onboarding — the white document on the mesh.
+ *
+ * Every desktop number is measured off the design boards (640x560 panel,
+ * 56 padding, 528 content column) and written in px on purpose: the app
+ * root is 14px and 1x screens carry a 1.18 `zoom`, so rem would drift
+ * away from the board while px scales with the app exactly as the rest
+ * of the terminal does.
+ *
+ * Mobile (<=700px) has no board — it is a disciplined adaptation:
+ * full-width panel inside 16px page margins, auto height, everything
+ * stacked, artwork scaled down, nothing clipped, natural page scroll.
+ */
+
+/*
+ * A NOTE ON THE PALETTE.
+ *
+ * Every neutral on this document used to lean green — #3e4a47, #6b7674,
+ * #8a9591 for the type, #e8ecea and #f2f5f4 for the two filled grounds —
+ * under a teal accent at #134e4a. They are all flat greys now, each one
+ * picked to match the luminance of the colour it replaced, so the contrast
+ * against the white panel is exactly what it was and only the hue is gone.
+ *
+ * The tint was the last chroma on the front door: the landing's palette
+ * has none by design (tokens.css: "There is no hue on this page"), and a
+ * green-grey document was the one surface still arguing with it.
+ *
+ * This is the panel only. The mesh behind it is still the teal shader —
+ * see WelcomeBackground.
+ */
+
+.page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* `zoom` does not shrink vh, so viewport heights must be divided back
+     down or the page scrolls by the scale factor (see globals.css). */
+  min-height: calc(100vh / var(--ui-scale, 1));
+  padding: 48px 24px;
+  /* Arctic mint. Matches `OrderSequence`'s BACK exactly — the ground shows
+     around the panel on every side, so two near blacks that disagree read
+     as a seam down the edge of the card. */
+  background-color: #04100f;
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  width: 640px;
+  height: 560px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 56px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow:
+    0 24px 80px #0000008c,
+    /* Was #5eead40f — a teal bloom at 6%. It is the last of the turquoise
+       that used to run through this panel, and it has no business here now
+       that everything else on it is neutral. */
+    0 0 60px #ffffff0a;
+}
+
+/* The panel at its natural height.
+   The 560px above is a measured board number for the onboarding steps,
+   whose contents are known. The invite page puts a sign up card inside the
+   same panel and that card is taller than the room 560px leaves, so it
+   would be clipped rather than merely tight. The board height becomes the
+   floor instead of the law. */
+.panelAuto {
+  height: auto;
+  min-height: 560px;
+}
+
+/* Artwork breaks the content margin by 24px, per the boards: its right
+   edge sits 32px from the panel edge on both steps. */
+.art {
+  position: absolute;
+  top: 34px;
+  right: 32px;
+  pointer-events: none;
+}
+
+.artFund {
+  top: 28px;
+}
+
+.eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: #454545;
+}
+
+.headline {
+  margin: 20px 0 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 44px;
+  letter-spacing: -0.02em;
+  color: #0b0e14;
+}
+
+/* Step 1 wraps to two lines by design; step 2 stays on one. */
+.headlineWrap {
+  width: 340px;
+}
+
+.body {
+  margin: 16px 0 0;
+  width: 528px;
+  max-width: 100%;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  color: #484848;
+}
+
+/* Hint + footer travel together: the auto margin lives on the GROUP, so
+   removing the hint on reveal cannot unpin the footer from the bottom. */
+.bottom {
+  display: flex;
+  width: 528px;
+  max-width: 100%;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footerNote {
+  width: 340px;
+  flex-shrink: 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 16px;
+  color: #767676;
+}
+
+/* 360, not the board's 340: the sentence is one line by design and our
+   Geist metrics run ~4px wider than the design tool's. */
+.skipLink {
+  width: 360px;
+  flex-shrink: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 20px;
+  color: #484848;
+  text-decoration: underline 1px;
+  text-underline-position: from-font;
+  cursor: pointer;
+}
+
+.continue {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 28px;
+  border: 0;
+  border-radius: 6px;
+  background-color: #0b0e14;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.continue:disabled {
+  /* The board's disabled treatment — 35%, not the app's 40%. */
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ───────── Step 1: reveal gate ───────── */
+
+.gateHint {
+  align-self: flex-end;
+  margin-bottom: 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: #949494;
+}
+
+.revealRegion {
+  width: 528px;
+  max-width: 100%;
+  margin-top: 36px;
+}
+
+/* ── The provisioning hold ──
+   A user who arrives seconds after redeeming has no exportable wallet yet.
+   The redaction bar IS the status surface: same 52px stock, same reveal
+   pill underneath (inert), so the flip to the real export region when
+   `/me` turns provisioned costs no layout shift and no spinner. */
+
+.holdBar {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  padding-inline: 20px;
+  border-radius: 4px;
+  background-color: #eaeaea;
+}
+
+.holdStatus {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: #767676;
+}
+
+/* Metrics mirror the export region's `Reveal my key` pill exactly. */
+.holdReveal {
+  display: flex;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: 6px;
+  background-color: #0b0e14;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #ffffff;
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Takes the reveal pill's place once the key is shown, so the block below
+   the redaction bar keeps its height across both states. */
+.revealConfirm {
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+  margin-top: 14px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: #454545;
+}
+
+/* ───────── Step 2: deposit ───────── */
+
+.depositRow {
+  display: flex;
+  width: 528px;
+  max-width: 100%;
+  align-items: center;
+  gap: 24px;
+  margin-top: 36px;
+  margin-bottom: auto;
+}
+
+.qrFrame {
+  box-sizing: border-box;
+  display: flex;
+  height: 150px;
+  width: 150px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #0b0e14;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.qrPending {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #949494;
+}
+
+.addressBox {
+  box-sizing: border-box;
+  display: flex;
+  width: 354px;
+  max-width: 100%;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid #d8dedc;
+  border-radius: 6px;
+  background-color: #f4f4f4;
+}
+
+.addressLabel {
+  text-align: center;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.08em;
+  color: #949494;
+}
+
+/* One line at 12px in the 320px column — 12.5px orphans the last chars.
+   Freely selectable: copying by hand must stay possible. */
+.address {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 18px;
+  color: #454545;
+  word-break: break-all;
+  user-select: text;
+}
+
+.copyRow {
+  display: flex;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.copyButton {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 16px;
+  border: 1px solid #454545;
+  border-radius: 5px;
+  background-color: #ffffff;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  color: #454545;
+  cursor: pointer;
+}
+
+/* ───────── Mobile adaptation (no board — see file header) ───────── */
+
+@media (max-width: 700px) {
+  .page {
+    /* `flex-start` with an auto margin on the panel, NOT `center`. The
+       panel is auto height here, and once its content is taller than the
+       viewport a centred flex item overflows equally in both directions —
+       the top goes above the scroll origin and cannot be reached. An auto
+       margin centres exactly the same way while there is room and
+       collapses to zero when there is not, so a tall panel still starts at
+       the top and scrolls. */
+    align-items: flex-start;
+    /* NO PADDING AT ALL. It used to be 24px 16px, and once the panel went
+       full width the sides of that were already being cancelled — what was
+       left was two black bands, one above the card and one below, on a
+       page whose card is supposed to BE the page. The ground has no room
+       to say anything in a 24px strip either. */
+    padding: 0;
+  }
+
+  .panel {
+    width: 100%;
+    height: auto;
+    margin-block: auto;
+    /*
+     * MORE ROOM AT THE TOP than at the sides. The panel starts at y=0 on a
+     * phone now, so 24px put the eyebrow directly under the status bar and
+     * the notch — the one place on the screen where a fixed inset is not
+     * enough on its own.
+     *
+     * `env(safe-area-inset-top)` is added rather than relied on: it is 0 in
+     * a browser with no notch, and 24 alone was already too tight there.
+     */
+    padding: calc(56px + env(safe-area-inset-top, 0px)) 24px
+      calc(32px + env(safe-area-inset-bottom, 0px));
+    /*
+     * FULL HEIGHT TOO, not only full width.
+     *
+     * `100dvh`, not `100vh`: on a phone the browser chrome eats the
+     * difference, and a card sized to `vh` is cut off by the address bar
+     * on the exact screens this rule exists for.
+     *
+     * A panel taller than the viewport simply grows past this and
+     * scrolls — a minimum cannot shorten anything.
+     */
+    min-height: 100dvh;
+  }
+
+  /*
+   * FULL BLEED on a phone: the panel takes the whole width, corner to
+   * corner, and loses its radius on the sides.
+   *
+   * The 16px gutter is a desktop instinct. At 375 it costs 32px of a 343px
+   * measure — nearly a tenth of the line — and leaves two strips of ground
+   * down the edges too narrow to read as anything. The card is the page
+   * here, so it should behave like the page.
+   *
+   * `100vw` with a `50% - 50vw` margin, NOT a negative margin matching the
+   * padding. The first attempt hard-coded -16px to cancel `.page`'s inset
+   * and overhung by 4px on each side, because the gutter is not the number
+   * it looked like. This measures nothing and assumes nothing: the panel is
+   * exactly the viewport wide and centred on it, whatever the parent is
+   * padded by.
+   */
+  .panel {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    border-radius: 0;
+  }
+
+  /* The 560px floor is a desktop board number, and on a phone the floor is
+     the viewport instead — set on `.panel` above. */
+  .panelAuto {
+    min-height: 100dvh;
+  }
+
+  /* Scaled in CSS, not by the size prop, so the same component serves both
+     layouts. 72px clears the headline column and the body line below it. */
+  .art {
+    top: 12px;
+    right: 12px;
+  }
+
+  .art svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .headline {
+    margin-top: 16px;
+    font-size: 28px;
+    line-height: 32px;
+    /* Nothing runs under the artwork on a phone. */
+    max-width: calc(100% - 84px);
+  }
+
+  /* Keeps the two-line headline clear of the artwork. */
+  .headlineWrap {
+    width: calc(100% - 84px);
+  }
+
+  .body,
+  .bottom,
+  .revealRegion,
+  .depositRow {
+    width: 100%;
+  }
+
+  .revealRegion {
+    margin-top: 24px;
+  }
+
+  .gateHint {
+    align-self: flex-start;
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  .depositRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .qrFrame {
+    align-self: center;
+  }
+
+  .addressBox {
+    width: 100%;
+  }
+
+  .footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .footerNote,
+  .skipLink {
+    width: 100%;
+    text-align: center;
+  }
+
+  .continue {
+    width: 100%;
+  }
+}

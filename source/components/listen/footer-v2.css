@@ -1,0 +1,305 @@
+/*
+ * THE BOTTOM BAR — "rail".
+ *
+ * Picked off the `/whatever` sheet: the shipped arrangement, in the
+ * material the nav, the modals, the popovers and the drawer now share.
+ * Nothing moves. Telemetry stays on the left, controls on the right.
+ *
+ * ── THE FIVE CHANGES ─────────────────────────────────────────────────
+ *
+ * 1 · ONE HAIRLINE, NOT A DECAYING RAIL. The top edge shipped as a 2px
+ *     gradient "brightest at the left and decaying to the ordinary
+ *     hairline by mid bar". That is a gradient doing a line's job, and it
+ *     is the only edge in the product drawn that way — every other
+ *     surface settled on one hairline weight.
+ *
+ * 2 · THE CONNECTION LINE TAKES THE BOARD'S LABEL. It shipped at 10px /
+ *     0.08em / `--ink-2`; `discover.css` heads its columns at 9.5px /
+ *     0.13em / #4b4f5b. One label style for the whole terminal.
+ *
+ * 3 · FIGURES ARE GEIST WITH TABULAR NUMERALS. The FPS readout and the
+ *     viewer count are numbers that tick, and they were inheriting
+ *     whatever face the theme carries.
+ *
+ * 4 · THE DOCK TOGGLES LOSE `var(--mono)` AND THE ACCENT GLOW. `--mono`
+ *     is a THEME AXIS the user picks, so those two chips rendered in a
+ *     different face from every other control on the bar; and an open
+ *     panel was marked with a coloured `drop-shadow` around its icon,
+ *     which is the only glow left anywhere in the product. Open is a
+ *     white plate now, the same way every other toggle says it.
+ *
+ * 5 · COLOUR ONLY ON THE EXCEPTION — which the shipped bar already got
+ *     right, and its own comment says why: a pip beside the words was
+ *     decoration restating the label. Healthy is muted chrome; a dropped
+ *     socket takes `--down`.
+ */
+
+[data-footer-v2] {
+  background-color: #000000 !important;
+  /* The gradient rail, replaced by the line it was imitating. */
+  background-image: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border-top: 0 !important;
+}
+
+/*
+ * The board's column head, from `.ledger-head > span` in discover.css —
+ * in GEIST, stated explicitly.
+ *
+ * `--font-instrument-sans` DOES NOT EXIST. The layout defines
+ * `--font-geist-sans`, `--font-geist-mono` and `--font-instrument-SERIF`,
+ * and nothing else. Every rule in this project written against the sans
+ * name was invalid at computed value time and fell through to the
+ * browser's default — which is what this line was rendering in.
+ */
+[data-footer-v2] .ftv-cap {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 9.5px !important;
+  /*
+   * 600, not 500. The board can head a column at 500 because those labels
+   * sit directly over the figures they name, with a hairline under them
+   * holding the eye. This one is loose text on a dark strip with nothing
+   * around it, and at 9.5px and 500 it read as smudged rather than quiet.
+   */
+  font-weight: 600 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase;
+  /* Lifted off #4b4f5b for the same reason: quiet is the intent, faint is
+     the accident. */
+  color: rgba(255, 255, 255, 0.5) !important;
+  line-height: 1;
+}
+
+/* The one thing allowed to be lit. */
+[data-footer-v2] .ftv-cap.is-bad {
+  color: var(--down) !important;
+}
+
+[data-footer-v2] .ftv-num {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* The figure is the part worth reading, so it carries the weight and the
+   unit beside it stays the label. */
+[data-footer-v2] .ftv-num > span {
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* The eye is a label, not a figure — it scales with the type it sits in. */
+[data-footer-v2] .ftv-num svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+[data-footer-v2] .ftv-div {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── the dock toggles ─────────────────────────────────────────────── */
+
+/*
+ * `DockFooterToggle` is shared markup, so it is reached by attribute
+ * rather than by editing it: `data-state` is closed / floating / snapped.
+ */
+[data-footer-v2] [data-state] {
+  height: 20px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+[data-footer-v2] [data-state]:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #ffffff !important;
+}
+
+/* Open is a plate. No accent, no glow. */
+[data-footer-v2] [data-state='floating'],
+[data-footer-v2] [data-state='snapped'] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* The chip's icon took the panel's accent and a drop shadow around it.
+   It is the only glow left in the product. */
+[data-footer-v2] [data-state] > span[aria-hidden] {
+  color: currentColor !important;
+  filter: none !important;
+}
+
+/*
+ * ── THE OLD 10px PAIR IS GONE ────────────────────────────────────────
+ *
+ * Two rules sized the dock glyphs to 10 and 9 here, because they sat
+ * inside a chip beside a 10px label and could not outweigh the word they
+ * belonged to. There is no chip and no word any more, so the sizing
+ * moved down to the block that sets the whole row — see "THE LEFT PAIR
+ * IS A STEP BIGGER" near the end of this file.
+ *
+ * The discriminator it discovered is still the one in use, and still
+ * worth stating: `aria-pressed`, NOT `data-state`. `TooltipTrigger
+ * asChild` stamps `data-state` onto whatever it wraps, and all five
+ * marks are wrapped in one, so a `[data-state]` rule silently sizes the
+ * social links too.
+ */
+
+
+/* The activity count rides the same figure treatment as the rest. */
+[data-footer-v2] [data-state] .tabular-nums {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: inherit !important;
+}
+
+/* ── the icon buttons ─────────────────────────────────────────────── */
+
+/*
+ * `html` carries `zoom: 1.18`, so a CSS pixel here is not a device pixel
+ * and computed values read back scaled. These are tuned by eye against
+ * the rendered bar rather than by arithmetic.
+ */
+/*
+ * WHITE, not a half-tone grey.
+ *
+ * Five marks are the entire bar now — the words, the chips, the frame
+ * counter and the viewer total are all gone — so there is nothing left
+ * for them to be quiet against. At 50% they read as disabled rather
+ * than as restrained, which is what a lone row of glyphs on black does.
+ *
+ * 0.88 rather than pure white: the board above is the thing being read,
+ * and a footer at full white is the brightest object on the page.
+ */
+[data-footer-v2] .ftv-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.88) !important;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+/*
+ * ── THE GLYPHS ARE SIZED HERE, AND THE BOX WITH THEM ─────────────────
+ *
+ * The note that used to sit here said the sizes belong on the <svg>
+ * elements in `AppFooter.tsx` because a CSS width was losing to two
+ * `!important` rules. One of those was the `[data-state] svg` rule fixed
+ * above; with it scoped to the chips, CSS wins here again.
+ *
+ * The attribute alone was never going to be enough anyway: this anchor
+ * was laying out at 28 wide by 20 TALL, and an SVG keeps its aspect
+ * ratio, so a `width={24}` attribute rendered at 12. The box has to be
+ * given the height before the glyph can use it.
+ *
+ * 26 in a 30px bar leaves 2px top and bottom for the hover plate to
+ * still read as a plate.
+ */
+[data-footer-v2] .ftv-icon {
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 auto;
+  /*
+   * CENTRING, EXPLICITLY.
+   *
+   * The X sat a pixel low against the other two. An <a> is inline by
+   * default, so it takes a text baseline and the line box under it —
+   * `inline-flex` from the utility class still leaves the anchor itself
+   * sitting on that baseline, and the three glyphs have different ink
+   * heights inside identical viewBoxes, so they settled at different
+   * offsets. `flex` plus a zeroed line height takes the baseline out of
+   * it entirely and centres on the box instead.
+   */
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/*
+ * 14, up from a rendered 12.
+ *
+ * Landed by walking it down: 20 was way too big, 16 still too big. In a
+ * 30px bar these have to stay chrome — the point was to stop them being
+ * the QUIETEST things on a bar full of readouts nobody presses, not to
+ * make them the loudest. Two pixels does that.
+ */
+[data-footer-v2] .ftv-icon svg {
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 auto;
+  display: block;
+}
+
+/* A point under the other two. The X is a solid geometric mark and the
+   Discord glyph has interior counters, so matching them by number leaves
+   the X looking the heavier of the pair. */
+[data-footer-v2] a[aria-label='Follow us on X'] svg {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+/*
+ * ── ONE SIZE FOR ALL FIVE ────────────────────────────────────────────
+ *
+ * The two on the left were briefly set a step larger than the three on
+ * the right, on the argument that a panel toggle and a link off the site
+ * are not the same kind of thing. On a 30px strip that argument does not
+ * survive being looked at: five marks in a row at two sizes reads as a
+ * row that failed to line up, not as two categories.
+ *
+ * So the whole row moves together, at 12. 16, 15 and 14 each filled the
+ * strip rather than sitting in it — at 30px tall with nothing else on
+ * the bar, the marks want to be smaller than a lone row of glyphs first
+ * suggests.
+ *
+ * The only size difference left is the one that keeps the marks looking
+ * level rather than measuring level: the two SOLID X glyphs sit a point
+ * under, because a filled mark carries more ink than a 1.5 stroke at the
+ * same number.
+ */
+[data-footer-v2] .ftv-icon[aria-pressed] svg[fill='currentColor'] {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+[data-footer-v2] .ftv-icon:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #ffffff !important;
+}
+
+/* ── narrow screens ───────────────────────────────────────────────── */
+
+/*
+ * Below 560 the bar keeps what you press and drops what you glance at.
+ * FPS and the viewer count are the two readings nobody acts on, and a
+ * phone has no room to spend on them; the connection line stays, because
+ * on a phone a dropped socket is the likeliest thing to go wrong.
+ */
+@media (max-width: 560px) {
+  [data-footer-v2] .ftv-drop {
+    display: none !important;
+  }
+
+  [data-footer-v2] .ftv-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  [data-footer-v2] [data-state] {
+    height: 26px !important;
+  }
+}

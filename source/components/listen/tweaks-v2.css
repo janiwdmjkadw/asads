@@ -1,0 +1,537 @@
+/*
+ * TWEAKS, v2.
+ *
+ * Picked off the `/whatever` sheet: `wide` for the layout, `dock` for the
+ * colour, a bottom sheet below 640.
+ *
+ * ── WHY THIS IS A STYLESHEET AND NOT A REWRITE ───────────────────────
+ *
+ * `ThemeSwitcher.tsx` renders its ten groups as FLAT SIBLINGS — a
+ * `.ts-section` heading followed by its controls, ten times over, inside
+ * one padded div. Wrapping each group to make an explicit two column
+ * grid is the better structure and it is a real refactor of an 850 line
+ * file. This gets the same two columns out of the markup that is already
+ * there, so the panel can ship now and the wrapping can happen when that
+ * file is next open anyway.
+ *
+ * The consequence, on record: the columns BALANCE rather than split by
+ * meaning. The sheet put Typography and Theme on the left and the board
+ * groups on the right; multi-column fills in source order instead, so
+ * Theme lands wherever the balance puts it. Everything else — the width,
+ * the material, the sheet, the target sizes — is exactly what was
+ * judged.
+ *
+ * ── WHAT CHANGED ─────────────────────────────────────────────────────
+ *
+ * 1 · 560px AND TWO COLUMNS. It was 320 and scrolled past a full
+ *     screen, so nothing below Theme was found unless you already knew
+ *     it was there. Two columns halves the content height — about
+ *     2500px down to 1259 — which clears a tall display entirely and
+ *     halves the scroll on a laptop. It does NOT remove the scroll at
+ *     800px, and the ceiling stays for that reason; see the note on
+ *     `max-height` below.
+ *
+ * 2 · THE DOCK MATERIAL. It was `rgba(15,18,24,0.96)` over a 12px blur,
+ *     which is a fourth surface in a product that already had three.
+ *     Now it is the tweet tracker and wallet activity ground to the
+ *     value, so every floating panel is one material.
+ *
+ * 3 · A SHEET BELOW 640. Two columns cannot survive a phone, and 560
+ *     plus 16px of air each side stops fitting at 592 — 640 makes the
+ *     change while there is still room rather than at the pixel it would
+ *     clip.
+ *
+ * 4 · ROOM ABOVE A CAP, NONE BELOW. The captions were spaced evenly on
+ *     both sides, so each sat equidistant between the group it names and
+ *     the one it does not.
+ */
+
+/* ── the surface ──────────────────────────────────────────────────── */
+
+.listen-root .ts-popover {
+  /*
+   * ── CENTRED, NOT ANCHORED TO THE PALETTE ─────────────────────────
+   *
+   * The component measures the palette button and sets `right` and
+   * `bottom` inline, which was fine for a 320px popover hanging off a
+   * button near the right edge. At 560 it is not: the panel grows
+   * LEFTWARD from a fixed right edge, so on any window narrower than
+   * about 700 the left half — the title, every caption, the first
+   * column of controls — runs off the page. Nothing about a settings
+   * panel needs to point at the button that opened it.
+   *
+   * So it is centred on the viewport and floats above the footer. That
+   * removes the anchor arithmetic entirely: there is no width at which
+   * it can hang off an edge, because it is measured from the middle.
+   *
+   * `!important` on all four sides because the inline anchor style sets
+   * `right` and `bottom` and would otherwise win.
+   */
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  top: auto !important;
+  /* Clear of the 30px footer and its breathing room, in the same
+     zoomed frame as the caps above. */
+  bottom: calc(44px / var(--ui-scale, 1)) !important;
+  transform: translateX(-50%) !important;
+
+  width: 560px !important;
+  /*
+   * ── THE CAPS ARE DIVIDED BY THE BOARD'S ZOOM ─────────────────────
+   *
+   * The root carries `zoom: 1.18`, and a length written here is
+   * resolved in the panel's own space and THEN multiplied by that zoom
+   * on render. So `100dvh - 96px` came out 18% taller than the screen
+   * it was measuring: a 624px cap rendered 736px tall in a 720px
+   * window, and the panel hung off the top with its first section cut
+   * away.
+   *
+   * Dividing first makes the cap mean what it says. `100dvh` is still
+   * read against the real viewport — only the arithmetic moves into the
+   * zoomed frame.
+   */
+  max-width: max(280px, calc((100vw - 32px) / var(--ui-scale, 1))) !important;
+  /*
+   * The `max()` is a FLOOR, not a preference.
+   *
+   * `dvh` resolves to 0 while the view is not being presented — a
+   * backgrounded tab, a pane the host has hidden — and a cap of zero
+   * collapses the panel to nothing. It comes back on the next layout,
+   * but "comes back" is not good enough for a panel someone has open.
+   *
+   * 320 is below any height worth opening this at, so the floor only
+   * ever wins when the viewport measurement is nonsense.
+   */
+  max-height: max(320px, calc((100dvh - 96px) / var(--ui-scale, 1))) !important;
+  /*
+   * ── THE SCROLLER LIVES HERE, NOT ON THE COLUMNS ──────────────────
+   *
+   * A multi-column box with a CONSTRAINED height does not scroll when
+   * it overflows — it fragments, and the overflow goes into new columns
+   * to the SIDE. Put `max-height` and `overflow-y` on the multicol
+   * element and you get a third and fourth column running off the right
+   * edge, and on a phone you get sideways scrolling instead of down.
+   *
+   * So the multicol wrapper stays auto height and the PANEL caps and
+   * scrolls it vertically.
+   */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+
+  border-radius: 14px !important;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--ink-0) 4.5%, transparent),
+      transparent 42%
+    ),
+    color-mix(in srgb, var(--surface-1) 76%, transparent) !important;
+  /*
+   * `saturate(1.45)` is the part that matters and the part that is easy
+   * to drop: it pulls colour OUT of the board behind, so the panel reads
+   * as glass rather than as a scrim over grey mush.
+   */
+  backdrop-filter: blur(22px) saturate(1.45) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1.45) !important;
+  border: 1px solid color-mix(in srgb, var(--ink-0) 13%, transparent) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 48px -16px rgba(0, 0, 0, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ── two columns ──────────────────────────────────────────────────── */
+
+/*
+ * The content is the popover's second child — the header is the first.
+ * Multi-column rather than grid, because the groups are flat siblings
+ * and grid would need boxes to place.
+ */
+.listen-root .ts-popover > div:nth-child(2) {
+  columns: 2;
+  column-gap: 22px;
+  column-rule: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 4px 16px 16px !important;
+  /* NO height and NO overflow here — see the note on the panel above.
+     Constraining a multicol box makes it fragment sideways. */
+}
+
+/* A heading must not be the last thing in a column, and a control must
+   not be cut in half by one. Without these the balance puts a caption at
+   the foot of column one and its controls at the head of column two. */
+.listen-root .ts-popover .ts-section {
+  break-after: avoid-column;
+  break-inside: avoid-column;
+  /* Room above, none below — see note 4 at the top of this file. */
+  margin-top: 16px;
+  margin-bottom: 6px;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* The first heading in each column has the column edge above it already. */
+.listen-root .ts-popover .ts-section:first-child {
+  margin-top: 4px;
+}
+
+.listen-root .ts-popover .ts-row,
+.listen-root .ts-popover .ts-preview,
+.listen-root .ts-popover .ts-swatch-grid,
+.listen-root .ts-popover .ts-reset {
+  break-inside: avoid-column;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * NARROW — the sheet
+ *
+ * 640, because 560 plus 16px of air each side stops fitting at 592.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  /*
+   * The component sets `right` and `bottom` inline from its anchor
+   * measurement, so the sheet has to out-specify those rather than hope
+   * they are absent. Fixed, not absolute: it is pinned to the viewport
+   * now, not to the footer it was hanging off.
+   */
+  .listen-root .ts-popover {
+    position: fixed !important;
+    /* Clears the centring transform and the footer gap from above. */
+    inset: auto 0 0 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    /* `dvh`, not `vh` — a phone's address bar makes `vh` taller than the
+       screen, which would put the last group under the chrome. */
+    height: 85dvh !important;
+    border-radius: 18px 18px 0 0 !important;
+    border-bottom: 0 !important;
+    /* Vertical only. `overflow-x: hidden` is belt and braces after the
+       multicol fix: nothing should be able to push this sideways again. */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /*
+   * `columns: auto`, NOT `columns: 1`.
+   *
+   * `columns: 1` is still a multi-column container, so a constrained
+   * height fragments it sideways and the sheet scrolls left to right.
+   * `auto` for both count and width takes the element out of multicol
+   * entirely and back to normal block flow, which is the only thing
+   * that scrolls down.
+   */
+  .listen-root .ts-popover > div:nth-child(2) {
+    columns: auto !important;
+    column-rule: 0 !important;
+    /* Room under the last group for a home indicator. */
+    padding-bottom: 32px !important;
+  }
+
+  /*
+   * THUMB SIZES, NOT POINTER SIZES. The wide panel's rows and selects
+   * are fine under a cursor and are not targets on a phone. Everything a
+   * finger lands on grows; nothing else moves.
+   */
+  .listen-root .ts-popover .ts-row {
+    min-height: 44px;
+  }
+
+  .listen-root .ts-popover .ts-select {
+    height: 42px;
+    font-size: 14px;
+  }
+
+  .listen-root .ts-popover .ts-swatch {
+    width: 32px;
+    height: 32px;
+  }
+
+  .listen-root .ts-popover .ts-reset {
+    min-height: 36px;
+  }
+
+  /*
+   * ── THE CLOSE BUTTON ─────────────────────────────────────────────
+   *
+   * 22px is under every touch target minimum there is, so it grows to
+   * 36. But growing the BOX alone is what broke it: the glyph is a text
+   * `×` at an inline `font-size: 14`, so a bigger button just put a
+   * small mark in a large square, and the default line height sat it
+   * off centre rather than in the middle.
+   *
+   * So the glyph grows with the box, `line-height: 1` takes the text
+   * baseline out of the centring, and the flex centring is restated
+   * because the inline style only sets `display: flex` — its alignment
+   * comes from a utility class that the bigger box changes the meaning
+   * of.
+   */
+  .listen-root .ts-popover > div:first-child button {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/*
+ * ── NOT DONE HERE, AND WHY ───────────────────────────────────────────
+ *
+ * The Layout / Card size / Second row choosers are built inline in
+ * `ThemeSwitcher.tsx` with no class of their own — the only hooks this
+ * file has are `ts-row`, `ts-label`, `ts-select`, `ts-section`,
+ * `ts-preview`, `ts-swatch-grid`, `ts-swatch-fill`, `ts-swatch-name` and
+ * `ts-reset`. So a four way row cannot be wrapped to two by two from
+ * here without a structural selector that would break the moment
+ * somebody adds a div.
+ *
+ * At 320 they hold, because the sheet is the full width of the screen
+ * rather than the 320 the popover used to be — they had less room before
+ * this change than after it. When that file is next open, give those
+ * rows a class and the wrap is four lines.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+ * ARCTIC — THE TWEAKS PANEL'S OWN PALETTE
+ *
+ * ── WHY IT HAS ONE AT ALL ────────────────────────────────────────────
+ *
+ * The panel was drawing its chrome from `--accent-primary`, which is
+ * the BOARD's accent — the value that means a rising figure, a live
+ * lane, a selected wallet. So every active tab and every chosen swatch
+ * lit up in whatever the board currently means by "good", and on the
+ * default theme that is cyan.
+ *
+ * That is a category error, not a colour preference. This is a settings
+ * panel: nothing in it is good or bad, it is just where you are. So it
+ * gets a palette of its own that no data value uses.
+ *
+ * ── ARCTIC ───────────────────────────────────────────────────────────
+ *
+ * Cold and nearly colourless. The ink is a blue-grey rather than pure
+ * white, the fills are white at very low alpha, and the only actual hue
+ * is a pale ice blue on the thing you have selected — enough to find,
+ * far too quiet to read as a status.
+ *
+ * Every token is scoped to `.ts-popover`, so nothing here can leak into
+ * the board.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.listen-root .ts-popover {
+  --tw-ink: #eef4f8;
+  --tw-ink-2: rgba(226, 238, 245, 0.72);
+  --tw-ink-3: rgba(226, 238, 245, 0.46);
+  --tw-ink-4: rgba(226, 238, 245, 0.3);
+
+  /* The ice. One hue, used on selection and nowhere else. */
+  --tw-ice: #a8d5e8;
+  --tw-ring: rgba(168, 213, 232, 0.22);
+
+  --tw-fill: rgba(255, 255, 255, 0.028);
+  --tw-fill-on: rgba(168, 213, 232, 0.11);
+  --tw-line: rgba(255, 255, 255, 0.075);
+  --tw-line-on: rgba(168, 213, 232, 0.55);
+
+  color: var(--tw-ink);
+}
+
+/* ── the surface ──────────────────────────────────────────────────── */
+
+/*
+ * Colder and flatter than the glass it replaces. The old panel took a
+ * `saturate(1.45)` off whatever was behind it, which on a board full of
+ * green and gold rows meant the settings panel changed colour depending
+ * on what happened to be scrolled under it.
+ */
+.listen-root .ts-popover {
+  border-radius: 16px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 38%),
+    rgba(14, 17, 20, 0.92) !important;
+  backdrop-filter: blur(26px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 32px 64px -20px rgba(0, 0, 0, 0.72),
+    0 2px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+.listen-root .ts-popover > div:nth-child(2) {
+  column-rule: 1px solid var(--tw-line) !important;
+}
+
+/* ── headings ─────────────────────────────────────────────────────── */
+
+/*
+ * The section head is a LABEL, not a title: small, tracked, and quiet
+ * enough that the controls under it are the loudest thing in the group.
+ * It was full white at body size, which made every heading compete with
+ * the settings it introduced.
+ */
+.listen-root .ts-popover .ts-section {
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: var(--tw-ink-4) !important;
+  padding: 16px 14px 7px !important;
+}
+
+.listen-root .ts-popover .ts-section:first-child {
+  padding-top: 4px !important;
+}
+
+.listen-root .ts-popover .ts-label {
+  font-size: 9.5px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--tw-ink-4) !important;
+}
+
+/* ── controls ─────────────────────────────────────────────────────── */
+
+.listen-root .ts-popover .ts-select {
+  height: 30px !important;
+  border-radius: 9px !important;
+  background: var(--tw-fill) !important;
+  border: 1px solid var(--tw-line) !important;
+  color: var(--tw-ink-2) !important;
+  font-size: 12px !important;
+  transition:
+    border-color 130ms ease,
+    background 130ms ease !important;
+}
+
+.listen-root .ts-popover .ts-select:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--tw-ink) !important;
+}
+
+.listen-root .ts-popover .ts-select:focus {
+  border-color: var(--tw-line-on) !important;
+  box-shadow: 0 0 0 2px var(--tw-ring) !important;
+  outline: none !important;
+}
+
+/* ── the theme swatches ───────────────────────────────────────────── */
+
+/*
+ * The plate around a swatch is gone at rest. A grid of bordered tiles
+ * is a grid of boxes competing with the colours inside them, which is
+ * the one thing a colour chooser must not do — the swatch IS the
+ * control, so the ring only appears on the one you have picked.
+ */
+.listen-root .ts-popover .ts-swatch {
+  border-radius: 9px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  padding: 5px !important;
+  transition:
+    background 130ms ease,
+    border-color 130ms ease !important;
+}
+
+.listen-root .ts-popover .ts-swatch:hover {
+  background: var(--tw-fill) !important;
+}
+
+.listen-root .ts-popover .ts-swatch.active {
+  background: var(--tw-fill-on) !important;
+  border-color: var(--tw-line-on) !important;
+}
+
+.listen-root .ts-popover .ts-swatch-fill {
+  height: 20px !important;
+  border-radius: 6px !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09) !important;
+}
+
+.listen-root .ts-popover .ts-swatch-name {
+  font-size: 10px !important;
+  color: var(--tw-ink-3) !important;
+}
+
+.listen-root .ts-popover .ts-swatch.active .ts-swatch-name {
+  color: var(--tw-ink) !important;
+}
+
+/* ── the preview ──────────────────────────────────────────────────── */
+
+.listen-root .ts-popover .ts-preview {
+  border-radius: 11px !important;
+  background: rgba(255, 255, 255, 0.022) !important;
+  border: 1px solid var(--tw-line) !important;
+}
+
+/* ── reset ────────────────────────────────────────────────────────── */
+
+/*
+ * The one destructive control here, so it is the one that says so — but
+ * quietly, at rest. It only takes its warning colour under the pointer,
+ * because a red button sitting in a settings panel reads as an error
+ * message rather than as an action.
+ */
+.listen-root .ts-popover .ts-reset {
+  border-radius: 9px !important;
+  background: transparent !important;
+  border: 1px solid var(--tw-line) !important;
+  color: var(--tw-ink-3) !important;
+  font-size: 11px !important;
+  transition:
+    color 130ms ease,
+    border-color 130ms ease,
+    background 130ms ease !important;
+}
+
+.listen-root .ts-popover .ts-reset:hover {
+  background: rgba(255, 138, 138, 0.08) !important;
+  border-color: rgba(255, 138, 138, 0.4) !important;
+  color: #ff8a8a !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * GROUPS DO NOT SPLIT ACROSS THE COLUMNS
+ *
+ * The body is multi-column, and its contents are a FLAT list of
+ * siblings — a heading, then its controls, then the next heading, with
+ * nothing wrapping a group. Multicol was free to break anywhere in that
+ * run and it did: "Card size" kept its segments at the foot of the left
+ * column and sent its "Reset section sizes" trailer to the top of the
+ * right one, where it read as a heading for the theme swatches under it.
+ *
+ * There is no way to tell multicol "keep these siblings together" when
+ * nothing marks where a group starts and ends. What it will honour is
+ * where NOT to break, and three rules cover every shape in here:
+ *
+ *   · nothing breaks down its own middle
+ *   · nothing breaks straight after a heading or a label, which is what
+ *     strands a title alone at the foot of a column
+ *   · nothing breaks straight BEFORE a trailing action, which is what
+ *     stranded the reset link at the top of one
+ *
+ * The controls are Tailwind-classed and have no shared hook, so the
+ * first rule addresses the children positionally rather than by name.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.listen-root .ts-popover > div:nth-child(2) > * {
+  break-inside: avoid !important;
+}
+
+.listen-root .ts-popover .ts-section,
+.listen-root .ts-popover .ts-label {
+  break-after: avoid !important;
+}
+
+/* The right-aligned rows are the trailers — "Reset section sizes",
+   "default (118%)" — and each belongs to the control above it. */
+.listen-root .ts-popover > div:nth-child(2) > .justify-end {
+  break-before: avoid !important;
+}

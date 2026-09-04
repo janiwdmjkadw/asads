@@ -1,0 +1,1018 @@
+/*
+ * THE TOP NAV, REDESIGNED. White on black.
+ *
+ * No colour anywhere on the bar except the token marks in the balance,
+ * because a mark is DATA — it carries which asset a number refers to —
+ * and everything else here is interface, which gets none.
+ *
+ * This dresses the shipped markup rather than replacing the component, so
+ * every hook in `TerminalTopNav.tsx` keeps working: routing and prefetch
+ * on the tabs, the Clerk session, the wallet balances and their popover,
+ * the agent chat store, notifications and token search.
+ *
+ * IT IS KEYED TO TEST IDS, NOT TO SHAPES. A first pass at this matched on
+ * `[class*='gradient']` and similar guesses and produced something that
+ * only resembled the design — the wallet cluster kept its glass, the
+ * balance kept its old plate, the sizes were all slightly off. The
+ * selectors below name the exact controls: `setup-agent-wallet`,
+ * `nav-deposit`, `wallet-balance-pill`, `token-search-trigger`.
+ *
+ * Loaded after `listen.css`, so equal specificity wins here. Where the
+ * original sets a value inline, the declaration is marked important and
+ * the reason is noted.
+ *
+ * ── WHAT WAS DECIDED, AND WHAT IT BEAT ───────────────────────────────
+ *
+ *   items    no plate, no box, no outline. Active white, the rest at 35%.
+ *            Beat boxed, segmented, chip, card, inset, bracket, accent.
+ *   hover    a faint plate fades in behind the label. Beat motion,
+ *            tracking, a wipe, dimming the siblings, a swap and a glow.
+ *   agent    the label leads and Soren's face trails, like a signature.
+ *            Beat eight readings of it as a text input, all wrong the
+ *            same way: Soren is a character and they drew a search box.
+ *   action   white fill, black type — the only filled object on the bar,
+ *            with the landing pill's own opacity hover.
+ *   balance  a bordered plate, figures in Geist with TABULAR numerals so
+ *            the digits cannot jitter as they tick.
+ */
+
+.listen-root .topnav {
+  --tn-line: rgba(255, 255, 255, 0.1);
+  --tn-ink: #ffffff;
+  /*
+   * ── 0.62, UP FROM 0.35 ────────────────────────────────────────────
+   *
+   * This is the resting colour of the search tile, the notification
+   * bell, the wallet plate's own glyph and the nav tabs. At 35% white on
+   * a black bar that is roughly 2.6:1 — well under the 4.5:1 a 13px mark
+   * needs, and under the 3:1 floor even for large text. All three read
+   * as switched off.
+   *
+   * 0.62 clears 4.5:1 and stays a clear step below `--tn-ink`, so hover
+   * and the active tab still have somewhere to go. The tabs move with it
+   * on purpose: they were the same value and had the same problem.
+   */
+  --tn-rest: rgba(255, 255, 255, 0.62);
+  /*
+   * NO HEIGHT OVERRIDE. This raised the bar to 60px to match the mockup,
+   * and on the real board that reads as heavy — the mockup was a bar on
+   * an empty page, where 60px looks generous; over three dense lanes of
+   * live numbers it is a slab. The shipped 56 stays, and everything in
+   * here is sized to sit inside it.
+   */
+
+  /* Important: the component sets `background: var(--nav-bg)` inline, and
+     an inline style outranks any selector. */
+  background: #000000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  gap: 14px;
+  padding-inline: 16px;
+}
+
+.listen-root .topnav::after {
+  background: var(--tn-line);
+}
+
+/* ── the brand ───────────────────────────────────────────────────────*/
+
+/* White, not the accent gradient: on a monochrome bar a silhouette needs
+   no help. The wordmark beside it is gone — it was the largest type on
+   the bar, spending the loudest slot telling a signed in user the name of
+   the app they are already inside. */
+.listen-root .topnav .bar-l > div:first-child > span[aria-hidden] {
+  width: 22px !important;
+  height: 22px !important;
+  background: var(--tn-ink) !important;
+}
+.listen-root .topnav .bar-l > div:first-child > span:last-child {
+  display: none;
+}
+.listen-root .topnav .bar-l {
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ── the destinations ────────────────────────────────────────────────*/
+
+/*
+ * THE RAIL TAKES THE SLACK AND CLIPS. It absorbs whatever the right hand
+ * cluster leaves, and the tail is cut off when there is not enough. One
+ * behaviour instead of a ladder of breakpoints that hid a control at a
+ * time and had a bug at every width it did not cover.
+ */
+.listen-root .topnav .tabs {
+  display: flex !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  gap: 4px;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.listen-root .topnav .tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.listen-root .topnav .tab-pill {
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  box-shadow: none;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  /*
+   * `none`, and it has to be stated. The shared `.listen-root .tab-pill`
+   * in listen.css sets `text-transform: uppercase` — that rule is also
+   * worn by the TradesTable pills, which DO want caps, so it stays. This
+   * selector is one class more specific, so it decides what the nav bar
+   * does: the label is printed exactly as `TAB_LABEL` writes it.
+   */
+  text-transform: none;
+  color: var(--tn-rest);
+  transition: background 140ms ease, color 140ms ease;
+}
+.listen-root .topnav .tab-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--tn-ink);
+}
+/*
+ * THE ACTIVE ITEM CHANGES COLOUR AND NOTHING ELSE.
+ *
+ * It used to also go from 500 to 600, and that is a LAYOUT change: a
+ * heavier label is a wider label, so every item after it shifted and the
+ * whole bar jumped sideways on each click. Colour alone cannot reflow
+ * anything, and white against thirty five percent grey is already the
+ * largest contrast step available here.
+ */
+.listen-root .topnav .tab-pill.active {
+  background: none;
+  color: var(--tn-ink);
+}
+
+/*
+ * And the rail must not scroll itself when a tab takes focus. Clicking an
+ * item focuses it, and a focused child inside a horizontal scroller makes
+ * the browser scroll it into view — which slid the rail under the cursor
+ * on every press.
+ */
+.listen-root .topnav .tabs {
+  scroll-behavior: auto;
+  overflow-anchor: none;
+}
+
+/* The sliding thumb goes with the plate it used to fill. */
+.listen-root .topnav .tab-thumb {
+  display: none !important;
+}
+
+/* The rail's positioning context, and the nudge over its right edge. */
+.listen-root .topnav .tn-rail {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+}
+
+/*
+ * THE NUDGE. Shown only when there is something past the edge, which is
+ * asked of the DOM rather than tracked in state: `scrollWidth` beyond
+ * `clientWidth` is the condition, and CSS cannot read it — so it is
+ * always in the markup and hidden by the container query below.
+ *
+ * It carries a gradient of the bar's own ground fading to transparent on
+ * its left, so the item being cut passes UNDER it rather than ending at
+ * a hard line.
+ */
+.listen-root .topnav .tn-more {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  width: 46px;
+  padding-right: 2px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, #000000 42%);
+  color: var(--tn-rest);
+  cursor: pointer;
+  transition: color 130ms ease;
+  /*
+   * ABOVE THE RAIL. Without this the scrolling content painted over the
+   * arrow and presses landed on whatever destination happened to be
+   * underneath — the button was there, visible, and not clickable.
+   */
+  z-index: 2;
+}
+.listen-root .topnav .tn-more:hover {
+  color: var(--tn-ink);
+}
+/*
+ * BACK. The mirror of the nudge, on the left edge with its gradient
+ * reversed so the item being cut passes under it the same way.
+ *
+ * It shares everything else with `.tn-more` — same width, same z-index
+ * above the scrolling content, same hover. The two are one control in
+ * two halves, so anything that changes one has to change both.
+ */
+.listen-root .topnav .tn-less {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+  width: 46px;
+  padding-left: 2px;
+  border: 0;
+  background: linear-gradient(270deg, transparent, #000000 42%);
+  color: var(--tn-rest);
+  cursor: pointer;
+  transition: color 130ms ease;
+  z-index: 2;
+}
+
+.listen-root .topnav .tn-less:hover {
+  color: var(--tn-ink);
+}
+
+/*
+ * EACH ARROW ANSWERS ITS OWN EDGE.
+ *
+ * `has-more` used to mean "the rail overflows at all", which is a
+ * constant — so the forward arrow stayed lit at the end of the rail
+ * pointing at nothing. It now means "there is something to the RIGHT of
+ * where you are", and `has-prev` means the same to the left. Both come
+ * off `scrollLeft` in the component, so they flip as you scroll: at the
+ * start you get one arrow, in the middle two, at the end one again.
+ */
+.listen-root .topnav .tn-rail.has-more .tn-more,
+.listen-root .topnav .tn-rail.has-prev .tn-less {
+  display: inline-flex;
+}
+
+/* The burger. Below 800 only — above that the destinations are on the
+   bar and there is nothing for it to hold. Two ways to reach the same six
+   places, on the same bar, is one too many. */
+/* `inline-flex` with both axes centred, because the shipped `.hdr-ctl-sq`
+   rule that would have done that is overridden above — leaving the glyph
+   sitting against the left edge of its tile. */
+/*
+ * `button.tn-burger`, not `.tn-burger`.
+ *
+ * The burger also carries `hdr-ctl-sq`, and the tile rule above sets
+ * `display: inline-flex` on that class. Equal specificity, later in the
+ * file, so it won — and the burger was visible at every width, giving
+ * the bar two ways to reach the same six places at once. The element
+ * selector breaks the tie without an `!important`.
+ */
+.listen-root .topnav button.tn-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/*
+ * THE MOBILE BAR STARTS AT 800.
+ *
+ * Above it the destinations stay on the bar and clip into the arrow;
+ * below it they fold into the burger. The burger exists ONLY below this
+ * line — it was showing at 1000 while the rail was still perfectly
+ * usable, which put two ways to navigate on the same bar.
+ */
+@media (max-width: 800px) {
+  .listen-root .topnav .tn-rail {
+    display: none;
+  }
+  .listen-root .topnav button.tn-burger {
+    display: inline-flex;
+  }
+}
+
+/* ── the agent, and search ───────────────────────────────────────────*/
+
+.listen-root .topnav .agent-field {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: none;
+  height: 26px;
+  padding: 0 9px;
+  gap: 6px;
+  border: 1px solid var(--tn-line);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
+}
+.listen-root .topnav .agent-field:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+}
+/* The label leads, in the bar's ink rather than a placeholder grey: this
+   is a button, not an empty field. */
+.listen-root .topnav .agent-field > span:first-child {
+  flex: 0 0 auto !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /*
+   * 11px. The BOX was never the problem — the type inside it was. At 12,
+   * under the terminal's ~1.18 UI scale, "Ask Soren" renders at over 14
+   * and sits heavier than the destinations beside it, which is backwards:
+   * this is chrome and they are the content.
+   */
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--tn-ink) !important;
+}
+.listen-root .topnav .tn-soren {
+  color: var(--tn-ink);
+}
+
+/* Search, notifications and every other square control: one tile. */
+.listen-root .topnav .hdr-ctl-sq,
+.listen-root .topnav [data-testid='token-search-trigger'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--tn-line);
+  border-radius: 7px;
+  /*
+   * 0.05, matching the plate the sub header cluster settled on. 0.03
+   * over black is about #080808 — near enough to the bar that the tile
+   * had no body and its border was carrying it alone.
+   */
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+  color: var(--tn-rest);
+}
+.listen-root .topnav .hdr-ctl-sq:hover,
+.listen-root .topnav [data-testid='token-search-trigger']:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--tn-ink);
+}
+
+/*
+ * ASK SOREN AND SEARCH JOIN THE RIGHT CLUSTER.
+ *
+ * The component puts them in their own middle group with `flex: 1 1 auto`
+ * and `justify-center`, which centres them in whatever space is left —
+ * so they floated between the destinations and the wallet with a gap on
+ * either side. They are tools, and the tools belong together.
+ *
+ * Addressed by position rather than by class because the group's classes
+ * are Tailwind utilities describing exactly the behaviour being undone.
+ * The destinations already carry `flex: 1 1 auto`, so with this group
+ * shrink-to-fit the rail takes all the slack and everything else rides
+ * right.
+ */
+.listen-root .topnav > div:nth-child(2) {
+  flex: 0 0 auto !important;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── the right hand cluster ──────────────────────────────────────────*/
+
+/*
+ * EVERYTHING ON THE RIGHT IS 26px, not the 28 the nav items sit at.
+ *
+ * The app runs a UI scale of about 1.18 over the whole terminal, so every
+ * number here renders roughly a fifth larger than it is written — a 28px
+ * control lands at 33 physical pixels and a 13px label at 15. Sized
+ * against the mockup, where there was no scale, the controls came out
+ * visibly heavier than the board underneath them.
+ *
+ * The nav items were right at 28/13. These are a step below that on
+ * purpose: they are chrome, and the destinations are the content of the
+ * bar.
+ */
+.listen-root .topnav .bar-r {
+  gap: 10px;
+}
+
+/*
+ * THE ACTION. White fill, black type — the only filled object on the bar.
+ * All three states of this slot take it: set up the agent wallet, finish
+ * wallet setup, and deposit. They are one job in three situations.
+ *
+ * The hover is the landing page pill's own (`primitives/Pill.tsx`):
+ * opacity to 90%, so the plate and the type recede together and the
+ * button behaves identically on both surfaces.
+ */
+.listen-root .topnav [data-testid='setup-agent-wallet'],
+.listen-root .topnav [data-testid='finish-wallet-setup'],
+.listen-root .topnav [data-testid='nav-deposit'] {
+  height: 26px;
+  padding: 0 10px;
+  border: 0 !important;
+  border-radius: 7px;
+  background: var(--tn-ink) !important;
+  box-shadow: none !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* 11.5px, and the weight down from 600. Black on white is already the
+     highest contrast pair available; bold on top of it was shouting. */
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: #000000 !important;
+  transition: opacity 150ms ease;
+}
+.listen-root .topnav [data-testid='setup-agent-wallet']:hover,
+.listen-root .topnav [data-testid='finish-wallet-setup']:hover,
+.listen-root .topnav [data-testid='nav-deposit']:hover {
+  opacity: 0.9;
+  filter: none;
+}
+/* No icon. The words carry it, and a glyph on the bar's one filled object
+   is the loudest thing on the screen doing the least. */
+.listen-root .topnav [data-testid='setup-agent-wallet'] > svg,
+.listen-root .topnav [data-testid='finish-wallet-setup'] > svg {
+  display: none;
+}
+
+/*
+ * THE BALANCE. A bordered plate, not the bar's one glass group — nothing
+ * here is raised any more, so a lit blurred plate would be the only
+ * object of its kind.
+ */
+.listen-root .topnav [data-testid='wallet-balance-pill'] {
+  height: 26px;
+  padding: 0 7px;
+  gap: 4px;
+  border: 1px solid var(--tn-line);
+  border-radius: 7px;
+  /* Same plate as the square tiles beside it. */
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--tn-rest);
+}
+.listen-root .topnav [data-testid='wallet-balance-pill']:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/*
+ * TABULAR FIGURES, and this is a correctness requirement rather than a
+ * preference: a balance ticks, and a proportional face gives each digit
+ * its own width, so the figure jitters and everything beside it reflows
+ * on every update. Geist is the family already on the bar, and
+ * `tabular-nums` locks the digits without touching the letters — which is
+ * what lets the balance match the nav items instead of importing a
+ * monospace and looking like a separate system pasted in.
+ */
+.listen-root .topnav [data-testid='wallet-balance-pill'],
+.listen-root .topnav [data-testid='wallet-balance-pill'] * {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* 10.5px. The figures are the widest thing in this plate and the plate
+     is the widest thing in the cluster, so a half pixel here is worth
+     more than it looks — it is what lets the account and the burger keep
+     their room at the narrow end. */
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  color: var(--tn-ink);
+}
+/* The wallet glyph stays back — it labels the plate, it is not a figure. */
+.listen-root .topnav [data-testid='wallet-balance-pill'] > svg:first-child {
+  color: var(--tn-rest);
+}
+
+/* ── narrow ──────────────────────────────────────────────────────────*/
+
+@media (max-width: 1400px) {
+  .listen-root .topnav {
+    gap: 12px;
+    padding-inline: 16px;
+  }
+  .listen-root .topnav .tab-pill {
+    padding: 0 9px;
+  }
+}
+
+@media (max-width: 1160px) {
+  .listen-root .topnav .tab-pill {
+    padding: 0 8px;
+    font-size: 12.5px;
+  }
+}
+
+
+/* ══ HOVER, FOR THE RIGHT HAND CONTROLS ══════════════════════════════
+ *
+ * Six treatments, switched with `?navhover=` on any terminal route. No
+ * two share a MECHANISM — an earlier round of this gave four "different"
+ * hovers the same one, a white background fading up, so they were one
+ * hover in four costumes.
+ *
+ * They apply to the agent control, search, notifications, the account and
+ * the balance. The action button is excluded: its hover is settled and
+ * comes from the landing page's own pill, so a person moving between the
+ * two surfaces meets the same button behaving the same way.
+ *
+ * Every one of these animates only `background`, `color`, `box-shadow`,
+ * `opacity` or `transform` — nothing that reflows the bar.
+ */
+
+.tn-hover-group {
+  /* Named once so each treatment below can be read as a list rather than
+     six repetitions of the same selector chain. */
+}
+
+/* ── 1 · lift — the plate fills, as it does today ────────────────── */
+.listen-root[data-navhover='lift'] .topnav .agent-field:hover,
+.listen-root[data-navhover='lift'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='lift'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='lift'] .topnav [data-testid='wallet-balance-pill']:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ── 2 · edge — only the hairline reacts ─────────────────────────── */
+/* The plate never changes. The border goes to full white, so the control
+   is outlined rather than filled — the quietest of the six, and the only
+   one where nothing inside the box moves or changes. */
+.listen-root[data-navhover='edge'] .topnav .agent-field:hover,
+.listen-root[data-navhover='edge'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='edge'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='edge'] .topnav [data-testid='wallet-balance-pill']:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── 3 · invert — the control turns white ────────────────────────── */
+/* The most severe: the plate goes to full white and everything on it to
+   black, so the hovered control briefly looks like the action button. */
+.listen-root[data-navhover='invert'] .topnav .agent-field:hover,
+.listen-root[data-navhover='invert'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='invert'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='invert'] .topnav [data-testid='wallet-balance-pill']:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+.listen-root[data-navhover='invert'] .topnav .agent-field:hover *,
+.listen-root[data-navhover='invert'] .topnav [data-testid='wallet-balance-pill']:hover * {
+  color: #000000 !important;
+}
+
+/* ── 4 · sink — the control is pressed into the bar ──────────────── */
+/* No colour change at all. The plate darkens below the bar and takes a
+   shadow inside its top edge, so pointing at it feels like putting a
+   finger on a key. */
+.listen-root[data-navhover='sink'] .topnav .agent-field:hover,
+.listen-root[data-navhover='sink'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='sink'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='sink'] .topnav [data-testid='wallet-balance-pill']:hover {
+  background: #0a0b0d;
+  border-color: var(--tn-line);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.9),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ── 5 · raise — the control comes off the bar ───────────────────── */
+/* The opposite of sink, and the only one that moves anything: up one
+   pixel with a shadow underneath. Transform only, so it stays on the
+   compositor and cannot reflow its neighbours. */
+.listen-root[data-navhover='raise'] .topnav .agent-field,
+.listen-root[data-navhover='raise'] .topnav .hdr-ctl-sq,
+.listen-root[data-navhover='raise'] .topnav [data-testid='token-search-trigger'],
+.listen-root[data-navhover='raise'] .topnav [data-testid='wallet-balance-pill'] {
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 150ms ease,
+    background 140ms ease, border-color 140ms ease;
+}
+.listen-root[data-navhover='raise'] .topnav .agent-field:hover,
+.listen-root[data-navhover='raise'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='raise'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='raise'] .topnav [data-testid='wallet-balance-pill']:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── 6 · ink — only the contents brighten ────────────────────────── */
+/* The box is untouched. The glyph and the type go from 35% to full
+   white, so the control does not react — what is IN it does. */
+.listen-root[data-navhover='ink'] .topnav .agent-field:hover,
+.listen-root[data-navhover='ink'] .topnav .hdr-ctl-sq:hover,
+.listen-root[data-navhover='ink'] .topnav [data-testid='token-search-trigger']:hover,
+.listen-root[data-navhover='ink'] .topnav [data-testid='wallet-balance-pill']:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--tn-line);
+  color: #ffffff;
+}
+.listen-root[data-navhover='ink'] .topnav .agent-field:hover .tn-soren,
+.listen-root[data-navhover='ink'] .topnav [data-testid='wallet-balance-pill']:hover > svg:first-child {
+  color: #ffffff;
+}
+
+
+/*
+ * NO ACCENT WHEN THE POPOVER IS OPEN.
+ *
+ * This is where the blue came from, and it was never the hover: the
+ * shipped `.hdr-ctl--glass[data-state='open']` rule mixes
+ * `--accent-primary` into the border, the fill and an outer glow, so the
+ * plate turned blue the moment the balances panel opened. On a bar with
+ * no colour anywhere else that is the loudest thing on the screen,
+ * announcing that a panel is open — which you can already see, because
+ * the panel is open.
+ */
+/*
+ * EVERY PATH THE ACCENT COULD TAKE, closed.
+ *
+ * `[data-state='open']` is Radix's, `.is-on` is the bar's own, and the
+ * glass rules reach the plate through `.hdr-ctl--glass` as well — so all
+ * three are named here. The open state gets the same fill as the hover
+ * rather than a colour: the panel being open is already visible, because
+ * the panel is open.
+ */
+.listen-root .topnav [data-testid='wallet-balance-pill'][data-state='open'],
+.listen-root .topnav [data-testid='wallet-balance-pill'].is-on,
+.listen-root .topnav .hdr-ctl--glass[data-state='open'],
+.listen-root .topnav .hdr-ctl--glass.is-on {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: none !important;
+  color: var(--tn-ink) !important;
+}
+
+/* And nothing inside it may carry the accent either — the figures and
+   the marks stay ink and their own brand colours. */
+.listen-root .topnav [data-testid='wallet-balance-pill'][data-state='open'] *,
+.listen-root .topnav [data-testid='wallet-balance-pill'].is-on * {
+  color: var(--tn-ink) !important;
+}
+
+/*
+ * THE WALLET'S HOVER: FILL — the same answer every other control gives.
+ *
+ * Chosen over edge, lift, sink, ink and an underline. The argument
+ * against it was that this plate holds numbers you are reading and more
+ * light behind a figure costs legibility; the argument for it won, which
+ * is that a bar where one control reacts differently from all the others
+ * is a bar with an exception in it, and an exception has to earn its
+ * keep. At 9% the fill is nowhere near enough to trouble white figures.
+ */
+.listen-root .topnav [data-testid='wallet-balance-pill']:hover {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ══ WHAT SHOWS, AND WHEN ════════════════════════════════════════════
+ *
+ * The rule for the whole bar, in one place:
+ *
+ *   logo         always
+ *   destinations always, except below 800 where they fold into the burger
+ *   Ask Soren    always
+ *   search       always
+ *   wallet       always
+ *   setup /      only when there is something to set up or fund — this is
+ *   deposit      the component's own branch and is left alone
+ *   notifications always
+ *   account      always
+ *   burger       below 800 only
+ *
+ * Several of these need saying out loud because the shipped component
+ * hides them with responsive utilities: the agent and search sit in a
+ * `hidden md:flex` group, so they vanished below 768, and the account
+ * carries `hidden sm:inline-flex`, so it vanished below 640 — on a phone,
+ * where being able to reach your own account matters most.
+ */
+
+.listen-root .topnav > div:nth-child(2),
+.listen-root .topnav .agent-field,
+.listen-root .topnav [data-testid='token-search-trigger'],
+.listen-root .topnav [data-testid='wallet-balance-pill'],
+.listen-root .topnav .topnav-auth-controls {
+  display: flex !important;
+  flex-shrink: 0 !important;
+}
+
+/* Notifications: the one square tile that is neither search nor the
+   burger, and it stays at every width. */
+.listen-root .topnav .bar-r > .hdr-ctl-sq:not(.tn-burger) {
+  display: inline-flex !important;
+  flex-shrink: 0 !important;
+}
+
+/* The burger is the single exception to all of the above. */
+.listen-root .topnav button.tn-burger {
+  display: none !important;
+}
+@media (max-width: 800px) {
+  .listen-root .topnav button.tn-burger {
+    display: inline-flex !important;
+  }
+}
+
+/*
+ * SOREN AND SEARCH, SMALLER. They are the two controls you pass on the
+ * way to something else — present at every width, and never the thing
+ * the eye lands on first.
+ */
+.listen-root .topnav .agent-field {
+  height: 24px;
+  padding: 0 8px;
+  gap: 5px;
+}
+.listen-root .topnav .agent-field > span:first-child {
+  font-size: 10.5px !important;
+}
+.listen-root .topnav .agent-field .tn-soren {
+  width: 13px;
+  height: 13px;
+}
+.listen-root .topnav .agent-field kbd,
+.listen-root .topnav .agent-field .hdr-kbd {
+  font-size: 9px;
+  padding: 2px 4px;
+}
+.listen-root .topnav [data-testid='token-search-trigger'] {
+  width: 24px;
+  height: 24px;
+}
+.listen-root .topnav [data-testid='token-search-trigger'] svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+
+/* ══ FOUR THINGS THAT WERE WRONG AT NARROW WIDTHS ════════════════════ */
+
+/*
+ * 1 · THE SPACER. The component carries a `flex-1 md:hidden` div between
+ * the destinations and the right group. Above 768 it is hidden and does
+ * nothing; below it, it takes all the free space — which is what pushed
+ * Ask Soren and search into the middle of the bar and left them
+ * stranded there while everything else rode right.
+ */
+.listen-root .topnav > div.md\:hidden {
+  display: none !important;
+}
+
+/*
+ * 2 · SETUP AND DEPOSIT COME OFF THE BAR BELOW 800.
+ *
+ * They are the one control on this bar that is conditional — the only
+ * thing here that is not always true — and the widest by a distance.
+ * Both have their own surfaces, and the wallet plate sitting beside them
+ * is what you press to reach either. On a phone that is the trade: keep
+ * what is always true, drop what is sometimes offered.
+ */
+@media (max-width: 800px) {
+  .listen-root .topnav [data-testid='setup-agent-wallet'],
+  .listen-root .topnav [data-testid='finish-wallet-setup'],
+  .listen-root .topnav [data-testid='nav-deposit'] {
+    display: none !important;
+  }
+}
+
+/*
+ * 3 · THE BURGER IS LAST, hard right. It was moved before the account to
+ * dodge a rule that pinned the final child visible; that rule is gone, so
+ * it sits where it belongs — the last thing on the bar.
+ */
+.listen-root .topnav button.tn-burger {
+  display: none !important;
+  order: 9;
+}
+@media (max-width: 800px) {
+  .listen-root .topnav button.tn-burger {
+    display: inline-flex !important;
+  }
+}
+
+/*
+ * 4 · NOTHING IN THE RIGHT GROUP MAY SHRINK. The wallet was being
+ * squeezed out of the bar entirely at narrow widths — present in the
+ * markup, zero pixels wide.
+ */
+.listen-root .topnav .bar-r > * {
+  flex-shrink: 0 !important;
+}
+
+
+/* ══ MOBILE: WHAT THE BAR KEEPS ══════════════════════════════════════
+ *
+ * Below 800 the bar carries: logo, search, wallet, notifications,
+ * account, burger. Six things, all the same size.
+ *
+ * ASK SOREN COMES OFF AND SEARCH STAYS. Of the two, search is the one
+ * you need on a phone — finding a token is the first thing you do on a
+ * small screen, and talking to the agent is a sit-down job. Soren is
+ * reachable from the burger and from the agent dock; there is no other
+ * way to search.
+ *
+ * ONE SIZE FOR EVERYTHING. The account tile was rendering larger than
+ * the controls beside it, which reads as an accident rather than as
+ * hierarchy — nothing about your avatar earns more room than your
+ * balance. 26px, all of it.
+ */
+@media (max-width: 800px) {
+  .listen-root .topnav .agent-field {
+    display: none !important;
+  }
+
+  /* Every control on the bar, one size. */
+  .listen-root .topnav [data-testid='token-search-trigger'],
+  .listen-root .topnav .bar-r > .hdr-ctl-sq,
+  .listen-root .topnav button.tn-burger,
+  .listen-root .topnav [data-testid='wallet-balance-pill'],
+  .listen-root .topnav .topnav-auth-controls,
+  .listen-root .topnav .topnav-auth-controls > * {
+    height: 26px !important;
+    min-height: 26px !important;
+  }
+  .listen-root .topnav [data-testid='token-search-trigger'],
+  .listen-root .topnav .bar-r > .hdr-ctl-sq,
+  .listen-root .topnav button.tn-burger {
+    width: 26px !important;
+  }
+  /* The avatar itself, not just the wrapper — it carries its own size and
+     would otherwise sit proud of the tile it is in. */
+  .listen-root .topnav .topnav-auth-controls img,
+  .listen-root .topnav .topnav-auth-controls span[class*='rounded'],
+  .listen-root .topnav .topnav-auth-controls button {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  /*
+   * THE WALLET STAYS, SMALLER. It drops the second figure and the wallet
+   * glyph — SOL is the balance you check, and the stablecoin is
+   * reference that belongs on the portfolio board. What it never does is
+   * leave the bar.
+   */
+  .listen-root .topnav [data-testid='wallet-balance-pill'] {
+    display: inline-flex !important;
+    padding: 0 7px !important;
+    gap: 4px !important;
+  }
+  /*
+   * THE WALLET GLYPH STAYS. Dropping it left a bare figure with a token
+   * mark, which reads as a statistic rather than as your wallet — and on
+   * a bar where the destinations are gone and everything else is an
+   * icon, a naked number is the one thing with nothing to identify it.
+   *
+   * What goes is the SECOND figure and the divider: SOL is the balance
+   * you check, and the stablecoin is reference that belongs on the
+   * portfolio board.
+   */
+  .listen-root .topnav [data-testid='wallet-balance-pill'] > span:last-of-type,
+  .listen-root .topnav [data-testid='wallet-balance-pill'] > span[aria-hidden] {
+    display: none !important;
+  }
+  .listen-root .topnav [data-testid='wallet-balance-pill'] * {
+    font-size: 10.5px !important;
+  }
+}
+
+
+/* ══ ONE HEIGHT, EVERY CONTROL, EVERY WIDTH ══════════════════════════
+ *
+ * Ask Soren was 24, search 24, the wallet 26, notifications 26, the
+ * action 26 and the account 28 — six controls sitting in a row at four
+ * different heights. Nothing about any of them earns a different size
+ * from its neighbour, so the row read as slightly broken rather than as
+ * having hierarchy.
+ *
+ * 26px, and it is set in one place so the next control added to this bar
+ * cannot drift from the rest.
+ *
+ * Last in the file on purpose: it has to beat the individual sizes set
+ * further up, including the mobile block, without any of them needing to
+ * know about it.
+ */
+.listen-root .topnav .agent-field,
+.listen-root .topnav [data-testid='token-search-trigger'],
+.listen-root .topnav [data-testid='wallet-balance-pill'],
+.listen-root .topnav .bar-r > .hdr-ctl-sq,
+.listen-root .topnav button.tn-burger,
+.listen-root .topnav [data-testid='setup-agent-wallet'],
+.listen-root .topnav [data-testid='finish-wallet-setup'],
+.listen-root .topnav [data-testid='nav-deposit'],
+.listen-root .topnav .topnav-auth-controls,
+.listen-root .topnav .topnav-auth-controls > *,
+.listen-root .topnav .topnav-auth-controls button,
+.listen-root .topnav .topnav-auth-controls img,
+.listen-root .topnav .topnav-auth-controls span[class*='rounded'] {
+  height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
+}
+
+/* The square ones are square. */
+.listen-root .topnav [data-testid='token-search-trigger'],
+.listen-root .topnav .bar-r > .hdr-ctl-sq,
+.listen-root .topnav button.tn-burger,
+.listen-root .topnav .topnav-auth-controls button,
+.listen-root .topnav .topnav-auth-controls img,
+.listen-root .topnav .topnav-auth-controls span[class*='rounded'] {
+  width: 26px !important;
+  min-width: 26px !important;
+}
+
+
+/* ══ PHONES KEEP THE SAME CONTROLS, IN LESS ROOM ═════════════════════
+ *
+ * These two blocks used to scale every control UP on a phone — 38px
+ * below 560 and 34px below 380, with bigger glyphs and bigger figures —
+ * on the reasoning that a 26px target is under what Apple and Google ask
+ * for. That is true of a button standing on its own. It is not true of
+ * six of them in a row across the top of a board, where the result is a
+ * bar that reads as a different, heavier product than the same bar on a
+ * desktop, and where the size difference is the first thing you notice.
+ *
+ * The size lock above now holds at every width. What still changes on a
+ * phone is the SPACE AROUND the controls, not the controls: less gap and
+ * a tighter inset, so six things at 26px fit a 360 wide bar without any
+ * of them having to leave.
+ */
+
+@media (max-width: 560px) {
+  .listen-root .topnav {
+    gap: 10px;
+    padding-inline: 14px;
+  }
+}
+
+/*
+ * THE NARROWEST PHONES tighten again rather than dropping a control. The
+ * fix for overflow is never to delete the thing you cannot fit.
+ */
+@media (max-width: 380px) {
+  .listen-root .topnav {
+    gap: 8px;
+    padding-inline: 12px;
+  }
+
+  .listen-root .topnav [data-testid='wallet-balance-pill'] {
+    padding: 0 6px !important;
+  }
+}
+
+/* ══ THE ACCOUNT TILE COMES OFF THE BAR ON A PHONE ═══════════════════
+ *
+ * The avatar is the one control on this bar you press once a session, if
+ * that. Everything else there — search, the balance, alerts, the burger
+ * — is something you press while you are working, and on a phone the bar
+ * is the scarcest row in the product.
+ *
+ * 800 rather than 560, so it goes at the same width the destinations and
+ * Ask Soren do: the same question is being answered, which is what this
+ * bar keeps when it stops fitting.
+ */
+@media (max-width: 800px) {
+  .listen-root .topnav .topnav-auth-controls {
+    display: none !important;
+  }
+}
+
+/* ══ THE GLYPHS IN THE RIGHT CLUSTER ═══════════════════════════════════
+ *
+ * `--tn-rest` sets the button's `color` and the glyphs inherit it, but
+ * two of them do not: the search mark and the bell are sized and inked
+ * INLINE by their components, and an inline colour beats the tile's.
+ *
+ * They are also drawn at a 1.5 stroke, which at 13px on a dark bar is
+ * the faintest weight anything on this nav uses. 1.8 is what the rest of
+ * the bar is drawn at.
+ * ══════════════════════════════════════════════════════════════════ */
+
+.listen-root .topnav [data-testid='token-search-trigger'] svg,
+.listen-root .topnav .hdr-ctl-sq svg {
+  color: var(--tn-rest) !important;
+  stroke-width: 1.8 !important;
+}
+
+.listen-root .topnav [data-testid='token-search-trigger']:hover svg,
+.listen-root .topnav .hdr-ctl-sq:hover svg {
+  color: var(--tn-ink) !important;
+}

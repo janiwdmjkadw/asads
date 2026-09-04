@@ -1,0 +1,270 @@
+/* ═══════════════════════════════════════════════════════════════════
+ * SHEET 6 · THE TWEET POPUP, SIX WAYS
+ *
+ * The SHELL is the subject. Same three posts in every panel, same
+ * header text, same width, same height — what changes is the ground,
+ * the border, the corner, the shadow and how the header meets the body.
+ *
+ * The rack sits on a lit ground on purpose. Two of these six are glass,
+ * and glass judged against flat black is judged as grey: there has to be
+ * something behind it worth blurring, the way the trade page has a chart
+ * behind it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tm {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.tm h2 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6e7178;
+}
+
+.tm p.tm-note {
+  margin: 0 0 18px;
+  max-width: 620px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+/* The ground behind the popups: a dark page with some light in it, so
+   blur and shadow have something to act on. */
+.tm-rack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 26px 20px;
+  padding: 24px 20px;
+  border-radius: 10px;
+  background:
+    radial-gradient(560px 260px at 12% 8%, rgba(34, 199, 126, 0.12), transparent 70%),
+    radial-gradient(520px 300px at 78% 44%, rgba(96, 128, 255, 0.13), transparent 70%),
+    radial-gradient(420px 240px at 46% 92%, rgba(240, 86, 122, 0.09), transparent 70%),
+    #0e0f12;
+}
+
+.tm-slot { display: flex; flex-direction: column; gap: 8px; width: 340px; }
+
+.tm-cap { display: flex; align-items: baseline; gap: 7px; }
+.tm-cap > b { font-size: 11.5px; font-weight: 600; color: var(--ink-1); }
+.tm-cap > small { font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+
+/* ══ THE SHELL ══════════════════════════════════════════════════════ */
+
+.sh {
+  display: flex;
+  flex-direction: column;
+  height: 348px;
+  overflow: hidden;
+}
+
+.sh-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 38px;
+  padding: 0 10px 0 13px;
+}
+
+.sh-head > b { font-size: 13px; font-weight: 600; color: var(--ink-0); line-height: 1; }
+.sh-head > i {
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.sh-head > .sh-sp { flex: 1 1 auto; }
+
+.sh-head button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 130ms ease;
+}
+
+.sh-head button:hover { color: var(--ink-0); }
+.sh-head button > svg { width: 12px; height: 12px; }
+
+.sh-feed { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+
+/* ── 1 · GLASS ─────────────────────────────────────────────────────
+ *
+ * What ships. Translucent ground, 22px of backdrop blur, a 13% white
+ * border, a top light along the inside of it, and two shadows. Six
+ * separate devices to say "this is above the page", which is most of
+ * why it reads as a stock component rather than as ours.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh1 {
+  border: 1px solid color-mix(in srgb, var(--ink-0) 13%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--ink-0) 4.5%, transparent), transparent 42%),
+    color-mix(in srgb, var(--surface-1) 76%, transparent);
+  backdrop-filter: blur(22px) saturate(1.45);
+  -webkit-backdrop-filter: blur(22px) saturate(1.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 48px -16px rgba(0, 0, 0, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.sh1 .sh-head { border-bottom: 1px solid color-mix(in srgb, var(--ink-0) 7%, transparent); }
+
+/* ── 2 · FLAT ──────────────────────────────────────────────────────
+ *
+ * One ground, one hairline, one radius, nothing else. No blur, no
+ * sheen, no shadow. It is above the page because it is a different
+ * colour to the page, which is the only argument this needs.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh2 {
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--surface-1);
+}
+
+.sh2 .sh-head { border-bottom: 1px solid var(--hairline); }
+
+/* ── 3 · WELL ──────────────────────────────────────────────────────
+ *
+ * Cut INTO the page rather than laid on top of it: the body is darker
+ * than everything around it, the header is the page's own surface, and
+ * the only shadow is on the inside of the top edge. Nothing floats,
+ * so nothing has to be lit.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh3 {
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  background: #06070a;
+  box-shadow: inset 0 2px 6px -2px rgba(0, 0, 0, 0.9);
+}
+
+.sh3 .sh-head {
+  background: var(--surface-2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+/* ── 4 · CARD ──────────────────────────────────────────────────────
+ *
+ * No border at all. The shadow is the edge — tight and close rather
+ * than the wide 48px bloom, so it reads as a millimetre of lift rather
+ * than a modal hovering over a dimmed page. The header takes no rule:
+ * it is separated by the space under it, which is enough at this size.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh4 {
+  border-radius: 12px;
+  background: var(--surface-2);
+  box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.75), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.sh4 .sh-head { height: 42px; }
+
+/* ── 5 · SEAM ──────────────────────────────────────────────────────
+ *
+ * Square. No radius, no shadow, and one line down the page-facing
+ * edge. This is the shell the panel already becomes when it docks, so
+ * running it floating too means the popup does not change identity when
+ * the user drags it to the edge.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh5 {
+  border-radius: 0;
+  border-left: 1px solid color-mix(in srgb, var(--ink-0) 16%, transparent);
+  background: var(--surface-1);
+}
+
+.sh5 .sh-head {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ── 6 · LIFTED ────────────────────────────────────────────────────
+ *
+ * Glass's opposite: keep the softness, drop the glass. A lighter
+ * ground, a generous corner, one wide low shadow, and no border or rule
+ * anywhere. The header is told by type alone.
+ * ────────────────────────────────────────────────────────────────── */
+
+.sh6 {
+  border-radius: 16px;
+  background: var(--surface-2);
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, 0.85);
+}
+
+.sh6 .sh-head { height: 44px; }
+.sh6 .sh-head > b { font-size: 13.5px; }
+
+/* ══ THE ROW, HELD CONSTANT ════════════════════════════════════════
+ *
+ * Identical in all six. Whatever separates two panels on this sheet is
+ * the shell doing it.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.tw2 { display: flex; gap: 10px; padding: 13px 14px; border-bottom: 1px solid var(--hairline); }
+.tw2:hover { background: rgba(255, 255, 255, 0.025); }
+
+.tw2-pfp {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-3);
+}
+
+.tw2-main { display: flex; flex-direction: column; gap: 7px; min-width: 0; flex: 1 1 auto; }
+.tw2-who { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: 13px; line-height: 1.2; }
+.tw2-name { font-weight: 600; color: var(--ink-0); }
+.tw2-at, .tw2-age { font-size: 12px; color: var(--ink-3); }
+.tw2-at { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tw2-x { margin-left: auto; color: var(--ink-3); }
+.tw2-text { margin: 0; font-size: 13.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.88); }
+
+.tw2-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.tw2-stat { display: inline-flex; align-items: center; gap: 5px; }
+.tw2-stat > svg { width: 13px; height: 13px; flex: 0 0 auto; }
+
+.tw2-pics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+}
+
+.tw2-pics[data-n='1'] { grid-template-columns: 1fr; }
+.tw2-pics img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: var(--surface-3); }
+.tw2-pics[data-n='1'] img { aspect-ratio: 16 / 9; }
+
+.tm-check { display: block; width: 13px; height: 13px; flex: 0 0 auto; }
+.tm-img { display: block; width: 100%; height: 100%; object-fit: cover; }

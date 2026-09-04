@@ -1,0 +1,1030 @@
+/* ==========================================================================
+   Discover-page local CSS — Discover-specific chrome only
+   ==========================================================================
+   Base tokens (surfaces, ink, accent, data, fonts, type scale, motion,
+   layout sizes) live in `../listen/listen.css` and are scoped to
+   `.listen-root`. This file augments that base with Discover-only:
+
+     - card sizing tokens (--card-h-reg, --image-reg, etc.)
+     - card runtime hooks (--card-radius, --hover-lift, --score-glow-*)
+     - card composed surfaces (--card-bg, --alpha-card-bg, ...)
+     - section + card chrome (.section-shell, .coin-card, .alpha-card,
+       .token-img, .score-text, .coin-card__action, .handle-chip,
+       .section-search)
+     - per-section row-tone tinting via --row-tone / --row-tone-2
+
+   Imported by DiscoverPage.tsx *after* listen.css, so its rules layer
+   on top of the shared base.
+   ========================================================================== */
+
+.listen-root {
+  /* ----------------------------------------------------------------
+     Sizing tokens (Discover cards only — the chart-row layout in
+     listen.css uses its own --chart-h, --w-rail, etc.)
+
+     VERTICAL tokens are pinned to whole pixels intentionally. A
+     viewport-dependent `clamp()` here resolved to fractional pixels
+     at most window widths and gave each section's content origin a
+     different sub-pixel Y, which caused the same IconRow to rasterize
+     differently from one section to the next even though every
+     bounding box reported whole-pixel values. Horizontal tokens stay
+     fluid because they don't affect icon-vs-digit vertical alignment.
+     ---------------------------------------------------------------- */
+  /* 100px with a 12px vertical inset measured to VISIBLE edges. The
+     image wrapper in CoinCard is image + the graduation border's
+     3px/side overhang, so the border — not the invisible image box —
+     is what the padding meters against. CoinCard fills the content band
+     with an adaptive grid (rows [1fr auto] on a 4px row gap):
+       narrow:  pt 12 / pb 7 → 56 framed image + ~8px gap + 16 chip band
+                + ~8px below-band air — the asymmetric 12/7 pads
+                deliberately re-split the band-form slack after 12/12
+                read "more space below than above" on laptops (they
+                also make the former 104px row-view override
+                unnecessary: 100px fits every tier now)
+       beside:  pt 12 / pb 12 → 66 framed image (chips in the text
+                column) + 8 slack
+     Top pad is 12px per direct feedback after 6px and 8px rhythms read
+     cramped against the reference (Axiom). Keep in sync with
+     CardLane's cardBaseHeight and DiscoverPage's row-height
+     estimate. */
+  --card-h-reg:     100px;
+  --card-h-alpha:   192px;
+  /* 50px BASE — the narrow-card value, where the chip row is a
+     full-width band under the image and the image funds it at the
+     fixed 100px card height. On containers wide enough for the chip
+     row to sit BESIDE the image, CoinCard's grid steps this up to
+     60px inline (@[430px]/@[560px] container variants), since the
+     image no longer clears a band below. Visible frame = image +
+     the border's 3px/side overhang. Alpha keeps its own token. */
+  --image-reg:      50px;
+  --image-alpha:    68px;
+  /* Trimmed (was clamp(12px, 6px + 0.5vw, 20px)): same grid-density push as
+     column mode, milder — row carousels keep hover-lift breathing room but
+     stop spending 20px per edge on wide monitors. Also the page <main>'s
+     horizontal padding (DiscoverPage reuses this token). Budgeted together
+     with --card-min/lane gap so a 1920px screen still fits 5 regular cards
+     per lane. */
+  --section-pad-x:  clamp(8px,   calc(4px   + 0.25vw), 12px);
+  --section-pad-y:  8px;
+  --stack-gap:      16px;
+  /* 312px (was 300): the 4-row stat stack was designed tight against 300px
+     and every row ran at its truncation limit (handle chips ellipsized,
+     name yielding early). Budgeted with the trimmed --section-pad-x and the
+     8px lane gap so a 1920px screen still fits 5 regular cards per lane:
+     5x312 + 4x8 + 4x~8px pads = ~1600 of the ~1627 layout px available. */
+  --card-min:       312px;
+  --card-min-alpha: 336px;
+  /* Header label slot. Every section reserves the same label width so the
+     search + controls after it line up across all sections (cohesive grid).
+     Two widths because rows use the wider uppercase mono chip while columns
+     use plain text. Both are sized to the longest label. */
+  --col-label-w:    6.5rem;
+  /* Resting width of the column-header search. It shrinks on narrow columns
+     (min-w-0) but never grows past this, so the controls right-align after it
+     instead of a giant search bar swallowing the row. */
+  --col-search-w:   13rem;
+  /* Wide enough for the longest label group — "ALPHA" + its LIVE pill — so
+     every row's quick-buy starts at the same x. The slot is pinned to exactly
+     this width (minWidth:0 in Section), so this must clear the widest chip. */
+  --row-label-w:    11.5rem;
+  /* Uniform card scale per size preset. Applied as CSS `zoom` to the whole
+     regular card, so EVERYTHING inside (text, icons, image, score, box)
+     scales together — nothing is left stuck at a hardcoded px size. Base =
+     1, so default is byte-identical to the historical card. */
+  --card-zoom:      1;
+
+  /* ----------------------------------------------------------------
+     Discover card composed tokens (extend listen.css's --section-bg
+     etc. where needed; alpha card has its own variant).
+     ---------------------------------------------------------------- */
+  --card-bg:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)),
+    hsl(220, 12%, 8%);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.015),
+    0 12px 28px -14px rgba(0,0,0,0.7);
+
+  --alpha-card-bg:
+    linear-gradient(180deg, rgba(56,225,255,0.05), rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.015)),
+    hsl(220, 12%, 8%);
+  --alpha-card-border: rgba(56, 225, 255, 0.22);
+  --alpha-card-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 12px 28px -14px rgba(0,0,0,0.7),
+    0 10px 28px -16px rgba(56, 225, 255, 0.28);
+
+  --page-vignette:
+    radial-gradient(1200px 700px at 8% -5%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 55%),
+    radial-gradient(1000px 600px at 100% 0%, color-mix(in srgb, var(--accent-secondary) 6%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 50% 120%, color-mix(in srgb, var(--accent-secondary) 4%, transparent), transparent 60%);
+
+  /* ----------------------------------------------------------------
+     Runtime hooks (Discover card behavior dials)
+     ---------------------------------------------------------------- */
+  /* 4px (was 12): both flows now run 2px card seams, and 12px-rounded
+     tiles on a 2px seam read as broken chips, not a grid. 4px keeps a
+     hint of softness while lanes read as one table. (Was previously
+     4px only in dense/column shells; row view matched when its
+     carousel gap dropped 8px → 2px.) */
+  --card-radius:           4px;
+  --hover-lift:            -1px;
+  --score-glow-intensity:  1;
+  --card-glow-intensity:   0.3;
+  /* Glow color for the score number — tracks the active theme accent so
+     the score's drop-shadow retints when the user picks a different
+     theme via the cog. Pairs with .score-text using --accent-primary. */
+  --score-glow:            var(--accent-glow);
+  --score-weight:          400;
+  --ticker-case:           none;
+  --ticker-weight:         600;
+  --ticker-tracking:       0.02em;
+  --mono-scale:            1;
+  --card-border-style-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   Card-size presets (user-selectable in the Tweaks popover)
+   ==========================================================================
+   `data-card-size` lives on the Discover <main>; these rules set `--card-zoom`
+   (and the Alpha card width) and cascade to every card inside. "default" has
+   NO rule, so it inherits the base tokens above (zoom 1) and stays
+   byte-identical to the historical layout.
+
+   Regular cards scale via `zoom` on their slot (see `.discover-card-zoom`),
+   which scales the ENTIRE card — text, icons, image, score, box — by one
+   factor, so nothing is left at a hardcoded size. Alpha cards fill their
+   panel height instead (so they never clip) and only scale in WIDTH here. */
+.listen-root [data-card-size='compact'] {
+  --card-zoom:      0.9;
+  --card-min-alpha: 300px;
+}
+
+.listen-root [data-card-size='large'] {
+  --card-zoom:      1.18;
+  --card-min-alpha: 392px;
+}
+
+.listen-root [data-card-size='fill'] {
+  --card-zoom:      1.36;
+  --card-min-alpha: 440px;
+}
+
+/* ==========================================================================
+   Sections — row-tone tinting via --row-tone / --row-tone-2
+   ========================================================================== */
+/*
+ * ── THE GUTTER BETWEEN LANES ─────────────────────────────────────────
+ *
+ * The space between two lanes was three things stacked: an 8px
+ * `PanelStack` handle plus this shell's horizontal padding on both
+ * sides of it, which measured 15px between one lane's cards and the
+ * next's. On a board whose cards sit 2px apart, that gutter was the
+ * loudest line on the page.
+ *
+ * The handle is 4 now, and the shell spends nothing horizontally. The
+ * vertical padding stays: it is what keeps the first card off the
+ * section header and the last one off the shell's bottom edge, and
+ * neither is a gutter between anything.
+ *
+ * The cards do not touch the shell edge as a result — the lane inside
+ * carries `-mx-1 px-1`, so it already reserves its own inset for the
+ * hover lift.
+ */
+/*
+ * ── THE SHELL IS SQUARE AND SPENDS NOTHING HORIZONTALLY ──────────────
+ *
+ * The gutter between two lanes used to be three things stacked: an 8px
+ * `PanelStack` handle plus this shell's padding on both sides of it,
+ * 15px between one lane's cards and the next's. On a board whose cards
+ * sit 2px apart that was the loudest line on the page.
+ *
+ * The 16px radius goes with it. It rounded the SHELL, so the first and
+ * last cards in every lane were clipped by a curve they do not have
+ * themselves — a card with square corners inside a rounded box reads as
+ * a rendering fault, not as a frame.
+ *
+ * Vertical padding stays: it keeps the first card off the section header
+ * and the last off the bottom edge, and neither is a gutter between
+ * anything.
+ */
+.listen-root .section-shell {
+  position: relative;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-radius: 0 !important;
+  transition: border-color 280ms var(--ease-out), box-shadow 280ms var(--ease-out);
+}
+
+.listen-root .section-shell::before,
+.listen-root .section-shell::after {
+  border-radius: 0 !important;
+}
+
+/*
+ * ── THE LANE NO LONGER HANGS OUTSIDE THE SHELL ───────────────────────
+ *
+ * The scroller carries `-mx-1 px-1`: 4px of negative margin with 4px of
+ * padding back, so a hovered card can lift without being clipped. That
+ * works while the shell has padding to hang into. With the shell flush
+ * at 0 the first lane hung 4px past the left edge of the page and was
+ * cut — the section header read "ew Pairs".
+ *
+ * The inset is zero on both sides now. The hover lift is a transform
+ * and paints outside the padding box anyway; what it needed the margin
+ * for was the shell's `overflow: hidden`, and that is a clip the lane
+ * cannot escape by hanging further into it.
+ */
+.listen-root .discover-card-lane--vertical {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.listen-root .section-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(700px 160px at 8% -8%, color-mix(in srgb, var(--row-tone, var(--accent-primary)) 18%, transparent), transparent 55%),
+    radial-gradient(500px 140px at 95% 110%, color-mix(in srgb, var(--row-tone-2, var(--accent-secondary)) 12%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), transparent 40%);
+  opacity: 1;
+  z-index: 0;
+}
+.listen-root .section-shell::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--row-tone, #fff) 60%, white), transparent);
+  pointer-events: none;
+  opacity: 0.6;
+}
+.listen-root .alpha-section {
+  background:
+    radial-gradient(800px 140px at 10% -10%, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent 60%),
+    radial-gradient(600px 180px at 90% 110%, color-mix(in srgb, var(--accent-secondary) 18%, transparent), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008)),
+    #11131a !important;
+  border-color: color-mix(in srgb, var(--accent-primary) 28%, transparent) !important;
+}
+
+/* Column-mode dense sections: grid-like density (Axiom Pulse reference).
+   Cards run nearly full-bleed to the section edge and the chrome budget
+   shrinks — measured at 1920px the old tokens spent ~38px/column on
+   horizontal insets (2 x 15.6px pad + lane inset) plus a 10.5px vertical
+   gap per card; a 3-column view burned >110px of width and ~1 card of
+   height on gutters alone. Scoped to the shell so row mode (horizontal
+   carousels, where cards need breathing room for the hover lift) keeps
+   the airier tokens. */
+.listen-root .section-shell--dense {
+  --section-pad-x: 5px;
+  --section-pad-y: 5px;
+  border-radius: 10px;
+}
+/* The top hairline glow tracks the tighter inset. */
+.listen-root .section-shell--dense::after {
+  left: 6px;
+  right: 6px;
+}
+/* ==========================================================================
+   Cards — shared chrome
+   ========================================================================== */
+.listen-root .coin-card,
+.listen-root .alpha-card {
+  position: relative;
+  transition: transform 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 280ms var(--ease-out);
+  border-radius: var(--card-radius, 12px) !important;
+}
+.listen-root .alpha-card {
+  border-radius: calc(var(--card-radius, 12px) + 2px) !important;
+}
+.listen-root .coin-card::before,
+.listen-root .alpha-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), transparent 30%),
+    radial-gradient(180px 80px at 100% 0%, color-mix(in srgb, var(--row-tone, var(--accent-primary)) 14%, transparent), transparent 70%);
+  z-index: 0;
+}
+.listen-root .coin-card::after,
+.listen-root .alpha-card::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--row-tone, #fff) 15%, rgba(255,255,255,0.1)),
+    transparent 70%);
+  pointer-events: none;
+  /* Top-right corner halo. Bumped from 0.8 -> 0.4 so the V/MC/F/TX
+     stats panel underneath isn't washed out. */
+  opacity: 0.4;
+  z-index: 0;
+}
+.listen-root .coin-card:hover,
+.listen-root .alpha-card:hover {
+  border-color: color-mix(in srgb, var(--row-tone, var(--accent-primary)) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px color-mix(in srgb, var(--row-tone, var(--accent-primary)) 35%, transparent),
+    0 16px 38px -12px color-mix(in srgb, var(--row-tone, var(--accent-primary)) 50%, transparent),
+    0 10px 30px -14px rgba(0,0,0,0.8);
+  transform: translateY(var(--hover-lift, -1px));
+}
+
+.listen-root .coin-card__wallet-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background:
+    radial-gradient(320px 140px at 24% 38%, rgba(251, 191, 36, 0.26), transparent 72%),
+    linear-gradient(180deg, rgba(251, 191, 36, 0.13), transparent 68%);
+  box-shadow:
+    inset 0 0 0 1px rgba(251, 191, 36, 0.34),
+    0 0 28px -10px rgba(251, 191, 36, 0.58);
+  animation: wallet-mint-card-flash 2200ms var(--ease-out) 1;
+}
+
+@keyframes wallet-mint-card-flash {
+  0% {
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Attention flash for freshly-arrived cards — new alpha calls AND new
+   graduations: a soft accent ring/glow pulse (same envelope as the wallet
+   mint flash, cyan instead of amber) plus one diagonal shine sweeping
+   across the card. Deliberately subtle — low opacities, one pass, no
+   repeat. Pairs with the bell in attentionSounds. */
+.listen-root .card-attention-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+  opacity: 0;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-primary) 36%, transparent),
+    0 0 26px -10px color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  animation: alpha-call-card-flash 2000ms var(--ease-out) 1;
+}
+.listen-root .card-attention-flash::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -30%;
+  width: 34%;
+  transform: rotate(14deg) translateX(-160%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent-primary) 14%, rgba(255, 255, 255, 0.12)),
+    transparent
+  );
+  animation: alpha-call-card-sweep 1100ms var(--ease-out) 1;
+}
+@keyframes alpha-call-card-flash {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes alpha-call-card-sweep {
+  0% { transform: rotate(14deg) translateX(-160%); }
+  100% { transform: rotate(14deg) translateX(500%); }
+}
+
+/* ==========================================================================
+   Token image — metallic inset + tinted halo + diagonal highlight
+   ========================================================================== */
+.listen-root .token-img {
+  position: relative;
+  /* Ring/glow removed: the graduation border is now the only frame. */
+}
+.listen-root .token-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.22), transparent 50%),
+    linear-gradient(220deg, transparent 60%, color-mix(in srgb, var(--row-tone, var(--accent-primary)) 25%, transparent));
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ==========================================================================
+   Score text — gradient in the active theme accent.
+   Tracks --accent-primary so scores retint instantly when the user picks
+   a different theme via the cog (matches Trade's behavior on prominent
+   numbers like LIQUIDITY).
+   ========================================================================== */
+.listen-root .score-text {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent-primary) 80%, white),
+    var(--accent-primary) 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent !important;
+}
+
+/* ==========================================================================
+   QB button (coin-card__action)
+   ========================================================================== */
+.listen-root .coin-card__action {
+  position: relative;
+  transition:
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out);
+}
+.listen-root .coin-card__action::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--accent-glow), transparent);
+  pointer-events: none;
+  opacity: 0.75;
+}
+.listen-root .coin-card__action:hover {
+  background: linear-gradient(180deg, var(--accent-wash), transparent);
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent) !important;
+}
+.listen-root .coin-card__action:hover .score-text {
+  filter: drop-shadow(0 0 calc(var(--score-glow-intensity, 1) * 18px) var(--score-glow)) !important;
+}
+.listen-root .coin-card__action:active {
+  background-color: var(--accent-soft);
+  transform: translateY(0.5px);
+}
+.listen-root .coin-card__action:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent-primary) 50%, transparent);
+  outline-offset: -2px;
+}
+
+/* ==========================================================================
+   Section search focus
+   ========================================================================== */
+.listen-root .section-search:focus-within {
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 8%, transparent);
+}
+
+/* ==========================================================================
+   Handle chip — neutral, no hover.
+   The chrome is set inline on the span (CoinCard's HandleRow). The only
+   thing this class adds is the canonical letter-spacing for handle text.
+   ========================================================================== */
+.listen-root .handle-chip {
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Primary feed — 2-row carousel (JS-gated)
+   ==========================================================================
+   The primary "New Pairs" scroller becomes a 2-row, column-flow grid ONLY
+   when the page has measured that all four sections fit at one row each
+   AND there is a full extra card-row of vertical slack left over (see the
+   height measurement in DiscoverPage). This guarantees the hard rule:
+   every section is visible before New Pairs is allowed a second row — the
+   2nd row only ever consumes space that would otherwise be an empty gap,
+   never space a section needs.
+
+   Driven by a class toggle (not a media query) because the fit depends on
+   the active card-size preset and the live content height, which CSS alone
+   can't know. Cards keep their exact whole-pixel geometry; `display: grid`
+   overrides Tailwind's `.flex`, and `gap`/`overflow-x` are untouched. */
+.listen-root .discover-feed-scroller--2row {
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  /* `max-content` so each track matches the slot's (zoom-affected) width,
+     keeping the 2-row grid aligned across card-size presets. */
+  grid-auto-columns: max-content;
+  align-content: center;
+}
+
+/* Uniform per-preset card scale. `zoom` (unlike transform) reflows layout
+   and re-rasterizes text crisply, so the whole card scales as one unit and
+   the inter-card gap (on the parent flex) stays unscaled. */
+.listen-root .discover-card-zoom {
+  zoom: var(--card-zoom, 1);
+}
+
+/* Off-screen card skipping: the browser skips layout/paint for cards outside
+   (and not near) the viewport, rendering them on approach. This removes the
+   static paint/layout cost of the large card DOM on the Discover feed without
+   unmounting anything, so scrolling stays native-smooth.
+
+   `contain-intrinsic-size: auto <fallback>` makes the browser REMEMBER each
+   card's real rendered size (post-`zoom`, per variant) after first paint and
+   reuse it as the placeholder -- so a skipped card reserves its exact space
+   and there is no layout shift or scrollbar jump. Variant-specific width x
+   base-height fallbacks only apply before a card has ever rendered. */
+.listen-root .discover-card-slot {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--card-min, 300px) auto 100px;
+}
+
+.listen-root .discover-card-slot--alpha {
+  contain-intrinsic-size: auto var(--card-min-alpha, 336px) auto 192px;
+}
+
+/* Dense vertical lanes cross roughly three times as many card boundaries per
+   wheel distance as horizontal rows. `content-visibility:auto` therefore
+   activated, painted, layerized, and committed a new full-width card every
+   ~102px. At DPR 2 / 240Hz this was the columns-only frame limiter even with
+   zero long JavaScript tasks. Keep vertical slots paint-ready; horizontal rows
+   keep skip-on-approach because their ~314px pitch amortizes activation without
+   visible jank. */
+.listen-root .discover-card-lane--vertical > .discover-card-slot {
+  content-visibility: visible;
+}
+
+/* ==========================================================================
+   Column-header responsive controls
+   ==========================================================================
+   On a narrow column (e.g. 4 columns on a 13" laptop) the quick-buy + icon
+   controls scale down via a container query so the flex search reclaims the
+   freed width. Wider columns leave them full size. The header is the query
+   container (`inline-size`); it's always stretched full-width by the section,
+   so containment doesn't affect its sizing. */
+.listen-root .discover-col-header {
+  container: discoverColHeader / inline-size;
+}
+@container discoverColHeader (max-width: 400px) {
+  .listen-root .discover-col-controls {
+    zoom: 0.8;
+  }
+}
+
+/* ==========================================================================
+   Resizable layout handles (ResizableStack)
+   ========================================================================== */
+/*
+ * ── 2px OF LAYOUT, 11px OF TARGET ────────────────────────────────────
+ *
+ * The handle is the gutter between lanes, so it is 2px wide to match the
+ * seam the cards sit on. That is not a pointer target, so the hit area
+ * is widened with a pseudo-element that overflows the track on both
+ * sides: the divider stays 2px and the thing you can grab is about 11.
+ *
+ * The grip itself is unchanged — it paints inside the track and can be
+ * wider than it, which is why nothing had to move to make room.
+ */
+.listen-root .discover-resize-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  /*
+   * ── A FLEX ITEM WILL NOT SHRINK BELOW ITS CONTENT ────────────────
+   *
+   * `flex: 0 0 0px` was already set inline, and the handle still laid
+   * out at 4px: `min-width` defaults to `auto` on a flex item, so the
+   * 3px grip inside was holding the track open and the lanes kept a gap
+   * that no number in the component could close.
+   */
+  min-width: 0;
+  min-height: 0;
+}
+.listen-root .discover-resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* Symmetrical overflow, so the target is centred on the seam rather
+     than sitting to one side of it. */
+  left: -4.5px;
+  right: -4.5px;
+}
+.listen-root .discover-resize-handle[data-direction='vertical']::after {
+  left: 0;
+  right: 0;
+  top: -4.5px;
+  bottom: -4.5px;
+}
+/*
+ * ── THE GRIP IS OUT OF FLOW, AND HIDDEN UNTIL WANTED ─────────────────
+ *
+ * Absolute so it contributes no width — a 3px grip in a 0px track would
+ * otherwise be the whole reason the track is not 0.
+ *
+ * And it only appears under the pointer. A permanently visible grip
+ * sitting in a seam that is meant to be invisible is just the gap again,
+ * drawn smaller: the lanes are supposed to meet. On hover it is there,
+ * centred on the seam, and it is what tells you the divider can be
+ * dragged at all.
+ */
+.listen-root .discover-resize-handle__grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  border-radius: 999px;
+  background: var(--hairline);
+  opacity: 0;
+  transition: opacity 140ms var(--ease-out), background 140ms var(--ease-out),
+    box-shadow 140ms var(--ease-out);
+}
+
+.listen-root .discover-resize-handle:hover .discover-resize-handle__grip,
+.listen-root .discover-resize-handle:active .discover-resize-handle__grip {
+  opacity: 1;
+}
+.listen-root .discover-resize-handle[data-direction='vertical'] .discover-resize-handle__grip {
+  width: 34px;
+  height: 3px;
+}
+.listen-root .discover-resize-handle[data-direction='horizontal'] .discover-resize-handle__grip {
+  width: 3px;
+  height: 34px;
+}
+.listen-root .discover-resize-handle:hover .discover-resize-handle__grip,
+.listen-root .discover-resize-handle:active .discover-resize-handle__grip {
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px -2px var(--accent-glow);
+}
+
+/* ==========================================================================
+   Scroll-time hover damping (see laneScrollDamper.ts)
+   ==========================================================================
+   While a lane is actively scrolling (`data-lane-scrolling` on the scroll
+   container, trailing 250ms), cards sweep under the stationary cursor and
+   each one takes `:hover` — the transform-lift transition (compositor layer
+   promote/demote + a card re-raster each time) and the score-glow filter
+   bump repaint on enter AND leave, per card swept, inside the scroll's
+   frame budget. Pin that chrome to its exact idle values for the scroll
+   window. CSS-only: hit testing and clicks remain untouched. The incidental
+   score→BUY hover swap is pinned to the score while scrolling, but the
+   underlying quickbuy button remains live for deliberate pointer-downs.
+   Chrome returns when the attribute clears at scroll idle. */
+.listen-root [data-lane-scrolling] .coin-card,
+.listen-root [data-lane-scrolling] .alpha-card,
+.listen-root [data-lane-scrolling] .coin-card__action {
+  transition: none;
+}
+.listen-root [data-lane-scrolling] .coin-card::before,
+.listen-root [data-lane-scrolling] .coin-card::after,
+.listen-root [data-lane-scrolling] .alpha-card::before,
+.listen-root [data-lane-scrolling] .alpha-card::after,
+.listen-root [data-lane-scrolling] .token-img::after {
+  display: none;
+}
+.listen-root [data-lane-scrolling] .coin-card:hover,
+.listen-root [data-lane-scrolling] .alpha-card:hover {
+  transform: none;
+}
+.listen-root [data-lane-scrolling] .coin-card__action:hover {
+  /* Idle value of the action's left hairline (set inline on the div);
+     `!important` matches the hover rule above it must neutralize. */
+  border-color: var(--hairline) !important;
+  background: transparent;
+}
+.listen-root [data-lane-scrolling] .token-img > img {
+  transition: none !important;
+}
+
+.listen-root [data-lane-scrolling] .score-text {
+  background: none;
+  -webkit-text-fill-color: var(--accent-primary);
+  color: var(--accent-primary) !important;
+  filter: none !important;
+}
+.listen-root [data-lane-scrolling] .coin-card__quickbuy svg,
+.listen-root [data-lane-scrolling] .coin-card__chain-trade svg,
+.listen-root [data-lane-scrolling] .coin-card__action svg {
+  filter: none !important;
+}
+.listen-root [data-lane-scrolling] .coin-card__wallet-flash,
+.listen-root [data-lane-scrolling] .card-attention-flash,
+.listen-root [data-lane-scrolling] .card-attention-flash::before {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+/* Tailwind's named group-hover utilities swap these display values whenever
+   a card passes beneath the stationary pointer. Keep the idle score painted
+   for ordinary hover-to-buy mode during scrolling. Users who explicitly pin
+   quickbuy with the global preference keep that stable visual unchanged. */
+html:not([data-qb-always]) .listen-root [data-lane-scrolling] .qb-idle {
+  display: inline !important;
+}
+html:not([data-qb-always]) .listen-root [data-lane-scrolling] .qb-swap {
+  display: none !important;
+}
+
+/* ── Discover dock panels — terminal skin ─────────────────────────────
+   Squared chrome + faint diagonal hatch on alternate rows (manager-table
+   look). The hatch is a static repeating-linear-gradient: one paint per
+   row, no animation, no per-row React work (nth-child does the striping). */
+.dock-terminal .dock-rows > a:nth-child(even) {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 5px,
+    color-mix(in srgb, var(--ink-0) 2.5%, transparent) 5px 6px
+  );
+}
+.dock-terminal .dock-rows > a:hover {
+  background-color: color-mix(in srgb, var(--ink-0) 5%, transparent);
+}
+/* Dotted-underline ages, like a terminal's affordance for "computed value". */
+.dock-terminal .dock-age {
+  border-bottom: 1px dotted color-mix(in srgb, var(--ink-3) 55%, transparent);
+}
+
+/* ── Wallet Activity — "ledger" rows ──────────────────────────────────
+   Single-line 28px entries on ONE grid template, read left to right as
+   wallet → token → size → age, with a 2px tone tick carrying side. The
+   scroller opts in with `dock-rows--ledger`, which neutralises the hatch
+   above and out-specifies its hover WITHOUT editing those rules — the
+   tweet tracker shares them and must stay pixel-identical. */
+.dock-terminal .dock-rows--ledger > a:nth-child(even) {
+  background-image: none;
+}
+.dock-terminal .dock-rows--ledger > a.ledger-row:hover {
+  background-color: color-mix(in srgb, var(--ink-0) 4.5%, transparent);
+}
+
+.ledger-row {
+  display: grid;
+  /* Wallet is a FIXED column (each row is its own grid, so a
+     content-sized track would misalign row to row); the slack lives in
+     the ticker instead, which keeps the token cluster tight against the
+     wallet it belongs to. */
+  grid-template-columns:
+    2px               /* side tick, flush to the panel edge */
+    minmax(0, 96px)   /* wallet — gives first when the panel narrows */
+    18px              /* token art */
+    minmax(52px, 1fr) /* $TICKER — floored so it never crushes */
+    56px              /* size + SOL glyph */
+    26px;             /* age */
+  column-gap: 8px;
+  align-items: center;
+  height: 28px;
+  padding-right: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-0) 6%, transparent);
+  font-family: var(--mono);
+  color: var(--ink-1);
+}
+/* MC variant — the extra column lands between the token cluster and the
+   amount. The wallet track absorbs it (it ellipsizes gracefully); the
+   ticker keeps its 52px floor at every width the variant is used at. */
+.ledger-row--mc {
+  grid-template-columns:
+    2px
+    minmax(0, 96px)   /* wallet */
+    18px              /* token art */
+    minmax(52px, 1fr) /* $TICKER */
+    46px              /* market cap */
+    56px              /* size + SOL glyph */
+    26px;             /* age */
+}
+/* Tracker page column — same ledger language, wider tracks. The column
+   is ~3x the dock's width, so the slack moves to the WALLET track (as in
+   the approved wide mock): the token cluster stays tight against the
+   figures it describes, and the one gap in the row falls between "who"
+   and "what". Hover is restated because the dock's hover rule is scoped
+   to `.dock-terminal`. */
+.ledger-row--tracker {
+  grid-template-columns:
+    2px
+    minmax(0, 1fr)    /* wallet */
+    18px              /* token art */
+    minmax(52px, 132px) /* $TICKER */
+    46px              /* market cap */
+    56px              /* size + SOL glyph */
+    26px;             /* age */
+  column-gap: 10px;
+  padding-right: 16px;
+}
+.ledger-row--tracker:hover {
+  background-color: color-mix(in srgb, var(--ink-0) 4.5%, transparent);
+}
+/* Column-header strip (mock C). Rides the row templates above so the
+   labels sit on the tracks they name; only the strip's own metrics and
+   type live here. Declared AFTER `.ledger-row` so the shared-specificity
+   height/border/colour overrides land. `--ink-4` was tried in the C
+   iteration and is invisible at this size — this is the legible floor. */
+.ledger-head {
+  height: 18px;
+  border-bottom: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--ink-0) 1.5%, transparent);
+  flex: none;
+}
+.ledger-head > span {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #4b4f5b;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ledger-head--right {
+  text-align: right;
+}
+
+/* Manager rows' channel toggles (bell / bubbles / signal). Borderless:
+   state is INK alone — accent on, recessed off — and hover lifts the off
+   state so a disabled channel is still findable. */
+.wt-toggle {
+  color: var(--ink-4);
+  transition: color 120ms ease;
+}
+.wt-toggle--on {
+  color: var(--accent-primary);
+}
+.wt-toggle:hover {
+  color: var(--ink-1);
+}
+.wt-toggle--on:hover {
+  color: var(--ink-0);
+}
+
+.ledger-tick {
+  width: 2px;
+  height: 28px;
+}
+.ledger-art {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  object-fit: cover;
+  display: block;
+}
+.ledger-wallet {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.ledger-wallet-emoji {
+  width: 12px;
+  flex: none;
+  font-size: 10.5px;
+  line-height: 1;
+  text-align: center;
+}
+.ledger-wallet-label {
+  font-size: 11px;
+  letter-spacing: -0.01em;
+  word-spacing: -0.12em;
+  color: var(--ink-3);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.ledger-row:hover .ledger-wallet-label {
+  color: var(--ink-2);
+}
+.ledger-wallet-label:hover {
+  text-decoration: underline;
+}
+.ledger-ticker {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  word-spacing: -0.12em;
+  color: var(--ink-1);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ledger-ticker--unknown {
+  color: var(--ink-3);
+}
+.ledger-row:hover .ledger-ticker {
+  color: var(--ink-0);
+}
+/* Reference figure, not a headline: a step down in size from the amount
+   it sits beside. Its INK is discover's market-cap ladder (`./mcTone`),
+   set inline per row, so a graduated card and a ledger row agree on what
+   an $86K token looks like; `--ink-2` here is the fallback the ladder
+   also returns for an unknown cap. */
+.ledger-mc {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ledger-mc--unknown {
+  color: var(--ink-3);
+}
+.ledger-amount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.ledger-amount--whale {
+  font-weight: 600;
+}
+/* Age rides the up-tone with the rest of the tape (owner call: "the time
+   should be the green as well") — it is a live clock, not a footnote. */
+.ledger-age {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--up);
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Empty state — ruled ledger paper with one muted entry line. The rules
+   are the same 28px rhythm the rows will land on. */
+.ledger-empty {
+  height: 100%;
+  min-height: 112px;
+  position: relative;
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ink-0) 6%, transparent) 0 1px,
+    transparent 1px 28px
+  );
+  background-size: 100% 28px;
+}
+.ledger-empty::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ink-0) 12%, transparent),
+    transparent
+  );
+}
+.ledger-empty-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 84px; /* lands exactly on a rule (3 × 28) */
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding-left: 28px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+/* ── Tweaks → Coin cards → "Quickbuy always" ──────────────────────────
+   Pins the hover-only score→quickbuy swap: with the root attribute set
+   (lib/state/coincard-prefs.ts), every card shows the ⚡+amount instead
+   of the score at all times. Pure CSS — toggling re-renders nothing;
+   these rules simply out-specify the Tailwind `hidden` /
+   `group-hover/coin:*` utilities the swap normally rides. */
+html[data-qb-always] .qb-idle {
+  display: none;
+}
+html[data-qb-always] .qb-swap {
+  display: inline-flex;
+}

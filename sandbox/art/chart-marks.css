@@ -1,0 +1,300 @@
+/* The chart's bubbles, the card one opens, and the marks inside it. */
+
+/* No page of its own: `ArtSheets` owns the ground and the outer gutter,
+   the same as every other sheet in the set. */
+.ci {
+  padding: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  background: #0a0a0b;
+  font-family: var(--sans);
+}
+
+.ci h2 {
+  margin: 38px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6e7178;
+}
+
+.ci h2:first-child { margin-top: 0; }
+
+.ci p.ci-note {
+  margin: 0 0 16px;
+  max-width: 620px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #4b4e55;
+}
+
+.ci-set { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 12px; }
+
+.ci-one { display: flex; flex-direction: column; align-items: center; gap: 9px; width: 78px; }
+.ci-one > small { font-size: 10px; line-height: 1.3; text-align: center; color: #4b4e55; }
+
+.ci-wide { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.ci-wide > small { font-size: 10px; color: #4b4e55; }
+
+/* ══ THE DISC ═══════════════════════════════════════════════════════ */
+
+/*
+ * 20px across (BUBBLE_RADIUS 10), filled buy green or sell pink, the
+ * label in the chart's near-black. Nothing is stroked: every class used
+ * to carry a 1.5px ring in its own hue, and six outline colours on a
+ * 20px disc read as stickers rather than as marks. The LABEL carries
+ * the class.
+ */
+.bub {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #22c77e;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  /* `1` plus `place-items: center` is what actually centres a glyph in a
+     disc this small — a letter set at 8.5px in a 20px box rides its own
+     line box otherwise, and DB/DS sat visibly high. */
+  line-height: 1;
+  text-align: center;
+  color: #0b0d11;
+  overflow: hidden;
+}
+
+/* Under the pointer it darkens, and nothing else moves. A 20px disc on a
+   chart cannot grow or ring without covering the candle beside it. */
+.bub { transition: filter 120ms ease; }
+.bub:hover { filter: brightness(0.78); cursor: pointer; }
+
+.bub[data-sell] { background: #f0567a; }
+.bub[data-two] { font-size: 8.5px; letter-spacing: -0.02em; }
+.bub[data-emoji] { font-size: 15px; color: inherit; }
+.bub > svg { width: 13px; height: 13px; display: block; }
+
+/* The KOL's mark is a PICTURE, so its side moves out to a ring — the one
+   place a ring earns its keep, because the fill is spoken for. */
+.bub[data-kol] { background: #17171a; box-shadow: 0 0 0 2px #22c77e; margin: 2px; }
+.bub[data-kol][data-sell] { box-shadow: 0 0 0 2px #f0567a; }
+.bub[data-kol] > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Neither a buy nor a sell. */
+.bub[data-kind='migration'] { background: #f5a524; }
+
+/*
+ * The count, when a candle holds more than one trade. WHITE, because it
+ * is the only mark on the pane that is neither a side nor a class: it
+ * says "several things happened here" and nothing else. They used to
+ * stack up to eight discs above one candle, which covered the candles
+ * they were annotating.
+ */
+.bub[data-kind='count'] { background: #ffffff; font-size: 9.5px; }
+
+/* ══ THE CARD A BUBBLE OPENS ════════════════════════════════════════ */
+
+/*
+ * What the old one was: a list. Hovering a busy candle put up to twelve
+ * rows of `side · wallet · amount · time` on screen at 10px, and every
+ * one of them was a trade you had not asked about. With one disc per
+ * candle there is one trade to talk about, so the card talks about it:
+ * who, how much, at what market cap, how long ago, and what they are up
+ * or down on the position.
+ */
+/* Smaller throughout. This is a tooltip that opens under a 20px disc on
+   a chart, not a panel — at 208px with 21px figures it was covering the
+   candles either side of the one it describes. */
+.hc {
+  width: 178px;
+  overflow: hidden;
+  border: 1px solid #26262c;
+  border-radius: 11px;
+  background: #0e0f12;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.75);
+  font-family: var(--sans);
+}
+
+.hc-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 7px 0 8px;
+}
+
+.hc-face {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #17171a;
+  font-size: 8px;
+  font-weight: 700;
+  color: #0b0d11;
+}
+
+.hc-face > img { width: 100%; height: 100%; object-fit: cover; }
+.hc-face[data-buy] { background: #22c77e; }
+.hc-face[data-sell] { background: #f0567a; }
+
+.hc-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* ── the marks in the card ────────────────────────────────────────── */
+
+/*
+ * Five of them, all the same object: 18px, no box, grey until the
+ * pointer is on them. They were the loudest thing on the old card —
+ * every one a different size, some with a border and some without.
+ */
+.hc-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #55585f;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.hc-ico:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+.hc-ico:active { background: rgba(255, 255, 255, 0.16); }
+.hc-ico > svg { width: 11.5px; height: 11.5px; display: block; }
+
+/* The one mark that leaves the app keeps its own colour on hover. */
+.hc-ico[data-out]:hover { color: #4ade80; }
+
+/*
+ * The figure leads the card, and that is all it has to do. It was 21px
+ * at 700 and then 17px at 700 — at that weight, in a saturated green on
+ * a 178px card, it was not leading anything, it was shouting. 14px at
+ * 600 still reads first because nothing else here is over 11px.
+ */
+.hc-amt {
+  padding: 4px 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.hc-amt[data-buy] { color: #22c77e; }
+.hc-amt[data-sell] { color: #f0567a; }
+
+.hc-when {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px 8px 8px;
+  font-size: 9.5px;
+  color: #6e7178;
+}
+
+.hc-side {
+  flex: none;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.hc-side[data-buy] { background: rgba(34, 199, 126, 0.16); color: #22c77e; }
+.hc-side[data-sell] { background: rgba(240, 86, 122, 0.16); color: #f0567a; }
+
+/* One line. Wrapped, it pushed the filter mark onto a second row and the
+   card grew a step for a sentence that is always the same length. */
+.hc-when > i {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: normal;
+}
+
+/* The position block: a well inside the card, so the trade above it and
+   the running total below it never read as one number. */
+.hc-pnl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px 6px 8px;
+  border-top: 1px solid #1c1c21;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.hc-pnl > span { flex: 1 1 auto; min-width: 0; }
+.hc-pnl b { display: block; font-size: 8.5px; font-weight: 400; color: #55585f; }
+
+.hc-pnl s {
+  display: block;
+  margin-top: 2px;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.hc-pnl s[data-up] { color: #22c77e; }
+.hc-pnl s[data-down] { color: #f0567a; }
+
+/* ══ THE CLAIM TOOLTIP ══════════════════════════════════════════════ */
+
+/*
+ * Not a card. A claim has no side, no market cap and no position — it is
+ * one sentence, so it gets one line.
+ */
+/* The disc was 19px inside a 25px bar with 3px of room around it, which
+   is why it read as jammed in. The bar gives it a proper seat. */
+.ct {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 30px;
+  padding: 0 5px 0 12px;
+  border: 1px solid #26262c;
+  border-radius: 999px;
+  background: #0e0f12;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: #b9bdc4;
+  white-space: nowrap;
+}
+
+.ct > b { font-weight: 600; color: #ffffff; }
+
+.ct > u {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #22c77e;
+  text-decoration: none;
+  color: #0b0d11;
+}
+
+.ct > u > svg { width: 11px; height: 11px; display: block; }
