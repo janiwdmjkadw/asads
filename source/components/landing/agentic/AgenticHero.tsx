@@ -4,19 +4,18 @@ import type { CSSProperties, ReactElement } from 'react';
  * The agentic hero, parked.
  *
  * An empty band at the hero's exact height. Same reasoning as the landing
- * one in `sections/Hero.tsx`: the page is being read for its shape, and
- * the band holds the space so every band under it still lands where it
- * will land.
+ * one in `sections/Hero.tsx`: it holds the space so every band under it
+ * still lands where it will land.
  *
- * The console — the one that typed a real prompt and then named the
- * trigger, the universe and the size it read out of it — is intact in
- * `HeroConsole.tsx`, along with `hero.css`. Restoring it is one import:
- * swap the export below for
- * `export { HeroConsole as AgenticHero } from './HeroConsole';`.
+ * Two finished versions are on disk, both working:
  *
- * It was also the hero this page most needed to replace: it opened on the
- * same shape as the landing hero, at the same size, in the same column,
- * so the two pages read as one page twice.
+ *   `ClarifyHero.tsx`   it asks which of two readings you meant, you pick,
+ *                       and it arms. The one that was mounted here last.
+ *   `HeroConsole.tsx`   the console that types a real prompt and then names
+ *                       the trigger, the universe and the size it read.
+ *
+ * Restoring either is one import: swap the export below for
+ * `export { ClarifyHero as AgenticHero } from './ClarifyHero';`.
  */
 
 const LIGHT: CSSProperties = {

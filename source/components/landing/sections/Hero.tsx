@@ -3,29 +3,36 @@ import type { CSSProperties, ReactElement } from 'react';
 /**
  * The landing hero, parked.
  *
- * ── WHAT IS HERE AND WHAT IS NOT ─────────────────────────────────────
+ * ── WHAT IS HERE ─────────────────────────────────────────────────────
  *
- * An empty band at the hero's exact height, and nothing else. No type, no
- * ground, no motion. It is deliberate: the page is being read for its
- * shape right now, and the band holds the space so everything below it
- * still lands where it will land.
+ * An empty band at the hero's exact height and nothing else. It holds the
+ * space so every band under it still lands where it will land while the
+ * hero itself is being decided.
  *
- * ── THE RUN IS NOT DELETED ───────────────────────────────────────────
+ * ── NOTHING IS DELETED ───────────────────────────────────────────────
  *
- * The version this replaced — the conditional playing out act by act,
- * with the market only climbing during the watch — is intact in
- * `hero/HeroRun.tsx`. Restoring it is one import: swap the export below
- * for `export { HeroRun as Hero } from './hero/HeroRun';`.
+ * Four finished versions of this band are on disk, all working:
  *
- * The panels ground it hung in is likewise intact in `hero/Panels.tsx`,
- * and is mounted by that component rather than by this one.
+ *   `hero/HeroSplit.tsx`  the split: copy on paper in the left half with
+ *                         registration ticks, and a conditional running on
+ *                         an ink panel in the right. Needs `split.css`.
+ *                         This is the one that was mounted here last.
+ *   `hero/HeroSaid.tsx`   the sentence made exact: your words, with the
+ *                         vague parts taking a rule one at a time and what
+ *                         each became named underneath. Needs `hero.css`.
+ *   `hero/HeroRun.tsx`    the conditional playing out act by act, with the
+ *                         market only climbing during the watch.
+ *   `hero/Panels.tsx`     the panels ground, which HeroSaid or HeroRun can
+ *                         hang in. Mounted by the component, not here.
+ *
+ * Restoring any of them is one import: swap the export below for
+ * `export { HeroSplit as Hero } from './hero/HeroSplit';`.
  *
  * ── WHY THE HEIGHT IS WRITTEN THE WAY IT IS ──────────────────────────
  *
- * `clamp(720px, 92vh, 940px)` is the run's own measurement, kept to the
- * pixel. A parked band that is merely "about right" moves every band
- * under it and makes the page it is meant to let you read a different
- * page.
+ * `clamp(720px, 92vh, 940px)` is the band's own measurement, kept to the
+ * pixel. A parked band that is merely about right moves every band under
+ * it and makes the page it is meant to let you read a different page.
  */
 
 const LIGHT: CSSProperties = {
@@ -40,9 +47,8 @@ export function Hero(): ReactElement {
       style={LIGHT}
       className="relative isolate flex min-h-[clamp(720px,92vh,940px)] w-full items-center bg-lp-ground"
     >
-      {/* The floor is a full bleed rule, as it was: it is the line that
-          stops this band and the one under it reading as one continuous
-          white nothing, which is most of what the band is here to show. */}
+      {/* The floor is a full bleed rule: it is what stops this band and the
+          one under it reading as one continuous white. */}
       <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-lp-hairline" />
     </section>
   );

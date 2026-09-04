@@ -1,18 +1,195 @@
 /*
- * THE HERO'S ONE KEYFRAME.
+ * THE HERO: YOUR SENTENCE, MADE EXACT.
  *
- * `motion-safe:animate-[heroact_...]` in Hero.tsx names this. Tailwind
- * will happily generate the animation shorthand from an arbitrary value
- * but it cannot invent the keyframes behind it, so without this file the
- * class resolves to an animation with no definition and every act simply
- * appears with no entrance at all. It fails silently, which is why it is
- * written down here rather than left to be rediscovered.
+ * Hero.tsx says what the band is and why there is no card in it. This file
+ * is the sentence, the rules that land under the resolved words, and the
+ * notes under them.
  *
- * `motion-safe` is the guard in the markup; the component also stops the
- * whole run under reduced motion, so this only ever plays for somebody
- * who has not asked for less of it.
+ * `heroact` is still at the bottom: `hero/HeroRun.tsx`, the parked act by
+ * act version of this band, names it. Tailwind generates the animation
+ * shorthand from an arbitrary value but cannot invent the keyframes behind
+ * it, so deleting it would silently strip every entrance from that version
+ * the moment somebody puts it back.
  */
 
+/*
+ * THE SENTENCE.
+ *
+ * Headline size with a tight leading, because the notes do NOT hang under
+ * the words: they sit in a row under the whole thing, so nothing here has
+ * to leave room for them.
+ *
+ * `max-width` is in characters rather than pixels so the line breaks in
+ * the same place at every size the clamp produces.
+ */
+.hero-said {
+  margin: 22px 0 0;
+
+  /*
+   * IT TAKES THE COLUMN.
+   *
+   * At 20ch and 62px this wrapped into the left third of a 1400 column and
+   * left two thirds of the band empty, which is the one thing this hero
+   * cannot afford: the sentence IS the band. 30ch at 86px measures about
+   * 1230px, so it breaks onto two full lines at 1400 and stays two lines
+   * all the way down to the phone.
+   */
+  max-width: 30ch;
+  font-size: clamp(32px, 5.6vw, 86px);
+  font-weight: 500;
+  /* 1.1 rather than 1.06: the rules under the resolved words hang below
+     their line box, and at 1.06 there was not enough leading for one on
+     line one to clear the ascenders on line two. */
+  line-height: 1.1;
+  letter-spacing: -0.042em;
+  color: var(--lp-ink-1);
+}
+
+/*
+ * A RESOLVED WORD TAKES A RULE, AND THE RULE SWEEPS IN.
+ *
+ * A scaled pseudo element rather than a border or `text-decoration`,
+ * because neither of those can animate their length. Scaling from the left
+ * is what makes it read as the agent working through the sentence rather
+ * than as three marks appearing at once.
+ *
+ * It is NOT a hover underline. Nothing on this page underlines on hover;
+ * this is a state, and it only ever appears on its own.
+ */
+.hero-word {
+  position: relative;
+  display: inline-block;
+}
+
+/*
+ * THE OFFSET AND THE WEIGHT ARE BOTH IN `em`, NOT PIXELS.
+ *
+ * At a fixed `bottom: 4px` the rule stayed where it was while the type
+ * shrank, so on a phone it sat almost on the glyphs: the line box tightens
+ * with the font size, and four pixels up from its bottom edge is a long
+ * way from the baseline at 86px and almost on it at 32px.
+ *
+ * In `em` the gap is the same optical distance at every size the clamp
+ * produces. The weight has a pixel floor because 0.024em of 32px is under
+ * a pixel and renders as a grey smear rather than a rule.
+ */
+.hero-word::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.07em;
+  height: max(1.5px, 0.024em);
+  background: var(--lp-ink-1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 460ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hero-word[data-in='true']::after {
+  transform: scaleX(1);
+}
+
+/*
+ * THE NOTES.
+ *
+ * Three columns on one rule, in the order the words appear, so the row
+ * fills left to right as the sentence resolves.
+ *
+ * They are always in the layout and reveal by opacity. Mounting them would
+ * grow the band by the height of a row three times in four seconds, and
+ * every band below the hero would walk down the screen while somebody is
+ * reading it.
+ */
+.hero-notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  margin-top: 52px;
+  border-top: 1px solid var(--lp-hairline);
+}
+
+.hero-notes > div {
+  padding: 20px 24px 0 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 460ms ease-out,
+    transform 460ms ease-out;
+}
+
+.hero-notes > div[data-in='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-notes span {
+  display: block;
+  font-size: 12.5px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+.hero-notes b {
+  display: block;
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.02em;
+  color: var(--lp-ink-1);
+}
+
+.hero-notes em {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 14.5px;
+  line-height: 21px;
+  color: var(--lp-ink-2);
+}
+
+.hero-state {
+  margin: 38px 0 0;
+  max-width: 56ch;
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.6;
+  color: var(--lp-ink-2);
+  opacity: 0;
+  transition: opacity 460ms ease-out;
+}
+
+.hero-state[data-in='true'] {
+  opacity: 1;
+}
+
+/*
+ * ── BELOW 900 ────────────────────────────────────────────────────────
+ *
+ * The notes stack. Three columns at 375 gives each about 100px, which
+ * breaks "from the agent wallet, which holds 40" across five lines and
+ * turns the clearest part of the band into a wall.
+ */
+@media (max-width: 899px) {
+  .hero-notes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 36px;
+  }
+
+  .hero-notes > div {
+    padding: 18px 0;
+  }
+
+  .hero-notes > div + div {
+    border-top: 1px solid var(--lp-hairline);
+  }
+}
+
+/*
+ * The parked act by act hero in `hero/HeroRun.tsx` names this. Removing it
+ * strips every entrance from that version silently, so it stays.
+ */
 @keyframes heroact {
   from {
     opacity: 0;

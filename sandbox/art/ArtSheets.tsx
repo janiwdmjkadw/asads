@@ -1,11 +1,11 @@
 /*
  * `/whatever` — the design route.
  *
- * Whatever is under discussion, at true size. Right now: mockups for the
- * social preview card that `/og` draws.
+ * The invite sheet, forty ways. Every card is a row in one table of
+ * configurations, so no two can silently be the same card.
  */
-import { CardMocks } from './CardMocks';
+import { InviteForty } from './InviteForty';
 
 export function ArtSheets() {
-  return <CardMocks />;
+  return <InviteForty />;
 }

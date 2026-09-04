@@ -1,0 +1,164 @@
+/*
+ * THE AGENTIC HERO: IT ASKS WHEN IT IS NOT SURE.
+ *
+ * AgenticHero.tsx says what the band shows and why it is this exchange
+ * rather than the landing's. This file is the sheet, the turns and their
+ * states.
+ */
+
+/*
+ * THE SHEET.
+ *
+ * The same surface the landing hero sits on: white, inset from a grey
+ * ground by the section's own padding, one rim and one radius. The band
+ * below stays full bleed white, and it is the contrast between the two
+ * that marks the hero.
+ *
+ * The rim is an INSET RING rather than a border. A border would add to the
+ * box and shift the column inside it by a pixel against every other band
+ * on the page.
+ */
+.cf-sheet {
+  overflow: hidden;
+  min-height: clamp(660px, 84vh, 880px);
+  display: flex;
+  align-items: center;
+  border-radius: 22px;
+  background: var(--lp-ground);
+  box-shadow: inset 0 0 0 1px rgba(11, 11, 11, 0.07);
+}
+
+@media (min-width: 1024px) {
+  .cf-sheet {
+    border-radius: 26px;
+  }
+}
+
+.cf {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  max-width: 940px;
+  margin-top: 40px;
+}
+
+/*
+ * A TURN ARRIVES, IT DOES NOT MOUNT.
+ *
+ * All three are in the layout from the first frame and reveal by opacity.
+ * Mounting them would grow the band by the height of a turn twice in eight
+ * seconds, and every band under the hero would walk down the screen while
+ * somebody is reading it.
+ */
+.cf-turn {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 440ms ease-out,
+    transform 440ms ease-out;
+}
+
+.cf-turn[data-in='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The agent's turns are indented under a mark; yours are not. That is the
+   only thing separating the two speakers, and it is enough. */
+.cf-turn.is-agent {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.cf-mark {
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: var(--lp-ink-1);
+}
+
+.cf-who {
+  display: block;
+  font-size: 12.5px;
+  line-height: 18px;
+  color: var(--lp-ink-3);
+}
+
+/* What you wrote is the largest thing in the exchange, because it is the
+   thing the product takes. */
+.cf-said {
+  margin: 7px 0 0;
+  font-size: clamp(22px, 2.8vw, 38px);
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--lp-ink-1);
+}
+
+.cf-says {
+  margin: 0;
+  max-width: 56ch;
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.55;
+  color: var(--lp-ink-2);
+}
+
+/*
+ * THE TWO READINGS.
+ *
+ * Both are on the page the whole time and the chosen one fills with ink.
+ * Showing only the answer would lose the point of the band: the question
+ * had two defensible answers and you picked, rather than the agent
+ * deciding for you.
+ */
+.cf-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.cf-opts span {
+  padding: 9px 16px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--lp-rim);
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--lp-ink-2);
+  transition:
+    background-color 300ms ease-out,
+    color 300ms ease-out,
+    box-shadow 300ms ease-out;
+}
+
+.cf-opts .is-picked {
+  background: var(--lp-ink-1);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.cf-armed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--lp-panel);
+  box-shadow: inset 0 0 0 1px var(--lp-rim);
+}
+
+.cf-armed b {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--lp-ink-1);
+}
+
+.cf-armed span {
+  font-size: 13.5px;
+  line-height: 20px;
+  color: var(--lp-ink-3);
+}

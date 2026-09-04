@@ -1,0 +1,449 @@
+/*
+ * THE HERO: PAPER ON THE LEFT, A CONDITIONAL RUNNING ON INK.
+ *
+ * Hero.tsx says what the band shows and why the right half is the ink
+ * surface the order card is already made of. This file is the split, the
+ * margins, the chrome and the readout.
+ */
+
+/*
+ * THE SPLIT.
+ *
+ * The left half is a hair wider than the right. The copy needs the measure
+ * and the panel does not, and a dead even split makes the headline wrap a
+ * word early at every width between 1100 and 1400.
+ */
+.sp {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.06fr 1fr;
+  min-height: clamp(700px, 92vh, 940px);
+  width: 100%;
+  background: var(--lp-ground);
+  color: var(--lp-ink-1);
+}
+
+.sp-left {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--lp-hairline);
+}
+
+/* The copy sits on its own margin rather than in the page's 1400 column:
+   this band is the only one on the site that is not a single column, so
+   the column would be measuring something that is not there. */
+.sp-copy {
+  width: min(560px, 100% - 120px);
+  margin: 0 auto;
+}
+
+/*
+ * THE TICKS.
+ *
+ * Four corners of the MARGIN, not of the panel, so they mark the box the
+ * copy is set in. Drawn as two borders on an empty span: an L, not a box.
+ */
+.sp-tick {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+}
+
+.sp-tick.is-tl {
+  left: 46px;
+  top: 46px;
+  border-left: 1px solid var(--lp-hairline);
+  border-top: 1px solid var(--lp-hairline);
+}
+
+.sp-tick.is-tr {
+  right: 46px;
+  top: 46px;
+  border-right: 1px solid var(--lp-hairline);
+  border-top: 1px solid var(--lp-hairline);
+}
+
+.sp-tick.is-bl {
+  left: 46px;
+  bottom: 46px;
+  border-left: 1px solid var(--lp-hairline);
+  border-bottom: 1px solid var(--lp-hairline);
+}
+
+.sp-tick.is-br {
+  right: 46px;
+  bottom: 46px;
+  border-right: 1px solid var(--lp-hairline);
+  border-bottom: 1px solid var(--lp-hairline);
+}
+
+.sp-eyebrow {
+  display: block;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--lp-ink-3);
+}
+
+.sp-h {
+  margin: 28px 0 0;
+  font-size: clamp(38px, 4.4vw, 76px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.sp-p {
+  margin: 26px 0 0;
+  max-width: 40ch;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.55;
+  color: var(--lp-ink-2);
+}
+
+/*
+ * THE CONTROLS.
+ *
+ * The filled pill and the quiet link beside it, which is the pair every
+ * other band on this page uses. The reference's control was a square
+ * outlined button with a plus in its own cell; on this page it read as
+ * borrowed from another product, because it was.
+ *
+ * The pill lifts a pixel on hover and presses back down: an object
+ * responding, rather than a rectangle changing shade.
+ */
+.sp-go {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.sp-cta {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lp-ink-1);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateZ(0);
+  transition:
+    transform 200ms ease-in-out,
+    box-shadow 200ms ease-in-out;
+}
+
+.sp-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px -10px rgba(11, 11, 11, 0.55);
+}
+
+.sp-cta:active {
+  transform: none;
+  box-shadow: none;
+}
+
+/* No underline on hover anywhere on this site. The ink comes up to full
+   instead, which in a row of two controls is the only signal needed. */
+.sp-alt {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--lp-ink-2);
+  text-decoration: none;
+  transition: color 150ms ease-in-out;
+}
+
+.sp-alt:hover {
+  color: var(--lp-ink-1);
+}
+
+/* ── the panel ───────────────────────────────────────────────────────
+ *
+ * #0A0A0A, the same surface the order card is made of. It carries its own
+ * scale: every token on this page is the light one, so nothing inside the
+ * panel can read a variable.
+ */
+.sp-right {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: #0a0a0a;
+  color: #f5f5f5;
+}
+
+/* ── the chrome ──────────────────────────────────────────────────── */
+.sp-chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sp-x {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+}
+
+.sp-x::before,
+.sp-x::after {
+  content: '';
+  position: absolute;
+  background: rgba(245, 245, 245, 0.34);
+}
+
+.sp-x::before {
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1px;
+}
+
+.sp-x::after {
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+}
+
+.sp-x.is-tl {
+  left: 26px;
+  top: 26px;
+}
+.sp-x.is-tr {
+  right: 26px;
+  top: 26px;
+}
+.sp-x.is-bl {
+  left: 26px;
+  bottom: 26px;
+}
+.sp-x.is-br {
+  right: 26px;
+  bottom: 26px;
+}
+
+.sp-rail {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-rail.is-left {
+  left: 22px;
+}
+.sp-rail.is-right {
+  right: 22px;
+}
+
+.sp-rail i {
+  display: block;
+  width: 1px;
+  height: 5px;
+  background: rgba(245, 245, 245, 0.26);
+}
+
+.sp-rail i[data-tall='true'] {
+  height: 9px;
+  background: rgba(245, 245, 245, 0.42);
+}
+
+.sp-sq {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: rgba(245, 245, 245, 0.3);
+}
+
+.sp-sq.is-a {
+  left: 74px;
+  top: 27%;
+}
+.sp-sq.is-b {
+  right: 74px;
+  top: 27%;
+}
+.sp-sq.is-c {
+  left: 74px;
+  bottom: 27%;
+}
+.sp-sq.is-d {
+  right: 74px;
+  bottom: 27%;
+}
+
+/*
+ * ── the readout ──────────────────────────────────────────────────────
+ *
+ * It TAKES the panel: the pair at the top, the figure across the middle at
+ * up to 150px, the meter full width, the log on the bottom edge. Floated
+ * in the centre it left a third of the panel empty above and below, which
+ * is what made the first build of this look unfinished.
+ */
+.sp-run {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 62px clamp(44px, 4.6vw, 78px);
+}
+
+.sp-runtop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.sp-sym {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * THE STATE IS A WORD, AND ITS ONLY MARK IS HOW FAR FORWARD THE INK IS.
+ *
+ * Armed sits back, watching comes halfway up, and the match and the fill
+ * take full white. No chip, no ring, no dot, and no colour: this band
+ * already has a number moving in it, and a mint word beside it was the one
+ * thing on the panel competing with the figure.
+ */
+.sp-state {
+  font-size: 14.5px;
+  color: #7d7d84;
+  transition: color 400ms ease-out;
+}
+
+.sp-state[data-beat='1'] {
+  color: #b4b4bb;
+}
+
+.sp-state[data-beat='2'],
+.sp-state[data-beat='3'] {
+  color: #ffffff;
+}
+
+.sp-mid {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sp-cond {
+  margin: 0;
+  max-width: 30ch;
+  font-size: clamp(18px, 1.9vw, 24px);
+  line-height: 1.32;
+  color: #7d7d84;
+}
+
+.sp-figure {
+  margin: 26px 0 0;
+  font-size: clamp(64px, 9vw, 150px);
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.sp-meter {
+  position: relative;
+  height: 4px;
+  margin-top: 34px;
+  border-radius: 2px;
+  background: rgba(245, 245, 245, 0.12);
+  overflow: hidden;
+}
+
+.sp-meter i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 2px;
+  background: #ffffff;
+  transition: width 220ms linear;
+}
+
+/* The log lines are always in the layout and arrive by opacity. Mounting
+   them would grow the panel by a row twice a cycle and shift the figure. */
+.sp-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sp-log li {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(245, 245, 245, 0.1);
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 420ms ease-out;
+}
+
+.sp-log li[data-on='true'] {
+  opacity: 1;
+}
+
+.sp-log span {
+  color: #7d7d84;
+  font-size: 14px;
+}
+
+.sp-log b {
+  font-weight: 400;
+}
+
+/*
+ * ── BELOW `lg` ───────────────────────────────────────────────────────
+ *
+ * The split stacks. Side by side at 900 gives the copy about 460px, which
+ * is fine, and at 640 it gives it 330, which breaks the headline onto
+ * seven lines. Stacked, the panel keeps its own height so the readout is
+ * still the size of a screen rather than a strip.
+ */
+@media (max-width: 1023px) {
+  .sp {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .sp-left {
+    border-right: 0;
+    border-bottom: 1px solid var(--lp-hairline);
+    padding: 76px 0;
+  }
+
+  .sp-copy {
+    width: calc(100% - 80px);
+  }
+
+  .sp-right {
+    min-height: 560px;
+  }
+
+  .sp-run {
+    padding: 48px 28px;
+  }
+
+  .sp-tick.is-bl,
+  .sp-tick.is-br {
+    display: none;
+  }
+}
