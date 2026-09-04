@@ -32,6 +32,8 @@ import {
   mcTier,
   money,
 } from './rowData';
+import { openInNewTab } from '../cardLinkInteractions';
+import { imageSearchHref } from '../imageSearch';
 import { FeePopover } from './FeePopover';
 import { PAD_MARKS } from './padMarks';
 import { ROW2_MARKS } from './rowMarks';
@@ -279,6 +281,42 @@ export function TokenRow({
       >
         <div className="ar-box">
           <img className="ar-img" src={art(i)} alt="" />
+          {/*
+            ── SEARCH THE PICTURE ──────────────────────────────────────
+            Over the artwork and nothing else, so the target is the
+            thing being searched. It is dark until the pointer is on
+            the block, then it frosts the picture back and puts the
+            camera on it — the picture is still legible underneath,
+            which is what says WHICH image is about to be searched.
+
+            NO LABEL. It wore the row's `data-tip` bubble, and the bubble
+            was the loudest thing on the line: a slab of black over the
+            row above, to say what a camera on a picture already says.
+          */}
+          <button
+            type="button"
+            className="ar-find"
+            aria-label={`Search the ${n.ticker} image on Google`}
+            onClick={() => {
+              const href = imageSearchHref(art(i), `${n.ticker} ${n.name}`);
+              if (href) openInNewTab(href);
+            }}
+          >
+            {/* A CAMERA, not a picture frame. The frame said "here is an
+                image", which the thing under it already says; a camera
+                says look this up, which is the action. */}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M2.7 10.1c0-1.45 1.16-2.6 2.6-2.6h1.85l1.2-2.6h7.3l1.2 2.6h1.85c1.44 0 2.6 1.15 2.6 2.6v6.9c0 1.45-1.16 2.6-2.6 2.6H5.3c-1.44 0-2.6-1.15-2.6-2.6z" />
+              <circle cx="12" cy="13.4" r="3.5" />
+            </svg>
+          </button>
           <span className="ar-pad">
             {/*
               * The artwork, as before — EXCEPT graduated Bonk.

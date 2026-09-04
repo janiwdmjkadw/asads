@@ -17,8 +17,13 @@ import { ConditionalsPageGate } from '@/components/conditionals/ConditionalsPage
  * never loads the conditionals chunk.
  */
 export default function ConditionalsRoute() {
+  /*
+   * The title needs air under the sub nav above it. At py-4 it sat almost
+   * against the ticker strip and read as that strip's caption rather than
+   * as the head of a page.
+   */
   return (
-    <main className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 py-4">
+    <main className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 pb-4 pt-[34px]">
       <ConditionalsPageGate />
     </main>
   );

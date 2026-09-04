@@ -132,6 +132,79 @@
 }
 
 /*
+ * ── THE PICTURE SEARCHES ITSELF ──────────────────────────────────
+ *
+ * One cover over the artwork, at exactly the artwork's rect and radius,
+ * carrying all three things: the frost, the mark, and the tip.
+ *
+ * THE BLUR IS A BACKDROP, not a filter on the image, and that is not a
+ * preference. `.ar-img` carries the inner ring as its OWN box shadow,
+ * so filtering the image blurs the ring with it and the block's clean
+ * edge becomes a smear. A backdrop blurs what sits behind this rect and
+ * stops at its border, so the ring is as sharp held as it is at rest.
+ */
+.ar-find {
+  position: absolute;
+  inset: calc(var(--ar-gap) + var(--ar-ring));
+  /*
+   * SPELLED OUT, because `inset` alone does not size this one. A button
+   * is shrink to fit: give an absolutely positioned one four offsets and
+   * an auto width and it still comes out the size of the mark inside it,
+   * not the size of the picture. The tile's own variable is exact.
+   */
+  width: var(--ar-size);
+  height: var(--ar-size);
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ar-r);
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  transition:
+    background 130ms ease,
+    -webkit-backdrop-filter 130ms ease,
+    backdrop-filter 130ms ease;
+}
+
+.ar-box:hover .ar-find {
+  background: rgba(8, 11, 16, 0.42);
+  -webkit-backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(3.5px);
+}
+
+/* The mark arrives with the frost rather than ahead of it, so what you
+   see is one move: the picture goes back, the mark comes forward. */
+.ar-find > svg {
+  /* Of the tile, not a fixed size: this row runs at 38px in a narrow
+     column and 52px in a wide one, and the mark has to sit right in
+     both. */
+  width: 45%;
+  height: 45%;
+  opacity: 0;
+  transform: scale(0.86);
+  transition:
+    opacity 130ms ease,
+    transform 130ms ease;
+}
+
+.ar-box:hover .ar-find > svg {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-find,
+  .ar-find > svg {
+    transition-duration: 0ms;
+  }
+}
+
+/*
  * ── THE BADGE: A RING, THE ROW'S GROUND, THEN THE MARK ───────────────
  *
  * Three layers and each one is doing a job:

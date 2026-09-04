@@ -10,6 +10,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
+import { Camera as CameraGlyph } from 'lucide-react';
 import {
   HoverCard,
   HoverCardContent,
@@ -17,7 +18,9 @@ import {
 } from '@/components/ui/hover-card';
 import { isPreviewableTokenImage } from '@/lib/token-image';
 import { createBoundedUrlSet } from './boundedUrlSet';
+import { openInNewTab } from './cardLinkInteractions';
 import { isFeedScrollActive } from './feedNavigationPause';
+import { imageSearchHref, isSearchableImage } from './imageSearch';
 
 interface Props {
   /**
@@ -68,6 +71,13 @@ const CLOSE_DELAY_MS = 80;
  */
 const PREFETCH_LRU_LIMIT = 40;
 const prefetched = createBoundedUrlSet(PREFETCH_LRU_LIMIT);
+
+/*
+ * The search hangs off the ENLARGED preview here rather than the card
+ * thumbnail: at 68px the artwork is too small to judge, and the
+ * thumbnail's own hover already means "show me this bigger". See
+ * `imageSearch.ts` for what the button opens.
+ */
 
 /**
  * Kick a high-res image into the browser cache ahead of render. Called
@@ -152,6 +162,13 @@ export function TokenImagePreview({ src, previewSrc, alt, children, disabled = f
     [highResUrl],
   );
 
+  /* Hand Lens the sharpest url we are actually showing: the high-res
+     rendition once it has proved it loads, the thumbnail otherwise. */
+  const searchHref = imageSearchHref(
+    highResLoaded && isSearchableImage(highResUrl) ? highResUrl : src,
+    alt,
+  );
+
   if (disabled || !isPreviewableTokenImage(src)) {
     return <>{children}</>;
   }
@@ -182,7 +199,7 @@ export function TokenImagePreview({ src, previewSrc, alt, children, disabled = f
         className="w-auto p-1.5"
       >
         <div
-          className="relative overflow-hidden rounded-md"
+          className="group relative overflow-hidden rounded-md"
           style={{
             width: PREVIEW_PX,
             height: PREVIEW_PX,
@@ -191,12 +208,18 @@ export function TokenImagePreview({ src, previewSrc, alt, children, disabled = f
         >
           {/* Base layer: the cached thumbnail. Paints instantly (already
               fetched for the 68px card image), so the preview is never
-              blank while the high-res rendition loads. */}
+              blank while the high-res rendition loads.
+
+              THE SCALE GOES WITH THE BLUR, and is not decoration: a blur
+              samples past the element's own edge, so a blurred image
+              inside a clip ends up with four soft transparent borders
+              where the surface shows through. Growing it a few percent
+              pushes those edges outside the clip. */}
           <img
             src={src}
             alt={alt}
             draggable={false}
-            className="absolute inset-0 block h-full w-full object-cover"
+            className="absolute inset-0 block h-full w-full object-cover transition-[filter,transform] duration-200 ease-out group-hover:scale-[1.06] group-hover:blur-[7px]"
           />
           {/* High-res overlay: fades in over the thumbnail once decoded.
               Plain <img> (not next/image) so it reuses the raw bytes we
@@ -213,9 +236,31 @@ export function TokenImagePreview({ src, previewSrc, alt, children, disabled = f
               decoding="async"
               onLoad={() => setHighResLoaded(true)}
               onError={() => setHighResFailed(true)}
-              className="absolute inset-0 block h-full w-full object-cover transition-opacity duration-150 ease-out"
+              className="absolute inset-0 block h-full w-full object-cover transition-[opacity,filter,transform] duration-200 ease-out group-hover:scale-[1.06] group-hover:blur-[7px]"
               style={{ opacity: highResLoaded ? 1 : 0 }}
             />
+          ) : null}
+          {/*
+            ── THE SEARCH LAYER ────────────────────────────────────────
+
+            One button over the whole picture, so the target is the
+            picture. It carries the scrim itself rather than sitting on
+            a separate one: fewer layers, and the thing that lights up
+            is the thing you click.
+
+            No label under it. The row's thumbnail dropped its own, and
+            a camera on a picture is not a thing that needs a caption in
+            two places.
+          */}
+          {searchHref ? (
+            <button
+              type="button"
+              onClick={() => openInNewTab(searchHref)}
+              aria-label="Search this image on Google"
+              className="absolute inset-0 flex cursor-pointer items-center justify-center border-0 bg-[rgba(8,11,16,0.52)] p-0 opacity-0 outline-none transition-opacity duration-200 ease-out group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <CameraGlyph size={30} strokeWidth={1.6} className="text-white" aria-hidden />
+            </button>
           ) : null}
         </div>
       </HoverCardContent>

@@ -1,11 +1,11 @@
 /*
  * `/whatever` — the design route.
  *
- * The invite sheet, forty ways. Every card is a row in one table of
- * configurations, so no two can silently be the same card.
+ * The conditionals page built new: twenty pairs of a selector and a
+ * rule. Nothing in it comes from another component.
  */
-import { InviteForty } from './InviteForty';
+import { CondNew } from './CondNew';
 
 export function ArtSheets() {
-  return <InviteForty />;
+  return <CondNew />;
 }

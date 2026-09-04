@@ -3,11 +3,19 @@
 /**
  * ONE PLAY, AND HOW MUCH ROAD IT HAS LEFT.
  *
- * The row is three lines: the play as a sentence at reading size with
- * what it has made on the right; the TRACK, which is the play's whole
- * lifetime drawn — solid up to now, hollow for the time it has left; and
- * one quiet line under it carrying the state, the why, the judge and the
- * cancel.
+ * TWO COLUMNS. The play as a sentence on the left at reading size, and
+ * its READINGS standing in a labelled column of their own on the right:
+ * what it is holding on, how many times it fired, what it made, how long
+ * it runs, and how far through its life it is. The two can each be read
+ * on their own — the left edge is nothing but rules, the right edge is
+ * nothing but figures — and a column of labels beats a run of phrases
+ * separated by dots, because the label says what the figure IS.
+ *
+ * THE TRACK LIVES IN THAT COLUMN, under its own value, and that is not
+ * cosmetic. It used to run the full width directly under the sentence,
+ * at the same left edge and the same width as a line of type, which is
+ * exactly how an underline is drawn: it read as one. In the readings
+ * column it is a figure among figures and it cannot touch a word.
  *
  * WHY A TRACK. Everything else on this page is a phrase you have to do
  * arithmetic on: "in 4d", "ran 11d", "Fired 4 times". A column of tracks
@@ -29,9 +37,7 @@
  */
 
 import Link from 'next/link';
-import { useState, type MouseEvent, type ReactElement } from 'react';
-import { TokenDisc } from '@/components/agent/proposal/v2/marks';
-import { TOK_PLATE } from '@/components/agent/proposal/v2/card-classes';
+import { useState, type MouseEvent, type ReactElement, type ReactNode } from 'react';
 import { Solana } from '@/components/listen/icons/Icons';
 import type { ScopePlate, Segment } from '@/components/agent/proposal/v2/row-model';
 import { isCancellable, type ConditionalMutationResult, type ConditionalSummary, type TradeControlResult } from '@/lib/conditionals';
@@ -86,7 +92,15 @@ function Sentence({ segments }: { readonly segments: readonly Segment[] }): Reac
   );
 }
 
-/** Identity at symbol length, wearing the coin's own art. */
+/*
+ * Identity at symbol length. THE SYMBOL, AND NOT THE ART.
+ *
+ * It wore the coin's disc, which for any mint the art has not resolved
+ * for falls back to a generated colour: a purple blob sitting in front
+ * of every ticker, carrying no information and being the only saturated
+ * thing on a page whose colour is supposed to mean money. The symbol is
+ * already the identity, and it is already the boldest word on the line.
+ */
 function ScopePlateChip({ plate }: { readonly plate: ScopePlate }): ReactElement {
   return (
     <span
@@ -94,7 +108,6 @@ function ScopePlateChip({ plate }: { readonly plate: ScopePlate }): ReactElement
       data-testid="cdl-plate"
       {...(plate.mint === undefined ? {} : { title: plate.mint })}
     >
-      {plate.mint === undefined ? null : <TokenDisc mint={plate.mint} className={TOK_PLATE} />}
       {plate.label}
     </span>
   );
@@ -117,6 +130,43 @@ function NetFigure({ row }: { readonly row: ConditionalSummary }): ReactElement 
       {parts.net}
       <Solana className="mx-[3px] h-[9px] w-[9px] flex-none self-center" />
       {parts.pct === null ? null : <em className="not-italic font-medium opacity-70">{parts.pct}</em>}
+    </span>
+  );
+}
+
+// ───────────────────────── the readings ─────────────────────────
+
+/*
+ * ONE READING: its label, and its figure right against the column's
+ * right edge. The label is 11px and grey because it is furniture; the
+ * figure is the thing, and it is tabular so the column of them lines up
+ * down the page whatever the row above it said.
+ */
+function Reading({
+  label,
+  title,
+  wrap = false,
+  children,
+}: {
+  readonly label: string;
+  /** The whole value, for the readings the column has to clip. */
+  readonly title?: string | undefined;
+  /**
+   * Let this one run onto a second line instead of being clipped. The
+   * figures are all short enough to sit on one; the reason a play is
+   * held is a SENTENCE, and clipping it loses the number that says how
+   * much the wallet is short by, which is the only actionable thing on
+   * a held row.
+   */
+  readonly wrap?: boolean;
+  readonly children: ReactNode;
+}): ReactElement {
+  return (
+    <span className={wrap ? 'cdl-read cdl-read--wrap' : 'cdl-read'} data-testid="cdl-read">
+      <span className="cdl-read-k">{label}</span>
+      <span className="cdl-read-v" {...(title === undefined ? {} : { title })}>
+        {children}
+      </span>
     </span>
   );
 }
@@ -167,6 +217,14 @@ export function LedgerRow({ row, ctx, record, onCancel }: LedgerRowProps): React
   const spoken = [playLineText(line.when), playLineText(line.then)].filter((t) => t !== '').join(' ');
   const needsStop = spoken !== '' && !/[.!?]$/.test(spoken.trim());
   const life = lifeFraction(row, ctx);
+  /*
+   * Both readings resolved here rather than in the column, so the column
+   * stays a list of labels and the question of whether a row HAS a figure
+   * is answered once. `fired_count` is optional on the list payload, and
+   * an absent count is nought fires, not an unknown number of them.
+   */
+  const fired = row.fired_count ?? 0;
+  const net = economicsParts(row) === null ? null : <NetFigure row={row} />;
 
   const [judgeOpen, setJudgeOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -200,105 +258,132 @@ export function LedgerRow({ row, ctx, record, onCancel }: LedgerRowProps): React
         data-state={state}
         {...(why === null ? {} : { 'data-hold': 'true' })}
       >
-        <span className="cdl-head">
-          <span className="cdl-say" title={hoverText}>
-            {line.plate === null ? null : <ScopePlateChip plate={line.plate} />}
-            {line.when === null ? null : <Sentence segments={line.when} />}
-            {line.then === null ? null : (
-              <>
-                <span>, </span>
-                <Sentence segments={line.then} />
-              </>
-            )}
-            {needsStop ? <span>.</span> : null}
-          </span>
-          <NetFigure row={row} />
-          {/* The one thing that says the row goes somewhere. */}
-          <svg className="cdl-go" viewBox="0 0 12 12" aria-hidden focusable="false">
-            <path
-              d="M4.4 2.2 8.2 6l-3.8 3.8"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-
-        {/*
-         * The track. A play with no resolved lifetime gets the same rule
-         * with nothing run along it, because the honest drawing of an
-         * unknown deadline is an empty one.
-         */}
-        <span className="cdl-track" aria-hidden data-testid="cdl-track">
-          {life === null ? null : <span className="cdl-run" style={{ width: `${(life * 100).toFixed(2)}%` }} />}
-          {life === null || ended ? null : <span className="cdl-now" style={{ left: `${(life * 100).toFixed(2)}%` }} />}
-        </span>
-
-        <span className="cdl-sub">
-          <span className="cdl-st" data-testid="cdl-state">
-            {stateWord(state)}
-          </span>
-          {row.sync_pending === true ? (
-            // The evaluator is still on an older version of this plan.
-            <span data-testid="cdl-sync" title="The evaluator is still on an older version; the edit is syncing">
-              Catching up
-            </span>
-          ) : null}
-          {why === null ? null : (
-            <span data-testid="cdl-pause-reason">
-              {why.lead}
-              {why.amount === null ? null : (
+        <span className="cdl-body">
+          {/* The left column: the play, and the quiet line of chrome under it. */}
+          <span className="cdl-col">
+            <span className="cdl-head">
+            <span className="cdl-say" title={hoverText}>
+              {line.plate === null ? null : <ScopePlateChip plate={line.plate} />}
+              {line.when === null ? null : <Sentence segments={line.when} />}
+              {line.then === null ? null : (
                 <>
-                  {' '}
-                  <b className="font-medium tabular-nums text-[var(--ink-1)]">{why.amount}</b>
-                  <Solana className="mx-[3px] inline-block h-[9px] w-[9px] align-baseline" /> {why.trail}
+                  <span>, </span>
+                  <Sentence segments={line.then} />
                 </>
               )}
+              {needsStop ? <span>.</span> : null}
             </span>
-          )}
-          {tail === '' ? null : <span data-testid="cdl-tail">{tail}</span>}
-          {judge === null ? null : (
-            <button
-              type="button"
-              className={JUDGE_BTN}
-              onClick={(event) => {
-                swallow(event);
-                setJudgeOpen(true);
-              }}
-              title="Open the judge’s record"
-              data-testid="cdl-judge"
-            >
-              <span className="min-w-0 overflow-hidden text-ellipsis" data-testid="cdl-judge-phrase">
-                {judge.phrase}
-              </span>
-              <span className="font-medium tabular-nums text-[var(--ink-1)]" data-testid="cdl-judge-figure">
-                {judge.figure}
-              </span>
-            </button>
-          )}
-          {feedback === null ? null : (
-            <span
-              className={feedback.kind === 'done' ? 'text-[var(--ink-1)]' : 'text-[var(--ink-0)]'}
-              data-testid="cdl-cancel-feedback"
-            >
-              {feedback.kind === 'done' ? feedback.message : feedback.guidance.title}
+              {/* The one thing that says the row goes somewhere. */}
+              <svg className="cdl-go" viewBox="0 0 12 12" aria-hidden focusable="false">
+                <path
+                  d="M4.4 2.2 8.2 6l-3.8 3.8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </span>
-          )}
-          {/* The right end of the line: the clock the row was made at,
-              and the one action a row offers. */}
-          <span className="cdl-end">
-            <span className="cdl-at">{clock(row.created_at, ctx)}</span>
-            {cancellable ? (
-              <CancelConfirm
-                busy={busy}
-                onConfirm={() => void cancel()}
-                entryClassName={ROW_CANCEL_BTN}
-                entryTestId="cdl-cancel"
-                label={CANCEL_CONFIRM}
-              />
-            ) : null}
+
+            <span className="cdl-sub">
+              <span className="cdl-st" data-testid="cdl-state">
+                {stateWord(state)}
+              </span>
+              {row.sync_pending === true ? (
+                // The evaluator is still on an older version of this plan.
+                <span data-testid="cdl-sync" title="The evaluator is still on an older version; the edit is syncing">
+                  Catching up
+                </span>
+              ) : null}
+              {judge === null ? null : (
+                <button
+                  type="button"
+                  className={JUDGE_BTN}
+                  onClick={(event) => {
+                    swallow(event);
+                    setJudgeOpen(true);
+                  }}
+                  title="Open the judge record"
+                  data-testid="cdl-judge"
+                >
+                  <span className="min-w-0 overflow-hidden text-ellipsis" data-testid="cdl-judge-phrase">
+                    {judge.phrase}
+                  </span>
+                  <span className="font-medium tabular-nums text-[var(--ink-1)]" data-testid="cdl-judge-figure">
+                    {judge.figure}
+                  </span>
+                </button>
+              )}
+              {feedback === null ? null : (
+                <span
+                  className={feedback.kind === 'done' ? 'text-[var(--ink-1)]' : 'text-[var(--ink-0)]'}
+                  data-testid="cdl-cancel-feedback"
+                >
+                  {feedback.kind === 'done' ? feedback.message : feedback.guidance.title}
+                </span>
+              )}
+              {/* The right end of the line: the clock the row was made at,
+                  and the one action a row offers. */}
+              <span className="cdl-end">
+                <span className="cdl-at">{clock(row.created_at, ctx)}</span>
+                {cancellable ? (
+                  <CancelConfirm
+                    busy={busy}
+                    onConfirm={() => void cancel()}
+                    entryClassName={ROW_CANCEL_BTN}
+                    entryTestId="cdl-cancel"
+                    label={CANCEL_CONFIRM}
+                  />
+                ) : null}
+              </span>
+            </span>
+          </span>
+
+          {/*
+           * The right column: every reading this row has, each against its
+           * own label. What is on it is decided by the ROW rather than by
+           * the layout, so nothing is ever shown a figure that does not
+           * apply to it: a held play says what is holding it, and an ended
+           * one says how it ended rather than how long it has left.
+           */}
+          <span className="cdl-figs">
+            {why === null ? null : (
+              <Reading label="Holding" wrap>
+                <span data-testid="cdl-pause-reason">
+                  {why.lead}
+                  {why.amount === null ? null : (
+                    <>
+                      {' '}
+                      <b className="font-medium tabular-nums text-[var(--ink-1)]">{why.amount}</b>
+                      <Solana className="mx-[3px] inline-block h-[9px] w-[9px] align-baseline" /> {why.trail}
+                    </>
+                  )}
+                </span>
+              </Reading>
+            )}
+            <Reading label="Fired">{fired === 0 ? 'Never' : String(fired)}</Reading>
+            <Reading label="Made">{net === null ? <span className="cdl-none">Nothing yet</span> : net}</Reading>
+            {tail === '' ? null : (
+              <Reading label={record || ended ? 'Ended' : 'Runs'} title={tail}>
+                <span data-testid="cdl-tail">{tail}</span>
+              </Reading>
+            )}
+            {/*
+             * The life, as a figure with its own track under it. Both or
+             * neither: a play with no resolved deadline has no fraction to
+             * state, and a rule drawn under a value that is not there is
+             * furniture saying nothing.
+             */}
+            {life === null ? null : (
+              <>
+                <Reading label={ended ? 'Ran' : 'Life'}>{`${(life * 100).toFixed(0)}%`}</Reading>
+                <span className="cdl-track" aria-hidden data-testid="cdl-track">
+                  <span className="cdl-run" style={{ width: `${(life * 100).toFixed(2)}%` }} />
+                  {ended ? null : <span className="cdl-now" style={{ left: `${(life * 100).toFixed(2)}%` }} />}
+                </span>
+              </>
+            )}
           </span>
         </span>
       </Link>
