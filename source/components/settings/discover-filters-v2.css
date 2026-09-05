@@ -3,7 +3,7 @@
  *
  * The treatment designed on `/whatever` and applied here over the real
  * store-backed modal. Same materials as every other floating panel in
- * this product: the #111111 surface the trading settings, the groups
+ * this product: the #ffffff surface the trading settings, the groups
  * dropdown, the wallets dropdown and the search overlay all take, one
  * hairline weight, the board's caps, and neutral greys with equal
  * channels.
@@ -27,11 +27,11 @@
   border: 0 !important;
   border-radius: 14px !important;
   overflow: hidden;
-  background: #111111 !important;
-  color: rgba(255, 255, 255, 0.92);
+  background: #ffffff !important;
+  color: rgba(11, 14, 20, 0.92);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 
-  --df-line: rgba(255, 255, 255, 0.07);
+  --df-line: rgba(11, 14, 20, 0.07);
   --df-cap: #7c7c7c;
 }
 
@@ -65,7 +65,7 @@
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.015em;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .df-icon {
@@ -77,14 +77,14 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease;
 }
 
 .df-icon:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.07);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.07);
 }
 
 /* ── lane tabs ────────────────────────────────────────────────────── */
@@ -111,17 +111,17 @@
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: color 130ms ease;
 }
 
 .df-lane:hover {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .df-lane.is-on {
-  color: #ffffff;
+  color: #0b0e14;
   font-weight: 600;
 }
 
@@ -135,7 +135,7 @@
   bottom: -1px;
   height: 2px;
   border-radius: 2px;
-  background: #ffffff;
+  background: #0b0e14;
 }
 
 /* ── keywords ─────────────────────────────────────────────────────── */
@@ -165,7 +165,7 @@
   outline: none;
   font-family: inherit;
   font-size: 12.5px;
-  color: #ffffff;
+  color: #0b0e14;
   transition: border-color 130ms ease;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .df-field input:focus {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(11, 14, 20, 0.28);
 }
 
 /* ── group tabs ───────────────────────────────────────────────────── */
@@ -196,19 +196,19 @@
   font-size: 12.5px;
   font-weight: 500;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease;
 }
 
 .df-group:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.06);
 }
 
 .df-group.is-on {
-  color: #000000;
-  background: #ffffff;
+  color: #ffffff;
+  background: #0b0e14;
   font-weight: 600;
 }
 
@@ -222,7 +222,7 @@
   max-height: min(420px, 46vh);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  scrollbar-color: rgba(11, 14, 20, 0.16) transparent;
 }
 
 .df-body::-webkit-scrollbar {
@@ -235,7 +235,7 @@
 
 .df-body::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(11, 14, 20, 0.16);
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -259,14 +259,14 @@
   font-family: inherit;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
   transition: color 130ms ease, border-color 130ms ease;
 }
 
 .df-clear:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.2);
 }
 
 /* ── the chips ────────────────────────────────────────────────────── */
@@ -303,7 +303,7 @@
   font-size: 12.5px;
   font-weight: 500;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(11, 14, 20, 0.3);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease, border-color 130ms ease;
 }
@@ -315,8 +315,8 @@
 }
 
 .df-chip:hover {
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.04);
+  color: rgba(11, 14, 20, 0.7);
+  background: rgba(11, 14, 20, 0.04);
 }
 
 .df-chip:hover .df-mark,
@@ -329,7 +329,7 @@
    line: the border stays transparent so the grid carries no boxes at
    all, only sixteen marks of which three are lit. */
 .df-chip.is-on {
-  color: #ffffff;
+  color: #0b0e14;
   border-color: transparent;
 }
 
@@ -348,7 +348,7 @@
   flex: 0 0 auto;
   overflow: hidden;
   border-radius: 5px;
-  background: #1b1b1b;
+  background: #f4f7f6;
 }
 
 .df-mark img {
@@ -379,7 +379,7 @@
   font-family: inherit;
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease;
 }
@@ -389,13 +389,13 @@
 }
 
 .df-segbtn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.06);
 }
 
 .df-segbtn.is-on {
-  color: #000000;
-  background: #ffffff;
+  color: #ffffff;
+  background: #0b0e14;
   font-weight: 600;
 }
 
@@ -441,7 +441,7 @@ button.df-row {
   min-width: 0;
   font-size: 12.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 /* ── the tick box ─────────────────────────────────────────────────── */
@@ -452,19 +452,19 @@ button.df-row {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(11, 14, 20, 0.16);
   border-radius: 5px;
-  color: #000000;
+  color: #ffffff;
   transition: background-color 130ms ease, border-color 130ms ease;
 }
 
 button.df-row:hover .df-box {
-  border-color: rgba(255, 255, 255, 0.32);
+  border-color: rgba(11, 14, 20, 0.32);
 }
 
 .df-box.is-on {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: #0b0e14;
+  border-color: #0b0e14;
 }
 
 /* ── the min and max pairs ────────────────────────────────────────── */
@@ -500,7 +500,7 @@ button.df-row:hover .df-box {
   font-family: inherit;
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
   transition: border-color 130ms ease;
 }
 
@@ -509,11 +509,11 @@ button.df-row:hover .df-box {
 }
 
 .df-num input:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(11, 14, 20, 0.16);
 }
 
 .df-num input:focus {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(11, 14, 20, 0.28);
 }
 
 /* The unit, not a value: grey, and it does not take the caret. */
@@ -549,15 +549,15 @@ button.df-row:hover .df-box {
   font-family: inherit;
   font-size: 12.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
   cursor: pointer;
   transition: color 130ms ease, border-color 130ms ease, background-color 130ms ease;
 }
 
 .df-ghost:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.2);
+  background: rgba(11, 14, 20, 0.05);
 }
 
 /*
@@ -571,11 +571,11 @@ button.df-row:hover .df-box {
   padding: 0 20px;
   border: 0;
   border-radius: 8px;
-  background: #ffffff;
+  background: #0b0e14;
   font-family: inherit;
   font-size: 12.5px;
   font-weight: 600;
-  color: #000000;
+  color: #ffffff;
   cursor: pointer;
   transition: opacity 150ms ease;
 }
@@ -612,8 +612,8 @@ button.df-row:hover .df-box {
   margin-right: auto !important;
   transform: translateY(-50%) !important;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 32px 90px #000000b0 !important;
+    0 0 0 1px rgba(11, 14, 20, 0.12),
+    0 32px 90px rgba(11, 14, 20, 0.18) !important;
 }
 
 /* ── the hidden token strip ───────────────────────────────────────── */
@@ -628,7 +628,7 @@ button.df-row:hover .df-box {
   border: 1px solid var(--df-line);
   border-radius: 10px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
 }
 
 .df-hidden button {
@@ -637,7 +637,7 @@ button.df-row:hover .df-box {
   font-family: inherit;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
 }
 
@@ -649,12 +649,12 @@ button.df-row:hover .df-box {
 /* ── the foot's disabled ghost ────────────────────────────────────── */
 
 .df-ghost:disabled {
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(11, 14, 20, 0.28);
   cursor: default;
 }
 
 .df-ghost:disabled:hover {
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(11, 14, 20, 0.28);
   border-color: var(--df-line);
   background: transparent;
 }
@@ -668,7 +668,7 @@ button.df-row:hover .df-box {
   margin-left: 5px;
   border-radius: 999px;
   vertical-align: middle;
-  background: #ffffff;
+  background: #0b0e14;
 }
 
 /* ── narrow screens ───────────────────────────────────────────────── */
@@ -706,4 +706,26 @@ button.df-row:hover .df-box {
   .df-groups::-webkit-scrollbar {
     display: none;
   }
+}
+
+
+/*
+ * ── THE INK SCALE, INSIDE THIS MENU ONLY ─────────────────────────────
+ *
+ * The rows and figures in here read the app's `--ink-*` and `--hairline`,
+ * which are declared white for a black board. Re-pointed at the menu's
+ * own root so nothing outside it moves, which is also how the top bar and
+ * the coins strip do it.
+ *
+ * These blocks become the light half of the theme when the toggle is
+ * built; nothing here is a literal that would have to be found again.
+ */
+.df-cap, .df-head, .df-title, [class*="df-"] {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
 }

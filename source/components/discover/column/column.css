@@ -20,7 +20,7 @@
  *
  * ── THE GREYS ARE NEUTRAL ────────────────────────────────────────────
  *
- * Equal channels throughout. Board #050607, lane #0d0d0d, row set by the
+ * Equal channels throughout. Board #ffffff, lane #ffffff, row set by the
  * variant. Every panel in this product has started blue-grey and had to
  * be corrected; this one starts neutral.
  */
@@ -63,15 +63,15 @@
    * running off it, and the top and bottom edges close against the sub
    * header and the footer.
    */
-  border: 1px solid #2a2a2e;
+  border: 1px solid #eceff0;
   overflow: hidden;
   /* The head's own ground, so the column is one surface from top to
      bottom rather than a lighter strip sitting on a darker lane. */
-  background: #131316;
-  color: rgba(255, 255, 255, 0.92);
+  background: #fbfcfc;
+  color: rgba(11, 14, 20, 0.92);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 
-  --cl-row: #1f1f23;
+  --cl-row: #f4f7f6;
   /*
    * 0.045, down from 0.07. On the sheet this line sat on one panel in
    * the middle of a page; in the board it draws the outside of three
@@ -80,10 +80,10 @@
    * light lines here. Low enough to say where a thing ends and no louder.
    */
   /* The head's border value, used everywhere this column draws a line. */
-  --cl-line: #2a2a2e;
+  --cl-line: #eceff0;
   --cl-cap: #7c7c7c;
-  --cl-good: #2fe0a0;
-  --cl-bad: #ff5f6e;
+  --cl-good: #0f6d5f;
+  --cl-bad: #b4482e;
 }
 
 .cl *,
@@ -133,11 +133,11 @@
  * the thing that was approved. Dividing by the same variable cancels it
  * exactly, and if the scale ever moves the head tracks it.
  *
- *   band        48 tall, #131316, 1px #2a2a2e top and bottom
+ *   band        48 tall, #fbfcfc, 1px #eceff0 top and bottom
  *   name        16px / 500, white, 26 from the left
- *   search      158 x 28, fully round, 1px #2a2a2e, no fill
+ *   search      158 x 28, fully round, 1px #eceff0, no fill
  *   gap         16 between the field and the tools box
- *   tools box   28 tall, 1px #2a2a2e, 10px radius, holding the bolt,
+ *   tools box   28 tall, 1px #eceff0, 10px radius, holding the bolt,
  *               the amount, the SOL mark, a full height divider, then
  *               the preset and its glyph
  *   funnel      loose outside the box, 14px, bare
@@ -173,7 +173,7 @@
    * of a column instead of sitting against its edges.
    */
   padding: 0 calc(12px / var(--ui-scale, 1));
-  background: #131316;
+  background: #fbfcfc;
   /*
    * NO BORDER-TOP.
    *
@@ -181,8 +181,8 @@
    * border here landed directly on top of it and every column read as
    * having a 2px edge along its top and nowhere else.
    */
-  border-bottom: 1px solid #2a2a2e;
-  color: #ffffff;
+  border-bottom: 1px solid #eceff0;
+  color: #0b0e14;
 }
 
 .cl-title {
@@ -192,7 +192,7 @@
      than that at the same size. */
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #0b0e14;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -232,7 +232,7 @@
   box-sizing: border-box;
   height: calc(28px / var(--ui-scale, 1));
   padding: 0 calc(13px / var(--ui-scale, 1));
-  border: 1px solid #2a2a2e;
+  border: 1px solid #eceff0;
   border-radius: 999px;
   background: transparent;
   cursor: text;
@@ -246,7 +246,7 @@
   outline: none;
   font-family: inherit;
   font-size: calc(13px / var(--ui-scale, 1));
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .cl-search input::placeholder {
@@ -269,7 +269,7 @@
   gap: 0;
   height: calc(28px / var(--ui-scale, 1));
   padding: 0 calc(9px / var(--ui-scale, 1));
-  border: 1px solid #2a2a2e;
+  border: 1px solid #eceff0;
   border-radius: calc(10px / var(--ui-scale, 1));
   overflow: visible;
 }
@@ -284,7 +284,7 @@
   font-family: inherit;
   font-size: calc(13px / var(--ui-scale, 1));
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
 }
 
@@ -315,14 +315,14 @@
    * should be.
    */
   transform: translateY(calc(-1.5px / var(--ui-scale, 1)));
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* Full height, splitting the quick buy from the preset. */
 .cl-toolrule {
   width: 1px;
   align-self: stretch;
-  background: #2a2a2e;
+  background: #eceff0;
   margin: 0 calc(9px / var(--ui-scale, 1)) 0 calc(12px / var(--ui-scale, 1));
 }
 
@@ -338,13 +338,13 @@
   background: transparent;
   /* WHITE. It was at 50% and was the one thing in the head that read as
      disabled. Every other mark up there is white. */
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
 }
 
 .cl-loose:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.07);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.07);
 }
 
 /*
@@ -419,7 +419,7 @@
 }
 
 .cl-pad.is-bonk {
-  background: #ffb020;
+  background: #b07500;
 }
 
 .cl-tick {
@@ -430,8 +430,8 @@
   place-items: center;
   align-self: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.14);
+  color: #0b0e14;
 }
 
 .cl-mint {
@@ -464,7 +464,7 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #0b0e14;
   white-space: nowrap;
 }
 
@@ -477,7 +477,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /*
@@ -511,12 +511,12 @@
   font-variant-numeric: tabular-nums;
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(11, 14, 20, 0.75);
 }
 
 .cl-dev {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
   white-space: nowrap;
 }
 
@@ -554,7 +554,7 @@
 
 /* The trailing "1mo" / "1yr" is context on the value, not the value. */
 .cl-note {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
 }
 
 /* ── the figures and the buy ──────────────────────────────────────── */
@@ -587,7 +587,7 @@
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
   white-space: nowrap;
 }
 
@@ -596,7 +596,7 @@
 .cl-num.is-mc {
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -617,8 +617,10 @@
   font-size: 11.5px;
   font-weight: 600;
   white-space: nowrap;
-  color: #000000;
-  background: #ffffff;
+  /* The one filled press on a row: an ink plate with paper type, which is
+     the same relationship it had as a paper plate with ink type. */
+  color: #ffffff;
+  background: #0b0e14;
   cursor: pointer;
   transition: opacity 130ms ease;
 }
@@ -634,23 +636,23 @@
  */
 
 .cl.is-g10 {
-  --cl-row: #101010;
+  --cl-row: #ffffff;
 }
 
 .cl.is-g14 {
-  --cl-row: #1f1f23;
+  --cl-row: #f4f7f6;
 }
 
 .cl.is-g1a {
-  --cl-row: #1a1a1a;
+  --cl-row: #f7f9f8;
 }
 
 .cl.is-g20 {
-  --cl-row: #202020;
+  --cl-row: #f4f7f6;
 }
 
 .cl.is-tint {
-  --cl-row: rgba(255, 255, 255, 0.05);
+  --cl-row: rgba(11, 14, 20, 0.05);
 }
 
 .cl.is-zebra .cl-list,
@@ -672,7 +674,7 @@
 }
 
 .cl.is-zebra .cl-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(11, 14, 20, 0.035);
 }
 
 .cl.is-edge .cl-row {
@@ -689,7 +691,7 @@
 .cl.is-edge .cl-row:hover,
 .cl.is-none .cl-row:hover {
   filter: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(11, 14, 20, 0.08);
 }
 
 
@@ -710,7 +712,7 @@
  */
 .cl-list {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  scrollbar-color: rgba(11, 14, 20, 0.16) transparent;
 }
 
 .cl-list::-webkit-scrollbar {
@@ -723,7 +725,7 @@
 
 .cl-list::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(11, 14, 20, 0.16);
   /* A transparent border with `background-clip` insets the thumb without
      narrowing the track, so the bar has air around it at rest and still
      takes the full 8px of hit area. */
@@ -732,7 +734,7 @@
 }
 
 .cl-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(11, 14, 20, 0.3);
   background-clip: content-box;
 }
 
@@ -745,11 +747,11 @@
  * reads as a bolt rather than as a grey tick.
  */
 .cl-tool > svg:first-child {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .cl-tool .cl-num {
-  color: #ffffff;
+  color: #0b0e14;
   font-weight: 600;
 }
 
@@ -777,7 +779,7 @@
   font-feature-settings: 'tnum' 1;
   font-size: calc(13px / var(--ui-scale, 1));
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   text-align: right;
 }
 
@@ -812,7 +814,7 @@
 /* Focus is a rule under the number — the field only draws itself while
    it is being used, which keeps the head quiet at rest. */
 .cl-size:focus {
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 0 rgba(11, 14, 20, 0.45);
 }
 
 /*
@@ -872,12 +874,12 @@
   flex-direction: column;
   min-width: calc(230px / var(--ui-scale, 1));
   padding: calc(4px / var(--ui-scale, 1));
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(11, 14, 20, 0.09);
   border-radius: calc(8px / var(--ui-scale, 1));
   /* One step above the lane, not the lane's own ground: a menu that
      matches what is behind it has no edge except its border. */
-  background: #17191d;
-  box-shadow: 0 calc(14px / var(--ui-scale, 1)) calc(34px / var(--ui-scale, 1)) rgba(0, 0, 0, 0.55);
+  background: #f7f9f8;
+  box-shadow: 0 calc(14px / var(--ui-scale, 1)) calc(34px / var(--ui-scale, 1)) rgba(11, 14, 20, 0.12);
 }
 
 .cl-preset {
@@ -891,15 +893,15 @@
   background: transparent;
   font-family: inherit;
   font-size: calc(11.5px / var(--ui-scale, 1));
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
   white-space: nowrap;
   cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
 }
 
 .cl-preset:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.92);
+  background: rgba(11, 14, 20, 0.05);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 /*
@@ -908,7 +910,7 @@
  * is live, and contrast is the cheapest one to read.
  */
 .cl-preset[data-on='true'] {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .cl-preset-id {
@@ -932,7 +934,7 @@
 
 .cl-preset[data-on='true'] .cl-preset-cell svg,
 .cl-preset:hover .cl-preset-cell svg {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(11, 14, 20, 0.75);
 }
 
 /* ══ THE BOARD'S OUTER CORNERS ═════════════════════════════════════════

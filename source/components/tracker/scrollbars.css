@@ -40,7 +40,7 @@
   .tk-scroll,
   .dk-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    scrollbar-color: rgba(11, 14, 20, 0.16) transparent;
   }
 }
 
@@ -61,14 +61,14 @@
 .dk-scroll::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(11, 14, 20, 0.12);
   background-clip: content-box;
   transition: background-color 130ms ease;
 }
 
 .tk-scroll:hover::-webkit-scrollbar-thumb,
-.dk-scroll:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
+.dk-scroll:hover::-webkit-scrollbar-thumb { background: rgba(11, 14, 20, 0.22); }
 .tk-scroll::-webkit-scrollbar-thumb:hover,
-.dk-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.34); }
+.dk-scroll::-webkit-scrollbar-thumb:hover { background: rgba(11, 14, 20, 0.34); }
 .tk-scroll::-webkit-scrollbar-thumb:active,
-.dk-scroll::-webkit-scrollbar-thumb:active { background: rgba(255, 255, 255, 0.44); }
+.dk-scroll::-webkit-scrollbar-thumb:active { background: rgba(11, 14, 20, 0.44); }

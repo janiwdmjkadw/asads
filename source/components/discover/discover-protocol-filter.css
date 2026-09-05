@@ -3,7 +3,7 @@
  *
  * Sits in a lane header next to the Filters button and narrows THAT lane
  * only. Same materials as the filters panel it shares chips with: the
- * #111111 surface, one hairline, the board's caps, and selection stated
+ * #ffffff surface, one hairline, the board's caps, and selection stated
  * by taking colour off what you did not choose rather than by plating
  * what you did.
  */
@@ -27,7 +27,7 @@
   border: 1px solid var(--input-border);
   border-radius: 999px;
   background: var(--input-bg);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(11, 14, 20, 0.04);
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 700;
@@ -41,7 +41,7 @@
 
 .dpf-btn:hover {
   color: var(--ink-0);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(11, 14, 20, 0.2);
 }
 
 /*
@@ -74,13 +74,13 @@
 
 /* Narrowed: white, and the count says how far without opening it. */
 .dpf-btn.is-narrowed {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.32);
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.32);
 }
 
 .dpf-btn.is-open {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.32);
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.32);
 }
 
 /* The marks of the chosen launchpads, on the button itself. Up to four,
@@ -94,7 +94,7 @@
   width: 13px;
   height: 13px;
   border-radius: 4px;
-  background: #1b1b1b;
+  background: #f4f7f6;
   object-fit: cover;
 }
 
@@ -121,16 +121,16 @@
      than running off the bottom of it. */
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  scrollbar-color: rgba(11, 14, 20, 0.16) transparent;
   border-radius: 12px;
-  background: #111111;
-  color: rgba(255, 255, 255, 0.92);
+  background: #ffffff;
+  color: rgba(11, 14, 20, 0.92);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 24px 60px #000000b0;
+    0 0 0 1px rgba(11, 14, 20, 0.12),
+    0 24px 60px rgba(11, 14, 20, 0.18);
 
-  --df-line: rgba(255, 255, 255, 0.07);
+  --df-line: rgba(11, 14, 20, 0.07);
   --df-cap: #7c7c7c;
 }
 
@@ -165,7 +165,7 @@
 
 .dpf-pop::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(11, 14, 20, 0.16);
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -214,4 +214,26 @@
   .dpf-pop .df-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+
+/*
+ * ── THE INK SCALE, INSIDE THIS MENU ONLY ─────────────────────────────
+ *
+ * The rows and figures in here read the app's `--ink-*` and `--hairline`,
+ * which are declared white for a black board. Re-pointed at the menu's
+ * own root so nothing outside it moves, which is also how the top bar and
+ * the coins strip do it.
+ *
+ * These blocks become the light half of the theme when the toggle is
+ * built; nothing here is a literal that would have to be found again.
+ */
+.dpf-pop, .dpf-btn {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
 }

@@ -476,7 +476,7 @@ function Row(props: {
         marginBottom: 8,
       }}
     >
-      <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.82)' }}>{props.label}</span>
+      <span style={{ fontSize: 11.5, color: 'rgba(11,14,20,0.82)' }}>{props.label}</span>
       <div
         style={{
           display: 'flex',
@@ -620,7 +620,7 @@ const dimStyle: CSSProperties = {
  * Everything below was `--surface-1`, `--hairline-2`, mono capitals at
  * 1px of tracking, 8px corners and an accent-coloured slider — a fourth
  * design language on a page that had settled on one. The values here are
- * the rail's: sans throughout, 10–12px, `#272729` outlines, 4–6px
+ * the rail's: sans throughout, 10–12px, `rgba(11,14,20,0.14)` outlines, 4–6px
  * corners, white for the thing that is on.
  */
 const sectionHeaderStyle: CSSProperties = {
@@ -632,20 +632,20 @@ const sectionHeaderStyle: CSSProperties = {
   fontWeight: 600,
   letterSpacing: '0.06em',
   textTransform: 'uppercase',
-  color: '#868d97',
+  color: '#8a9591',
   marginBottom: 8,
 };
 
 const hintStyle: CSSProperties = {
   fontSize: 10,
-  color: 'rgba(255,255,255,0.35)',
+  color: 'rgba(11,14,20,0.35)',
 };
 
 const swatchStyle: CSSProperties = {
   width: 24,
   height: 20,
   padding: 0,
-  border: '1px solid #272729',
+  border: '1px solid rgba(11,14,20,0.14)',
   borderRadius: 4,
   background: 'transparent',
   cursor: 'pointer',
@@ -654,7 +654,7 @@ const swatchStyle: CSSProperties = {
 const rangeStyle: CSSProperties = {
   width: 64,
   height: 12,
-  accentColor: '#ffffff',
+  accentColor: '#0b0e14',
   cursor: 'pointer',
 };
 
@@ -673,7 +673,7 @@ const tagStyle: CSSProperties = {
   fontWeight: 500,
   letterSpacing: '0.05em',
   textTransform: 'uppercase',
-  color: 'rgba(255,255,255,0.4)',
+  color: 'rgba(11,14,20,0.4)',
 };
 
 
@@ -684,7 +684,7 @@ const chipStyle: CSSProperties = {
   gap: 5,
   padding: 5,
   background: 'transparent',
-  border: '1px solid #1d1d20',
+  border: '1px solid rgba(11,14,20,0.12)',
   borderRadius: 7,
   cursor: 'pointer',
   transition: 'border-color 160ms ease',
@@ -694,7 +694,7 @@ const chipCanvasStyle: CSSProperties = {
   width: 58,
   height: 34,
   borderRadius: 4,
-  border: '1px solid #1d1d20',
+  border: '1px solid rgba(11,14,20,0.12)',
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -711,17 +711,17 @@ const chipNameStyle: CSSProperties = {
   fontSize: 10,
   fontFamily: 'var(--sans)',
   fontWeight: 500,
-  color: 'rgba(255,255,255,0.62)',
+  color: 'rgba(11,14,20,0.62)',
 };
 
 const footerButtonStyle: CSSProperties = {
   background: 'transparent',
-  border: '1px solid #272729',
+  border: '1px solid rgba(11,14,20,0.14)',
   borderRadius: 5,
   fontFamily: 'var(--sans)',
   fontSize: 11,
   fontWeight: 500,
-  color: 'rgba(255,255,255,0.78)',
+  color: 'rgba(11,14,20,0.78)',
   padding: '5px 11px',
   cursor: 'pointer',
 };

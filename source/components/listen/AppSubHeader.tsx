@@ -12,15 +12,18 @@ import './subheader-v2.css';
  * + 24h change), swapped by the two small toggle buttons. Height is
  * tokenized (`--h-subnav`) and carved out of `--h-app-content`.
  *
- * ── THE WALLET CLUSTER IS NOT HERE ANY MORE ──────────────────────────
+ * ── THE WALLET CLUSTER IS NOT HERE ──────────────────────────────────
  *
  * The cog, the group selector and the wallet selector used to be pinned
  * to the right of this line. Two things were competing for it: a tape
  * that wants every pixel it can get, and a cluster whose width is
  * whatever the wallet figures happen to be. The tape lost, which is why
  * it was the thing that got hidden on a narrow window. They live on
- * `AppPageBar` now, one line down, where neither takes width from the
- * other.
+ * `AppPageBar` now, one line down.
+ *
+ * This line is the coins and nothing else. It was tried the other way
+ * once more and put straight back: whatever is missing off Discover,
+ * the answer is not parking wallets on the tape's row.
  *
  * ── THE MODE TOGGLE IS BACK ──────────────────────────────────────────
  *
@@ -302,6 +305,7 @@ export function AppSubHeader() {
       </div>
 
       {overflow.right ? <ScrollArrow dir="right" onClick={() => nudge('right')} /> : null}
+
     </div>
   );
 }

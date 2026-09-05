@@ -12,12 +12,16 @@
  * including the 24h column at the end of the very rows these bars are
  * on, and a token that happened to be green would read as up.
  *
- * Everything here carries real chroma. A desaturated palette on a black
- * ground does not read as restrained, it reads as faded.
+ * Everything here carries real chroma. That was the rule on black, and
+ * it still is — but the SETTING moved. These were mixed to glow on a
+ * dark pane: on paper the same hues are highlighter, and the yellow in
+ * particular disappeared into the page at 3px. Each one is deepened to
+ * the point where a 3px bar holds against white, keeping the hue
+ * spacing that lets seven categories be told apart.
  */
 
 /** The split, in order: SOL, stablecoins, everything else. */
-export const CUT_INK = ['#6f8cff', '#27d3c0', '#ffab4a'] as const;
+export const CUT_INK = ['#4f6ae0', '#0e9e90', '#d98518'] as const;
 
 /**
  * The holdings. The split's three first — so the biggest positions
@@ -25,13 +29,13 @@ export const CUT_INK = ['#6f8cff', '#27d3c0', '#ffab4a'] as const;
  * apart in hue to be told apart at 3px.
  */
 const HOLDING_INK = [
-  '#6f8cff',
-  '#27d3c0',
-  '#ffab4a',
-  '#c084fc',
-  '#38bdf8',
-  '#e3d84a',
-  '#ff8f5e',
+  '#4f6ae0',
+  '#0e9e90',
+  '#d98518',
+  '#9450e0',
+  '#1f8fc4',
+  '#a8921a',
+  '#d9673a',
 ] as const;
 
 /**

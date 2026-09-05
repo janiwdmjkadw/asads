@@ -623,9 +623,9 @@ export function WalletExportIframe(props: WalletExportIframeProps): React.ReactE
               }}
               disabled={isBusy}
               style={{
-                background: 'color-mix(in srgb, var(--ink-0) 16%, transparent)',
-                color: 'var(--ink-0)',
-                border: '1px solid var(--hairline-2)',
+                background: 'var(--ink-0)',
+                color: '#ffffff',
+                border: '1px solid var(--ink-0)',
                 padding: '10px 24px',
                 borderRadius: 999,
                 fontSize: 14,
@@ -643,7 +643,7 @@ export function WalletExportIframe(props: WalletExportIframeProps): React.ReactE
       {state.kind === 'error' ? (
         <p
           data-testid="wallet-export-error"
-          style={{ color: 'var(--accent-down, #ef4444)', fontSize: 12, margin: 0 }}
+          style={{ color: 'var(--down, #b4482e)', fontSize: 12, margin: 0 }}
         >
           {state.plain ? (
             state.message
@@ -660,7 +660,7 @@ export function WalletExportIframe(props: WalletExportIframeProps): React.ReactE
         <p
           data-testid="wallet-export-warning"
           style={{
-            color: 'var(--accent-down, #ef4444)',
+            color: 'var(--down, #b4482e)',
             fontSize: 12,
             lineHeight: 1.45,
             margin: 0,

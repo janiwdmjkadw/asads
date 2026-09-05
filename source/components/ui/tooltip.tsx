@@ -44,12 +44,18 @@ const TooltipContent = React.forwardRef<
              the upstream tooltip uses `bg-primary text-primary-foreground`
              which would tint the floating chip with our brand CTA color
              (cinnabar in zen, cyan in dark) — way too loud for an icon
-             hover-label. Swapped to `bg-popover text-popover-foreground`
+             hover-label. It read `bg-popover text-popover-foreground`, and
+             those tokens are the APP's, declared for a black terminal. A
+             tooltip PORTALS out of whatever opened it, so the paper
+             palettes the panels declare on themselves never reach it: the
+             one the wallet manager's bell opens came out black over a white
+             panel. Paper, stated here, because chrome this small is not
+             worth a token round trip. Swapped to `bg-popover text-popover-foreground`
              (our `--surface-1` + `--ink-0` bridge in listen.css) with a
              `border` for definition. This matches the conventional
              "subtle floating chip on dark surface" look that user-research
              expects from icon tooltips. */
-          "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-xs text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]",
+          "z-50 overflow-hidden rounded-md border border-[rgba(11,14,20,0.14)] bg-white px-3 py-1.5 text-xs text-[#0b0e14] shadow-[0_10px_26px_rgba(11,14,20,0.18)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]",
           className
         )}
         {...props}

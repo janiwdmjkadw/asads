@@ -35,7 +35,7 @@
  */
 
 /*
- * #111111, NOT #000.
+ * #ffffff, NOT #000.
  *
  * A popover floats ABOVE the surface that opened it, and the board it
  * covers is already near black — a pure black panel over it has nothing
@@ -49,13 +49,13 @@
  * is tone and nothing else.
  */
 [aria-label='Select a wallet group'] {
-  background: #111111 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #ffffff !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
   border-radius: 10px !important;
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   box-shadow:
-    0 24px 80px #0000008c,
-    0 0 60px #ffffff0a !important;
+    0 24px 80px rgba(11, 14, 20, 0.16),
+    0 0 0 1px rgba(11, 14, 20, 0.06) !important;
 }
 
 /* ── the rows ─────────────────────────────────────────────────────── */
@@ -65,12 +65,12 @@
   background: transparent !important;
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-size: 12.5px !important;
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(11, 14, 20, 0.55) !important;
   transition: color 130ms ease !important;
 }
 
 [aria-label='Select a wallet group'] button:hover:not(:disabled) {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }
 
 /*
@@ -79,7 +79,7 @@
  * distinguishes it inline — the accent wash it is about to lose.
  */
 [aria-label='Select a wallet group'] button[style*='accent-soft'] {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
   font-weight: 600 !important;
 }
 
@@ -90,7 +90,7 @@
  */
 [aria-label='Select a wallet group'] button:disabled {
   opacity: 1 !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
 }
 
 /* ── the counts ───────────────────────────────────────────────────── */
@@ -105,17 +105,17 @@
   font-feature-settings: 'tnum' 1 !important;
   font-size: 11.5px !important;
   font-weight: 600 !important;
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }
 
 /* A group with nothing in it has no figure worth stating. */
 [aria-label='Select a wallet group'] button:disabled > span:last-child {
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
   font-weight: 500 !important;
 }
 
 /* The empty-state line, when there are no groups at all. */
 [aria-label='Select a wallet group'] > div > div:not([style*='flex']) {
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
 }

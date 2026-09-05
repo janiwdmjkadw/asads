@@ -703,7 +703,7 @@ export function ProgressTrack({
         borderRadius: 999,
         background: 'color-mix(in srgb, var(--ink-3) 15%, transparent)',
         overflow: 'hidden',
-        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.2)',
+        boxShadow: 'inset 0 1px 2px rgba(11, 14, 20, 0.16)',
       }}
     >
       <div
@@ -742,7 +742,7 @@ export function Row({
         gridTemplateColumns,
         gap: 8,
         color: head ? 'var(--ink-3)' : 'var(--ink-1)',
-        background: highlight ? 'var(--chip-bg, rgba(255,255,255,0.04))' : 'transparent',
+        background: highlight ? 'var(--chip-bg, rgba(11, 14, 20, 0.05))' : 'transparent',
         fontFamily: head ? 'var(--sans)' : undefined,
         fontSize: head ? 9.5 : 12.5,
         fontWeight: head ? 600 : 400,
@@ -809,7 +809,7 @@ export function RankBadge({ rank }: { rank: number }): React.ReactElement {
         fontWeight: 700,
         color: m.ink,
         background: `linear-gradient(150deg, ${m.a}, ${m.b})`,
-        border: '1px solid rgba(255,255,255,0.3)',
+        border: '1px solid rgba(11, 14, 20, 0.24)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5)',
       }}
     >
@@ -948,6 +948,46 @@ export function Empty({ text }: { text: string }): React.ReactElement {
   );
 }
 
+/**
+ * A load that failed, with the way out.
+ *
+ * Distinct from `Empty` on purpose: empty means the answer arrived and
+ * there is nothing in it, which is a fact about your account. This
+ * means no answer arrived, which is a fact about the connection — and
+ * the only thing that fixes it is asking again.
+ */
+export function LoadFailed({
+  what,
+  onRetry,
+}: {
+  what: string;
+  onRetry: () => void;
+}): React.ReactElement {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 py-9 text-center">
+      <p style={{ fontSize: 12.5, color: 'var(--ink-3)', margin: 0 }}>
+        {what} did not load.
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        style={{
+          height: 28,
+          padding: '0 14px',
+          borderRadius: 7,
+          border: '1px solid var(--hairline-2)',
+          background: 'transparent',
+          color: 'var(--ink-1)',
+          font: '600 11.5px/1 var(--sans)',
+          cursor: 'pointer',
+        }}
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+
 export function Skeleton({ rows = 3 }: { rows?: number }): React.ReactElement {
   return (
     <div className="flex flex-col gap-2.5">
@@ -992,7 +1032,7 @@ export function PartnerBadge({ size = 'md' }: { size?: 'sm' | 'md' }): React.Rea
         textTransform: 'uppercase',
         color: '#3a2c05',
         background: `linear-gradient(135deg, #ffe48a, ${PARTNER_COLOR} 55%, #e5b23a)`,
-        border: '1px solid rgba(255,255,255,0.4)',
+        border: '1px solid rgba(11, 14, 20, 0.4)',
         boxShadow: `inset 0 1px 0 rgba(255,255,255,0.55), 0 0 12px -5px ${PARTNER_COLOR}`,
         flexShrink: 0,
       }}

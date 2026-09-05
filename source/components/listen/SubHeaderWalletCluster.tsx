@@ -345,7 +345,13 @@ function GroupRowButton(props: {
         gap: 10,
         padding: '7px 10px',
         borderRadius: 8,
-        border: '1px solid',
+        /* Longhands, not `border` plus `borderColor`. React warns when a
+           shorthand and one of its parts are both set and one of them
+           changes on a rerender, which this does every time the chip
+           opens — and the warning is right that the result depends on
+           property order rather than on intent. */
+        borderWidth: 1,
+        borderStyle: 'solid',
         borderColor: props.active
           ? 'color-mix(in srgb, var(--accent-primary) 35%, var(--hairline-2))'
           : 'transparent',
@@ -404,14 +410,22 @@ function WalletChip(props: {
       trigger={
         <>
           <Wallet style={{ width: 12, height: 12, color: 'var(--accent-primary)', flexShrink: 0 }} />
-          <span data-testid="subheader-wallet-count" className="inline-flex">
+          <span data-testid="subheader-wallet-count" className="swc-fig inline-flex">
             <Numeral size="xs" tone="ink-0">
               {selectedIds.length}
             </Numeral>
           </span>
           <Divider />
-          <span className="inline-flex items-center gap-1">
-            <Solana style={{ width: 11, height: 11 }} />
+          <span className="swc-fig inline-flex items-center gap-1">
+            {/*
+              13, TO MATCH THE WALLET PANEL THIS CHIP OPENS.
+
+              It was 11, and the wallet's own SOL mark is 13, so the same
+              logo appeared at two sizes two clicks apart and the smaller
+              one read as a different, thinner mark rather than as the
+              same one further away.
+            */}
+            <Solana style={{ width: 14, height: 14 }} />
             <Numeral size="xs" tone="ink-0">
               {sol}
             </Numeral>
@@ -579,6 +593,10 @@ function ChipPopover(props: {
               // Quick fade+scale on open — same treatment as the trade
               // page's wallet-count popover (see WalletCountButton).
               className="animate-in fade-in-0 zoom-in-95 duration-100"
+              /* Tagged so the paper palette can reach it: everything below
+                 is set as an INLINE style off the app's tokens, and an
+                 inline style outranks any selector that is not important. */
+              data-paper-pop=""
               style={{
                 position: 'fixed',
                 top: anchor.top,

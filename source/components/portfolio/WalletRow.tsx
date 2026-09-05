@@ -234,9 +234,9 @@ export function WalletRow(props: WalletRowProps): React.ReactElement {
            be, so a selected row and the plate under it were the same
            value and the selection stopped reading. */
         background: props.selected
-          ? 'rgba(255, 255, 255, 0.07)'
+          ? 'rgba(11, 14, 20, 0.08)'
           : hovered
-            ? 'rgba(255, 255, 255, 0.04)'
+            ? 'rgba(11, 14, 20, 0.05)'
             : 'transparent',
         boxShadow: props.selected ? 'inset 2px 0 0 var(--ink-0)' : 'none',
       }}
@@ -590,7 +590,7 @@ const holdingsCellStyle: CSSProperties = {
  *
  * ── THE COLOUR IS WHITE ──────────────────────────────────────────────
  *
- * It went through `rgba(255,255,255,0.34)`, then arctic mint, then the
+ * It went through `rgba(11, 14, 20, 0.3)`, then arctic mint, then the
  * product's green, and white is the one that belongs here.
  *
  * Green is a MEANING on this page. `--up` is on every figure that went

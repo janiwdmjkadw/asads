@@ -25,6 +25,7 @@ import {
   Row,
   SECTION_COLORS,
   SectionTitle,
+  LoadFailed,
   Skeleton,
   StatCard,
   Table,
@@ -70,6 +71,16 @@ export function CashbackTab(): React.ReactElement {
   }
   if (meResult?.kind === 'error') {
     return <Panel><Empty text="Cashback is temporarily unavailable. Try again soon." /></Panel>;
+  }
+  /* No answer at all — thrown fetch, exhausted cold boot retries, a
+     request cancelled by leaving the tab. Without this the next line
+     shimmers for ever. */
+  if (!me && !meQuery.isLoading) {
+    return (
+      <Panel>
+        <LoadFailed what="Cashback" onRetry={() => void meQuery.refetch()} />
+      </Panel>
+    );
   }
   if (meQuery.isLoading || !me) {
     return <Panel><Skeleton rows={4} /></Panel>;

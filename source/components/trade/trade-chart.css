@@ -8,7 +8,7 @@
  * bordered icon buttons, a different type scale.
  *
  * Everything below is the rail's own vocabulary: 10–11.5px type, hairline
- * `#1d1d20` rules, `#272729` outlines, 4–7px corners, and one thing lit
+ * `#f7f9f8` rules, `rgba(11, 14, 20, 0.12)` outlines, 4–7px corners, and one thing lit
  * white to say "this one".
  * ═══════════════════════════════════════════════════════════════════ */
 
@@ -61,8 +61,8 @@
   gap: 5px;
   height: 38px;
   padding: 0 10px;
-  border-bottom: 1px solid #1d1d20;
-  background: #000000;
+  border-bottom: 1px solid #f7f9f8;
+  background: #ffffff;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -78,7 +78,7 @@
   width: 1px;
   height: 16px;
   margin: 0 3px;
-  background: #1d1d20;
+  background: #f7f9f8;
 }
 
 /* ── the timeframe ────────────────────────────────────────────────── */
@@ -90,28 +90,28 @@
   flex-shrink: 0;
   height: 24px;
   padding: 0 7px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 5px;
-  background: #0c0c0d;
+  background: #ffffff;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
   transition: border-color 130ms ease;
 }
 
-.tc-tf:hover { border-color: #3a4150; }
+.tc-tf:hover { border-color: #8a9591; }
 
 .tc-tf > svg {
   width: 11px;
   height: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /*
- * The menu is the rail's popup: a plate at #101318 with a hairline and a
+ * The menu is the rail's popup: a plate at #ffffff with a hairline and a
  * drop, and the chosen row lit white rather than tinted with an accent.
  */
 .tc-menu {
@@ -121,10 +121,10 @@
   flex-direction: column;
   min-width: 74px;
   padding: 4px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
-  background: #101318;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(11, 14, 20, 0.12);
 }
 
 .tc-menu-i {
@@ -138,20 +138,20 @@
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   text-align: left;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(11, 14, 20, 0.72);
   cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
 }
 
 .tc-menu-i:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.07);
+  color: #0b0e14;
 }
 
 .tc-menu-i[data-on] {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(11, 14, 20, 0.09);
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* ── the icon buttons ─────────────────────────────────────────────── */
@@ -172,14 +172,14 @@
   border: 0;
   border-radius: 5px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
 .tc-bar .tc-ico:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.07);
+  color: #0b0e14;
 }
 
 .tc-bar .tc-ico > svg {
@@ -196,14 +196,14 @@
   flex-shrink: 0;
   height: 24px;
   padding: 0 8px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 5px;
   background: transparent;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(11, 14, 20, 0.72);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease, border-color 130ms ease;
 }
@@ -211,7 +211,7 @@
 .tc-btn > svg {
   width: 12px;
   height: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /*
@@ -225,23 +225,23 @@
  * the label and its mark come up together.
  */
 .tc-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.06);
+  color: #0b0e14;
 }
 
-.tc-btn:hover > svg { color: rgba(255, 255, 255, 0.8); }
+.tc-btn:hover > svg { color: rgba(11, 14, 20, 0.8); }
 
-.tc-btn:active { background: rgba(255, 255, 255, 0.1); }
+.tc-btn:active { background: rgba(11, 14, 20, 0.1); }
 
 /* On means the bubbles are HIDDEN — a state worth seeing, so it takes
    the lit plate rather than a colour of its own. */
 .tc-btn[data-on] {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: #3a4150;
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.09);
+  border-color: #8a9591;
+  color: #0b0e14;
 }
 
-.tc-btn[data-on] > svg { color: #ffffff; }
+.tc-btn[data-on] > svg { color: #0b0e14; }
 
 /* ── the segmented tracks ─────────────────────────────────────────── */
 
@@ -256,7 +256,7 @@
   align-items: stretch;
   flex-shrink: 0;
   padding: 2px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 6px;
 }
 
@@ -270,17 +270,17 @@
   font-size: 10.5px;
   font-weight: 500;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.tc-seg-b:hover { color: rgba(255, 255, 255, 0.85); }
+.tc-seg-b:hover { color: rgba(11, 14, 20, 0.85); }
 
 .tc-seg-b[data-on] {
-  background: rgba(255, 255, 255, 0.11);
+  background: rgba(11, 14, 20, 0.11);
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* ── the canvas ───────────────────────────────────────────────────── */
@@ -313,8 +313,8 @@
   gap: 5px;
   height: 30px;
   padding: 0 10px;
-  border-top: 1px solid #1d1d20;
-  background: #000000;
+  border-top: 1px solid #f7f9f8;
+  background: #ffffff;
 }
 
 /*
@@ -332,17 +332,17 @@
   font-size: 10.5px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.tc-tfq:hover { color: rgba(255, 255, 255, 0.85); }
+.tc-tfq:hover { color: rgba(11, 14, 20, 0.85); }
 
 .tc-tfq[data-on] {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(11, 14, 20, 0.09);
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .tc-foot-b {
@@ -354,23 +354,23 @@
   font-family: var(--sans);
   font-size: 10.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.tc-foot-b:hover { color: rgba(255, 255, 255, 0.8); }
+.tc-foot-b:hover { color: rgba(11, 14, 20, 0.8); }
 
 .tc-foot-b[data-on] {
-  background: rgba(255, 255, 255, 0.09);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.09);
+  color: #0b0e14;
 }
 
 .tc-clock {
   font-family: var(--sans);
   font-size: 10.5px;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
   white-space: nowrap;
 }
 
@@ -379,12 +379,12 @@
 .tc-attr {
   font-family: var(--sans);
   font-size: 9.5px;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(11, 14, 20, 0.3);
   white-space: nowrap;
   transition: color 130ms ease;
 }
 
-.tc-attr:hover { color: rgba(255, 255, 255, 0.6); }
+.tc-attr:hover { color: rgba(11, 14, 20, 0.6); }
 
 /* The Instant Trade toggle sits on the footer and borrows the toolbar's
    button, so the two bars have one control between them and not two. */
@@ -399,9 +399,9 @@
 
 .cs-modal {
   padding: 16px 18px 18px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 12px;
-  background: #08080a;
+  background: #ffffff;
   font-family: var(--sans);
   /* No visible track. The panel scrolls when it has to and says so by
      moving, not by carrying a bar down its edge. */
@@ -416,14 +416,14 @@
   font-size: 13.5px;
   font-weight: 600;
   line-height: 1;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* A preset is a stamp: pressing it replaces the whole style. So it lifts
    on hover rather than lighting — nothing here is "selected", because
    every knob below keeps editing what the stamp put down. */
 .cs-modal button[aria-label^='Apply']:hover {
-  border-color: #3a4150 !important;
+  border-color: #8a9591 !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -589,9 +589,9 @@
   -webkit-appearance: none;
   height: 24px;
   padding: 0 24px 0 8px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 5px;
-  background-color: #0c0c0d;
+  background-color: #ffffff;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b9099' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9.5 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 6px center;
@@ -599,12 +599,12 @@
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
   cursor: pointer;
   transition: border-color 130ms ease, background-color 130ms ease;
 }
 
-.cs-sel:hover { border-color: #3a4150; }
+.cs-sel:hover { border-color: #8a9591; }
 
 /*
  * ── NO WHITE RING ────────────────────────────────────────────────────
@@ -620,8 +620,8 @@
 .cs-sel:focus,
 .cs-sel:focus-visible {
   outline: none;
-  border-color: #4a5262;
-  background-color: #101013;
+  border-color: #5b6570;
+  background-color: #ffffff;
 }
 
 .cs-modal input:focus,
@@ -633,7 +633,7 @@
 
 .cs-modal input[type='range']:focus-visible,
 .cs-modal button:focus-visible {
-  box-shadow: 0 0 0 1px #4a5262;
+  box-shadow: 0 0 0 1px #5b6570;
   border-radius: 5px;
 }
 
@@ -641,13 +641,13 @@
 
 .cs-btn {
   padding: 5px 11px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 5px;
   background: transparent;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
   cursor: pointer;
   transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
 }
@@ -656,20 +656,20 @@
    setting in the panel is the one place you want to be sure you are on
    the right thing before you press. */
 .cs-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: #3a4150;
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.06);
+  border-color: #8a9591;
+  color: #0b0e14;
 }
 
 .cs-btn.is-primary {
-  border-color: #3a4150;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border-color: #8a9591;
+  background: rgba(11, 14, 20, 0.1);
+  color: #0b0e14;
 }
 
 .cs-btn.is-primary:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: #4a5262;
+  background: rgba(11, 14, 20, 0.16);
+  border-color: #5b6570;
 }
 
 /* ── the studio's checkboxes ──────────────────────────────────────── */
@@ -692,7 +692,7 @@
   gap: 8px;
   font-family: var(--sans);
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(11, 14, 20, 0.82);
   cursor: pointer;
   user-select: none;
 }
@@ -704,20 +704,20 @@
   width: 15px;
   height: 15px;
   margin: 0;
-  border: 1px solid #2c313a;
+  border: 1px solid rgba(11, 14, 20, 0.14);
   border-radius: 4px;
-  background: #0c0c0d;
+  background: #ffffff;
   cursor: pointer;
   transition: background-color 130ms ease, border-color 130ms ease;
 }
 
-.cs-check > input[type='checkbox']:hover { border-color: #3a4150; }
+.cs-check > input[type='checkbox']:hover { border-color: #8a9591; }
 
 /* The TICK is the state, not the fill — the same reasoning as the rail:
    a solid square says something is set without saying what. */
 .cs-check > input[type='checkbox']:checked {
-  border-color: #22c77e;
-  background-color: #22c77e;
+  border-color: #0f6d5f;
+  background-color: #0f6d5f;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2304120b' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
@@ -726,7 +726,7 @@
 
 .cs-check > input[type='checkbox']:focus-visible {
   outline: none;
-  border-color: #4a5262;
+  border-color: #5b6570;
 }
 
 /* ── the snapshot menu ────────────────────────────────────────────── */
@@ -751,10 +751,10 @@
   flex-direction: column;
   min-width: 236px;
   padding: 6px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 9px;
-  background: #101318;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(11, 14, 20, 0.12);
 }
 
 /*
@@ -775,7 +775,7 @@
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(11, 14, 20, 0.32);
 }
 
 .tc-snap-i {
@@ -791,18 +791,18 @@
   font-size: 12px;
   font-weight: 500;
   text-align: left;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(11, 14, 20, 0.86);
   cursor: pointer;
   transition: background-color 120ms ease;
 }
 
-.tc-snap-i:hover { background: rgba(255, 255, 255, 0.07); }
+.tc-snap-i:hover { background: rgba(11, 14, 20, 0.07); }
 
 .tc-snap-i > svg {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
 }
 
 /* The shortcut sits at the end in the quietest grey on the menu — it is
@@ -815,7 +815,7 @@
   font-size: 9px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  color: rgba(255, 255, 255, 0.26);
+  color: rgba(11, 14, 20, 0.26);
 }
 
 /* ── fullscreen ───────────────────────────────────────────────────── */
@@ -828,7 +828,7 @@
   height: 100%;
   max-height: none;
   flex: 1 1 auto;
-  background: #000000;
+  background: #ffffff;
 }
 
 .tc:fullscreen .tc-canvas { flex: 1 1 auto; }
@@ -853,10 +853,10 @@
   width: 178px;
   overflow: hidden;
   pointer-events: none;
-  border: 1px solid #26262c;
+  border: 1px solid #f4f7f6;
   border-radius: 11px;
-  background: #0e0f12;
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.75);
+  background: #ffffff;
+  box-shadow: 0 20px 44px rgba(11, 14, 20, 0.12);
   font-family: var(--sans);
 }
 
@@ -887,7 +887,7 @@
   white-space: nowrap;
   font-size: 11px;
   font-weight: 500;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* The figure leads, and that is all it has to do — nothing else on the
@@ -907,7 +907,7 @@
   gap: 5px;
   padding: 2px 8px 8px;
   font-size: 9.5px;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 .mk-side {
@@ -935,15 +935,15 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   padding: 6px 8px;
-  border-top: 1px solid #1c1c21;
-  background: rgba(255, 255, 255, 0.025);
+  border-top: 1px solid #f7f9f8;
+  background: rgba(11, 14, 20, 0.025);
 }
 
 .mk-pnl b {
   display: block;
   font-size: 8.5px;
   font-weight: 400;
-  color: #55585f;
+  color: #8a9591;
 }
 
 .mk-pnl s {
@@ -953,7 +953,7 @@
   font-size: 10px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(11, 14, 20, 0.88);
 }
 
 
@@ -974,16 +974,16 @@
   padding: 0 5px 0 12px;
   pointer-events: none;
   white-space: nowrap;
-  border: 1px solid #26262c;
+  border: 1px solid #f4f7f6;
   border-radius: 999px;
-  background: #0e0f12;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(11, 14, 20, 0.12);
   font-family: var(--sans);
   font-size: 10.5px;
-  color: #b9bdc4;
+  color: #2b3138;
 }
 
-.mk-claim > b { font-weight: 600; color: #ffffff; }
+.mk-claim > b { font-weight: 600; color: #0b0e14; }
 
 .mk-claim > u {
   display: grid;
@@ -992,9 +992,9 @@
   width: 20px;
   height: 20px;
   border-radius: 999px;
-  background: #22c77e;
+  background: #0f6d5f;
   text-decoration: none;
-  color: #0b0d11;
+  color: #ffffff;
 }
 
 .mk-claim > u > svg { width: 11px; height: 11px; display: block; }
@@ -1044,4 +1044,33 @@
     padding: 0 6px;
     font-size: 10.5px;
   }
+}
+
+
+/*
+ * ── THE CHART SURFACE'S PALETTE ──────────────────────────────────────
+ *
+ * Its own root, like every other converted surface, and it states a base
+ * `color` as well as the tokens: anything in the toolbar or the settings
+ * popup that does not name a colour inherits, and what it was inheriting
+ * is the page's near white.
+ */
+.tc, .tc-wrap, [data-trade-chart] {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  color: var(--ink-1);
+  background: var(--surface);
 }

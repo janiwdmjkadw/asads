@@ -532,14 +532,14 @@ function avatarRingStyle(direction: Direction): CSSProperties {
         ? 'color-mix(in srgb, var(--down) 30%, transparent)'
         : direction === 'swap'
           ? 'color-mix(in srgb, var(--accent-primary) 30%, transparent)'
-          : 'rgba(255,255,255,0.08)';
+          : 'rgba(11, 14, 20, 0.09)';
   return {
     display: 'block',
     width: 34,
     height: 34,
     borderRadius: '50%',
     overflow: 'hidden',
-    boxShadow: `0 0 0 1px ${ring}, 0 2px 8px -3px rgba(0,0,0,0.5)`,
+    boxShadow: `0 0 0 1px ${ring}, 0 2px 8px -3px rgba(11, 14, 20, 0.16)`,
   };
 }
 

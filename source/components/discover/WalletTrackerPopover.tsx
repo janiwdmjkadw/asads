@@ -286,13 +286,14 @@ export function EmojiPickerPopover({
           <TooltipContent side="bottom">{tooltip}</TooltipContent>
         </Tooltip>
       )}
-      {/* The picker brings its own ground: near black, one grey ring, no
-          plate under it. The default popover surface put a second, lighter
-          panel behind a panel. */}
+      {/* The picker brings its own ground: paper, one hairline ring, no
+          plate under it. The default popover surface put a second panel
+          behind a panel. It was #0C0C0D with a #272729 ring, which is a
+          black card sitting in the middle of a white manager. */}
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-[296px] overflow-hidden rounded-[10px] border-[#272729] bg-[#0c0c0d] p-0"
+        className="w-[296px] overflow-hidden rounded-[10px] border-[rgba(11,14,20,0.12)] bg-white p-0"
       >
         <EmojiPicker
           onEmojiSelect={({ emoji }) => {
@@ -462,7 +463,21 @@ function WalletRow({
             type="button"
             onClick={onRemove}
             aria-label={`Remove ${displayName(wallet)}`}
-            className="inline-flex size-[18px] shrink-0 items-center justify-center bg-transparent text-[var(--ink-4)] opacity-0 transition-all hover:text-[var(--down)] focus-visible:opacity-100 group-hover:opacity-100"
+            /*
+             * IT IS THERE BEFORE YOU HOVER THE ROW.
+             *
+             * Two things hid it. The colour was `--ink-4`, the faintest step
+             * in the scale — a dark grey on black, and #D6DBD9 on paper,
+             * which is nothing. And it was `opacity-0` until the row was
+             * hovered, so the only way to find out a row could be removed
+             * was to already be pointing at it.
+             *
+             * Now it rests at `--ink-3`, which reads on paper without
+             * competing with the three channel toggles beside it, comes up
+             * to full ink when the row is hovered, and still goes red on
+             * its own hover.
+             */
+            className="inline-flex size-[18px] shrink-0 items-center justify-center bg-transparent text-[var(--ink-3)] transition-all hover:text-[var(--down)] group-hover:text-[var(--ink-0)]"
             style={{ cursor: 'pointer' }}
           >
             <Trash style={{ width: 12, height: 12 }} />
@@ -571,11 +586,29 @@ function WalletSoundBell({
           <BellGlyph muted={!soundOn} />
         </button>
       </PopoverTrigger>
+      {/*
+        PAPER, AND ITS OWN ACCENT.
+
+        This PORTALS out of the manager, so the paper palette the panel
+        declares on itself never reaches it: it took the app's `bg-popover`
+        and came out black, and every selected row read `--accent-primary`,
+        which outside the panel is still the pale sky picked for a black
+        terminal. Both are stated here, on the element, because that is the
+        only scope a portalled surface actually has.
+      */}
       <PopoverContent
         side="bottom"
         align="end"
         sideOffset={4}
-        className="w-[150px] p-1"
+        /*
+         * THE INK SCALE COMES WITH IT, for the same reason the accent did.
+         * An unselected sound reads `--ink-1` and the heading reads
+         * `--ink-3`. Outside the panel those are still the dark terminal's
+         * values, so `--ink-1` is #E4E7EE: every sound you had NOT picked
+         * was near white on white, and the selected one was the only row
+         * you could read.
+         */
+        className="w-[150px] border-[rgba(11,14,20,0.1)] bg-white p-1 shadow-[0_14px_36px_rgba(11,14,20,0.16)] [--accent-primary:#0b0e14] [--ink-1:#2b3138] [--ink-3:#8a9591]"
         onMouseEnter={hoverEnter}
         onMouseLeave={hoverLeave}
         onOpenAutoFocus={(e) => e.preventDefault()}

@@ -9,7 +9,8 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { useSelectedWalletStore } from '@/lib/state/selected-wallet-store';
+import { isEligibleWallet, useSelectedWalletStore } from '@/lib/state/selected-wallet-store';
+import { useMe } from '@/lib/api/me';
 import { MultiWalletSelector } from '@/components/listen/MultiWalletSelector';
 import { Wallet } from '@/components/listen/icons/Icons';
 import { routeForWalletCount, type WalletCountRoute } from './walletCountRoute';
@@ -60,6 +61,20 @@ export interface WalletCountButtonProps {
   count?: number;
   popoverContent?: ReactNode;
   testIdPrefix?: string;
+  /**
+   * How the trigger draws itself.
+   *
+   *   `pill`  — the 26px icon + number chip that sits in a header row.
+   *   `field` — a full width input, for a form column where the wallet
+   *             is one of the fields of the order rather than a chip
+   *             off in the chrome. It reads "Wallets selected" and the
+   *             COUNT: which wallets they are is what the list is for,
+   *             and a name in the trigger goes stale the moment a
+   *             second wallet is ticked.
+   */
+  layout?: 'pill' | 'field';
+  /** Trigger copy in the `field` layout. */
+  label?: string;
 }
 
 // Re-export the pure routing rule so existing callers that do
@@ -87,28 +102,70 @@ function batchMaxWallets(): number {
 interface PopoverAnchor {
   top: number;
   left: number;
+  width: number;
 }
 
-function computeAnchor(rect: DOMRect): PopoverAnchor {
+// Narrow enough for a phone, wide enough for a name and two figures.
+const FIELD_MIN_WIDTH = 260;
+
+function computeAnchor(rect: DOMRect, layout: 'pill' | 'field'): PopoverAnchor {
   // Rect and innerWidth are physical px; the popover's fixed left/top are
   // page-zoom-multiplied — convert to layout px so it hugs the trigger.
   const z = pageZoom();
-  // Right-align the popover with the trigger button by default.
-  let left = rect.right / z - POPOVER_WIDTH;
+  /*
+   * A field trigger is already the width of the column it lives in, so
+   * the list takes THAT width and hangs off its left edge: the popover
+   * is the field opening rather than a card that happens to appear near
+   * it. The pill keeps its fixed card, right aligned with the chip.
+   */
+  const width =
+    layout === 'field' ? Math.max(rect.width / z, FIELD_MIN_WIDTH) : POPOVER_WIDTH;
+  let left = layout === 'field' ? rect.left / z : rect.right / z - width;
   if (typeof window !== 'undefined') {
-    const maxLeft = window.innerWidth / z - POPOVER_WIDTH - VIEWPORT_PADDING;
+    const maxLeft = window.innerWidth / z - width - VIEWPORT_PADDING;
     left = Math.max(VIEWPORT_PADDING, Math.min(left, maxLeft));
   } else {
     left = Math.max(VIEWPORT_PADDING, left);
   }
   const top = rect.bottom / z + POPOVER_GAP;
-  return { top, left };
+  return { top, left, width };
 }
 
 export function WalletCountButton(props: WalletCountButtonProps = {}): React.ReactElement {
   const selectedIds = useSelectedWalletStore((s) => s.multiSelectedWalletAccountIds);
   const count = props.count ?? selectedIds.length;
   const testIdPrefix = props.testIdPrefix ?? 'wallet-count';
+  const layout = props.layout ?? 'pill';
+  /*
+   * HOW MANY WALLETS THERE ARE TO CHOOSE BETWEEN.
+   *
+   * With one wallet the picker is a control that cannot change
+   * anything: the selection is already that wallet, it cannot be
+   * unticked (the store's invariant reseeds it), and opening the list
+   * shows a single row with a tick already in it. In the `field`
+   * layout that is a whole row of the order form spent on a decision
+   * that does not exist, so the field does not render at all.
+   *
+   * The `pill` layout keeps rendering either way — it is a readout in
+   * a header strip, not a field, and the count is worth showing on its
+   * own. Controlled callers (the EVM panel passes its own count and
+   * body) are never gated: their wallet source is not this one.
+   */
+  const { data: me } = useMe();
+  /*
+   * ONLY WHEN WE KNOW. `me` is undefined while the call is in flight and
+   * whenever it fails, and a missing answer is not the same fact as "you
+   * have one wallet" — treating them alike is how a control disappears
+   * for a reason that has nothing to do with the user's wallets. So the
+   * field hides only when the list has actually arrived and holds fewer
+   * than two wallets; anything else renders it.
+   */
+  const walletsKnown = me !== undefined && me !== null && !me.reauth_required;
+  const nothingToChoose =
+    layout === 'field' &&
+    props.popoverContent === undefined &&
+    walletsKnown &&
+    me.wallets.filter(isEligibleWallet).length < 2;
   const [open, setOpen] = useState(false);
   const [anchor, setAnchor] = useState<PopoverAnchor | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -121,7 +178,7 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
     const recompute = () => {
       const node = triggerRef.current;
       if (!node) return;
-      setAnchor(computeAnchor(node.getBoundingClientRect()));
+      setAnchor(computeAnchor(node.getBoundingClientRect(), layout));
     };
     recompute();
     window.addEventListener('scroll', recompute, true);
@@ -130,7 +187,7 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
       window.removeEventListener('scroll', recompute, true);
       window.removeEventListener('resize', recompute);
     };
-  }, [open]);
+  }, [open, layout]);
 
   // Close on click-outside. The trigger AND the popover both live
   // outside the trade panel's stacking context (the popover is in a
@@ -179,39 +236,117 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
     return document.body;
   })();
 
+  const commonTriggerProps = {
+    ref: triggerRef,
+    type: 'button' as const,
+    'aria-haspopup': 'dialog' as const,
+    'aria-expanded': open,
+    'aria-label': `Wallets selected: ${count}. Click to change selection.`,
+    'data-testid': `${testIdPrefix}-button`,
+    onClick: () => setOpen((prev) => !prev),
+  };
+
+  if (nothingToChoose) return <></>;
+
   return (
     <>
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-label={`Wallets selected: ${count}. Click to change selection.`}
-        data-testid={`${testIdPrefix}-button`}
-        onClick={() => setOpen((prev) => !prev)}
-        className={`t-num-xs inline-flex h-[26px] items-center gap-1 rounded-[var(--r-sm)] px-2 ${props.className ?? ''}`}
-        style={{
-          color: 'var(--ink-0)',
-          // When the popover is open, lift the trigger with an
-          // accent-soft fill + accent border so it visually pairs
-          // with the popover and follows the active theme's accent.
-          background: open ? 'var(--accent-soft)' : 'var(--input-bg)',
-          border: open
-            ? '1px solid color-mix(in srgb, var(--accent-primary) 50%, var(--hairline-2))'
-            : '1px solid var(--hairline)',
-          cursor: 'pointer',
-          transition: 'background 120ms var(--ease, ease), border-color 120ms var(--ease, ease)',
-          ...props.style,
-        }}
-      >
-        <Wallet style={{ width: 12, height: 12, color: 'var(--accent-primary)' }} />
-        <span
-          data-testid={`${testIdPrefix}-value`}
-          style={{ color: 'var(--ink-0)', fontVariantNumeric: 'tabular-nums' }}
+      {layout === 'field' ? (
+        <button
+          {...commonTriggerProps}
+          className={props.className}
+          style={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            gap: 7,
+            height: 34,
+            padding: '0 10px',
+            borderRadius: 8,
+            background: open ? 'var(--accent-soft)' : 'var(--input-bg)',
+            border: open
+              ? '1px solid color-mix(in srgb, var(--accent-primary) 50%, var(--hairline-2))'
+              : '1px solid var(--input-border, var(--hairline))',
+            color: 'var(--ink-1)',
+            fontFamily: 'var(--sans)',
+            fontSize: 12.5,
+            cursor: 'pointer',
+            textAlign: 'left',
+            transition:
+              'background 120ms var(--ease, ease), border-color 120ms var(--ease, ease)',
+            ...props.style,
+          }}
         >
-          {count}
-        </span>
-      </button>
+          <Wallet style={{ width: 13, height: 13, color: 'var(--ink-2)', flex: '0 0 auto' }} />
+          {/* One line, always. The field is a fixed 34px and the name of
+              the control is the first thing to wrap when a holding is
+              carried at the other end — which turns the control into a
+              two line block that no longer lines up with the amount
+              under it. */}
+          <span style={{ color: 'var(--ink-1)', whiteSpace: 'nowrap' }}>
+            {props.label ?? 'Wallets selected'}
+          </span>
+          {/* The count sits at the right end, where every other figure
+              in this column sits, so the eye reads down one line. */}
+          <span
+            data-testid={`${testIdPrefix}-value`}
+            style={{
+              marginLeft: 'auto',
+              color: 'var(--ink-0)',
+              fontFamily: 'var(--font-mono, monospace)',
+              fontVariantNumeric: 'tabular-nums',
+              fontSize: 12.5,
+              fontWeight: 500,
+            }}
+          >
+            {count}
+          </span>
+          <svg
+            aria-hidden
+            viewBox="0 0 24 24"
+            style={{
+              width: 12,
+              height: 12,
+              flex: '0 0 auto',
+              color: 'var(--ink-3)',
+              transform: open ? 'rotate(180deg)' : undefined,
+              transition: 'transform 130ms var(--ease, ease)',
+            }}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m6 9.5 6 6 6-6" />
+          </svg>
+        </button>
+      ) : (
+        <button
+          {...commonTriggerProps}
+          className={`t-num-xs inline-flex h-[26px] items-center gap-1 rounded-[var(--r-sm)] px-2 ${props.className ?? ''}`}
+          style={{
+            color: 'var(--ink-0)',
+            // When the popover is open, lift the trigger with an
+            // accent-soft fill + accent border so it visually pairs
+            // with the popover and follows the active theme's accent.
+            background: open ? 'var(--accent-soft)' : 'var(--input-bg)',
+            border: open
+              ? '1px solid color-mix(in srgb, var(--accent-primary) 50%, var(--hairline-2))'
+              : '1px solid var(--hairline)',
+            cursor: 'pointer',
+            transition: 'background 120ms var(--ease, ease), border-color 120ms var(--ease, ease)',
+            ...props.style,
+          }}
+        >
+          <Wallet style={{ width: 12, height: 12, color: 'var(--accent-primary)' }} />
+          <span
+            data-testid={`${testIdPrefix}-value`}
+            style={{ color: 'var(--ink-0)', fontVariantNumeric: 'tabular-nums' }}
+          >
+            {count}
+          </span>
+        </button>
+      )}
       {open && portalTarget && anchor !== null
         ? createPortal(
             <div
@@ -223,6 +358,10 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
               // popping in a frame late (the anchor is computed in a
               // layout effect). tailwindcss-animate, same as tooltips.
               className="animate-in fade-in-0 zoom-in-95 duration-100"
+              /* Tagged so the paper palette can reach it: everything below
+                 is set as an INLINE style off the app's tokens, and an
+                 inline style outranks any selector that is not important. */
+              data-paper-pop=""
               style={{
                 // `position: fixed` + body portal escapes the trade
                 // panel's `overflow: hidden` clip and the
@@ -232,7 +371,7 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
                 position: 'fixed',
                 top: anchor.top,
                 left: anchor.left,
-                width: POPOVER_WIDTH,
+                width: anchor.width,
                 // Above the WalletPanel modal (z-50) and the
                 // TradeToasts (z-80) so a stray toast or modal can
                 // never partially obscure the wallet list.
@@ -254,7 +393,7 @@ export function WalletCountButton(props: WalletCountButtonProps = {}): React.Rea
                 // square row highlights inside the rounded corners.
                 padding: 0,
                 overflow: 'hidden',
-                transformOrigin: 'top right',
+                transformOrigin: layout === 'field' ? 'top left' : 'top right',
                 color: 'var(--ink-1)',
                 fontFamily: 'var(--sans)',
               }}

@@ -507,13 +507,22 @@ export function TerminalTopNav() {
  * inside the pill so it never affects nav layout.
  */
 function FrensPillMosaic() {
-  // x/y in px within an 11×8 corner plot; stepped like the masthead's edge.
+  /*
+   * x/y in px within an 11x8 corner plot; stepped like the masthead's edge.
+   *
+   * THE FIVE HUES ARE DEEPENED FOR PAPER. The originals are the masthead's
+   * own, picked to glow on a black bar: a hot pink, an amber and a sky at
+   * those values are all lighter than the paper is dark, so on white they
+   * washed out to a faint smudge you had to look for. Same five hues, same
+   * order, same positions, same stagger, taken down to where they read
+   * against white.
+   */
   const cells: ReadonlyArray<{ x: number; y: number; c: string; d: string }> = [
-    { x: 4, y: 0, c: '#f052d2', d: '0s' },
-    { x: 8, y: 0, c: '#8b5cf6', d: '1.4s' },
-    { x: 0, y: 4, c: '#fbbf24', d: '2.6s' },
-    { x: 4, y: 4, c: '#37d67a', d: '0.8s' },
-    { x: 8, y: 4, c: '#38bdf8', d: '2s' },
+    { x: 4, y: 0, c: '#c01a9e', d: '0s' },
+    { x: 8, y: 0, c: '#5b34c9', d: '1.4s' },
+    { x: 0, y: 4, c: '#b07500', d: '2.6s' },
+    { x: 4, y: 4, c: '#0f8a4a', d: '0.8s' },
+    { x: 8, y: 4, c: '#0d7fb8', d: '2s' },
   ];
   return (
     <span
@@ -535,7 +544,13 @@ function FrensPillMosaic() {
             left: cell.x,
             top: cell.y,
             background: cell.c,
-            boxShadow: `0 0 4px color-mix(in srgb, ${cell.c} 65%, transparent)`,
+            /*
+             * NO GLOW ON PAPER. A 4px coloured halo is light escaping a
+             * pixel, which is a thing that can only happen on a dark
+             * ground. On white the same shadow is a coloured smear around
+             * a square, and it was most of what made the mosaic hard to
+             * read. The pixels carry themselves now.
+             */
             animationDelay: cell.d,
           }}
         />
@@ -571,8 +586,17 @@ function SorenFace() {
         d="M12 2.5c5.2 0 8.5 3.4 8.5 8.4v6.4c0 2.6-1.8 4.2-4.4 4.2H7.9c-2.6 0-4.4-1.6-4.4-4.2v-6.4c0-5 3.3-8.4 8.5-8.4z"
         fill="currentColor"
       />
-      <ellipse cx="9.1" cy="11" rx="1.35" ry="1.75" fill="#000000" />
-      <ellipse cx="14.9" cy="11" rx="1.35" ry="1.75" fill="#000000" />
+      {/*
+        THE EYES ARE THE BAR'S GROUND, not a literal black.
+
+        The head takes `currentColor`. On a black bar that was white, so
+        black eyes read against it. On paper the head went ink and the
+        eyes stayed black on top of it, which is a solid blob where a face
+        was. `--tn-eye` is whatever the head is sitting on, so the face
+        works whichever way round the bar is.
+      */}
+      <ellipse cx="9.1" cy="11" rx="1.35" ry="1.75" fill="var(--tn-eye, #000000)" />
+      <ellipse cx="14.9" cy="11" rx="1.35" ry="1.75" fill="var(--tn-eye, #000000)" />
     </svg>
   );
 }

@@ -220,16 +220,16 @@ const SEARCH_SHEET = `
   display:flex;align-items:center;gap:7px;margin-left:auto;
   min-width:0;flex:0 1 216px;height:28px;
   padding:0 8px 0 10px;
-  border:1px solid rgba(255,255,255,.1);
+  border:1px solid rgba(11, 14, 20, .1);
   border-radius:8px;
   /*
-   * BLACK, NOT A FILM. A white fill over the panel's own ground is grey,
-   * and grey is the one material this product does not have. On a plate
-   * that is already lifted, black reads as a recess CUT INTO it, which
-   * is the right relationship anyway: the field is a hole you type into,
-   * not a lighter blob sitting on top.
+   * A RECESS, NOT A BLOB. The argument for black was that a white fill
+   * over the panel's own ground is grey, and a field should read as a
+   * hole cut into the plate rather than as something sitting on top of
+   * it. On paper the hole is a WASH OF INK, for the same reason and by
+   * the same amount: black here is a hole in the wrong page.
    */
-  background:#000;
+  background:rgba(11, 14, 20, .035);
   color:var(--ink-3);
   transition:background-color 180ms ease-in-out;
 }
@@ -239,13 +239,13 @@ const SEARCH_SHEET = `
  * changes is the cheapest thing a field can do, and it is the first
  * thing you see because it outlines the whole control.
  *
- * THE FIELD ITSELF is what answers the cursor: the ground comes up off
- * black by a few percent and nothing else on the control changes.
+ * THE FIELD ITSELF is what answers the cursor: the wash deepens by a
+ * couple of percent and nothing else on the control changes.
  */
-.wt-search:hover{background:rgba(255,255,255,.045)}
+.wt-search:hover{background:rgba(11, 14, 20, .06)}
 
-/* The magnifier is white, always. It does not take the field's colour,
-   so nothing that happens to the field can dim it. */
+/* The magnifier is the page's strongest ink, always. It does not take
+   the field's colour, so nothing that happens to the field can dim it. */
 .wt-search > svg{color:var(--ink-0);flex:none}
 .wt-search input{
   min-width:0;flex:1;height:100%;

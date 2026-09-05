@@ -39,10 +39,10 @@ export const WALLET_FIELD_SHEET = `
   transition:border-color .14s var(--ease),background-color .14s var(--ease);
 }
 .wm-field::placeholder{color:var(--ink-3)}
-.wm-field:hover:not(:disabled){border-color:rgba(255,255,255,.14)}
+.wm-field:hover:not(:disabled){border-color:rgba(11, 14, 20, .14)}
 .wm-field:focus{
   border-color:var(--hairline-2);
-  background:rgba(255,255,255,.07);
+  background:rgba(11, 14, 20, .07);
 }
 .wm-field:disabled{opacity:.55;cursor:not-allowed}
 
@@ -50,7 +50,7 @@ export const WALLET_FIELD_SHEET = `
    buttons. Same rule: no UA ring, a house one for the keyboard. */
 .wm-ghost,.wm-plain{outline:none}
 .wm-ghost:focus-visible,.wm-plain:focus-visible,.wm-field:focus-visible{
-  box-shadow:0 0 0 2px rgba(255,255,255,.22);
+  box-shadow:0 0 0 2px rgba(11, 14, 20, .22);
 }
 `;
 

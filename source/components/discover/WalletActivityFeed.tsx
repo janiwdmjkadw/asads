@@ -246,7 +246,6 @@ export function WalletActivityFeed({ dockContext, events, trackedWallets, ticker
         /* 14 floating, 0 snapped — the tweet tracker's exact call. It
            was 4, which is a different family of corner entirely. */
         borderRadius: side === null ? 10 : 0,
-        // Drag treatment matches the agent window: the panel stays legible
         // and glued to the pointer. It used to drop to 0.55 opacity and
         // blur 1.5px while arming, which read as the panel vanishing
         // mid-gesture; the arming signal is carried by DockArmingGlow (the
@@ -287,7 +286,9 @@ export function WalletActivityFeed({ dockContext, events, trackedWallets, ticker
         border: side === null ? '1px solid var(--hairline)' : 'none',
         borderLeft: side === 'right' ? '1px solid var(--hairline)' : undefined,
         borderRight: side === 'left' ? '1px solid var(--hairline)' : undefined,
-        boxShadow: 'none',
+        boxShadow: side === null
+          ? '0 0 0 1px rgba(11, 14, 20, 0.12), 0 20px 52px rgba(11, 14, 20, 0.18)'
+          : 'none',
         fontFamily: 'var(--font-geist-sans), system-ui, sans-serif',
         display: 'flex',
         flexDirection: 'column',

@@ -305,17 +305,18 @@ export function NotificationBell(): React.ReactElement | null {
           className="hdr-ctl hdr-ctl-sq relative flex shrink-0 items-center"
         >
           <BellIcon />
-          {/* Unread reads as a marker, not a count: a 5px ink dot inset
-              INSIDE the control's edge, with a dark ring so it separates
-              from the bell glyph. The exact count stays in aria-label.
+          {/* Unread reads as a marker, not a count: a 5px dot inset
+              INSIDE the control's edge, ringed in whatever the bar's own
+              ground is so it separates from the bell glyph without
+              drawing a second circle around itself. The exact count stays in aria-label.
               Deliberately NOT a number — with trace events flowing, a count
               becomes a figure people learn to ignore, which is the failure
               the tier system exists to prevent. */}
           {badge ? (
             <span
               aria-hidden
-              className="absolute right-[4px] top-[4px] h-[5px] w-[5px] rounded-full bg-[var(--ink-0)]"
-              style={{ boxShadow: '0 0 0 1.5px rgba(0,0,0,0.55)' }}
+              className="absolute right-[4px] top-[4px] h-[5px] w-[5px] rounded-full bg-[var(--bell-dot,var(--ink-0))]"
+              style={{ boxShadow: '0 0 0 1.5px var(--bell-ring,rgba(0,0,0,0.55))' }}
             />
           ) : null}
         </button>

@@ -19,7 +19,14 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(0, 0, 0, 0.62);
+  /*
+   * 0.16, DOWN FROM 0.62 BLACK. The sheet is glass now, and a scrim that
+   * heavy behind something you can see through is two contradictory
+   * statements about the page: one says it is still there, the other
+   * paints it out. This dims the page enough to say the drawer is in
+   * front of it and no further.
+   */
+  background: rgba(11, 14, 20, 0.16);
   backdrop-filter: blur(2px);
   animation: nvd-fade 160ms ease-out;
 }
@@ -35,10 +42,26 @@
   box-sizing: border-box;
   width: min(340px, calc(100% - 44px));
   padding: 12px 16px 14px;
-  background: #0b0b0c;
-  box-shadow: -1px 0 0 rgba(255, 255, 255, 0.08);
+  /*
+   * ── GLASS ──────────────────────────────────────────────────────────
+   *
+   * White at 88 percent over a blur of whatever is behind it, which is
+   * the landing header's own treatment. The page carries on under the
+   * sheet rather than being replaced by it.
+   *
+   * The SATURATE is not decoration: a plain blur of colour on white goes
+   * chalky, and 180 percent puts the colour back without letting anything
+   * legible through.
+   *
+   * There is a solid fallback below. A browser with no backdrop-filter
+   * gets opaque paper rather than a sheet you can read the page through.
+   */
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: -1px 0 0 rgba(11, 14, 20, 0.1);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
   -webkit-font-smoothing: antialiased;
   animation: nvd-slide 200ms cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -46,9 +69,9 @@
      on the drawer's own black rather than on a 3.5% plate, and at 5%
      they were a hairline you could not see, which is a hairline that
      should not have been written. */
-  --nvd-line: rgba(255, 255, 255, 0.07);
-  --nvd-ink-2: rgba(255, 255, 255, 0.58);
-  --nvd-ink-3: rgba(255, 255, 255, 0.34);
+  --nvd-line: rgba(11, 14, 20, 0.07);
+  --nvd-ink-2: rgba(11, 14, 20, 0.58);
+  --nvd-ink-3: rgba(11, 14, 20, 0.34);
 }
 
 [data-nav-drawer] *,
@@ -119,8 +142,8 @@
 }
 
 .nvd-who:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.05);
 }
 
 .nvd-mark {
@@ -131,7 +154,7 @@
   flex: 0 0 auto;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 14, 20, 0.06);
 }
 
 .nvd-mark img {
@@ -148,7 +171,7 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.015em;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .nvd-close {
@@ -163,8 +186,8 @@
 }
 
 .nvd-close:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.06);
 }
 
 /* ── the balance ──────────────────────────────────────────────────── */
@@ -188,7 +211,7 @@
 }
 
 .nvd-bal:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(11, 14, 20, 0.04);
 }
 
 .nvd-balrow {
@@ -205,7 +228,7 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.03em;
   line-height: 1;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* No tracking. Three letters spread apart beside a figure that is
@@ -249,24 +272,25 @@
  * It was a 6% plate, which at this size on this ground is very close to
  * nothing: the label read as centred text floating between the balance
  * and the list. It is the only action in the drawer, so it is the only
- * white thing in it.
+ * only filled thing in it: an ink plate with paper type, which is the
+ * same relationship it had as a white plate with black type on black.
  */
 /* Carries the attribute so it beats the reset above. */
 [data-nav-drawer] .nvd-act {
-  /* The head takes `currentColor`, which is black on this plate, so the
+  /* The head takes `currentColor`, which is PAPER on this plate, so the
      eyes have to go the other way or the face is one silhouette. */
-  --nvd-eye: #ffffff;
+  --nvd-eye: #0b0e14;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
   height: 44px;
   border-radius: 12px;
-  background: #ffffff;
+  background: #0b0e14;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #000000;
+  color: #ffffff;
   transition: background-color 140ms ease;
 }
 
@@ -275,19 +299,19 @@
 }
 
 [data-nav-drawer] .nvd-act:hover {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(11, 14, 20, 0.86);
 }
 
 /* The inert form the drawer renders when the bar has no opener to give
    it. It must not look pressable, so it gives up the fill entirely. */
 [data-nav-drawer] div.nvd-act {
   cursor: default;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(11, 14, 20, 0.05);
   color: var(--nvd-ink-3);
 }
 
 [data-nav-drawer] div.nvd-act:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(11, 14, 20, 0.05);
 }
 
 .nvd-face {
@@ -311,17 +335,17 @@
   margin-top: 8px;
   flex: 0 0 auto;
   border-radius: 12px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(11, 14, 20, 0.14);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
   transition: background-color 140ms ease, box-shadow 140ms ease;
 }
 
 [data-nav-drawer] .nvd-action:hover {
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  background: rgba(11, 14, 20, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(11, 14, 20, 0.24);
 }
 
 /* ── the destinations ─────────────────────────────────────────────── */
@@ -373,8 +397,8 @@
 }
 
 .nvd-row:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.04);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.04);
 }
 
 /*
@@ -386,8 +410,8 @@
  * ink, and hover keeps the plate to itself.
  */
 .nvd-row[aria-current='page'] {
-  color: #ffffff;
-  box-shadow: inset 2px 0 0 #ffffff;
+  color: #0b0e14;
+  box-shadow: inset 2px 0 0 #0b0e14;
 }
 
 .nvd-rowglyph {
@@ -401,7 +425,7 @@
 
 .nvd-row:hover .nvd-rowglyph,
 .nvd-row[aria-current='page'] .nvd-rowglyph {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .nvd-rowlabel {
@@ -452,8 +476,8 @@
 }
 
 .nvd-footbtn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0b0e14;
+  background: rgba(11, 14, 20, 0.06);
 }
 
 /* ── narrow screens ───────────────────────────────────────────────── */
@@ -475,5 +499,17 @@
 
   .nvd-balfig {
     font-size: 31px;
+  }
+}
+
+
+/*
+ * NO BACKDROP FILTER, NO GLASS. Opaque paper instead, so the drawer is
+ * still a sheet with type on it rather than a translucent panel a browser
+ * cannot resolve.
+ */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-nav-drawer] {
+    background: #ffffff;
   }
 }

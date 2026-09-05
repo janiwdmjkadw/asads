@@ -84,7 +84,17 @@ function darken(hex: string, factor: number): string {
   return `rgb(${out[0]}, ${out[1]}, ${out[2]})`;
 }
 
-export const BUBBLE_RADIUS = 10;
+/*
+ * 13, from 10.
+ *
+ * A 20px disc carrying a letter or a two character class code was the
+ * smallest readable thing on the pane, and it is the mark you are
+ * meant to find first: it says a wallet you are watching traded HERE.
+ * At 26px the letter inside it is legible at a glance instead of under
+ * inspection, and everything derived from this — the label sizes, the
+ * gap off the wick, the stack step and the hit box — comes up with it.
+ */
+export const BUBBLE_RADIUS = 13;
 /** Emoji glyphs are ~square at font-size, so 1.5R fills most of the disc. */
 const EMOJI_FONT_PX = Math.round(BUBBLE_RADIUS * 1.5);
 const LETTER_FONT_PX = Math.round(BUBBLE_RADIUS * 1.1);
@@ -109,9 +119,32 @@ export const STACK_STEP_PX = BUBBLE_RADIUS * 2 + 4;
  * puts the disc in the same voice as the panel beside it.
  */
 const BUBBLE_FONT = "'Geist', 'Geist Fallback', system-ui, sans-serif";
-const BUY_COLOR = '#22c77e';
-const SELL_COLOR = '#f0567a';
-const LETTER_COLOR = '#0b0d11';
+/*
+ * ── AND THE DISCS ARE THE PAGE'S OWN GREEN AND RED ───────────────────
+ *
+ * These two were the black chart's pair: a bright mint and a hot pink,
+ * picked to carry on a near black pane. On paper a light disc with dark
+ * letters in it is the WEAKEST mark on the chart — which is the other
+ * half of why these were hard to find. The candles were deepened for
+ * the same reason; the bubbles that sit on them were missed.
+ */
+const BUY_COLOR = '#0f6d5f';
+const SELL_COLOR = '#b4482e';
+
+/*
+ * The label reads off its own disc rather than off a constant. A single
+ * ink colour was right when every disc was a bright hue, and wrong the
+ * moment one of them is the aggregate's ink or the migration's amber:
+ * near black letters on a near black disc are not letters at all.
+ */
+function labelInk(fill: string): string {
+  const m = /^#([0-9a-f]{6})$/i.exec(fill);
+  if (!m) return '#ffffff';
+  const n = parseInt(m[1]!, 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  const luminance = (0.2126 * r! + 0.7152 * g! + 0.0722 * b!) / 255;
+  return luminance > 0.62 ? '#0b0d11' : '#ffffff';
+}
 
 class BubblesPaneRenderer implements IPrimitivePaneRenderer {
   constructor(
@@ -126,6 +159,7 @@ class BubblesPaneRenderer implements IPrimitivePaneRenderer {
         ctx.beginPath();
         ctx.arc(point.x, point.y, BUBBLE_RADIUS, 0, Math.PI * 2);
         const base = point.fillColor ?? (point.isBuy ? BUY_COLOR : SELL_COLOR);
+        const ink = labelInk(base);
         /* Under the pointer the disc DARKENS and nothing else moves. A
            20px mark sitting on a candle cannot grow, ring or lift
            without covering the candle beside it. */
@@ -156,10 +190,10 @@ class BubblesPaneRenderer implements IPrimitivePaneRenderer {
           ctx.scale(scale, scale);
           const art = ICON_PATHS[point.icon];
           if ('fill' in art) {
-            ctx.fillStyle = LETTER_COLOR;
+            ctx.fillStyle = ink;
             ctx.fill(new Path2D(art.fill));
           } else {
-            ctx.strokeStyle = LETTER_COLOR;
+            ctx.strokeStyle = ink;
             ctx.lineWidth = 2;
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
@@ -179,7 +213,7 @@ class BubblesPaneRenderer implements IPrimitivePaneRenderer {
           // Two-char labels (DB/DS) shrink to stay inside the disc.
           const px = point.label.length > 1 ? Math.round(BUBBLE_RADIUS * 0.9) : LETTER_FONT_PX;
           ctx.font = `800 ${px}px ${BUBBLE_FONT}`;
-          ctx.fillStyle = LETTER_COLOR;
+          ctx.fillStyle = ink;
           ctx.fillText(point.label, point.x, point.y + 0.5);
         }
       }

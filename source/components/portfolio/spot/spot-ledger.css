@@ -49,7 +49,7 @@
  * a metallic sweep across the top one, over a drop-shadow emboss, made
  * the total HARDER to read at the exact moment it mattered most.
  */
-.spl-dim { color: rgba(255, 255, 255, 0.4); }
+.spl-dim { color: rgba(11, 14, 20, 0.45); }
 
 .spl-delta {
   padding-bottom: 4px;
@@ -306,7 +306,7 @@
 .listen-root .wallets-panel {
   /* The edge has to stay ahead of the fill or the plate loses its
      outline: --hairline is 6% white and the ground is now 5%. */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 14px;
   /*
    * A GROUND OF ITS OWN. The frame alone said "these three regions
@@ -320,7 +320,7 @@
    * same neutral film the approved ticket on the frens page uses, so
    * the two surfaces are the same material.
    */
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(11, 14, 20, 0.04);
 }
 
 
@@ -435,13 +435,13 @@
   column-gap: 12px;
   height: 38px;
   padding: 0 2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(11, 14, 20, 0.06);
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
   transition: background-color 130ms ease;
 }
 
-.spl-tr:hover { background: rgba(255, 255, 255, 0.03); }
+.spl-tr:hover { background: rgba(11, 14, 20, 0.04); }
 
 /*
  * No ring. The frame carried a 1px 14% white border, which existed back
@@ -460,7 +460,7 @@
   height: 22px;
   overflow: hidden;
   border-radius: 6px;
-  background: #131316;
+  background: #f4f7f6;
 }
 
 .spl-tr-art > img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -481,11 +481,11 @@
   display: block;
   height: 3px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(11, 14, 20, 0.09);
   overflow: hidden;
 }
 
-.spl-tr-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(255, 255, 255, 0.5); }
+.spl-tr-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(11, 14, 20, 0.45); }
 
 .spl-tr-share { text-align: right; font-size: 11.5px; color: var(--ink-3); }
 .spl-tr-amt { text-align: right; font-size: 11.5px; color: var(--ink-3); }
@@ -545,7 +545,8 @@
   padding: 4px;
   border: 1px solid color-mix(in srgb, var(--ink-0) 14%, transparent);
   border-radius: 10px;
-  background: #000000;
+  background: #ffffff;
+  box-shadow: 0 18px 44px rgba(11, 14, 20, 0.14);
 }
 
 /* Only above ten wallets — see `SEARCH_AT`. A box labelled `Filter`
@@ -702,15 +703,15 @@
 }
 
 .listen-root .wt-word:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 14, 20, 0.07);
   color: var(--ink-0) !important;
 }
 
-.listen-root .wt-word:active:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+.listen-root .wt-word:active:not(:disabled) { background: rgba(11, 14, 20, 0.12); }
 
 .listen-root .wt-word:focus-visible {
   outline: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(11, 14, 20, 0.09);
   color: var(--ink-0) !important;
 }
 
@@ -750,7 +751,7 @@
   border-radius: 9px;
   /* Barely there. It is a ground for three glyphs, not a card — at 8%
      it read as a fourth button behind the three. */
-  background: rgba(255, 255, 255, 0.045);
+  background: rgba(11, 14, 20, 0.05);
 }
 
 /* The create square owns the menu, so it anchors it. */
@@ -772,11 +773,11 @@
     background-color 130ms var(--ease, ease);
 }
 
-.listen-root .wt-sq:hover { color: var(--ink-0); background: rgba(255, 255, 255, 0.09); }
-.listen-root .wt-sq:active { background: rgba(255, 255, 255, 0.14); }
+.listen-root .wt-sq:hover { color: var(--ink-0); background: rgba(11, 14, 20, 0.09); }
+.listen-root .wt-sq:active { background: rgba(11, 14, 20, 0.16); }
 
 .listen-root .wt-sq:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.34);
+  outline: 1px solid rgba(11, 14, 20, 0.3);
   outline-offset: 1px;
 }
 
@@ -790,17 +791,17 @@
   color: var(--ink-3, #4b4e55);
   cursor: not-allowed;
 }
-.listen-root .wt-sq[aria-disabled='true']:hover { background: rgba(255, 255, 255, 0.05); }
-.listen-root .wt-sq[aria-disabled='true']:active { background: rgba(255, 255, 255, 0.05); }
+.listen-root .wt-sq[aria-disabled='true']:hover { background: rgba(11, 14, 20, 0.06); }
+.listen-root .wt-sq[aria-disabled='true']:active { background: rgba(11, 14, 20, 0.06); }
 
 /* The page is allowed exactly one filled control and this is it. */
 .listen-root .wt-sq-go,
 .listen-root .wt-sq-go:hover {
-  background: var(--ink-0, #fff);
-  color: #000;
+  background: var(--ink-0, #0b0e14);
+  color: #ffffff;
 }
-.listen-root .wt-sq-go:hover { background: #dcdde0; }
-.listen-root .wt-sq-go:active { background: #c8c9cd; }
+.listen-root .wt-sq-go:hover { background: #262c34; }
+.listen-root .wt-sq-go:active { background: #05070a; }
 
 .listen-root .wt-menu {
   position: absolute;
@@ -812,7 +813,7 @@
   border: 1px solid var(--hairline);
   border-radius: 10px;
   background: var(--surface-1, var(--surface));
-  box-shadow: var(--shadow-dropdown, 0 8px 24px rgba(0, 0, 0, 0.18));
+  box-shadow: var(--shadow-dropdown, 0 8px 24px rgba(11, 14, 20, 0.12));
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -820,16 +821,14 @@
 }
 
 /*
- * ── THE TOOLTIP HAS TO BE VISIBLE ON BLACK ───────────────────────────
+ * ── THE TOOLTIP HAS TO CLOSE ITS OWN SHAPE ───────────────────────────
  *
- * The shared chip is `bg-popover` over a 6% border, which resolves to
- * #101114 on a hairline nobody can see. That is fine on the panels it
- * was drawn for and it VANISHES here: this page's ground is actual
- * black, so the chip was dark grey type floating with no edge at all.
- *
- * A step lighter than anything else on the strip, a border with enough
- * in it to close the shape, and a real shadow to lift it off the row.
- * It is the one floating object on the tab, so it can afford all three.
+ * It used to be a card a step LIGHTER than a black page, because the
+ * shared chip resolved to a near black on a hairline nobody could see.
+ * On paper the same reasoning runs the other way: the chip is the
+ * page's own white, and what closes the shape is the rim and the
+ * shadow rather than the fill. Both are kept — it is the one floating
+ * object on the tab, so it can afford them.
  *
  * Two lines when there is a reason to give one, so `Coming soon` sits
  * UNDER the name rather than inside it in brackets.
@@ -840,10 +839,63 @@
   gap: 2px;
   padding: 7px 10px;
   line-height: 1.3;
-  background: #1b1c21;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: #ffffff;
+  border: 1px solid rgba(11, 14, 20, 0.14);
   border-radius: 8px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 26px rgba(11, 14, 20, 0.16);
 }
 .listen-root .wt-tip-l { font-size: 11.5px; font-weight: 500; color: var(--ink-0); }
 .listen-root .wt-tip-s { font-size: 10.5px; color: var(--ink-3); }
+
+
+/*
+ * ── THE PORTFOLIO'S PALETTE ──────────────────────────────────────────
+ *
+ * The page read the app's `--ink-*` and `--surface-*`, which are still
+ * declared for a black terminal, so all three tabs came up black while
+ * every surface around them had been taken to paper.
+ *
+ * It states a GROUND and a base `color` as well as the tokens. Tokens
+ * alone were what left the tracker half converted: a rule that names
+ * `var(--ink-1)` gets ink, and everything that names nothing keeps
+ * inheriting the app's near white.
+ *
+ * `.wallets-panel` and `.portfolio-panel` are listed by name because
+ * they set their own washes, and the popovers and modals the tabs open
+ * are listed because they PORTAL — a menu that leaves the page also
+ * leaves this block unless it is named.
+ *
+ * These become the light half of the theme when the toggle is built.
+ */
+[data-portfolio-page],
+[data-portfolio-page] .portfolio-panel,
+[data-portfolio-page] .wallets-panel,
+.wsel-menu,
+.wt-menu,
+.wt-tip {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  /* The primary star. `--hold` is a pale gold mixed for a black row and
+     it barely registers on paper. */
+  --hold: #c08a12;
+}
+
+[data-portfolio-page] {
+  background: var(--surface);
+  color: var(--ink-1);
+}

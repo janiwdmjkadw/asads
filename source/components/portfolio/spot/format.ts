@@ -123,24 +123,34 @@ export function relativeTime(ms: number): string {
  */
 export function pnlColor(pct: number | null): string {
   if (pct == null || !Number.isFinite(pct)) {
-    return 'rgba(140, 145, 170, 0.20)';
+    return 'rgba(138, 149, 145, 0.22)';
   }
   const clamped = Math.max(-25, Math.min(25, pct));
-  if (clamped === 0) return 'rgba(140, 145, 170, 0.22)';
-  // Up: `--up` cyan-green (52, 211, 153). Down: `--down` (251, 83, 116).
+  if (clamped === 0) return 'rgba(138, 149, 145, 0.24)';
+  /*
+   * The ends of the ramp are the page's own pair, not the black
+   * theme's: `--up` #0f6d5f (15, 109, 95) and `--down` #b4482e
+   * (180, 72, 46). It used to run to a cyan green and a hot pink,
+   * which over paper came out as a highlighter tile — the alphas were
+   * mixed to glow on black.
+   *
+   * The neutral end of each side is a muted version of the same hue
+   * rather than a grey, so a tile near zero still says which way it
+   * is leaning.
+   */
   if (clamped > 0) {
     const t = Math.min(1, clamped / 25);
-    const r = Math.round(80 + (52 - 80) * t);
-    const g = Math.round(160 + (211 - 160) * t);
-    const b = Math.round(140 + (153 - 140) * t);
+    const r = Math.round(90 + (15 - 90) * t);
+    const g = Math.round(150 + (109 - 150) * t);
+    const b = Math.round(135 + (95 - 135) * t);
     // Alpha climbs with magnitude so big winners pop.
     const alpha = 0.32 + 0.32 * t;
     return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(2)})`;
   }
   const t = Math.min(1, Math.abs(clamped) / 25);
-  const r = Math.round(200 + (251 - 200) * t);
-  const g = Math.round(110 + (83 - 110) * t);
-  const b = Math.round(120 + (116 - 120) * t);
+  const r = Math.round(196 + (180 - 196) * t);
+  const g = Math.round(120 + (72 - 120) * t);
+  const b = Math.round(100 + (46 - 100) * t);
   const alpha = 0.32 + 0.32 * t;
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(2)})`;
 }

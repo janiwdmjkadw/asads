@@ -87,7 +87,18 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg',
+        /*
+         * PAPER, on the primitive. `bg-background` resolves through the
+         * app's tokens, which are the black terminal's, and a dialog
+         * PORTALS to the document root — so the palettes each converted
+         * surface declares on itself never reach it. Every modal on a
+         * white page came up dark: the chart's Settings and Indicators
+         * are just the two that surfaced it.
+         *
+         * Same fix as the popover, the hover card, the tooltip and the
+         * toasts: state it where every dialog in the app shares it.
+         */
+        'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-[rgba(11,14,20,0.1)] bg-white p-6 text-[#0b0e14] shadow-[0_24px_60px_rgba(11,14,20,0.2)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg',
         className,
       )}
       style={{ boxShadow: 'var(--shadow-modal, 0 24px 60px rgba(0,0,0,0.45))' }}

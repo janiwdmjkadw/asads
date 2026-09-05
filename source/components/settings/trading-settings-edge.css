@@ -25,7 +25,7 @@
  */
 
 /*
- * #111111 — the same surface the Groups dropdown takes.
+ * #ffffff — the same surface the Groups dropdown takes.
  *
  * Both are panels that float over the board, so they are the same kind
  * of thing and should be made of the same thing. `--surface-1` is a
@@ -34,7 +34,7 @@
  * greys.
  */
 .trading-settings-modal {
-  background: #111111 !important;
+  background: #ffffff !important;
 }
 
 /* ── every box: hairline, no fill ─────────────────────────────────── */
@@ -49,37 +49,37 @@
 }
 
 .trading-settings-modal .flex.flex-col.rounded-md {
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
 }
 
 /* The hairline splitting value from label inside each figure box. */
 .trading-settings-modal .flex.flex-col.rounded-md > .h-px {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(11, 14, 20, 0.08) !important;
 }
 
 /* The preset strip and the two pill tracks. */
 .trading-settings-modal .grid.grid-cols-4,
 .trading-settings-modal .flex.flex-1.rounded-md {
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
 }
 
 /* ── selected is the only fill, and it is white ───────────────────── */
 
 .trading-settings-modal [aria-pressed='true'] {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: #0b0e14 !important;
+  color: #ffffff !important;
 }
 
 /* Unpressed sits on the panel's own ground with nothing drawn behind it,
    so the track's outline is the only edge in the row. */
 .trading-settings-modal [aria-pressed='false'] {
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(11, 14, 20, 0.5) !important;
 }
 
 .trading-settings-modal [aria-pressed='false']:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
-  color: #ffffff !important;
+  background: rgba(11, 14, 20, 0.07) !important;
+  color: #0b0e14 !important;
 }
 
 /* ── the Buy / Sell tabs ──────────────────────────────────────────── */
@@ -90,9 +90,9 @@
  * fill as everything else that is selected.
  */
 .trading-settings-modal .seg__btn {
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(11, 14, 20, 0.5) !important;
   box-shadow: none !important;
 }
 
@@ -106,16 +106,16 @@
  * on this panel does: a plate and white text.
  */
 .trading-settings-modal .seg__btn:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-  color: #ffffff !important;
+  background: rgba(11, 14, 20, 0.07) !important;
+  border-color: rgba(11, 14, 20, 0.18) !important;
+  color: #0b0e14 !important;
   box-shadow: none !important;
 }
 
 .trading-settings-modal .seg__btn.active {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: #000000 !important;
+  background: #0b0e14 !important;
+  border-color: #0b0e14 !important;
+  color: #ffffff !important;
   box-shadow: none !important;
 }
 
@@ -129,9 +129,9 @@
  * treatment for the whole panel means one selected treatment here too.
  */
 .trading-settings-modal .seg__btn--sell.active {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: #000000 !important;
+  background: #0b0e14 !important;
+  border-color: #0b0e14 !important;
+  color: #ffffff !important;
 }
 
 /* ── the commit ───────────────────────────────────────────────────── */
@@ -142,8 +142,8 @@
  */
 .trading-settings-modal .rounded-full.h-12,
 .trading-settings-modal .h-12.w-full.rounded-full {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: #0b0e14 !important;
+  color: #ffffff !important;
 }
 
 /* ── type ─────────────────────────────────────────────────────────── */
@@ -231,4 +231,20 @@
   .trading-settings-modal .flex.flex-1.rounded-md {
     flex: 1 1 100% !important;
   }
+}
+
+
+/*
+ * The ink scale, inside this modal only. Its rows read the app's tokens,
+ * which are white for a black board. Same scoping as the bar and the
+ * board's other menus; these become the light half of the theme later.
+ */
+.trading-settings-modal {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
 }

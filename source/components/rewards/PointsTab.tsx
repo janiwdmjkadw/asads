@@ -19,6 +19,7 @@ import {
   PartnerBadge,
   SECTION_COLORS,
   SectionTitle,
+  LoadFailed,
   Skeleton,
   fmtInt,
   tileStyle,
@@ -52,6 +53,15 @@ export function PointsTab(): React.ReactElement {
   }
   if (meResult?.kind === 'error') {
     return <Panel><Empty text="Points are temporarily unavailable. Try again soon." /></Panel>;
+  }
+  /* See CashbackTab: a request that never answers leaves `data`
+     undefined with `isLoading` already false. */
+  if (!me && !meQuery.isLoading) {
+    return (
+      <Panel>
+        <LoadFailed what="Points" onRetry={() => void meQuery.refetch()} />
+      </Panel>
+    );
   }
   if (meQuery.isLoading || !me) {
     return <Panel><Skeleton rows={4} /></Panel>;

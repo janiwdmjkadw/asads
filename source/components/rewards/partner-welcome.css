@@ -50,8 +50,11 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 50% at 50% 40%, rgba(255, 215, 0, 0.08), transparent 70%),
-    rgba(5, 5, 9, 0.78);
+    radial-gradient(60% 50% at 50% 40%, rgba(201, 148, 21, 0.1), transparent 70%),
+    /* Half, not a third. A dark card on a dark page separated itself by
+       being lighter than everything around it; an ivory card on a white
+       page has only the scrim to stand out against. */
+    rgba(11, 14, 20, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -65,15 +68,15 @@
   border-radius: 26px;
   padding: 44px 36px 30px;
   text-align: center;
-  border: 1px solid color-mix(in srgb, #ffd700 28%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, #c99415 52%, rgba(11, 14, 20, 0.12));
   background:
-    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, #ffd700 9%, transparent), transparent 55%),
-    linear-gradient(180deg, #131318, #0b0b0f);
+    radial-gradient(120% 90% at 50% 0%, rgba(201, 148, 21, 0.09), transparent 55%),
+    linear-gradient(180deg, #ffffff, #fbf7ec);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 40px 120px -30px rgba(0, 0, 0, 0.9),
-    0 0 80px -30px rgba(255, 215, 0, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(11, 14, 20, 0.05),
+    0 40px 120px -30px rgba(11, 14, 20, 0.22),
+    0 0 80px -34px rgba(201, 148, 21, 0.5);
   contain: layout style;
 }
 
@@ -86,15 +89,15 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #37d67a, #38bdf8, #8b5cf6, #f052d2, #fbbf24);
+  background: linear-gradient(90deg, #0f8a5f, #1f8fc4, #6b46c8, #b8339c, #c08a12);
   opacity: 0.9;
 }
 
 /* Gold collage bleeding off the top-left edge; block C is the wink. */
 .pw-collage { position: absolute; top: -16px; left: 26px; width: 150px; height: 48px; pointer-events: none; }
-.pw-collage-a { position: absolute; top: 0; left: 0; width: 92px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #ffe48a, #f4b942); opacity: 0.9; }
-.pw-collage-b { position: absolute; top: 14px; left: 74px; width: 38px; height: 17px; border-radius: 7px; background: #ffd700; opacity: 0.7; }
-.pw-collage-c { position: absolute; top: 26px; left: 52px; width: 15px; height: 9px; border-radius: 4px; background: #f052d2; opacity: 0.55; }
+.pw-collage-a { position: absolute; top: 0; left: 0; width: 92px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #e6c463, #c99415); opacity: 0.9; }
+.pw-collage-b { position: absolute; top: 14px; left: 74px; width: 38px; height: 17px; border-radius: 7px; background: #d9a520; opacity: 0.75; }
+.pw-collage-c { position: absolute; top: 26px; left: 52px; width: 15px; height: 9px; border-radius: 4px; background: #b8339c; opacity: 0.55; }
 
 /* Ghost signature — serif italic, barely there. */
 .pw-ghost {
@@ -105,8 +108,8 @@
   font-style: italic;
   font-size: 110px;
   line-height: 1;
-  color: #ffd700;
-  opacity: 0.06;
+  color: #a9791b;
+  opacity: 0.12;
   pointer-events: none;
   user-select: none;
 }
@@ -120,8 +123,8 @@
 .pw-glint {
   position: absolute;
   font-size: 13px;
-  color: #ffe48a;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  color: #c99415;
+  text-shadow: 0 0 10px rgba(201, 148, 21, 0.55);
   pointer-events: none;
   animation: pw-glint-pop 900ms cubic-bezier(0.34, 1.4, 0.5, 1) var(--gd, 700ms) both;
 }
@@ -137,7 +140,7 @@
 }
 @keyframes pw-land-spark {
   0% { box-shadow: 0 0 0 0 transparent; }
-  30% { box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.9), 0 0 14px 4px currentColor; }
+  30% { box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.85), 0 0 14px 4px currentColor; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 .pw-pixel {
@@ -156,8 +159,8 @@
   gap: 8px;
   margin-top: 24px;
 }
-.pw-plate-rule { width: 38px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 228, 138, 0.28)); }
-.pw-plate-rule-r { background: linear-gradient(90deg, rgba(255, 228, 138, 0.28), transparent); }
+.pw-plate-rule { width: 38px; height: 1px; background: linear-gradient(90deg, transparent, rgba(169, 121, 27, 0.4)); }
+.pw-plate-rule-r { background: linear-gradient(90deg, rgba(169, 121, 27, 0.4), transparent); }
 .pw-plate-tick { width: 5px; height: 5px; border-radius: 2px; opacity: 0.75; }
 .pw-plate-line {
   margin-top: 7px;
@@ -165,21 +168,21 @@
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.32em;
-  color: rgba(255, 228, 138, 0.32);
+  color: rgba(138, 106, 18, 0.6);
   user-select: none;
 }
 
 @keyframes pw-card-glow {
   0%, 100% { box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 40px 120px -30px rgba(0, 0, 0, 0.9),
-    0 0 70px -28px rgba(255, 215, 0, 0.3); }
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(11, 14, 20, 0.05),
+    0 40px 120px -30px rgba(11, 14, 20, 0.22),
+    0 0 70px -30px rgba(201, 148, 21, 0.35); }
   50% { box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 40px 120px -30px rgba(0, 0, 0, 0.9),
-    0 0 110px -22px rgba(255, 215, 0, 0.5); }
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 1px rgba(11, 14, 20, 0.05),
+    0 40px 120px -30px rgba(11, 14, 20, 0.22),
+    0 0 110px -24px rgba(201, 148, 21, 0.55); }
 }
 .pw-card { animation: pw-card-glow 4.5s ease-in-out infinite; }
 
@@ -202,7 +205,7 @@
   position: absolute;
   inset: -26px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.32), rgba(255, 145, 60, 0.1) 55%, transparent 72%);
+  background: radial-gradient(circle, rgba(217, 165, 32, 0.4), rgba(196, 110, 40, 0.14) 55%, transparent 72%);
   filter: blur(6px);
   will-change: transform, opacity;
   animation: pw-halo-breathe 3.6s ease-in-out infinite;
@@ -216,10 +219,10 @@
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    rgba(255, 228, 138, 0.85) 60deg,
+    rgba(169, 121, 27, 0.9) 60deg,
     transparent 130deg,
     transparent 220deg,
-    rgba(255, 215, 0, 0.5) 280deg,
+    rgba(217, 165, 32, 0.6) 280deg,
     transparent 340deg
   );
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
@@ -236,7 +239,7 @@
   position: relative;
   will-change: transform;
   animation: pw-owl-bob 3.6s ease-in-out infinite;
-  filter: drop-shadow(0 6px 18px rgba(255, 196, 0, 0.45));
+  filter: drop-shadow(0 6px 18px rgba(201, 148, 21, 0.42));
 }
 
 /* ── Copy ──────────────────────────────────────────────────────────── */
@@ -252,14 +255,14 @@
   font-weight: 700;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: color-mix(in srgb, #ffd700 75%, #fff);
+  color: #8a6a12;
 }
 .pw-kicker-tick {
   width: 12px;
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #ffe48a, #ffd700);
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(90deg, #d9a520, #a9791b);
+  box-shadow: 0 0 8px rgba(201, 148, 21, 0.4);
 }
 
 /* The title speaks in the serif italic display voice — the listen hand. */
@@ -271,7 +274,10 @@
   font-size: clamp(28px, 5.4vw, 38px);
   line-height: 1.08;
   letter-spacing: -0.01em;
-  background: linear-gradient(100deg, #fff6d8 0%, #ffe48a 30%, #ffd700 55%, #f4b942 75%, #fff0c0 100%);
+  /* A foil ramp for a LIGHT ground: the pale stops that made the
+     letters catch light on black are now the page, so the ramp runs
+     between two deep golds and keeps one lighter band to turn on. */
+  background: linear-gradient(100deg, #8a6a12 0%, #b8860b 28%, #d9a520 50%, #a9791b 74%, #7d5e10 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -279,7 +285,7 @@
 }
 .pw-slug {
   font-size: 1.14em;
-  text-shadow: 0 0 34px rgba(255, 215, 0, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .pw-copy {
@@ -287,9 +293,9 @@
   max-width: 400px;
   font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(228, 228, 235, 0.72);
+  color: rgba(43, 49, 56, 0.86);
 }
-.pw-copy strong { color: #ffe48a; font-weight: 600; }
+.pw-copy strong { color: #8a6a12; font-weight: 600; }
 
 /* ── Rate tiles ────────────────────────────────────────────────────── */
 
@@ -305,10 +311,10 @@
   overflow: hidden;
   border-radius: 18px;
   padding: 16px 12px 14px;
-  border: 1px solid color-mix(in srgb, #ffd700 24%, rgba(255, 255, 255, 0.06));
+  border: 1px solid color-mix(in srgb, #c99415 34%, rgba(11, 14, 20, 0.08));
   background:
-    radial-gradient(120% 100% at 50% 0%, rgba(255, 215, 0, 0.07), transparent 60%),
-    rgba(0, 0, 0, 0.35);
+    radial-gradient(120% 100% at 50% 0%, rgba(201, 148, 21, 0.09), transparent 60%),
+    rgba(11, 14, 20, 0.035);
 }
 
 /* Identity strip: gold signs each tile's top edge, fading out. */
@@ -331,13 +337,13 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(228, 228, 235, 0.55);
+  color: rgba(91, 101, 112, 0.9);
 }
 .pw-rate-tick {
   width: 3px;
   height: 10px;
   border-radius: 2px;
-  background: #ffd700;
+  background: #b8860b;
   opacity: 0.9;
 }
 
@@ -348,14 +354,14 @@
   font-size: 34px;
   line-height: 1;
   font-weight: 650;
-  color: #ffe48a;
-  text-shadow: 0 0 24px rgba(255, 215, 0, 0.35);
+  color: #8a6a12;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .pw-rate-sub {
   margin-top: 6px;
   font-size: 10.5px;
-  color: rgba(228, 228, 235, 0.45);
+  color: rgba(138, 149, 145, 1);
 }
 
 /* one slow shared sheen across both tiles */
@@ -364,7 +370,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 244, 200, 0.1) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.75) 50%, transparent 60%);
   will-change: transform;
   animation: pw-sheen 4.8s ease-in-out infinite;
   pointer-events: none;
@@ -387,8 +393,8 @@
   height: 42px;
   padding: 0 26px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: linear-gradient(135deg, #ffe48a, #ffd700 55%, #e8a93a);
+  border: 1px solid rgba(138, 106, 18, 0.45);
+  background: linear-gradient(135deg, #e6c463, #d9a520 55%, #b8860b);
   color: #3a2c05;
   font-size: 13.5px;
   font-weight: 700;
@@ -403,15 +409,15 @@
   height: 42px;
   padding: 0 18px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(11, 14, 20, 0.12);
   background: transparent;
-  color: rgba(228, 228, 235, 0.55);
+  color: rgba(91, 101, 112, 0.9);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: color 140ms ease, border-color 140ms ease;
 }
-.pw-later:hover { color: rgba(228, 228, 235, 0.9); border-color: rgba(255, 255, 255, 0.22); }
+.pw-later:hover { color: #0b0e14; border-color: rgba(11, 14, 20, 0.28); }
 
 /* ── Kaomoji owl flock ─────────────────────────────────────────────────
    Each owl is three nested layers so transforms never fight:
@@ -460,15 +466,15 @@
   font-size: var(--owl-size, 17px);
   font-weight: 600;
   letter-spacing: -0.04em;
-  color: color-mix(in srgb, var(--owl-tint, #ffe48a) 72%, rgba(255, 255, 255, 0.5));
-  text-shadow: 0 0 16px color-mix(in srgb, var(--owl-tint, #ffc400) 35%, transparent);
+  color: color-mix(in srgb, var(--owl-tint, #a9791b) 78%, rgba(11, 14, 20, 0.55));
+  text-shadow: none;
   transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), color 180ms ease, text-shadow 180ms ease;
 }
 .pw-owl:hover .pw-owl-face,
 .pw-owl:focus-visible .pw-owl-face {
   transform: scale(1.22) rotate(-3deg);
-  color: var(--owl-tint, #ffe48a);
-  text-shadow: 0 0 22px color-mix(in srgb, var(--owl-tint, #ffd700) 70%, transparent);
+  color: color-mix(in srgb, var(--owl-tint, #a9791b) 88%, #0b0e14);
+  text-shadow: none;
 }
 
 /* speech bubble */
@@ -480,16 +486,16 @@
   white-space: nowrap;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--owl-tint, #ffd700) 45%, rgba(255, 255, 255, 0.1));
-  background: rgba(12, 12, 16, 0.92);
-  color: color-mix(in srgb, var(--owl-tint, #ffe48a) 80%, #fff);
+  border: 1px solid color-mix(in srgb, var(--owl-tint, #a9791b) 45%, rgba(11, 14, 20, 0.14));
+  background: #ffffff;
+  color: color-mix(in srgb, var(--owl-tint, #a9791b) 70%, #0b0e14);
   font-size: 11.5px;
   font-weight: 600;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 160ms ease, transform 160ms cubic-bezier(0.34, 1.4, 0.5, 1), visibility 0s 160ms;
-  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.8), 0 0 18px -6px color-mix(in srgb, var(--owl-tint, #ffd700) 50%, transparent);
+  box-shadow: 0 8px 24px -8px rgba(11, 14, 20, 0.2), 0 0 18px -8px color-mix(in srgb, var(--owl-tint, #a9791b) 45%, transparent);
 }
 .pw-bubble::after {
   content: '';
@@ -498,7 +504,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: rgba(12, 12, 16, 0.92);
+  border-top-color: #ffffff;
 }
 .pw-owl:hover .pw-bubble,
 .pw-owl:focus-visible .pw-bubble {
@@ -519,7 +525,7 @@
   top: auto;
   bottom: 100%;
   border-top-color: transparent;
-  border-bottom-color: rgba(12, 12, 16, 0.92);
+  border-bottom-color: #ffffff;
 }
 .pw-owl[data-bubble='below']:hover .pw-bubble,
 .pw-owl[data-bubble='below']:focus-visible .pw-bubble {

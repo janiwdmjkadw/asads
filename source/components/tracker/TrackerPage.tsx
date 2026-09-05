@@ -24,11 +24,17 @@ export function TrackerPage() {
    * controls at once, without touching the same components where the
    * Discover dock mounts them.
    */
-  const frame = 'h-[var(--h-app-content)] overflow-hidden [--accent-primary:#ffffff]';
+  /*
+   * INK, NOT WHITE. On a black panel white was the strongest a control
+   * could be, and every tick, toggle, Sign and Delete in both panels reads
+   * this. On paper white is nothing, which is what made the manager look
+   * like it belonged to a different product.
+   */
+  const frame = 'h-[var(--h-app-content)] overflow-hidden [--accent-primary:#0b0e14]';
 
   if (isMobile) {
     return (
-      <div className={`flex flex-col ${frame}`}>
+      <div className={`flex flex-col ${frame}`} data-tracker-page>
         <div className="min-h-0 flex-1" style={{ borderBottom: '1px solid var(--hairline)' }}>
           <TweetsPanel />
         </div>
@@ -40,7 +46,7 @@ export function TrackerPage() {
   }
 
   return (
-    <div className={frame}>
+    <div className={frame} data-tracker-page>
       <ResizablePanelGroup direction="horizontal" autoSaveId="tracker:split-v1" className="h-full">
         <ResizablePanel defaultSize={50} minSize={28}>
           <TweetsPanel />

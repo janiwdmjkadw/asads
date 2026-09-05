@@ -96,6 +96,6 @@
    * still four times the `--hairline` on either side of it, so it is
    * plainly a thing rather than a border.
    */
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(11, 14, 20, 0.13);
   pointer-events: none;
 }

@@ -33,7 +33,7 @@
 
 /* Nothing moves. The row lifts by a few percent of white and that is the
    whole affordance — the same one the ledger rows use. */
-.tw:hover { background: rgba(255, 255, 255, 0.025); }
+.tw:hover { background: rgba(11, 14, 20, 0.025); }
 
 .tw-pfp {
   display: flex;
@@ -45,7 +45,7 @@
   overflow: hidden;
   border-radius: 999px;
   border: 1px solid var(--hairline);
-  background: var(--surface-3, #17171a);
+  background: var(--surface-3, #f7f9f8);
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
@@ -108,7 +108,7 @@
   margin: 0;
   font-size: 13.5px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(11, 14, 20, 0.88);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -133,7 +133,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: var(--surface-3, #17171a);
+  background: var(--surface-3, #f7f9f8);
 }
 
 .tw-media[data-n='1'] img { aspect-ratio: 16 / 9; }
@@ -145,7 +145,7 @@
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid var(--hairline);
-  background: var(--surface-3, #17171a);
+  background: var(--surface-3, #f7f9f8);
 }
 
 /* ── the numbers ──────────────────────────────────────────────────── */

@@ -19,10 +19,10 @@
  * Scanned off the reference crop. A horizontal slice through the middle
  * of the art reads, left to right:
  *
- *   x=7   #17c671   the ring, ONE pixel
- *   x=8   #131316   ground
- *   x=9   #131316   ground
- *   x=10  #131316   ground
+ *   x=7   #0d7a4f   the ring, ONE pixel
+ *   x=8   #fbfcfc   ground
+ *   x=9   #fbfcfc   ground
+ *   x=10  #fbfcfc   ground
  *   x=11  the picture starts
  *
  * So the ring is a hairline belonging to a box a few pixels bigger than
@@ -73,14 +73,14 @@
    */
   --ar-gap: calc(1px / var(--ui-scale, 1));
   --ar-ring: calc(1px / var(--ui-scale, 1));
-  --pad: #55d491;
+  --pad: #178a5a;
   /* What the ring is painted with. A flat colour on a launchpad; the
      component swaps in a gradient for graduated. */
   --ring: var(--pad);
   /* The one gold in the file. Both the ring and the mark read it, so
      graduated is a single value rather than a set of matching ones. */
-  --gold: linear-gradient(135deg, #ae7b0e 0%, #efc10d 46%, #f7d770 62%, #b8830f 100%);
-  --ar-ground: #131316;
+  --gold: linear-gradient(135deg, #8a6109 0%, #a8820a 46%, #c99f12 62%, #8a6109 100%);
+  --ar-ground: #fbfcfc;
 
   display: flex;
   flex-direction: column;
@@ -99,7 +99,7 @@
  *
  * It used to be `box-shadow: 0 0 0 Npx <colour>`, which can only ever be
  * a flat colour. Sampling the reference's graduated ring shows it is
- * not: the left side reads #ae7b0e and the right #efc10d — a gradient
+ * not: the left side reads #8a6109 and the right #a8820a — a gradient
  * across the ring, which is the whole reason it looks like metal rather
  * than like a yellow outline.
  *
@@ -125,7 +125,7 @@
   display: block;
   border-radius: var(--ar-r);
   object-fit: cover;
-  background: #23252b;
+  background: #f0f3f2;
   /* The gap: the page's ground laid back over the inner part of the
      band, so what is left of the paint is exactly `--ar-ring` wide. */
   box-shadow: 0 0 0 var(--ar-gap) var(--ar-ground);
@@ -161,7 +161,7 @@
   border: 0;
   border-radius: var(--ar-r);
   background: transparent;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
   -webkit-backdrop-filter: blur(0);
   backdrop-filter: blur(0);
@@ -471,7 +471,7 @@
   display: flex;
   align-items: flex-start;
   padding: 13px 12px;
-  border-bottom: 1px solid #2a2a2e;
+  border-bottom: 1px solid #eceff0;
 }
 
 .arc-row:last-child {
@@ -546,9 +546,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-.arc-age[data-tier='fresh'] { color: #34d399; }
-.arc-age[data-tier='aging'] { color: #ff9f45; }
-.arc-age[data-tier='old'] { color: #ff8a8a; }
+.arc-age[data-tier='fresh'] { color: #0f6d5f; }
+.arc-age[data-tier='aging'] { color: #b8651a; }
+.arc-age[data-tier='old'] { color: #b4482e; }
 
 .arc-ticker {
   flex-shrink: 0;
@@ -567,7 +567,7 @@
    */
   font-weight: 550;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #0b0e14;
   white-space: nowrap;
 }
 
@@ -662,17 +662,17 @@
   font-weight: 600;
 }
 
-/* A lighter blue: #4a9eff sat at the same weight as the white beside it
+/* A lighter blue: #1d6fd0 sat at the same weight as the white beside it
    and read as a second ink rather than a signal. */
-.arc-fig[data-tier='low'] { color: #6fb6ff; }
+.arc-fig[data-tier='low'] { color: #2f7fd8; }
 
-/* Yellow, not the metal gold. #e4b514 is the graduated ring's colour and
+/* Yellow, not the metal gold. #a8820a is the graduated ring's colour and
    it is brown next to white type at this size; this is the same hue
    pushed up in lightness and saturation so it reads as a band on a
    figure rather than as the metal on the art. It also stops the two
    golds on a row being the same colour. */
-.arc-fig[data-tier='mid'] { color: #ffd23f; }
-.arc-fig[data-tier='high'] { color: #34d399; }
+.arc-fig[data-tier='mid'] { color: #a8820a; }
+.arc-fig[data-tier='high'] { color: #0f6d5f; }
 
 /* The key is the quietest thing in the pair: it never changes, so it is
    read once and then ignored. */
@@ -688,7 +688,7 @@
   /* Volume stays at 500. */
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #e9ebef;
+  color: #2b3138;
 }
 
 /* ══ THE CHILLI ════════════════════════════════════════════════════════
@@ -725,9 +725,9 @@
   opacity: 0.5;
 }
 
-.arc-leaf[data-tier='good'] { color: #34d399; }
-.arc-leaf[data-tier='warn'] { color: #ff9f45; }
-.arc-leaf[data-tier='bad'] { color: #ff8a8a; }
+.arc-leaf[data-tier='good'] { color: #0f6d5f; }
+.arc-leaf[data-tier='warn'] { color: #b8651a; }
+.arc-leaf[data-tier='bad'] { color: #b4482e; }
 
 /* ══ A STAT ON THE META LINE ═══════════════════════════════════════════
  *
@@ -850,7 +850,7 @@
    * on hover is what names it.
    */
   object-position: 50% 22%;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(11, 14, 20, 0.14);
 }
 
 .arc-quote:hover {
@@ -893,14 +893,14 @@
   z-index: 30;
   padding: 5px 8px;
   border-radius: 7px;
-  background: #202024;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  background: #f4f7f6;
+  box-shadow: 0 0 0 1px rgba(11, 14, 20, 0.08), 0 8px 20px rgba(11, 14, 20, 0.12);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-size: 11.5px;
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
-  color: #ffffff;
+  color: #0b0e14;
   /* Hidden rather than absent, so it is not laid out on every hover and
      the row does not have to reflow to show it. */
   opacity: 0;
@@ -924,7 +924,7 @@
  * as a label for it.
  */
 .arc-row [data-tip]::after {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* The mark keeps its own dim-on-hover, but not while the tip is up:
@@ -947,7 +947,7 @@
  */
 .arc-stat.is-gold,
 .arc-stat.is-gold svg {
-  color: #e8b33d;
+  color: #a8820a;
 }
 
 /* The slash is the quietest thing in the pair: it is punctuation between
@@ -970,7 +970,7 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  color: #6fb6ff;
+  color: #2f7fd8;
   cursor: pointer;
   transition: opacity 130ms ease;
 }
@@ -1074,10 +1074,10 @@
 
 /* Green for money coming back, pink for giving it away — the pink is
    the shade the shipped charity icon already uses. */
-.arc-attr.is-cash { color: #34d399; }
-.arc-attr.is-give { color: #ec4899; }
-.arc-attr.is-fees { color: #6fb6ff; }
-.arc-attr.is-boost { color: #a78bfa; }
+.arc-attr.is-cash { color: #0f6d5f; }
+.arc-attr.is-give { color: #c01a9e; }
+.arc-attr.is-fees { color: #2f7fd8; }
+.arc-attr.is-boost { color: #6b4fd8; }
 
 .arc-pop {
   position: absolute;
@@ -1120,16 +1120,16 @@
  * their own and neither looked like it:
  *
  *   fill        none          the pill is the row's own ground
- *   edge        #292a2c       one hairline, the only drawn thing
+ *   edge        #eceff0       one hairline, the only drawn thing
  *   radius      999           a capsule, not a 6px rounded rect
- *   red         #cb5f5f
- *   green       #4aa856
- *   dev blue    #778ad6
- *   boost gold  #c7ac0d
+ *   red         #a2452f
+ *   green       #2f7d3c
+ *   dev blue    #4a5fb5
+ *   boost gold  #9c7a09
  *   trailing    white at 72%  the age and the hours are NOT dim grey
  *
  * THE PLATE IS GONE. The first version washed it white at 5%, the
- * second filled it #232327, and the reference fills nothing — a
+ * second filled it #f0f3f2, and the reference fills nothing — a
  * hairline capsule sitting on the row. That is the whole difference
  * between a light line of readings and a row of buttons.
  * ═══════════════════════════════════════════════════════════════════ */
@@ -1172,22 +1172,22 @@
   gap: 3px;
   flex-shrink: 0;
   padding: 2px 5px 2px 4px;
-  border: 1px solid #292a2c;
+  border: 1px solid #eceff0;
   border-radius: 999px;
   background: transparent;
   font-size: 9px;
   font-weight: 600;
-  color: #4aa856;
+  color: #2f7d3c;
   cursor: pointer;
   transition: border-color 130ms ease;
 }
 
 .arc-pill:hover {
-  border-color: #3a3b3f;
+  border-color: #dfe3e4;
 }
 
 .arc-pill[data-tier='bad'] {
-  color: #cb5f5f;
+  color: #a2452f;
 }
 
 /*
@@ -1197,13 +1197,13 @@
  * same way as the five around it.
  */
 .arc-pill[data-tier='none'] {
-  color: #778ad6;
+  color: #4a5fb5;
 }
 
 /* Dex Screener's gold. Boost is the only pill here that is bought
    rather than measured, so it stays off the scale entirely. */
 .arc-pill[data-tier='boost'] {
-  color: #c7ac0d;
+  color: #9c7a09;
 }
 
 /*
@@ -1215,7 +1215,7 @@
  */
 .arc-pill-sub {
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(11, 14, 20, 0.72);
 }
 
 .arc-pill-dot {
@@ -1244,16 +1244,16 @@
  *
  * ── IT IS THE BRIGHT GREEN, NOT THE DARK ONE ─────────────────────────
  *
- * Filled #86efac with a BLACK label — the same green the row already
+ * Filled #1c8a55 with a BLACK label — the same green the row already
  * uses for its own figures, at full strength.
  *
- * The first cut used #284733, the muted green from the hover crops, and
+ * The first cut used #dff0e4, the muted green from the hover crops, and
  * that is the wrong half of the pair: a dark plate with dark text is a
  * button that has to be found. This is the one control on the row and
  * it should be the brightest thing on it.
  *
- *   rest    #86efac fill, #000 label
- *   hover   #a7f3c4 — lifts, because there is no darker left to go
+ *   rest    #1c8a55 fill, #fff label
+ *   hover   #2a9466 — lifts, because there is no darker left to go
  * ═══════════════════════════════════════════════════════════════════ */
 
 .arc-row {
@@ -1276,12 +1276,12 @@
   gap: 5px;
   border: 0;
   border-radius: 999px;
-  background: #86efac;
+  background: #1c8a55;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
   font-weight: 600;
-  color: #000000;
+  color: #0b0e14;
   cursor: pointer;
   transition:
     background 130ms ease,
@@ -1294,7 +1294,7 @@
  * "pressed" is further up.
  */
 .arc-row .arc-buy:hover {
-  background: #a7f3c4;
+  background: #2a9466;
 }
 
 /* ── ultra: a quarter of the row, on hover ──────────────────────── */
@@ -1302,7 +1302,7 @@
 /*
  * ULTRA IS A ZONE, NOT A REPLACEMENT.
  *
- * The first cut filled the right quarter with #86efac and centred a
+ * The first cut filled the right quarter with #1c8a55 and centred a
  * black label in it, which covers the market cap — the reference does
  * the opposite. There, hovering lifts the right quarter a step in tone
  * and everything already in it stays exactly where it was and stays
@@ -1339,7 +1339,7 @@
    * the age already use, so it read as one more reading rather than as
    * the thing you press.
    */
-  color: #ffffff;
+  color: #0b0e14;
   font-size: 11px;
   transition: background 170ms ease, box-shadow 170ms ease;
 }
@@ -1381,8 +1381,8 @@
  * says "this part buys", and it should only say it when you are on it.
  */
 [data-buy='ultra'] .arc-row .arc-buy:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08);
+  background-color: rgba(11, 14, 20, 0.06);
+  box-shadow: inset 1px 0 0 rgba(11, 14, 20, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1494,7 +1494,7 @@
 }
 
 .arc-row:hover {
-  background: rgba(255, 255, 255, 0.022);
+  background: rgba(11, 14, 20, 0.022);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1690,7 +1690,7 @@
  * Values from `groups-popover-v2.css`, which is where this product
  * settled the question:
  *
- *   ground   #111111        a step UP in tone from a near-black board,
+ *   ground   #ffffff        a step UP in tone from a near-black board,
  *                           equal channels so the lift is tone and not
  *                           a colour cast
  *   edge     white at 12%
@@ -1713,12 +1713,14 @@
   flex-direction: column;
   width: 264px;
   padding: 12px 13px 7px;
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* The panel's GROUND, not a filled control: paper, lifted off the board
+     by its edge and its drop rather than by tone. */
+  background: #ffffff;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 10px;
   box-shadow:
-    0 24px 80px #0000008c,
-    0 0 60px #ffffff0a;
+    0 24px 80px rgba(11, 14, 20, 0.16),
+    0 0 60px rgba(11, 14, 20, 0.06);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
@@ -1728,7 +1730,7 @@
 .fp-title {
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   padding-bottom: 10px;
 }
 
@@ -1747,14 +1749,16 @@
   gap: 8px;
   padding: 8px 9px;
   border-radius: 8px;
-  background: #0c0c0d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* A row inside that panel: one step under it, the way it was one step
+     over the panel on black. */
+  background: #f7f9f8;
+  border: 1px solid rgba(11, 14, 20, 0.08);
 }
 
 .fp-badge {
   display: inline-flex;
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 .fp-ca {
@@ -1762,7 +1766,7 @@
   min-width: 0;
   font-size: 12px;
   font-weight: 500;
-  color: #ffffff;
+  color: #0b0e14;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1786,11 +1790,11 @@
 
 .fp-addr:hover .fp-copy,
 .fp-share:hover .fp-copy {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 .fp-copy:hover {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }
 
 .fp-copy.sm {
@@ -1807,8 +1811,8 @@
   gap: 3px;
   margin-top: 12px;
   padding: 12px 0 13px;
-  border-top: 1px solid rgba(255, 255, 255, 0.09);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 1px solid rgba(11, 14, 20, 0.09);
+  border-bottom: 1px solid rgba(11, 14, 20, 0.09);
 }
 
 /*
@@ -1822,11 +1826,11 @@
   gap: 5px;
   font-size: 13.5px;
   font-weight: 600;
-  color: #ff8a8a;
+  color: #b4482e;
 }
 
 .fp-band[data-locked] .fp-lock {
-  color: #34d399;
+  color: #0f6d5f;
 }
 
 .fp-sub {
@@ -1866,11 +1870,11 @@
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(11, 14, 20, 0.06);
+  border: 1px solid rgba(11, 14, 20, 0.08);
   font-size: 11.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 .fp-av[data-org] {
@@ -1888,7 +1892,7 @@
 .fp-name {
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1922,13 +1926,13 @@
 .fp-pct {
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .fp-sol {
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 /* ═══════════════════════════════════════════════════════════════════
  * QUICK BUY, AS CHOSEN IN THE PALETTE
@@ -1956,8 +1960,8 @@
  */
 .arc-row .arc-buy {
   border-radius: var(--buy-radius, 999px);
-  background-color: var(--buy-bg, #86efac);
-  color: var(--buy-fg, #000000);
+  background-color: var(--buy-bg, #1c8a55);
+  color: var(--buy-fg, #ffffff);
 }
 
 /* ── small: the chip ────────────────────────────────────────────── */
@@ -2001,7 +2005,7 @@
 }
 
 [data-buy='ultra'] .arc-row .arc-buy:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(11, 14, 20, 0.06);
 }
 
 /* The blur layer only belongs to ultra. */
@@ -2063,4 +2067,25 @@
    unit, whatever the panel's width does. */
 .arc-row .arc-buy-amt {
   white-space: nowrap;
+}
+
+
+/*
+ * ── THE HOLDERS MARK, LINED UP WITH ITS FIGURE ───────────────────────
+ *
+ * The boxes were already aligned: `.arc-stat` centres its children, and
+ * the glyph box and the text box share a centre to within a fifth of a
+ * pixel. What is NOT aligned is the ink inside them.
+ *
+ * The people glyph draws from y5 to y19.4 in a 24 box, so its ink centre
+ * sits at 12.2 rather than 12. The figure beside it is digits, which have
+ * no descenders, so its ink stops at the baseline and its optical centre
+ * is a little ABOVE the line box centre. The two errors point the same
+ * way and add up to about a pixel of the mark sitting low.
+ *
+ * One pixel up, on the holders mark only. The crown next to it already
+ * draws its ink high in its own box and needs none of this.
+ */
+.arc-stat:not(.is-gold):not(.is-bare) > svg {
+  transform: translateY(-1px);
 }

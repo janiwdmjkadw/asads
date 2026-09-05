@@ -128,9 +128,9 @@
    * short and the two edges were 12px apart.
    */
   padding: 9px 0 9px 18px;
-  background: #000000;
-  border-top: 1px solid #1c1c20;
-  border-bottom: 1px solid #1c1c20;
+  background: #ffffff;
+  border-top: 1px solid rgba(11, 14, 20, 0.1);
+  border-bottom: 1px solid rgba(11, 14, 20, 0.1);
   font-family: var(--sans);
 }
 
@@ -219,7 +219,7 @@
   font-size: 13.5px;
   font-weight: 550;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #0b0e14;
   white-space: nowrap;
 }
 
@@ -229,7 +229,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 /*
@@ -248,7 +248,7 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
 }
 
 /*
@@ -271,7 +271,7 @@
 .th-age {
   font-size: 10.5px;
   font-weight: 600;
-  color: #f0a03c;
+  color: #b8651a;
   white-space: nowrap;
 }
 
@@ -287,14 +287,14 @@
   gap: 4px;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(11, 14, 20, 0.78);
 }
 
 .th-watch > svg {
   width: 13px;
   height: 13px;
   /* A step under the figure it introduces, and lifted with the rest. */
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
 }
 
 /*
@@ -312,7 +312,7 @@
   border-radius: 4px;
   font-size: 9.5px;
   font-weight: 600;
-  color: #e8b33d;
+  color: #a8820a;
   white-space: nowrap;
 }
 
@@ -382,7 +382,7 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.015em;
-  color: #ffffff;
+  color: #0b0e14;
   white-space: nowrap;
 }
 
@@ -424,7 +424,7 @@
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 /* Wide: the label is written out over its figure. The short form is in
@@ -440,7 +440,7 @@
   font-size: 10px;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -452,7 +452,7 @@
   bottom: -0.12em;
   font-size: 8.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
 }
 
 /*
@@ -470,7 +470,7 @@
 .th-re {
   display: inline-flex;
   align-items: center;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
 }
 
@@ -509,7 +509,7 @@
   font-size: 11.5px;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
 }
 
@@ -518,7 +518,7 @@
 .th-crown {
   display: inline-flex;
   align-items: center;
-  color: #e8b33d;
+  color: #a8820a;
 }
 
 .th-crown > svg {
@@ -569,13 +569,13 @@
   padding: 0 11px;
   border: 0;
   border-radius: 6px;
-  background: #ffffff;
+  background: #0b0e14;
   font-family: var(--sans);
   font-size: 11.5px;
   font-weight: 600;
-  /* Not pure black. #08080a is the ground the bar sits on, so the label
+  /* Not pure black. #ffffff is the ground the bar sits on, so the label
      reads as the bar showing through rather than as ink on a plate. */
-  color: #08080a;
+  color: #ffffff;
   white-space: nowrap;
   cursor: pointer;
   transition: opacity 130ms ease;
@@ -595,9 +595,28 @@
   transition: opacity 130ms ease;
 }
 
+/*
+ * THE FADE GOES ON THE CONTENTS, NEVER ON THE HOST.
+ *
+ * `.th-calls:hover { opacity: .5 }` dimmed the whole element — and the
+ * tooltip is that element's `::after`, so the bubble was inside the faded
+ * group and rendered at half opacity. Nothing inside an opacity group can
+ * paint above it, so no amount of white on the bubble could fix it: it
+ * was see through by construction.
+ *
+ * Every other mark on this bar fades its `> svg` instead, which is why
+ * this and the Fund badge were the only two with a transparent tip.
+ *
+ * The glyph fades and the figure beside it dims by colour, so the hover
+ * looks the way it always did and the bubble stays solid.
+ */
 .th-re:hover > svg,
-.th-calls:hover {
+.th-calls:hover > * {
   opacity: 0.5;
+}
+
+.th-calls:hover {
+  color: rgba(11, 14, 20, 0.5);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -739,7 +758,7 @@
   width: 300px;
   padding-left: 10px;
   padding-right: 12px;
-  background: #000000;
+  background: #ffffff;
   /*
    * The whole block is the target, not just the cells inside it.
    * Pointing anywhere on it swaps the readings for the windows, so the
@@ -764,7 +783,7 @@
   top: -9px;
   bottom: -9px;
   width: 1px;
-  background: #1c1c20;
+  background: rgba(11, 14, 20, 0.1);
 }
 
 /* ── the arrows ───────────────────────────────────────────────────── */
@@ -819,8 +838,8 @@
   padding: 0;
   border: 0;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.55);
+  background: rgba(11, 14, 20, 0.05);
+  color: rgba(11, 14, 20, 0.55);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
@@ -837,8 +856,8 @@
 }
 
 .th-arrow:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.1);
+  color: #0b0e14;
 }
 
 .th-flow-row {
@@ -919,14 +938,14 @@
   border-radius: 999px;
   /* The sells side is the ground; the buys side is drawn over it, so the
      two always meet exactly and never leave a seam. */
-  background: #f0567a;
+  background: #b4482e;
   overflow: hidden;
 }
 
 .th-split > span {
   position: absolute;
   inset: 0 auto 0 0;
-  background: #2fd18a;
+  background: #0f6d5f;
 }
 
 /*
@@ -946,15 +965,15 @@
  * the numbers it labels.
  */
 .th-stat-k[data-lead] {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .th-stat-v[data-tone='up'] {
-  color: #2fd18a;
+  color: #0f6d5f;
 }
 
 .th-stat-v[data-tone='down'] {
-  color: #f0567a;
+  color: #b4482e;
 }
 
 /* The slash between a count and its value is a separator, not a digit,
@@ -963,7 +982,7 @@
   margin: 0 3px;
   font-style: normal;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(11, 14, 20, 0.28);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -999,7 +1018,10 @@
      bar underneath stays put and keeps reading while the figures swap. */
   top: 0;
   right: 0;
-  left: 22px;
+  /* 0, not 22. The readings this row replaces start at the block's own
+     left edge, so the row that swaps in over them starts there too — the
+     inset left a gap in front of the first window and nothing after it. */
+  left: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1037,18 +1059,18 @@
  * as a state the row does not have.
  */
 .th-tf-c:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(11, 14, 20, 0.07);
 }
 
 .th-tf-c > b {
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
 }
 
 .th-tf-c:hover > b {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -1064,7 +1086,7 @@
  * the selection is written out in full.
  */
 .th-tf-c[data-on] > b {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .th-tf-c > em {
@@ -1072,7 +1094,7 @@
   font-size: 12.5px;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
-  color: #2fd18a;
+  color: #0f6d5f;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1174,7 +1196,7 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.02em;
-    color: #6e7178;
+    color: #5b6570;
   }
 
   /*
@@ -1485,7 +1507,7 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.02em;
-    color: #6e7178;
+    color: #5b6570;
   }
 
   .th-figs {
@@ -1786,7 +1808,7 @@
  * THE TIPS
  *
  * The row's bubble, in the row's materials — same 11.5px Geist on
- * #202024 with a hairline and a drop, same 120ms fade, same
+ * #f4f7f6 with a hairline and a drop, same 120ms fade, same
  * `content: attr(data-tip)` so a mark that wants one just carries the
  * attribute.
  *
@@ -1811,8 +1833,30 @@
   z-index: 30;
   padding: 5px 8px;
   border-radius: 7px;
-  background: #202024;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  /*
+   * INK, WITH PAPER TYPE. It converted to #F4F7F6 with an ink label,
+   * which is a panel plate: correct for something sitting IN the page,
+   * wrong for something floating over it. A tooltip has to separate from
+   * whatever it covers on its own, and two percent of tone plus a soft
+   * ring does not do that on a white page.
+   */
+  /*
+   * WHITE, WITH AN EDGE THAT CAN CARRY IT.
+   *
+   * It was already white and still read as transparent, and the reason is
+   * the bar underneath: on black a white bubble separated by itself, on
+   * paper it is the same colour as what it covers, so the only thing
+   * saying where it starts is its border. At 14% that border was not
+   * enough, and the drop shadow that would have helped is clipped by
+   * `.th-scroll` on the tips that live inside it.
+   *
+   * So the edge does the work: a full weight hairline the bar has nowhere
+   * else, and a tighter shadow that survives the clip.
+   */
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(11, 14, 20, 0.28),
+    0 4px 10px rgba(11, 14, 20, 0.16);
   font-family: var(--sans);
   font-size: 11.5px;
   font-weight: 500;
@@ -1822,7 +1866,7 @@
   /* White on every mark, including the gold pill. The bubble is chrome —
      it says what the thing IS — and tinting it would read as part of the
      value rather than as a label for it. */
-  color: #ffffff;
+  color: #0b0e14;
   /* Hidden rather than absent, so the bar does not reflow to show it. */
   opacity: 0;
   pointer-events: none;
@@ -1845,13 +1889,19 @@
  * opacity and carries the tip; what dims is the thing you are pointing
  * at. Same feedback, and the explanation stays legible.
  */
+/* `.th-fund:hover` is off this list for the reason above: it carries a
+   tooltip, and fading the host takes the tooltip with it. Its glyph still
+   fades, and its label dims by colour instead. */
 .th-i:hover > svg,
 .th-watch:hover > svg,
 .th-fund:hover > svg,
-.th-fund:hover,
 .th .arc-leaf:hover > svg,
 .th-art-hit:hover {
   opacity: 0.5;
+}
+
+.th-fund:hover {
+  color: rgba(11, 14, 20, 0.5);
 }
 
 /* The pill is a filled control rather than a glyph on the ground, so it
@@ -1878,3 +1928,133 @@
   align-items: center;
   gap: 7px;
 }
+
+
+/*
+ * ── THE HEADER'S PALETTE ─────────────────────────────────────────────
+ *
+ * On the strip and nothing else, so the chart, the trade panel and the
+ * tables under it keep what they have until we get to them.
+ *
+ * This is the block that becomes the light half of the theme.
+ */
+.th-wrap,
+.th {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  /*
+   * AND THE BASE TEXT COLOUR, not just the tokens.
+   *
+   * Anything on this surface that does not state a colour of its own
+   * INHERITS, and what it was inheriting is the page's base ink — the
+   * dark terminal's near white. That is why the advanced strategy panel
+   * came up blank: nothing in it sets a colour, so every label in it was
+   * #E4E7EE on white paper.
+   */
+  color: var(--ink-1);
+
+}
+
+/*
+ * AND IT HAS TO PAINT ITS OWN GROUND. `.th-wrap` is transparent on
+ * purpose: it took the page's black and the strip read as part of it.
+ * With the type flipped to ink and the page still dark, transparent means
+ * ink on black, which is nothing at all. It carries the paper itself
+ * until the rest of this page follows.
+ */
+.th-wrap {
+  background: var(--surface);
+}
+
+
+/*
+ * ── THE FLOW BLOCK'S TIPS OPEN INTO THE PAGE ─────────────────────────
+ *
+ * Every tip on this bar is centred on the thing it belongs to, which is
+ * right until the thing is against the right edge: the volume, buys,
+ * sells and net readings sit in the last two hundred pixels of the bar,
+ * so a centred bubble hangs off the side of the window and gets clipped.
+ *
+ * Pinned to their right edge instead, so they open back across the bar
+ * where there is room, exactly as the conditionals filter's tip was
+ * pinned to its left edge for the same reason.
+ */
+.th .th-flow [data-tip]::after,
+.th .th-flow[data-tip]::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+
+/*
+ * ── THE SECOND LINE'S TIPS OPEN UPWARD ───────────────────────────────
+ *
+ * They were not transparent. They were CLIPPED.
+ *
+ * Everything on the identity side sits inside `.th-scroll`, which is
+ * `overflow: auto hidden` so the marks line can scroll sideways. A
+ * scroller clips on BOTH axes whatever the y value says, and these tips
+ * hang below their element — on the second line that lands outside the
+ * band, so all you ever saw was the top edge of a white box.
+ *
+ * Above instead. The second line has the whole first line's height over
+ * it, so the bubble opens into space that is inside the scroller.
+ */
+/*
+ * BESIDE the mark, not above or below it.
+ *
+ * Above was still clipped: `.th-scroll` is `overflow: auto hidden`, and a
+ * scroller clips on BOTH axes whatever the y value reads, so anything
+ * leaving the band's height is cut off no matter which way it goes. That
+ * is what looked transparent — you were seeing the sliver of the bubble
+ * that happened to fall inside.
+ *
+ * Vertically centred on the mark and opening to its right, the whole
+ * bubble stays inside the band, so there is nothing to clip.
+ */
+.th .th-scroll .th-fund[data-tip]::after,
+.th .th-scroll .th-calls[data-tip]::after {
+  top: 50%;
+  bottom: auto;
+  left: calc(100% + 8px);
+  right: auto;
+  transform: translateY(-50%);
+}
+
+/*
+ * ── THE BAR UNDER THE READINGS FADES WITH THEM ───────────────────────
+ *
+ * `.th-split` is the buy and sell share OF the four readings, so while
+ * they are faded out for the windows row it is a red and green line under
+ * a row that is no longer there. Same transition, so the block changes
+ * state as one thing.
+ *
+ * NOTHING ELSE ABOUT THIS ROW IS TOUCHED. Its position, its spacing and
+ * its type are the ones it shipped with.
+ */
+
+
+.th-split {
+  transition: opacity 130ms ease;
+}
+
+.th-flow:hover .th-split {
+  opacity: 0;
+}
+
+
+

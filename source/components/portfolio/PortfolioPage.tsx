@@ -54,6 +54,7 @@ export function PortfolioPage(): React.ReactElement {
   );
   return (
     <main
+      data-portfolio-page=""
       /* `gap-5`, not `gap-3`. With the underline gone the tab labels sit
          on nothing, and 12px put the page's first line close enough to
          them to read as one block — the total was almost touching the

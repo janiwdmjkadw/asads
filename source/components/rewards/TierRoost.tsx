@@ -45,20 +45,30 @@ import './tier-roost.css';
  * darker foot. Five stops rather than two, because two stops make a
  * coloured shape and it is the narrow bright band that makes an eye
  * read metal.
+ *
+ * ── THE SPECULAR BAND IS NOT NEARLY WHITE ANY MORE ───────────────────
+ *
+ * On a black page the bright stop could go almost to paper and still
+ * read as a highlight, because everything around it was dark. Over
+ * white it IS the page: silver's and platinum's bands were holes
+ * punched through the middle of each bird. Every band comes down a
+ * step so the metal still turns on a ground that is now light. The
+ * same three ramps are shared by the accolade medals and the fren
+ * board, and they moved together.
  */
 const METALS: ReadonlyArray<string> = [
   /* Steel. The plainest working metal, so the ladder starts somewhere
      honest and every rung above it is warmer or brighter. Iron went
      darker than the page's own hairline and read as absent. */
-  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, #aab2ba 48%, #6c747c 64%, #383d43 100%)',
-  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #e0a066 47%, #96552a 66%, #4d2711 100%)',
-  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #f4f7fa 46%, #a8b0b9 66%, #5f666e 100%)',
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #f7dd8a 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, #98a1aa 48%, #6c747c 64%, #383d43 100%)',
+  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
+  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #dbe2e8 46%, #a8b0b9 66%, #5f666e 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #eccb63 46%, #c09220 66%, #6b4806 100%)',
   /* Icy blue rather than a brighter silver. The top rung has to be
      unmistakable at 30px beside a metal that is also pale and also
      cool, and a blue platinum is a convention rank ladders already
      taught everybody. */
-  'linear-gradient(145deg, #3d6d96 0%, #8ec6e8 27%, #e8f7ff 45%, #6fa9d2 68%, #315a80 100%)',
+  'linear-gradient(145deg, #3d6d96 0%, #8ec6e8 27%, #cbe6f6 45%, #6fa9d2 68%, #315a80 100%)',
 ];
 
 /** Past the table, the top metal repeats rather than falling to grey. */
@@ -113,6 +123,10 @@ export function TierRoost(props: Props): React.ReactElement {
            * than turning into grey silhouettes. Half the point of a
            * ladder is wanting the next one, and you cannot want gold if
            * gold is drawn as a blank until the day you reach it.
+           *
+           * 0.42, not 0.26: a pale metal at a quarter strength still
+           * reads over black, and over white it is gone — which put the
+           * two rungs you are climbing TOWARD closest to invisible.
            */}
           <span
             className="trs-owl"
@@ -121,7 +135,7 @@ export function TierRoost(props: Props): React.ReactElement {
               width: i === at ? 60 : 46,
               height: i === at ? 60 : 46,
               background: metalAt(i),
-              opacity: i > at ? 0.26 : 1,
+              opacity: i > at ? 0.42 : 1,
             }}
           />
           <span className="trs-k">{cap(t.key)}</span>

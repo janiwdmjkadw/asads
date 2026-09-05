@@ -464,7 +464,7 @@ function dataPriceRange(data: CandlestickData<Time>[] | undefined): PriceRange |
 }
 
 /* White, with black type — see MAX_BUBBLES_PER_BUCKET. */
-const AGGREGATE_BUBBLE_FILL = '#ffffff';
+const AGGREGATE_BUBBLE_FILL = '#0b0e14';
 
 /*
  * The two fills that are not a side.
@@ -711,7 +711,7 @@ export function buildWalletTradeMarkerModel(
         walletEmoji: emoji,
         wallet: event.wallet,
         signature: event.signature,
-        color: event.isBuy ? '#22c77e' : '#f0567a',
+        color: event.isBuy ? '#0f6d5f' : '#b4482e',
         amountSol: Number(event.solLamports) / 1e9,
         stats: statsByWallet.get(event.wallet) ?? null,
       },
@@ -1478,7 +1478,7 @@ export const PriceChart = memo(function PriceChart({
     const chart = createChart(containerRef.current, {
       layout: {
         background: { color: 'transparent' },
-        textColor: '#a8aeba',
+        textColor: '#5b6570',
         fontFamily: mono.stack,
         fontSize: 11,
         attributionLogo: false,
@@ -1488,11 +1488,11 @@ export const PriceChart = memo(function PriceChart({
          where the ruling is doing real work — it is how a candle's
          height is read at all. */
       grid: {
-        vertLines: { color: 'rgba(255,255,255,0.09)' },
-        horzLines: { color: 'rgba(255,255,255,0.09)' },
+        vertLines: { color: 'rgba(11,14,20,0.09)' },
+        horzLines: { color: 'rgba(11,14,20,0.09)' },
       },
       timeScale: {
-        borderColor: 'rgba(255,255,255,0.14)',
+        borderColor: 'rgba(11,14,20,0.14)',
         timeVisible: true,
         secondsVisible: true,
         // 7E: fixed candle width + right padding so a sparse fresh
@@ -1511,7 +1511,7 @@ export const PriceChart = memo(function PriceChart({
         // Default `shiftVisibleRangeOnNewBar: true` keeps the
         // latest bar in view as new buckets arrive.
       },
-      rightPriceScale: { borderColor: 'rgba(255,255,255,0.14)', mode: 0 },
+      rightPriceScale: { borderColor: 'rgba(11,14,20,0.14)', mode: 0 },
       handleScroll: {
         mouseWheel: false,
         pressedMouseMove: true,
@@ -1530,26 +1530,26 @@ export const PriceChart = memo(function PriceChart({
       crosshair: {
         mode: 0,
         vertLine: {
-          color: 'rgba(255,255,255,0.55)',
+          color: 'rgba(11,14,20,0.45)',
           width: 1,
           style: 2,
-          labelBackgroundColor: '#101318',
+          labelBackgroundColor: '#0b0e14',
         },
         horzLine: {
-          color: 'rgba(255,255,255,0.55)',
+          color: 'rgba(11,14,20,0.45)',
           width: 1,
           style: 2,
-          labelBackgroundColor: '#101318',
+          labelBackgroundColor: '#0b0e14',
         },
       },
       autoSize: true,
     });
 
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: '#22c77e',
-      downColor: '#f0567a',
-      wickUpColor: '#22c77e',
-      wickDownColor: '#f0567a',
+      upColor: '#0f6d5f',
+      downColor: '#b4482e',
+      wickUpColor: '#0f6d5f',
+      wickDownColor: '#b4482e',
       borderVisible: false,
       priceFormat: {
         type: 'custom',
@@ -2110,7 +2110,7 @@ export const PriceChart = memo(function PriceChart({
     chartRef.current.applyOptions({
       rightPriceScale: {
         mode: logScale ? 1 : 0,
-        borderColor: 'rgba(255,255,255,0.06)',
+        borderColor: 'rgba(11,14,20,0.08)',
       },
     });
   }, [logScale]);
@@ -2251,8 +2251,8 @@ export const PriceChart = memo(function PriceChart({
       if (!Number.isFinite(price) || price <= 0) return;
       wanted.set(key, { price, color, title });
     };
-    if (avgEntryUsdMc != null) want('avg-entry', avgEntryUsdMc, '#22c77e', 'avg entry');
-    if (avgExitUsdMc != null) want('avg-exit', avgExitUsdMc, '#f0567a', 'avg exit');
+    if (avgEntryUsdMc != null) want('avg-entry', avgEntryUsdMc, '#0f6d5f', 'avg entry');
+    if (avgExitUsdMc != null) want('avg-exit', avgExitUsdMc, '#b4482e', 'avg exit');
     // Pre-bond: the pending migration level (amber, same family as the
     // graduation M bubble that replaces it). Null once graduated.
     if (migrationUsdMc != null) want('migration', migrationUsdMc, '#f5a524', 'migration');
@@ -2427,7 +2427,7 @@ export const PriceChart = memo(function PriceChart({
             <div className="mk-head">
               <span
                 className="mk-face"
-                style={{ background: markerCard.entry.color, color: '#0b0d11' }}
+                style={{ background: markerCard.entry.color, color: '#ffffff' }}
               >
                 <MarkerArt entry={markerCard.entry} />
               </span>

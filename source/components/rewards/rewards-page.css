@@ -134,12 +134,12 @@
   border: 0;
   border-radius: 7px;
   background: var(--ink-0);
-  color: #000;
+  color: #ffffff;
   font: 600 11.5px/1 var(--sans);
   cursor: pointer;
   transition: background-color 130ms var(--ease, ease), opacity 130ms var(--ease, ease);
 }
-.rw-go:hover:not(:disabled) { background: #dcdde0; }
+.rw-go:hover:not(:disabled) { background: #262c34; }
 .rw-go:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── the window words ────────────────────────────────────────────── */
@@ -198,10 +198,17 @@
 
 .rw-inv .rw-go { margin-top: 18px; }
 
-/* The code on a white plate, because a QR has to be. No coloured
-   border and no hue matched glow around it. */
+/* A QR has to sit on white to scan, which used to make this plate
+   the one white object on a black page. The page is white now, so the
+   plate needs an EDGE rather than a fill — otherwise the code floats
+   with nothing holding it. Still no coloured border and no glow. */
 .rw-qr { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: none; }
-.rw-qr-box { padding: 8px; border-radius: 10px; background: #fff; }
+.rw-qr-box {
+  padding: 8px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(11, 14, 20, 0.12);
+}
 .rw-qr-box > img { display: block; border-radius: 4px; }
 .rw-qr-cap { font-size: 11px; color: var(--ink-3); }
 
@@ -353,7 +360,7 @@
   bottom: 0;
   z-index: -1;
   border-radius: 7px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(90deg, rgba(11, 14, 20, 0.085), rgba(11, 14, 20, 0.03));
 }
 
 .cbw-n { display: inline-flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink-0); }
@@ -406,7 +413,7 @@
   bottom: 0;
   z-index: -1;
   border-radius: 7px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015));
+  background: linear-gradient(90deg, rgba(11, 14, 20, 0.08), rgba(11, 14, 20, 0.03));
 }
 
 .acc-n { font-size: 13px; font-weight: 500; color: var(--ink-2); }
@@ -415,9 +422,9 @@
 .acc-s { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-3); }
 .acc-s > b { font-weight: 500; color: var(--ink-0); }
 
-/* The ones you can collect are the only rows with a white name, which
-   is what makes them findable without a coloured chip. */
-.acc-r[data-ready] { background: rgba(255, 255, 255, 0.05); }
+/* The ones you can collect are the only rows in full ink, which is
+   what makes them findable without a coloured chip. */
+.acc-r[data-ready] { background: rgba(11, 14, 20, 0.06); }
 .acc-r[data-ready] .acc-n { color: var(--ink-0); }
 .acc-r[data-ready] .acc-p { color: var(--ink-2); }
 
@@ -448,7 +455,7 @@
 .plb-v { font-size: 13px; font-weight: 500; color: var(--ink-0); }
 
 /* Your own row, found without a hue: a plate and full ink. */
-.plb-r[data-me] { background: rgba(255, 255, 255, 0.06); }
+.plb-r[data-me] { background: rgba(11, 14, 20, 0.07); }
 .plb-r[data-me] .plb-n,
 .plb-r[data-me] .plb-k { color: var(--ink-0); opacity: 1; }
 
@@ -536,4 +543,72 @@
   .rw-inv-say { margin-top: 10px; }
   .rw-inv-do { margin-top: 14px; }
   .rwp-body > * + * { margin-top: 0; }
+}
+
+
+/*
+ * ── THE REWARDS PAGE'S PALETTE ───────────────────────────────────────
+ *
+ * Its own root, like every converted surface: the tokens re-pointed at
+ * paper, plus a GROUND and a base `color` — tokens alone leave every
+ * rule that names no colour inheriting the app's near white.
+ *
+ * The partner modal is listed by name because it portals out of the
+ * page, and `--hold` is restated because the pale gold it carries for
+ * a black row is invisible on white.
+ *
+ * This becomes the light half of the theme when the toggle is built.
+ */
+.rwp,
+.pw-scrim,
+.pw-card {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --hold: #c08a12;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  --accent: #0b0e14;
+  --accent-ink: #ffffff;
+  /*
+   * `.panel` is the app's own card chrome and the Points tab wears it:
+   * it paints `--section-bg`, which is still the terminal's near black,
+   * plus an accent wash and a lit top edge that were both drawn to
+   * catch light on a dark card. On paper the card is the page with a
+   * rim, and the two overlays come off in the rule below.
+   */
+  --section-bg: #ffffff;
+  --section-border: rgba(11, 14, 20, 0.1);
+  --section-shadow: none;
+}
+
+/* The gilded card portals out of the page, so it takes the palette by
+   name — and a base `color` with it. Without that its copy inherits the
+   app's near white ink and lands on ivory. */
+.pw-card { color: var(--ink-1); }
+
+/* The lit edge and the accent wash are for a card that has to separate
+   itself from a black page. This one separates with a hairline. */
+.rwp .panel::before,
+.rwp .panel::after {
+  display: none;
+}
+
+.rwp {
+  background: var(--surface);
+  color: var(--ink-1);
 }

@@ -27,6 +27,7 @@ import {
   Row,
   SECTION_COLORS,
   SectionTitle,
+  LoadFailed,
   Skeleton,
   StatCard,
   Table,
@@ -101,6 +102,20 @@ export function ReferralTab(): React.ReactElement {
   }
   if (meResult?.kind === 'error') {
     return <Panel><Empty text="Rewards are temporarily unavailable. Try again soon." /></Panel>;
+  }
+  /*
+   * The request that never answered. Every figure below reads through
+   * `me?.` with a zero fallback, so without this the tab renders a
+   * complete page of ZEROES — a referral count, a volume and a
+   * claimable balance that all say nothing earned, which is a far worse
+   * lie than saying the load failed.
+   */
+  if (!me && !meQuery.isLoading) {
+    return (
+      <Panel>
+        <LoadFailed what="Rewards" onRetry={() => void meQuery.refetch()} />
+      </Panel>
+    );
   }
 
   /* `useLeaderboard` is deliberately NOT called any more. The block it

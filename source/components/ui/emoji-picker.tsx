@@ -50,7 +50,7 @@ function EmojiPickerSearch({
       <EmojiPickerPrimitive.Search
         autoFocus
         className={cn(
-          'h-9 w-full appearance-none rounded-lg border border-[#272729] bg-[#0c0c0d] px-3 text-[12.5px] text-[rgba(255,255,255,0.92)] outline-none placeholder:text-[#6e7178]',
+          'h-9 w-full appearance-none rounded-lg border border-[rgba(11,14,20,0.12)] bg-white px-3 text-[12.5px] text-[rgba(11,14,20,0.92)] outline-none placeholder:text-[#8a9591]',
           className,
         )}
         placeholder="Search emoji…"
@@ -80,7 +80,10 @@ function EmojiPickerContent({
         components={{
           CategoryHeader: ({ category, ...headerProps }) => (
             <div
-              className="bg-popover px-3 pb-1.5 pt-3 text-[11px] font-semibold text-[var(--ink-3)]"
+              /* The sticky category heading rides over the emoji as they scroll
+                 under it, so it needs the picker's OWN ground rather than
+                 `bg-popover`, which is the app's dark token. */
+              className="bg-white px-3 pb-1.5 pt-3 text-[11px] font-semibold text-[#8a9591]"
               {...headerProps}
             >
               {category.label}
@@ -93,7 +96,7 @@ function EmojiPickerContent({
           ),
           Emoji: ({ emoji, ...emojiProps }) => (
             <button
-              className="flex size-8 items-center justify-center rounded-md text-lg transition-colors data-[active]:bg-[rgba(255,255,255,0.10)]"
+              className="flex size-8 items-center justify-center rounded-md text-lg transition-colors data-[active]:bg-[rgba(11,14,20,0.07)]"
               {...emojiProps}
             >
               {emoji.emoji}
@@ -135,7 +138,7 @@ function EmojiPickerFooter({
           )
         }
       </EmojiPickerPrimitive.ActiveEmoji>
-      <EmojiPickerPrimitive.SkinToneSelector className="flex size-7 flex-none items-center justify-center rounded-md text-lg transition-colors hover:bg-[rgba(255,255,255,0.08)]" />
+      <EmojiPickerPrimitive.SkinToneSelector className="flex size-7 flex-none items-center justify-center rounded-md text-lg transition-colors hover:bg-[rgba(11,14,20,0.06)]" />
     </div>
   );
 }

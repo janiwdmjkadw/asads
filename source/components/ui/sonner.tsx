@@ -28,7 +28,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-popover group-[.toaster]:text-popover-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+            /*
+             * PAPER, like every other portalled surface. A toast renders at
+             * the document root, so it reads `--popover` from `.listen-root`
+             * — the black terminal's value — no matter which converted page
+             * raised it.
+             */
+            "group toast group-[.toaster]:bg-white group-[.toaster]:text-[#0b0e14] group-[.toaster]:border-[rgba(11,14,20,0.1)] group-[.toaster]:shadow-[0_16px_40px_rgba(11,14,20,0.16)]",
           description: "group-[.toast]:text-muted-foreground",
           actionButton:
             "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",

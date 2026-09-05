@@ -357,7 +357,7 @@ export function TokenHeader() {
                 * nearly a hundred pixels spare. Same duplicate-and-
                 * toggle as the age above.
                 */}
-              <span className="th-calls th-calls-line2" data-tip="Called by 53">
+              <span className="th-calls th-calls-line2" data-tip="Dev migrations">
                 <span className="th-crown">
                   <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">{ROW2_MARKS.migrations.art}</svg>
                 </span>
@@ -400,7 +400,7 @@ export function TokenHeader() {
           {/* Not readings. A count of who called this coin, and the
               control that broadcasts it — so they sit past the figures
               with more air than anything between the stats. */}
-          <span className="th-calls th-calls-figs" data-tip="Called by 53">
+          <span className="th-calls th-calls-figs" data-tip="Dev migrations">
             <span className="th-crown">
               <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">{ROW2_MARKS.migrations.art}</svg>
             </span>

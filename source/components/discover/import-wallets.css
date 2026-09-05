@@ -23,7 +23,7 @@
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(11, 14, 20, 0.14);
 }
 
 .iw {
@@ -31,10 +31,11 @@
   flex-direction: column;
   width: min(440px, 100%);
   overflow: hidden;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 12px;
-  background: #0c0c0d;
-  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.7);
+  background: #ffffff;
+  color: #2b3138;
+  box-shadow: 0 34px 90px rgba(11, 14, 20, 0.14);
   font-family: var(--sans);
 }
 
@@ -44,14 +45,14 @@
   gap: 10px;
   flex: none;
   padding: 9px 10px;
-  border-bottom: 1px solid #1c1c1f;
+  border-bottom: 1px solid rgba(11, 14, 20, 0.09);
 }
 
 .iw > header > b {
   flex: 1 1 auto;
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .iw > header > button {
@@ -65,12 +66,12 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: #6e7178;
+  color: #5b6570;
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.iw > header > button:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.iw > header > button:hover { background: rgba(11, 14, 20, 0.08); color: #0b0e14; }
 .iw > header > button > svg { width: 14px; height: 14px; }
 
 .iw-body { padding: 10px; }
@@ -79,7 +80,7 @@
   margin: 0 0 9px;
   font-size: 11.5px;
   line-height: 1.5;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 /*
@@ -92,24 +93,24 @@
   width: 100%;
   height: 168px;
   padding: 9px 10px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
-  background: #08080a;
+  background: #f7f9f8;
   outline: none;
   resize: none;
   font-family: var(--sans);
   font-size: 11.5px;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
-.iw-paste::placeholder { color: #4b4e55; }
+.iw-paste::placeholder { color: #8a9591; }
 
 .iw-say {
   margin: 8px 0 0;
   font-size: 11px;
   line-height: 1.4;
-  color: #868d97;
+  color: #8a9591;
 }
 
 .iw-say[data-bad] { color: var(--down); }
@@ -120,7 +121,7 @@
   gap: 8px;
   flex: none;
   padding: 10px;
-  border-top: 1px solid #1c1c1f;
+  border-top: 1px solid rgba(11, 14, 20, 0.09);
 }
 
 .iw > footer > i { flex: 1 1 auto; }
@@ -159,23 +160,45 @@
    waits for something to import, it simply does nothing until there is. */
 .iw-go {
   min-width: 88px;
-  background: #ffffff;
-  color: #000000;
+  background: #0b0e14;
+  color: #ffffff;
 }
 
-.iw-go:hover { background: #f4f4f5; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12); }
-.iw-go:active { background: #e4e4e7; box-shadow: none; }
+.iw-go:hover { background: #262c34; box-shadow: 0 0 0 3px rgba(11, 14, 20, 0.12); }
+.iw-go:active { background: #05070a; box-shadow: none; }
 
 /* The secondary: the field's own ring, nothing filled. */
 .iw-alt {
   min-width: 88px;
-  border: 1px solid #272729;
-  color: #868d97;
+  border: 1px solid rgba(11, 14, 20, 0.16);
+  color: #2b3138;
 }
 
-.iw-alt:hover { border-color: #3a4150; color: #ffffff; }
+.iw-alt:hover { border-color: #8a9591; color: #0b0e14; }
 
 /* Cancel. A word, not a control — it is the thing you do by pressing
    Escape or clicking the scrim, and it should not compete with Import. */
-.iw-quiet { padding: 0 8px; color: #6e7178; }
-.iw-quiet:hover { color: #ffffff; }
+.iw-quiet { padding: 0 8px; color: #5b6570; }
+.iw-quiet:hover { color: #0b0e14; }
+
+
+/*
+ * ── THE INK SCALE, INSIDE THIS MENU ONLY ─────────────────────────────
+ *
+ * The rows and figures in here read the app's `--ink-*` and `--hairline`,
+ * which are declared white for a black board. Re-pointed at the menu's
+ * own root so nothing outside it moves, which is also how the top bar and
+ * the coins strip do it.
+ *
+ * These blocks become the light half of the theme when the toggle is
+ * built; nothing here is a literal that would have to be found again.
+ */
+.iw, .iw-scrim {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+}

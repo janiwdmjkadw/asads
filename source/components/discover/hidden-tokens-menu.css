@@ -3,7 +3,7 @@
  *
  * The button is skinned like the cog beside it, in the same rail
  * language: no border, a 6% plate, 10% on hover, white when it is doing
- * something. The popover is the panels' #111111 with one hairline, and it
+ * something. The popover is the panels' #ffffff with one hairline, and it
  * borrows `.df-seg` from the filters stylesheet rather than growing a
  * second idea of what a two-way choice looks like.
  */
@@ -18,15 +18,15 @@
   flex-shrink: 0;
   border: 0;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.45);
+  background: rgba(11, 14, 20, 0.06);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease;
 }
 
 .htm-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.1);
+  color: #0b0e14;
 }
 
 /*
@@ -43,8 +43,8 @@
  * setting was.
  */
 .htm-btn.htm-btn.is-on {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: #0b0e14 !important;
+  color: #ffffff !important;
 }
 
 /* How many, so the button is not identical at zero and at forty. */
@@ -74,14 +74,14 @@
   max-width: calc(100% - 20px);
   padding: 12px;
   border-radius: 12px;
-  background: #111111;
-  color: rgba(255, 255, 255, 0.92);
+  background: #ffffff;
+  color: rgba(11, 14, 20, 0.92);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 24px 60px #000000b0;
+    0 0 0 1px rgba(11, 14, 20, 0.12),
+    0 24px 60px rgba(11, 14, 20, 0.18);
 
-  --df-line: rgba(255, 255, 255, 0.07);
+  --df-line: rgba(11, 14, 20, 0.07);
   --df-cap: #7c7c7c;
 }
 
@@ -108,7 +108,7 @@
   font-size: 12.5px;
   font-weight: 600;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 /*
@@ -178,4 +178,26 @@
   .htm-row .df-segbtn {
     flex: 1 1 0;
   }
+}
+
+
+/*
+ * ── THE INK SCALE, INSIDE THIS MENU ONLY ─────────────────────────────
+ *
+ * The rows and figures in here read the app's `--ink-*` and `--hairline`,
+ * which are declared white for a black board. Re-pointed at the menu's
+ * own root so nothing outside it moves, which is also how the top bar and
+ * the coins strip do it.
+ *
+ * These blocks become the light half of the theme when the toggle is
+ * built; nothing here is a literal that would have to be found again.
+ */
+.htm-pop, .htm-btn {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
 }

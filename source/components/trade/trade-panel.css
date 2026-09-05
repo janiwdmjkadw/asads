@@ -107,7 +107,7 @@
   max-width: 300px;
   padding: 8px 12px 12px;
   background: transparent;
-  border-left: 1px solid #1d1d20;
+  border-left: 1px solid #f7f9f8;
   font-family: var(--sans);
 }
 
@@ -146,7 +146,7 @@
   display: flex;
   align-items: stretch;
   padding: 3px;
-  border: 1px solid #191c21;
+  border: 1px solid #ffffff;
   /*
    * The two radii are one decision: the inner one is the outer minus the
    * 3px of padding between them. Set them independently and the filled
@@ -168,23 +168,23 @@
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
 .tp-side-b:hover {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(11, 14, 20, 0.85);
 }
 
 .tp-side-b[data-on] {
-  background: #22c77e;
-  color: #04120b;
+  background: #0f6d5f;
+  color: #ffffff;
 }
 
 .tp-side-b:nth-child(2)[data-on] {
-  background: #ee4d6f;
-  color: #17050a;
+  background: #b4482e;
+  color: #ffffff;
 }
 
 .tp-more {
@@ -193,10 +193,10 @@
   justify-content: center;
   width: 32px;
   height: 28px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
 }
 
@@ -222,7 +222,7 @@
 .tp-modes {
   display: flex;
   align-items: stretch;
-  border-bottom: 1px solid #1d1d20;
+  border-bottom: 1px solid #f7f9f8;
 }
 
 .tp-tabs {
@@ -243,7 +243,7 @@
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(11, 14, 20, 0.42);
   white-space: nowrap;
   box-shadow: inset 0 -1px 0 transparent;
   cursor: pointer;
@@ -251,13 +251,13 @@
 }
 
 .tp-tab:hover {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(11, 14, 20, 0.78);
 }
 
 .tp-tab[data-on] {
   background: transparent;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   box-shadow: inset 0 -1px 0 #ffffff;
 }
 
@@ -278,11 +278,11 @@
   gap: 7px;
   height: 24px;
   padding: 0 9px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 6px;
   font-size: 10px;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
 }
 
 .tp-chip > svg { width: 12px; height: 12px; }
@@ -302,7 +302,7 @@
  * are alternatives to each other.
  */
 .tp-amt {
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   /* Squarer. At 10px the corners were rounder than the field is tall
      once the height came down, which turns a field into a lozenge. */
   border-radius: 6px;
@@ -313,7 +313,7 @@
 
 /* The ring is on the WHOLE object, not on the input inside it — a
    rectangle lighting up in the middle of a box reads as a second box. */
-.tp-amt:focus-within { border-color: #3a4150; }
+.tp-amt:focus-within { border-color: #8a9591; }
 
 /* The ground is on the FIELD only. The shortcut row below it is the
    panel's own black — it is a set of buttons, not a second input, and a
@@ -324,15 +324,15 @@
   gap: 9px;
   height: 34px;
   padding: 0 12px;
-  border-bottom: 1px solid #1d1d20;
-  background: #0c0c0d;
+  border-bottom: 1px solid #f7f9f8;
+  background: #ffffff;
 }
 
 /*
  * ── THE FIELD NAMES CARRY WEIGHT ─────────────────────────────────────
  *
  * Every label printed inside an input on this panel was 10.5–11px at
- * regular weight in #6e7178 — the setting the panel uses for a FOOTNOTE.
+ * regular weight in #5b6570 — the setting the panel uses for a FOOTNOTE.
  * Tracked capitals are already the hardest thing here to read: the
  * letters are further apart and there are no ascenders or descenders to
  * give the word a shape. Set thin and dim on top of that, "DCA TOTAL
@@ -351,7 +351,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #868d97;
+  color: #8a9591;
 }
 
 /* Stripped back to the type. The box around it belongs to the group. */
@@ -366,12 +366,12 @@
   font-size: 11.5px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 20, 0.9);
 }
 
 .tp-amount-v::placeholder {
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(11, 14, 20, 0.28);
 }
 
 .tp-quick {
@@ -391,7 +391,7 @@
      the group was taller than anything else on the rail. */
   height: 26px;
   border: 0;
-  border-left: 1px solid #1d1d20;
+  border-left: 1px solid #f7f9f8;
   border-radius: 0;
   background: transparent;
   font-family: var(--sans);
@@ -401,7 +401,7 @@
   font-size: 10.5px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(11, 14, 20, 0.82);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
@@ -409,7 +409,7 @@
 .tp-q:first-child { border-left: 0; }
 
 .tp-q:hover {
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -425,7 +425,7 @@
  */
 .tp-q[data-on] {
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -437,7 +437,7 @@
  * the one signal that says these are now inputs rather than buttons.
  */
 .tp-quick[data-editing] {
-  background: #0c0c0d;
+  background: #ffffff;
 }
 
 .tp-q-in {
@@ -446,11 +446,11 @@
   padding: 0;
   outline: none;
   text-align: center;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .tp-q-in:focus {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(11, 14, 20, 0.05);
 }
 
 /* The pencil is not an amount, so it does not take an amount's width. */
@@ -459,13 +459,13 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 40px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 .tp-q-edit > svg { width: 12px; height: 12px; }
 
 /* While it is open, the pencil is the tick that closes it. */
-.tp-q-edit[data-on] { color: #22c77e; }
+.tp-q-edit[data-on] { color: #0f6d5f; }
 
 /*
  * Slippage, priority, bribe, MEV. Four settings that are checked rather
@@ -494,7 +494,7 @@
 .tp-s + .tp-s {
   margin-left: 7px;
   padding-left: 7px;
-  border-left: 1px solid #272729;
+  border-left: 1px solid rgba(11, 14, 20, 0.12);
 }
 
 /*
@@ -517,7 +517,7 @@
   font-size: 10.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(11, 14, 20, 0.78);
   white-space: nowrap;
   cursor: pointer;
 }
@@ -525,14 +525,14 @@
 .tp-s > svg {
   width: 12.5px;
   height: 12.5px;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(11, 14, 20, 0.42);
 }
 
 /* Protection on is the one state here worth a colour: it is the only one
    of the four that is a guard rather than a number. */
 .tp-s.is-on,
 .tp-s.is-on > svg {
-  color: #2fd18a;
+  color: #0f6d5f;
 }
 
 /*
@@ -558,7 +558,7 @@
   border: 0;
   background: transparent;
   font-family: var(--sans);
-  color: #f0567a;
+  color: #b4482e;
   transition: color 130ms ease;
 }
 
@@ -573,7 +573,7 @@
   gap: 9px;
   margin-top: 14px;
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(11, 14, 20, 0.82);
   cursor: pointer;
 }
 
@@ -611,16 +611,16 @@
   min-width: 0;
   height: 30px;
   padding: 0 10px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
-  background: #0c0c0d;
+  background: #ffffff;
   cursor: text;
   transition: border-color 130ms ease;
 }
 
 .tp-xf.is-wide { flex: 1 1 100%; }
 
-.tp-xf:focus-within { border-color: #3a4150; }
+.tp-xf:focus-within { border-color: #8a9591; }
 
 .tp-xf-k {
   display: inline-flex;
@@ -628,7 +628,7 @@
   gap: 6px;
   flex-shrink: 0;
   font-size: 11px;
-  color: #838a93;
+  color: #8a9591;
   white-space: nowrap;
 }
 
@@ -640,8 +640,8 @@
 /* The arrow takes the direction's colour — up is where you take profit,
    down is where you stop the loss. It is the one place on the row where
    a hue says something the words would otherwise have to. */
-.tp-xf[data-kind='tp'] .tp-xf-k > svg { color: #22c77e; }
-.tp-xf[data-kind='sl'] .tp-xf-k > svg { color: #ee4d6f; }
+.tp-xf[data-kind='tp'] .tp-xf-k > svg { color: #0f6d5f; }
+.tp-xf[data-kind='sl'] .tp-xf-k > svg { color: #b4482e; }
 
 /* Right aligned so the number always meets the unit, however long it
    is — a left-aligned figure would walk away from its own `%`. */
@@ -656,13 +656,13 @@
   font-family: var(--sans);
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 20, 0.9);
 }
 
 .tp-xf-u {
   flex-shrink: 0;
   font-size: 11px;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 .tp-xdel {
@@ -673,14 +673,14 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
   cursor: pointer;
   transition: color 130ms ease, background-color 130ms ease;
 }
 
 .tp-xdel:hover {
   background: rgba(238, 77, 111, 0.12);
-  color: #ee4d6f;
+  color: #b4482e;
 }
 
 .tp-xdel > svg { width: 13px; height: 13px; }
@@ -696,25 +696,25 @@
   width: 100%;
   height: 30px;
   padding: 0 10px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
-  background: #0c0c0d;
+  background: #ffffff;
   font-family: var(--sans);
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
   cursor: pointer;
   transition: color 130ms ease, border-color 130ms ease;
 }
 
 .tp-add:hover,
 .tp-add[data-on] {
-  color: #ffffff;
-  border-color: #333a45;
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.16);
 }
 
 .tp-add-p {
   display: inline-flex;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 .tp-add-p > svg { width: 13px; height: 13px; }
@@ -734,10 +734,12 @@
   flex-direction: column;
   min-width: 168px;
   padding: 4px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 9px;
-  background: #101318;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(11, 14, 20, 0.06),
+    0 14px 34px rgba(11, 14, 20, 0.16);
 }
 
 .tp-add-i {
@@ -752,18 +754,18 @@
   font-family: var(--sans);
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(11, 14, 20, 0.86);
   text-align: left;
   cursor: pointer;
   transition: background-color 120ms ease;
 }
 
-.tp-add-i:hover { background: rgba(255, 255, 255, 0.07); }
+.tp-add-i:hover { background: rgba(11, 14, 20, 0.07); }
 
 .tp-add-i > svg {
   width: 12px;
   height: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 .tp-adv input {
@@ -779,7 +781,7 @@
   width: 17px;
   height: 16px;
   flex-shrink: 0;
-  border: 1px solid #2c313a;
+  border: 1px solid rgba(11, 14, 20, 0.14);
   border-radius: 5px;
   color: transparent;
   transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
@@ -795,9 +797,9 @@
    was scoped to `.tp-adv`, so the second checkbox on the panel — Auto
    Fee — had a box that could never fill. */
 input:checked + .tp-box {
-  background: #22c77e;
-  border-color: #22c77e;
-  color: #04120b;
+  background: #0f6d5f;
+  border-color: #0f6d5f;
+  color: #ffffff;
 }
 
 /*
@@ -819,19 +821,19 @@ input:checked + .tp-box {
   height: 34px;
   border: 0;
   border-radius: 999px;
-  background: #2fd18a;
+  background: #0f6d5f;
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.005em;
-  color: #06130d;
+  color: #ffffff;
   cursor: pointer;
   transition: opacity 130ms ease;
 }
 
 .tp-go[data-side='sell'] {
-  background: #f0567a;
-  color: #1a060c;
+  background: #b4482e;
+  color: #ffffff;
 }
 
 .tp-go:hover { opacity: 0.88; }
@@ -851,14 +853,14 @@ input:checked + .tp-box {
   min-width: 0;
   height: 36px;
   padding: 0 11px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 8px;
-  background: #0c0c0d;
+  background: #ffffff;
   cursor: text;
   transition: border-color 130ms ease;
 }
 
-.tp-field:focus-within { border-color: #3a4150; }
+.tp-field:focus-within { border-color: #8a9591; }
 
 .tp-field-k {
   flex-shrink: 0;
@@ -870,19 +872,19 @@ input:checked + .tp-box {
   font-size: 11.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* A placeholder, not a value — "Any" is what the field says when it has
    not been set, so it takes the tone of an empty input. */
 .tp-field-v.is-dim {
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(11, 14, 20, 0.35);
 }
 
 .tp-field-u {
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
 }
 
 /*
@@ -904,7 +906,7 @@ input:checked + .tp-box {
   position: relative;
   height: 3px;
   border-radius: 999px;
-  background: #272729;
+  background: rgba(11, 14, 20, 0.12);
 }
 
 /* The solid line behind the thumb. It runs from the CENTRE out, not
@@ -918,7 +920,7 @@ input:checked + .tp-box {
   top: 0;
   bottom: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(11, 14, 20, 0.55);
 }
 
 /*
@@ -948,7 +950,7 @@ input:checked + .tp-box {
   height: 14px;
   border: 0;
   border-radius: 999px;
-  background: #ffffff;
+  background: #0b0e14;
   cursor: grab;
 }
 
@@ -957,7 +959,7 @@ input:checked + .tp-box {
   height: 14px;
   border: 0;
   border-radius: 999px;
-  background: #ffffff;
+  background: #0b0e14;
   cursor: grab;
 }
 
@@ -967,7 +969,7 @@ input:checked + .tp-box {
   width: 1px;
   height: 7px;
   transform: translate(-50%, -50%);
-  background: #2c313a;
+  background: rgba(11, 14, 20, 0.14);
 }
 
 /*
@@ -988,12 +990,12 @@ input:checked + .tp-box {
   font-size: 10px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
 }
 
 .tp-scale .is-down,
 .tp-scale .is-up {
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(11, 14, 20, 0.62);
 }
 
 /* ── the advanced strategy pair ───────────────────────────────────── */
@@ -1011,7 +1013,7 @@ input:checked + .tp-box {
   display: flex;
   align-items: stretch;
   padding: 3px;
-  border: 1px solid #191c21;
+  border: 1px solid #ffffff;
   border-radius: 10px;
 }
 
@@ -1028,12 +1030,12 @@ input:checked + .tp-box {
   font-family: var(--sans);
   font-size: 11.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.tp-strat-b:hover { color: rgba(255, 255, 255, 0.85); }
+.tp-strat-b:hover { color: rgba(11, 14, 20, 0.85); }
 
 .tp-strat-b > svg { width: 13px; height: 13px; }
 
@@ -1050,11 +1052,11 @@ input:checked + .tp-box {
  * spent on the TYPE, where it costs nothing and reads at a glance.
  */
 .tp-strat-b[data-on] {
-  background: rgba(255, 255, 255, 0.11);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.11);
+  color: #0b0e14;
 }
 
-.tp-strat-b[data-on] > svg { color: #ffffff; }
+.tp-strat-b[data-on] > svg { color: #0b0e14; }
 
 /* ── what a DCA needs ─────────────────────────────────────────────── */
 
@@ -1084,12 +1086,12 @@ input:checked + .tp-box {
   font-size: 11.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 .tp-field-i::placeholder {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(11, 14, 20, 0.35);
 }
 
 /* ── your position ────────────────────────────────────────────────── */
@@ -1118,8 +1120,8 @@ input:checked + .tp-box {
   display: flex;
   margin: 0 -12px;
   padding: 11px 12px;
-  border-top: 1px solid #1d1d20;
-  border-bottom: 1px solid #1d1d20;
+  border-top: 1px solid #f7f9f8;
+  border-bottom: 1px solid #f7f9f8;
 }
 
 .tp-pos-c {
@@ -1132,11 +1134,11 @@ input:checked + .tp-box {
 }
 
 .tp-pos-c + .tp-pos-c {
-  border-left: 1px solid #1d1d20;
+  border-left: 1px solid #f7f9f8;
 }
 
 /*
- * The label was 10.5px at #6e7178 — the same setting as the caption
+ * The label was 10.5px at #5b6570 — the same setting as the caption
  * under a token-info cell, which is a footnote. These four head the only
  * figures on the panel that are about YOUR money, so they are read
  * first, not last.
@@ -1147,7 +1149,7 @@ input:checked + .tp-box {
   gap: 5px;
   line-height: 1;
   font-size: 10.5px;
-  color: #838a93;
+  color: #8a9591;
 }
 
 /* The denomination toggle. It spins once on press — the only motion on
@@ -1158,12 +1160,12 @@ input:checked + .tp-box {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #6e7178;
+  color: #5b6570;
   cursor: pointer;
   transition: color 130ms ease;
 }
 
-.tp-denom:hover { color: rgba(255, 255, 255, 0.85); }
+.tp-denom:hover { color: rgba(11, 14, 20, 0.85); }
 
 .tp-denom > svg { width: 12px; height: 12px; }
 
@@ -1195,7 +1197,7 @@ input:checked + .tp-box {
   font-size: 12px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 .tp-pos-v > svg {
@@ -1209,11 +1211,11 @@ input:checked + .tp-box {
   justify-content: center;
   width: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
-.tp-pos-v.is-up { color: #2fd18a; }
-.tp-pos-v.is-down { color: #f0567a; }
+.tp-pos-v.is-up { color: #0f6d5f; }
+.tp-pos-v.is-down { color: #b4482e; }
 
 /* ── presets ──────────────────────────────────────────────────────── */
 
@@ -1252,7 +1254,7 @@ input:checked + .tp-box {
 .tp-presets {
   display: flex;
   align-items: stretch;
-  border-bottom: 1px solid #1d1d20;
+  border-bottom: 1px solid #f7f9f8;
 }
 
 .tp-preset {
@@ -1267,7 +1269,7 @@ input:checked + .tp-box {
   font-weight: 500;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(11, 14, 20, 0.42);
   white-space: nowrap;
   cursor: pointer;
   /* The lit segment sits ON the row's rule rather than under it — a
@@ -1278,12 +1280,12 @@ input:checked + .tp-box {
 }
 
 .tp-preset:hover {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(11, 14, 20, 0.78);
 }
 
 .tp-preset[data-on] {
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   box-shadow: inset 0 -1px 0 #ffffff;
 }
 
@@ -1366,7 +1368,7 @@ input:checked + .tp-box {
   display: flex;
   align-items: stretch;
   padding: 3px;
-  border: 1px solid #191c21;
+  border: 1px solid #ffffff;
   border-radius: 9px;
 }
 
@@ -1379,12 +1381,12 @@ input:checked + .tp-box {
   font-family: var(--sans);
   font-size: 11.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
-.tp-pp-sb:hover { color: rgba(255, 255, 255, 0.82); }
+.tp-pp-sb:hover { color: rgba(11, 14, 20, 0.82); }
 
 /*
  * The active side is tinted, not filled. A solid green plate here would
@@ -1393,12 +1395,12 @@ input:checked + .tp-box {
  */
 .tp-pp-sb[data-side='buy'][data-on] {
   background: rgba(34, 199, 126, 0.14);
-  color: #2fd18a;
+  color: #0f6d5f;
 }
 
 .tp-pp-sb[data-side='sell'][data-on] {
   background: rgba(238, 77, 111, 0.14);
-  color: #f0567a;
+  color: #b4482e;
 }
 
 /* ── the three fees ───────────────────────────────────────────────── */
@@ -1431,7 +1433,7 @@ input:checked + .tp-box {
   flex-direction: column;
   min-width: 0;
   padding: 0;
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 9px;
   background: transparent;
   overflow: hidden;
@@ -1439,7 +1441,7 @@ input:checked + .tp-box {
   transition: border-color 130ms ease;
 }
 
-.tp-pp-fee:focus-within { border-color: #3a4150; }
+.tp-pp-fee:focus-within { border-color: #8a9591; }
 
 .tp-pp-fee-v {
   display: flex;
@@ -1450,8 +1452,8 @@ input:checked + .tp-box {
   min-width: 0;
   height: 30px;
   padding: 0 8px;
-  border-bottom: 1px solid #1d1d20;
-  background: #0c0c0d;
+  border-bottom: 1px solid #f7f9f8;
+  background: #ffffff;
 }
 
 .tp-pp-fee-v > input {
@@ -1466,7 +1468,7 @@ input:checked + .tp-box {
   font-size: 12px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /* The unit rides with the number rather than taking a column of its
@@ -1475,7 +1477,7 @@ input:checked + .tp-box {
   flex-shrink: 0;
   font-style: normal;
   font-size: 11.5px;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 .tp-pp-fee-k {
@@ -1490,7 +1492,7 @@ input:checked + .tp-box {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #868d97;
+  color: #8a9591;
   white-space: nowrap;
 }
 
@@ -1500,7 +1502,7 @@ input:checked + .tp-box {
   width: 13px;
   height: 13px;
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /* ── the labelled rows ────────────────────────────────────────────── */
@@ -1519,13 +1521,13 @@ input:checked + .tp-box {
   width: 92px;
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(11, 14, 20, 0.82);
 }
 
 .tp-pp-k > svg {
   width: 12px;
   height: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(11, 14, 20, 0.35);
 }
 
 .tp-pp-check {
@@ -1536,7 +1538,7 @@ input:checked + .tp-box {
   width: 92px;
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(11, 14, 20, 0.82);
   cursor: pointer;
 }
 
@@ -1568,7 +1570,7 @@ input:checked + .tp-box {
   min-width: 0;
   min-height: 30px;
   padding: 7px 11px;
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 8px;
   cursor: text;
   transition: border-color 130ms ease, opacity 130ms ease;
@@ -1576,7 +1578,7 @@ input:checked + .tp-box {
 
 .tp-pp-f.is-full { flex: 1 1 100%; }
 
-.tp-pp-f:focus-within { border-color: #3a4150; }
+.tp-pp-f:focus-within { border-color: #8a9591; }
 
 /* A field for a setting that is switched off is dimmed and dead rather
    than hidden — you can still see the number it would use. */
@@ -1598,17 +1600,17 @@ input:checked + .tp-box {
   font-size: 11.5px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 20, 0.9);
 }
 
 .tp-pp-f > input:disabled { cursor: default; }
 
-.tp-pp-f > input::placeholder { color: rgba(255, 255, 255, 0.28); }
+.tp-pp-f > input::placeholder { color: rgba(11, 14, 20, 0.28); }
 
 .tp-pp-f-u {
   flex-shrink: 0;
   font-size: 11px;
-  color: #6e7178;
+  color: #5b6570;
 }
 
 /* ── the MEV segments ─────────────────────────────────────────────── */
@@ -1627,13 +1629,13 @@ input:checked + .tp-box {
   justify-content: center;
   gap: 5px;
   height: 27px;
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 7px;
   background: transparent;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
   cursor: pointer;
   transition: border-color 130ms ease, color 130ms ease, background-color 130ms ease;
 }
@@ -1642,11 +1644,11 @@ input:checked + .tp-box {
   width: 12px;
   height: 12px;
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
   transition: color 130ms ease;
 }
 
-.tp-pp-sg:hover { color: rgba(255, 255, 255, 0.85); }
+.tp-pp-sg:hover { color: rgba(11, 14, 20, 0.85); }
 
 /*
  * ── LIT, NOT TINTED ──────────────────────────────────────────────────
@@ -1660,18 +1662,18 @@ input:checked + .tp-box {
  * and white type — which is the panel's own way of saying "this one".
  */
 .tp-pp-sg[data-on] {
-  border-color: #3a4150;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
+  border-color: #8a9591;
+  background: rgba(11, 14, 20, 0.07);
+  color: #0b0e14;
 }
 
-.tp-pp-sg[data-on] > svg { color: rgba(255, 255, 255, 0.9); }
+.tp-pp-sg[data-on] > svg { color: rgba(11, 14, 20, 0.9); }
 
 /* ═══════════════════════════════════════════════════════════════════
  * THE TIPS
  *
  * The header's bubble, in the header's materials — same 11.5px on
- * #202024 with a hairline and a drop, same 120ms fade, same
+ * #f4f7f6 with a hairline and a drop, same 120ms fade, same
  * `content: attr(data-tip)` so anything that wants one just carries the
  * attribute. The rail and the bar above it are one page; a second
  * tooltip design would say they were not.
@@ -1698,8 +1700,8 @@ input:checked + .tp-box {
   z-index: 30;
   padding: 5px 8px;
   border-radius: 7px;
-  background: #202024;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 20px rgba(0, 0, 0, 0.55);
+  background: #f4f7f6;
+  box-shadow: 0 0 0 1px rgba(11, 14, 20, 0.08), 0 8px 20px rgba(11, 14, 20, 0.12);
   font-family: var(--sans);
   font-size: 10.5px;
   font-weight: 500;
@@ -1707,7 +1709,7 @@ input:checked + .tp-box {
   letter-spacing: 0;
   text-transform: none;
   white-space: nowrap;
-  color: #ffffff;
+  color: #0b0e14;
   /* Hidden rather than absent, so nothing reflows to make room. */
   opacity: 0;
   pointer-events: none;
@@ -1741,7 +1743,7 @@ input:checked + .tp-box {
   gap: 8px;
   margin: 0 -12px;
   padding: 9px 12px 0;
-  border-top: 1px solid #1d1d20;
+  border-top: 1px solid #f7f9f8;
 }
 
 .tp-sec-h {
@@ -1760,14 +1762,14 @@ input:checked + .tp-box {
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
   cursor: pointer;
 }
 
 .tp-sec-t > svg {
   width: 12px;
   height: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /*
@@ -1824,18 +1826,18 @@ input:checked + .tp-box {
   width: 26px;
   height: 24px;
   padding: 0;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 999px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
   cursor: pointer;
   transition: color 130ms ease, border-color 130ms ease, background-color 130ms ease;
 }
 
 .tp-sec-a:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-  border-color: #333a45;
+  background: rgba(11, 14, 20, 0.06);
+  color: #0b0e14;
+  border-color: rgba(11, 14, 20, 0.16);
 }
 
 .tp-sec-a > svg {
@@ -1890,7 +1892,7 @@ input:checked + .tp-box {
   align-items: center;
   gap: 5px;
   padding: 11px 4px 10px;
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 9px;
 }
 
@@ -1927,12 +1929,12 @@ input:checked + .tp-box {
  * value, which is the only part that changes.
  */
 .tp-cell-k {
-  color: #6e7178;
+  color: #5b6570;
 }
 
-.tp-cell[data-tone='bad'] .tp-cell-v { color: #f0567a; }
-.tp-cell[data-tone='ok'] .tp-cell-v { color: #2fd18a; }
-.tp-cell[data-tone='flat'] .tp-cell-v { color: rgba(255, 255, 255, 0.92); }
+.tp-cell[data-tone='bad'] .tp-cell-v { color: #b4482e; }
+.tp-cell[data-tone='ok'] .tp-cell-v { color: #0f6d5f; }
+.tp-cell[data-tone='flat'] .tp-cell-v { color: rgba(11, 14, 20, 0.92); }
 
 /*
  * The divider inside a split cell. A hairline rather than a slash: the
@@ -1955,7 +1957,7 @@ input:checked + .tp-box {
   gap: 7px;
   height: 36px;
   padding: 0 5px 0 11px;
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 9px;
 }
 
@@ -1966,14 +1968,14 @@ input:checked + .tp-box {
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 500;
-  color: #838a93;
+  color: #8a9591;
   white-space: nowrap;
 }
 
 .tp-addr-k > svg {
   width: 14px;
   height: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 20, 0.5);
 }
 
 /*
@@ -1990,7 +1992,7 @@ input:checked + .tp-box {
   white-space: nowrap;
   font-family: var(--mono);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 20, 0.9);
 }
 
 /*
@@ -2020,14 +2022,14 @@ input:checked + .tp-box {
   width: 28px;
   height: 26px;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
   cursor: pointer;
   transition: background-color 130ms ease, color 130ms ease;
 }
 
 .tp-addr-a:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: rgba(11, 14, 20, 0.08);
+  color: #0b0e14;
 }
 
 /* Up from 14px. A hairline glyph at 14 inside a 26px circle is mostly
@@ -2045,7 +2047,7 @@ input:checked + .tp-box {
  * two rows sit at the rhythm they had.
  */
 .tp-dev-block {
-  border: 1px solid #1d1d20;
+  border: 1px solid #f7f9f8;
   border-radius: 9px;
   padding: 0 6px 9px 11px;
 }
@@ -2090,7 +2092,7 @@ input:checked + .tp-box {
   font-size: 11px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(11, 14, 20, 0.75);
 }
 
 /* The dev's age sits at the far end — the one item on this row that is
@@ -2103,7 +2105,7 @@ input:checked + .tp-box {
 .tp-dev-t > svg {
   width: 12px;
   height: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
 }
 
 /* ── banner ───────────────────────────────────────────────────────── */
@@ -2114,8 +2116,8 @@ input:checked + .tp-box {
   height: 92px;
   border-radius: 8px;
   background:
-    radial-gradient(120% 90% at 50% 60%, rgba(47, 209, 138, 0.35), transparent 70%),
-    #07120d;
+    radial-gradient(120% 90% at 50% 60%, rgba(15, 109, 95, 0.14), transparent 70%),
+    #f4f7f6;
 }
 
 /* ── the last row ─────────────────────────────────────────────────── */
@@ -2146,7 +2148,7 @@ input:checked + .tp-box {
   margin: 0 -12px;
   padding: 8px 12px;
   border: 0;
-  border-top: 1px solid #1d1d20;
+  border-top: 1px solid #f7f9f8;
   border-radius: 0;
   background: transparent;
   font-family: var(--sans);
@@ -2157,7 +2159,7 @@ input:checked + .tp-box {
 
 .tp-sim:first-child { border-top: 0; }
 
-.tp-sim:hover { background: rgba(255, 255, 255, 0.035); }
+.tp-sim:hover { background: rgba(11, 14, 20, 0.035); }
 
 /*
  * ── THE RING IS A PAINTED BAND ───────────────────────────────────────
@@ -2176,7 +2178,7 @@ input:checked + .tp-box {
   --ar-r: 4px;
   --ar-gap: 1px;
   --ar-ring: 1px;
-  --ar-ground: #000000;
+  --ar-ground: #ffffff;
 
   position: relative;
   box-sizing: content-box;
@@ -2193,7 +2195,7 @@ input:checked + .tp-box {
   width: 100%;
   height: 100%;
   border-radius: var(--ar-r);
-  background: #23252b;
+  background: #f4f7f6;
   /* The gap: the row's ground laid back over the inner part of the
      band, so what is left of the paint is exactly one pixel. */
   box-shadow: 0 0 0 var(--ar-gap) var(--ar-ground);
@@ -2260,7 +2262,7 @@ input:checked + .tp-box {
   flex-shrink: 0;
   font-size: 11.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 .tp-sim-l1 > i {
@@ -2270,7 +2272,7 @@ input:checked + .tp-box {
   white-space: nowrap;
   font-style: normal;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(11, 14, 20, 0.42);
 }
 
 .tp-sim-age {
@@ -2280,7 +2282,7 @@ input:checked + .tp-box {
   line-height: 1;
   font-size: 10.5px;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 14, 20, 0.55);
 }
 
 
@@ -2313,7 +2315,7 @@ input:checked + .tp-box {
 .tp-sim-figs b {
   font-size: 10.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 14, 20, 0.92);
 }
 
 .tp-sim-figs i {
@@ -2321,7 +2323,7 @@ input:checked + .tp-box {
   font-style: normal;
   font-size: 10px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
 }
 
 /* Market cap is the one figure here that is a VALUATION rather than a
@@ -2410,7 +2412,7 @@ input:checked + .tp-box {
     z-index: -1;
     border: 0;
     padding: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(11, 14, 20, 0.12);
     opacity: 0;
     pointer-events: none !important;
     transition: opacity 220ms ease;
@@ -2454,12 +2456,12 @@ input:checked + .tp-box {
      * with nothing added to the sheet at all: the edge simply gets
      * brighter where the handle is.
      */
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(11, 14, 20, 0.1);
     border-radius: 15px 15px 0 0;
-    background: #000000;
+    background: #ffffff;
     box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.06),
-      0 -20px 48px rgba(0, 0, 0, 0.75);
+      0 -1px 0 rgba(11, 14, 20, 0.06),
+      0 -20px 48px rgba(11, 14, 20, 0.12);
     transform: translateY(calc(100% - var(--tp-shown) + var(--tp-drag, 0px)));
     transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -2526,8 +2528,8 @@ input:checked + .tp-box {
     background: linear-gradient(
       to right,
       transparent,
-      rgba(255, 255, 255, 0.62) 32%,
-      rgba(255, 255, 255, 0.62) 68%,
+      rgba(11, 14, 20, 0.62) 32%,
+      rgba(11, 14, 20, 0.62) 68%,
       transparent
     );
     transition: opacity 130ms ease;
@@ -2543,13 +2545,13 @@ input:checked + .tp-box {
     width: 76px;
     height: 2.5px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(11, 14, 20, 0.3);
     transition: background-color 130ms ease;
   }
 
   .tp-grab:hover > span,
   .tp-wrap[data-dragging] .tp-grab > span {
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(11, 14, 20, 0.55);
   }
 
   .tp-grab:hover::before,
@@ -2562,3 +2564,101 @@ input:checked + .tp-box {
     .tp-scrim { transition-duration: 0ms; }
   }
 }
+
+
+/*
+ * ── THE PANEL'S PALETTE ──────────────────────────────────────────────
+ *
+ * On the panel and nothing else, so the chart and the tables beside it
+ * keep what they have until we reach them.
+ *
+ * `--accent-primary` matters here more than anywhere: the armed preset,
+ * the checked strategy box and every switched on control read it, and
+ * outside a converted surface it is still the pale sky picked for a black
+ * terminal.
+ *
+ * This block becomes the light half of the theme.
+ */
+.tp-wrap,
+.tp {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  /*
+   * AND THE BASE TEXT COLOUR, not just the tokens.
+   *
+   * Anything on this surface that does not state a colour of its own
+   * INHERITS, and what it was inheriting is the page's base ink — the
+   * dark terminal's near white. That is why the advanced strategy panel
+   * came up blank: nothing in it sets a colour, so every label in it was
+   * #E4E7EE on white paper.
+   */
+  color: var(--ink-1);
+
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
+}
+
+/*
+ * THE PANEL PAINTS ITS OWN GROUND — but `.tp`, never `.tp-wrap`.
+ *
+ * On a wide window the wrapper IS the panel's column, so painting it
+ * looked right. On a phone it is something else entirely: a fixed
+ * overlay pinned top to bottom, whose child slides down to the sheet's
+ * stop. Painting the wrapper there put an opaque white rectangle over
+ * the header, the chart and the tape while the sheet itself sat 740px
+ * below it — the whole page went blank and only the handle showed.
+ *
+ * `.tp` is the panel in both layouts, so that is where the ground goes.
+ */
+.tp {
+  background: var(--surface);
+}
+
+
+/*
+ * ── WHICH WALLET IS PAYING ───────────────────────────────────────────
+ *
+ * Full width, directly over the amount, and drawn as the same field the
+ * amount is: one plate, one hairline, the same radius and the same
+ * height. They are two halves of one sentence — how much, out of what —
+ * so a differently shaped control above the field would read as chrome
+ * belonging to something else.
+ *
+ * `WalletSelector`'s compact variant sizes itself to its trigger, so the
+ * width is taken here rather than by patching the component, which the
+ * instant trade box also uses at its own size.
+ */
+/*
+ * ── WHO IS PAYING, AND WHAT THEY ALREADY HOLD ────────────────────────
+ *
+ * One control, not a control and a statistic next to it. The wallets
+ * and their holding of this coin are the same sentence, so the holding
+ * rides the right end of the picker past a hairline rather than sitting
+ * outside it with nothing to say whose holding it is.
+ */
+.tp-wal {
+  margin-bottom: 8px;
+}
+
+/* The trigger sets its own box inline (it is a shared component and has
+   to look the same off the header), so all that is left here is the
+   hover, which an inline style cannot state. */
+.tp-wal > button:hover {
+  border-color: rgba(11, 14, 20, 0.2);
+}
+

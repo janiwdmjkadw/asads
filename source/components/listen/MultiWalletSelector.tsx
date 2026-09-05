@@ -223,7 +223,7 @@ export function MultiWalletSelector(
           <span />
           <span>wallet</span>
           <span style={{ display: 'inline-flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <Solana style={{ width: 12, height: 12 }} />
+            <Solana style={{ width: 14, height: 14 }} />
           </span>
           <span style={{ textAlign: 'right' }}>tokens</span>
         </div>
@@ -379,13 +379,21 @@ export function MultiWalletSelector(
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {holding
-                      ? holding.solLamports === null
-                        ? '—'
-                        : formatSol(holding.solLamports)
-                      : holdings.loading
-                        ? '…'
-                        : '—'}
+                    {/* The mint-scoped read first, and the plain
+                        balances endpoint behind it. They are the same
+                        number from two sources, and only one of them is
+                        fetched per mint — so a wallet the mint read has
+                        not answered for yet shows its SOL instead of an
+                        em dash next to a token figure. */}
+                    {holding && holding.solLamports !== null
+                      ? formatSol(holding.solLamports)
+                      : rowBalances.status === 'ready'
+                        ? formatLamportsBigInt(
+                            rowBalances.perWallet.get(wallet.wallet_account_id) ?? 0n,
+                          )
+                        : holdings.loading || rowBalances.status === 'loading'
+                          ? '…'
+                          : '—'}
                   </span>
                   <span
                     style={{
@@ -400,13 +408,11 @@ export function MultiWalletSelector(
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {holding
-                      ? holding.tokenBaseUnits === null
-                        ? '—'
-                        : formatTokenAmount(holding.tokenBaseUnits)
+                    {holding && holding.tokenBaseUnits !== null
+                      ? formatTokenAmount(holding.tokenBaseUnits)
                       : holdings.loading
                         ? '…'
-                        : '—'}
+                        : '0'}
                   </span>
                 </>
               ) : (
@@ -429,9 +435,15 @@ export function MultiWalletSelector(
                     whiteSpace: 'nowrap',
                     color: isChecked ? 'var(--ink-0)' : 'var(--ink-2)',
                     fontSize: 12,
+                    fontWeight: 500,
                   }}
                 >
-                  <Solana style={{ width: 11, height: 11, flexShrink: 0 }} />
+                  {/* 14, the size the nav's wallet plate draws it at. The
+                      brand gradient stays: at 11px it resolved to three
+                      muddy bars, and the size was the problem, not the
+                      colour. `mono` would make it ink, and the Solana logo
+                      is not ink. */}
+                  <Solana style={{ width: 14, height: 14, flexShrink: 0 }} />
                   {rowBalances.status === 'ready'
                     ? formatLamportsBigInt(
                         rowBalances.perWallet.get(wallet.wallet_account_id) ?? 0n,

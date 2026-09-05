@@ -577,7 +577,7 @@ export const SPOT_TAB_CSS = `
 .spot-bucket-tile:hover {
   transform: translateY(-2px);
   border-color: var(--hairline-2);
-  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 12px 28px -18px rgba(11, 14, 20, 0.16);
 }
 
 /* PnL mood companion — pops with a soft overshoot whenever the mood
@@ -619,7 +619,7 @@ export const SPOT_TAB_CSS = `
 }
 @keyframes spot-coin-flash {
   0%   { box-shadow: 0 0 0 0 transparent; }
-  35%  { box-shadow: 0 0 6px 1px rgba(255,255,255,0.9), 0 0 16px 5px currentColor; }
+  35%  { box-shadow: 0 0 6px 1px rgba(11, 14, 20, 0.85), 0 0 16px 5px currentColor; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 .spot-coin {

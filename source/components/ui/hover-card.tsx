@@ -39,13 +39,24 @@ const HoverCardContent = React.forwardRef<
         ref={ref}
         align={align}
         sideOffset={sideOffset}
+        /*
+         * PAPER, STATED HERE. `bg-popover` and `text-popover-foreground` resolve
+         * through the app's tokens, which are declared for a black terminal, and
+         * a portalled surface reads them from `.listen-root` rather than from
+         * whatever panel opened it. So every menu on a converted page came out
+         * black no matter what that page declared on itself — the wallet sound
+         * picker, the tooltips and the quick chip editor all failed the same way.
+         *
+         * The surface is stated on the primitive instead, which is the one place
+         * every dropdown in the app actually shares.
+         */
         className={cn(
           /* Same surface bridge as the tooltip: `bg-popover`
              (`--surface-1`) + `border` for definition, plus the
              shared design-system entrance/exit motion utilities so
              the preview animates identically to other floating
              surfaces. */
-          "z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-hover-card-content-transform-origin]",
+          "z-50 w-64 rounded-md border border-[rgba(11,14,20,0.1)] bg-white p-4 text-[#0b0e14] shadow-[0_16px_40px_rgba(11,14,20,0.14)] outline-none animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-hover-card-content-transform-origin]",
           className
         )}
         {...props}

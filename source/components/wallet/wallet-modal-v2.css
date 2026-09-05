@@ -76,12 +76,25 @@
   box-shadow: 0 24px 80px #00000099 !important;
 }
 
-/* The title, in the Flash dialog's face. */
+/*
+ * The title.
+ *
+ * IT WAS SET IN THE MONOSPACE, at 22px, which is the one heading in the
+ * app wearing a typewriter face. A monospace is for figures that have to
+ * line up in a column; a word does not, and at heading size the wide
+ * even fitting reads as a terminal from twenty years ago rather than as
+ * the head of a panel. Every amount on this panel is already forced back
+ * to the sans by the rule below it, which says the same thing about this
+ * one.
+ *
+ * Same size, same tracking, one step heavier because the sans at 500 is
+ * lighter than the mono was at the same number.
+ */
 .listen-root [data-wallet-modal] h2 {
-  font-family: var(--font-geist-mono), ui-monospace, monospace !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-size: 22px !important;
-  font-weight: 500 !important;
-  letter-spacing: -0.02em;
+  font-weight: 600 !important;
+  letter-spacing: -0.022em;
 }
 
 /* Every amount on the panel. */

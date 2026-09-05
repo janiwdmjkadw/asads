@@ -1383,12 +1383,20 @@
   width: 3px;
   height: 3px;
   border-radius: 0.5px;
-  opacity: 0.55;
-  animation: frens-pill-twinkle 4.6s ease-in-out infinite;
-}
-.listen-root .tab-pill.active .frens-pill-px,
-.listen-root .tab-pill:hover .frens-pill-px {
+  /*
+   * 0.9 AT REST, which is what it used to reach only while the pill was
+   * active or hovered. Held at 0.55 the mosaic was a hint that resolved
+   * into actual colours the moment you landed on Frens, so the one place
+   * it read properly was the one place you were already looking. It is
+   * five three pixel squares in a corner; it can afford to be legible all
+   * the time.
+   *
+   * The active and hover bump that used to live here is gone with it:
+   * with the resting value already at 0.9 there was nothing left for it
+   * to raise, and a rule that changes nothing is a rule to trip over.
+   */
   opacity: 0.9;
+  animation: frens-pill-twinkle 4.6s ease-in-out infinite;
 }
 @keyframes frens-pill-twinkle {
   0%, 100% { transform: scale(1); filter: brightness(0.85); }
@@ -1652,4 +1660,139 @@
 
 @media (prefers-reduced-motion: reduce) {
   .agent-card-reveal { animation: none; }
+}
+
+
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  PORTALLED POPOVERS, ON PAPER
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * The wallet group selector, the wallet picker and the trade page's
+ * wallet count all share one hand rolled popover that sets its surface,
+ * rim and shadow as INLINE styles read from the app's tokens. An inline
+ * style outranks every selector that is not important, which is why
+ * these three are, and why the element had to be tagged to reach them.
+ *
+ * They portal into `.listen-root`, so they never inherited the scoped
+ * palettes the bar and the strip declare on themselves. This block is
+ * their equivalent: the ink scale re-pointed inside the popover and
+ * nowhere else, so the board underneath keeps what it has until we get
+ * to it.
+ */
+[data-paper-pop] {
+  background: #ffffff !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(11, 14, 20, 0.14) !important;
+
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.1);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  /* The tint behind a checked row. On black it was a light wash; on paper
+     it has to come from the other side. */
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  --up: #0f6d5f;
+  --down: #b4482e;
+}
+
+
+/*
+ * ── THE DISCOVER WALLET CHIP'S FIGURES ───────────────────────────────
+ *
+ * `.t-num-xs` is weight 400 in `--mono`, which on a black bar had the
+ * ground doing half the work of making it read. On paper 400 at 11px is
+ * a hairline: the wallet count and the SOL balance are the two figures
+ * on that chip and both were disappearing.
+ *
+ * 600 and full ink, and ONLY here. Every other `.t-num-xs` in the app is
+ * a figure in a dense column where 400 is deliberate and correct.
+ */
+.listen-root .swc-fig .t-num-xs {
+  /*
+   * 500, WHICH IS THE NAV'S WEIGHT. 400 in the mono was a hairline on
+   * paper; 600 was heavier than anything beside it. The wallet plate in
+   * the bar sets its figures at 500 and this chip shows the same balance,
+   * so it is the same figure and it is set the same way.
+   */
+  font-weight: 500;
+  color: var(--ink-0);
+}
+
+
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  PORTALLED SURFACES GET THE PAPER TOKENS
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * A dialog, a popover, a tooltip and a menu all render at the DOCUMENT
+ * ROOT, not inside the panel that opened them. So none of the palettes
+ * the converted surfaces declare on themselves can reach them, and every
+ * one of them reads `--ink-*`, `--input-bg`, `--surface-*` and the rest
+ * from `.listen-root` — the black terminal's values.
+ *
+ * That single fact has produced the same bug six times now: the wallet
+ * sound picker, the bell's tooltip, the emoji picker, the quick chip
+ * editor, the chart's Settings dialog, and the style preset swatches,
+ * which were painting `var(--input-bg)` — white at five percent — onto a
+ * white dialog and so previewed as five identical blank rectangles.
+ *
+ * Stated once, here, for every portalled surface. The grounds themselves
+ * are already stated on each primitive; this is the scale and the plates
+ * that the CONTENT of those surfaces reads.
+ *
+ * Anything with its own palette (the nav drawer, say) declares it on its
+ * own selector and still wins, because that is more specific than this.
+ */
+[role='dialog'],
+[role='menu'],
+[role='listbox'],
+[role='tooltip'],
+[data-radix-popper-content-wrapper] {
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  /*
+   * `--accent` AND `--accent-ink` as well as `--accent-primary`.
+   *
+   * Inside `.listen-root` the first is an alias of the third, so setting
+   * one used to be enough. A portalled surface is NOT inside it: the
+   * alias never applies, and `--accent` falls all the way back to the
+   * stylesheet root's pale sky. That is why the portfolio's Create
+   * wallet button — `background: var(--accent); color: var(--accent-ink)`
+   * — came up sky blue on a white card while every other control in the
+   * same dialog was ink.
+   */
+  --accent: #0b0e14;
+  --accent-ink: #ffffff;
+  /* Same trap, two more names: the shadcn pair is aliased to `--accent`
+     inside `.listen-root` as well, so a portalled dialog's primary
+     button (the portfolio's Transfer, for one) resolved to nothing and
+     fell back to whatever the base stylesheet last said. */
+  --primary: #0b0e14;
+  --primary-foreground: #ffffff;
+  --accent-down: #b4482e;
+  --accent-up: #0f6d5f;
+  --up: #0f6d5f;
+  --down: #b4482e;
 }

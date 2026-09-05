@@ -309,13 +309,15 @@ export function PerformanceChart(props: Props): React.ReactElement {
     return 'flat';
   })();
 
-  const ink = tone === 'up' ? 'var(--up)' : tone === 'down' ? 'var(--down)' : '#ffffff';
+  const ink = tone === 'up' ? 'var(--up)' : tone === 'down' ? 'var(--down)' : '#0b0e14';
 
-  /* The wash sits a shade thinner when it carries a hue. A tinted panel
-     reads heavier than a white one at the same alpha, and this fade is
-     meant to give the line a floor, not to colour the page. */
-  const washTop = tone === 'flat' ? 0.1 : 0.12;
-  const washMid = tone === 'flat' ? 0.03 : 0.035;
+  /* The wash is a floor for the line, not a colour for the page — and
+     over paper it takes far less to be one. At 12% into 3.5% the green
+     read as a field the chart was standing in; these numbers put the
+     tint just past the point where you would call it white, and it is
+     gone by the middle of the pane rather than lingering to the axis. */
+  const washTop = tone === 'flat' ? 0.07 : 0.08;
+  const washMid = tone === 'flat' ? 0.015 : 0.018;
 
   // Re-key the draw-in animation whenever the series identity changes
   // (range switch or fresh data) so the line re-draws itself.
@@ -364,7 +366,7 @@ export function PerformanceChart(props: Props): React.ReactElement {
           </linearGradient>
           <linearGradient id="spot-area" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={ink} style={TONE_EASE} stopOpacity={washTop} />
-            <stop offset="58%" stopColor={ink} style={TONE_EASE} stopOpacity={washMid} />
+            <stop offset="46%" stopColor={ink} style={TONE_EASE} stopOpacity={washMid} />
             <stop offset="100%" stopColor={ink} style={TONE_EASE} stopOpacity="0" />
           </linearGradient>
           <filter id="spot-glow" x="-20%" y="-40%" width="140%" height="180%">
@@ -381,7 +383,7 @@ export function PerformanceChart(props: Props): React.ReactElement {
                   x2={layout.w - layout.padRight}
                   y1={tick.y}
                   y2={tick.y}
-                  stroke="rgba(255, 255, 255, 0.04)"
+                  stroke="rgba(11, 14, 20, 0.07)"
                   strokeWidth={1}
                   strokeDasharray="2 4"
                 />
@@ -428,23 +430,19 @@ export function PerformanceChart(props: Props): React.ReactElement {
           />
         ) : null}
 
-        {/* line glow (softens the stroke without ghosting the chart) */}
-        {!empty ? (
-          <path
-            key={`glow-${drawKey}`}
-            d={linePath}
-            pathLength={1}
-            fill="none"
-            stroke="url(#spot-line)"
-            strokeWidth={3.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity={0.45}
-            filter="url(#spot-glow)"
-            className="spot-line-draw"
-          />
-        ) : null}
-
+        {/*
+          * ── NO GLOW UNDER THE LINE ──────────────────────────────────
+          *
+          * There was a 3.5px gaussian blurred copy of the path at 45%
+          * beneath the stroke. On a dark panel that is how a thin line
+          * gets presence; over paper it is a green haze following every
+          * move the line makes, and it is the single thing that made
+          * this chart look processed rather than drawn.
+          *
+          * The stroke carries itself now. `spot-glow` stays defined —
+          * nothing else uses it, but it costs nothing and it is the
+          * thing to reach for if the dark theme comes back.
+          */}
         {/* primary line — draws itself in on mount / range change */}
         {!empty ? (
           <path
@@ -453,7 +451,10 @@ export function PerformanceChart(props: Props): React.ReactElement {
             pathLength={1}
             fill="none"
             stroke="url(#spot-line)"
-            strokeWidth={1.75}
+            /* 1.9, from 1.75. With the bloom gone the stroke is doing
+               all the work on its own, and a hair more weight is what
+               keeps it as present as it was — without the halo. */
+            strokeWidth={1.9}
             strokeLinecap="round"
             strokeLinejoin="round"
             className="spot-line-draw"
@@ -525,10 +526,10 @@ export function PerformanceChart(props: Props): React.ReactElement {
               r={4}
               fill={ink}
               /* A ring of the page's own ground, not a lighter version
-                 of the dot. On a coloured line a translucent white ring
-                 just makes the dot look blurred; a black one cuts it
-                 out of the stroke it is sitting on. */
-              stroke="#04070a"
+                 of the dot. On a coloured line a translucent ring just
+                 makes the dot look blurred; one in the page's own paper
+                 cuts it out of the stroke it is sitting on. */
+              stroke="#ffffff"
               strokeWidth={1.5}
             />
           </g>
@@ -753,7 +754,7 @@ const MARKER_PULSE_CSS = `
  * longer has. One drop, no animation, no glow.
  */
 .spot-readout-float {
-  box-shadow: 0 10px 26px -14px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 10px 26px -14px rgba(11, 14, 20, 0.3);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -772,10 +773,10 @@ const backdropGlowStyle: CSSProperties = {
   pointerEvents: 'none',
   /* Was a 14% accent radial washing up from the bottom of the panel —
      a coloured light behind the chart, on a page that now has one ink
-     scale. White at 3%, which still gives the line something to sit
+     scale. Ink at 3.5%, which still gives the line something to sit
      against without tinting it. */
   background:
-    'radial-gradient(120% 60% at 50% 110%, rgba(255, 255, 255, 0.03) 0%, transparent 70%)',
+    'radial-gradient(120% 60% at 50% 110%, rgba(11, 14, 20, 0.022) 0%, transparent 70%)',
   opacity: 1,
 };
 
@@ -832,7 +833,7 @@ const pulseDotStyle: CSSProperties = {
   width: 6,
   height: 6,
   borderRadius: 999,
-  background: 'rgba(255, 255, 255, 0.75)',
+  background: 'rgba(11, 14, 20, 0.7)',
 };
 
 const emptyStateStyle: CSSProperties = {

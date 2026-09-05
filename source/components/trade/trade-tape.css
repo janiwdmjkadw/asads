@@ -37,8 +37,8 @@
   flex: 1 1 auto;
   min-height: 0;
   min-width: 0;
-  border-top: 1px solid #26262a;
-  background: #0e0e11;
+  border-top: 1px solid #f4f7f6;
+  background: #ffffff;
   font-family: var(--sans);
 }
 
@@ -53,7 +53,7 @@
  */
 .tt [role='tablist'],
 .tt [class*='tabs'] {
-  background: #0a0a0c;
+  background: #ffffff;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -115,8 +115,8 @@
    */
   gap: 6px;
   padding: 6px 14px;
-  border-bottom: 1px solid #26262a;
-  background: #0a0a0c;
+  border-bottom: 1px solid #f4f7f6;
+  background: #ffffff;
   overflow-x: visible;
 }
 
@@ -135,18 +135,18 @@
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(11, 14, 20, 0.38);
   transition: color 130ms ease;
 }
 
-.tt .tab-underline:hover { color: rgba(255, 255, 255, 0.7); }
+.tt .tab-underline:hover { color: rgba(11, 14, 20, 0.7); }
 
 /* The gap between 38% and white is what does the work now, so it is a
    wide one. At 45% against white the two were close enough that on a
    six-tab strip you had to look twice to find the live one. */
 .tt .tab-underline.active {
   font-weight: 600;
-  color: #ffffff;
+  color: #0b0e14;
 }
 
 /*
@@ -193,7 +193,7 @@
   flex-shrink: 0;
   height: 22px;
   padding: 0 9px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 999px;
   background: transparent;
   font-family: var(--sans);
@@ -201,14 +201,14 @@
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
   cursor: pointer;
   transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
 }
 
 .tt .tt-filter:hover {
-  border-color: #3a4150;
-  color: #ffffff;
+  border-color: #8a9591;
+  color: #0b0e14;
 }
 
 /*
@@ -220,9 +220,9 @@
  * find at a glance.
  */
 .tt .tt-filter[aria-checked='true'] {
-  border-color: #5a6272;
-  background: rgba(255, 255, 255, 0.13);
-  color: #ffffff;
+  border-color: #5b6570;
+  background: rgba(11, 14, 20, 0.13);
+  color: #0b0e14;
 }
 
 .tt .tt-filter > svg {
@@ -262,8 +262,8 @@
   font-size: 11.5px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
-  border-bottom: 1px solid #1d1d20;
-  color: rgba(255, 255, 255, 0.62);
+  border-bottom: 1px solid #f7f9f8;
+  color: rgba(11, 14, 20, 0.62);
 }
 
 /* Nothing inside a row shouts either — the table sets its own weights
@@ -276,10 +276,10 @@
 .tt .trow--cv > *:nth-child(3),
 .tt .trow--cv > *:last-child {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 20, 0.9);
 }
 
-.tt .trow:hover { background: rgba(255, 255, 255, 0.035); }
+.tt .trow:hover { background: rgba(11, 14, 20, 0.035); }
 
 /* The head is the column names, so it sits on the strip's own ground and
    is the quietest row in the table. */
@@ -287,9 +287,9 @@
   font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: #868d97;
-  background: #0a0a0c;
-  border-bottom: 1px solid #26262a;
+  color: #8a9591;
+  background: #ffffff;
+  border-bottom: 1px solid #f4f7f6;
 }
 
 /*
@@ -366,7 +366,7 @@
 .tt {
   --accent-primary: #ffffff;
   --accent-secondary: #ffffff;
-  --accent-glow: rgba(255, 255, 255, 0.28);
+  --accent-glow: rgba(11, 14, 20, 0.28);
 }
 
 
@@ -409,14 +409,14 @@
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 20, 0.4);
   white-space: nowrap;
   pointer-events: none;
 }
 
 .tt .tt-paused > b {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(11, 14, 20, 0.85);
   font-variant-numeric: tabular-nums;
 }
 
@@ -547,7 +547,7 @@
   min-height: 120px;
   font-family: var(--sans);
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(11, 14, 20, 0.35);
 }
 
 /* ── the Listen toggle ────────────────────────────────────────────── */
@@ -572,7 +572,7 @@
   flex-shrink: 0;
   height: 22px;
   padding: 0 9px;
-  border: 1px solid #272729;
+  border: 1px solid rgba(11, 14, 20, 0.12);
   border-radius: 999px;
   background: transparent;
   box-shadow: none;
@@ -581,14 +581,14 @@
 }
 
 .tt .lh-toggle:hover {
-  border-color: #3a4150;
+  border-color: #8a9591;
   filter: none;
 }
 
 .tt .lh-toggle[data-on],
 .tt .lh-toggle[aria-checked='true'] {
-  border-color: #5a6272;
-  background: rgba(255, 255, 255, 0.13);
+  border-color: #5b6570;
+  background: rgba(11, 14, 20, 0.13);
 }
 
 .tt .lh-word {
@@ -597,20 +597,20 @@
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 20, 0.6);
   transition: color 130ms ease;
 }
 
 .tt .lh-toggle:hover .lh-word,
 .tt .lh-toggle[data-on] .lh-word,
-.tt .lh-toggle[aria-checked='true'] .lh-word { color: #ffffff; }
+.tt .lh-toggle[aria-checked='true'] .lh-word { color: #0b0e14; }
 
 .tt .lh-count {
   font-family: var(--sans);
   font-size: 9.5px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(11, 14, 20, 0.65);
 }
 
 /* Inline, not perched in a corner. */
@@ -636,13 +636,13 @@
 .tt .tt-star {
   font-size: 11px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(11, 14, 20, 0.45);
   transition: color 130ms ease;
 }
 
 /* No gold. The chip's own lit plate already says the filter is on; a
    second colour on the mark inside it was the same fact twice. */
-.tt [aria-checked='true'] .tt-star { color: #ffffff; }
+.tt [aria-checked='true'] .tt-star { color: #0b0e14; }
 
 /* The chef hat sits at the size of the word beside it. */
 .tt [class*='h-[var(--h-tab-bar)]'] > button:not(.tab-underline):not(.lh-toggle) > svg {
@@ -721,4 +721,51 @@
    * The page is as long as what is in it: five trades scroll five trades
    * worth, plus the one strip they are owed.
    */
+}
+
+
+/*
+ * ── THE PALETTE FOR THIS SURFACE ─────────────────────────────────────
+ *
+ * Declared on its own root so nothing else on the page moves, and so this
+ * block is the light half of the theme when the toggle is built.
+ */
+.tt, .tw-page {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  /*
+   * AND THE PAGE'S OWN GROUND. `.tw-page` is the whole trade route, and
+   * it was transparent over `.listen-root`, which is still black. On a
+   * wide window every child covers it so nothing showed; on a phone the
+   * tape ends above the sheet and a black band came through the gap.
+   */
+  background: var(--surface);
+  /*
+   * AND THE BASE TEXT COLOUR, not just the tokens.
+   *
+   * Anything on this surface that does not state a colour of its own
+   * INHERITS, and what it was inheriting is the page's base ink — the
+   * dark terminal's near white. That is why the advanced strategy panel
+   * came up blank: nothing in it sets a colour, so every label in it was
+   * #E4E7EE on white paper.
+   */
+  color: var(--ink-1);
+
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
 }

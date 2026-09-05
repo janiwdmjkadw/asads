@@ -123,13 +123,13 @@ export function isInvisible(p: Paint): boolean {
 
 export const DEFAULT_CHART_STYLE: ChartStyleSettings = {
   background: {
-    /* Black, not blue-black. #0b0d11 and #12161d both carry more blue
-       than red, which on a full-bleed surface reads as a tint rather
-       than as a neutral — and the page around it is true black. */
+    /* Paper, and NEUTRAL paper. The same argument as when this was
+       black: a full bleed surface with any cast in it reads as a tint
+       rather than as a ground, and the page around it is plain white. */
     mode: 'none',
-    solid: paint('#000000'),
-    gradientTop: paint('#0c0c0d'),
-    gradientBottom: paint('#000000'),
+    solid: paint('#ffffff'),
+    gradientTop: paint('#f7f9f8'),
+    gradientBottom: paint('#ffffff'),
   },
   /*
    * ── THE GRID IS PAINTED, NOT PLOTTED ─────────────────────────────
@@ -149,19 +149,19 @@ export const DEFAULT_CHART_STYLE: ChartStyleSettings = {
    */
   backdrop: {
     pattern: 'grid',
-    paint: paint('#ffffff', 7),
+    paint: paint('#0b0e14', 7),
     scale: 44,
   },
   grid: {
     mode: 'both',
-    vert: paint('#24242a', 100),
-    horz: paint('#24242a', 100),
+    vert: paint('#e2e6e8', 100),
+    horz: paint('#e2e6e8', 100),
     style: 'solid',
   },
   /* The crosshair measures; it does not value. Cyan read as a third
      colour on a surface where green and red already mean something. */
   crosshair: {
-    paint: paint('#ffffff', 55),
+    paint: paint('#0b0e14', 45),
     style: 'dashed',
   },
   /*
@@ -177,14 +177,14 @@ export const DEFAULT_CHART_STYLE: ChartStyleSettings = {
    * beside it mean, which is the only job the colour has.
    */
   candle: {
-    upBody: paint('#22c77e', 100),
-    downBody: paint('#f0567a', 100),
+    upBody: paint('#0f6d5f', 100),
+    downBody: paint('#b4482e', 100),
     borderMode: 'none',
-    upBorder: paint('#22c77e', 100),
-    downBorder: paint('#f0567a', 100),
+    upBorder: paint('#0f6d5f', 100),
+    downBorder: paint('#b4482e', 100),
     wickMode: 'match',
-    upWick: paint('#22c77e', 100),
-    downWick: paint('#f0567a', 100),
+    upWick: paint('#0f6d5f', 100),
+    downWick: paint('#b4482e', 100),
     hollowUp: false,
   },
   watermark: {
@@ -282,34 +282,102 @@ const base = (over: Partial<ChartStyleSettings>): ChartStyleSettings => ({
 });
 
 export const CHART_STYLE_PRESETS: ReadonlyArray<ChartStylePreset> = [
-  /* The ship default. */
-  { id: 'midnight', name: 'Midnight', style: clone(DEFAULT_CHART_STYLE) },
+  /*
+   * ── FIVE CHARTS, NOT FIVE COPIES ─────────────────────────────────
+   *
+   * The set used to vary two things: how much grid there was, and
+   * whether an up candle was hollow. On a black chart that was enough to
+   * tell them apart. On paper it is nothing — five white rectangles with
+   * the same green and red in them, and a preset list where every option
+   * previews identically is a list with one option.
+   *
+   * So each of these changes the GROUND as well. Ordered light to dark,
+   * because that is the decision you are actually making.
+   */
 
-  /* No ruling at all. For reading shape rather than levels. */
+  /* The ship default. Plain paper, horizontal rules only: price is the
+     axis you measure against and the time lines are mostly texture. */
+  {
+    id: 'paper',
+    name: 'Paper',
+    style: clone(DEFAULT_CHART_STYLE),
+  },
+
+  /* Nothing at all behind the candles. For reading the shape of a move
+     rather than the levels it passed through. */
   {
     id: 'clean',
     name: 'Clean',
     style: base({
-      grid: { mode: 'none', vert: paint('#24242a'), horz: paint('#24242a'), style: 'solid' },
+      backdrop: { pattern: 'none', paint: paint('#0b0e14', 0), scale: 44 },
+      grid: { mode: 'none', vert: paint('#e2e6e8'), horz: paint('#e2e6e8'), style: 'solid' },
     }),
   },
 
-  /* Horizontal ruling only. Price is the axis you measure against; the
-     time lines mostly add texture. */
+  /* Engineering paper: a printed grid in both axes over a warm off
+     white, and a dotted rule so the ruling never competes with a wick. */
   {
-    id: 'levels',
-    name: 'Levels',
+    id: 'graph',
+    name: 'Graph',
     style: base({
-      grid: { mode: 'horz', vert: paint('#24242a'), horz: paint('#32323a'), style: 'solid' },
+      background: {
+        mode: 'solid',
+        solid: paint('#faf9f5'),
+        gradientTop: paint('#faf9f5'),
+        gradientBottom: paint('#faf9f5'),
+      },
+      backdrop: { pattern: 'graph', paint: paint('#1e8574', 12), scale: 28 },
+      grid: { mode: 'both', vert: paint('#dfdcd2'), horz: paint('#dfdcd2'), style: 'dotted' },
     }),
   },
 
   /* Hollow up candles, the way a lot of desks read them: a filled body
-     means the move closed down. */
+     means the move closed down. On a cool grey ground so the hollow
+     bodies have something to be hollow AGAINST — on white they read as
+     outlines floating in nothing. */
   {
     id: 'hollow',
     name: 'Hollow',
     style: base({
+      background: {
+        mode: 'solid',
+        solid: paint('#eef1f3'),
+        gradientTop: paint('#eef1f3'),
+        gradientBottom: paint('#eef1f3'),
+      },
+      backdrop: { pattern: 'none', paint: paint('#0b0e14', 0), scale: 44 },
+      grid: { mode: 'horz', vert: paint('#d6dcdf'), horz: paint('#cdd4d8'), style: 'solid' },
+      candle: {
+        upBody: paint('#0f6d5f', 100),
+        downBody: paint('#b4482e', 100),
+        borderMode: 'match',
+        upBorder: paint('#0f6d5f'),
+        downBorder: paint('#b4482e'),
+        wickMode: 'match',
+        upWick: paint('#0f6d5f'),
+        downWick: paint('#b4482e'),
+        hollowUp: true,
+      },
+    }),
+  },
+
+  /* The dark one, kept whole. It is not a leftover: a chart is the one
+     surface people genuinely split over, and somebody who reads a tape
+     at four in the morning wants this and nothing else. It is also what
+     makes the other four legible as choices. */
+  {
+    id: 'midnight',
+    name: 'Midnight',
+    style: base({
+      background: {
+        mode: 'solid',
+        solid: paint('#000000'),
+        gradientTop: paint('#0c0c0d'),
+        gradientBottom: paint('#000000'),
+      },
+      backdrop: { pattern: 'grid', paint: paint('#ffffff', 7), scale: 44 },
+      grid: { mode: 'both', vert: paint('#24242a'), horz: paint('#24242a'), style: 'solid' },
+      crosshair: { paint: paint('#ffffff', 55), style: 'dashed' },
       candle: {
         upBody: paint('#22c77e', 100),
         downBody: paint('#f0567a', 100),
@@ -319,28 +387,6 @@ export const CHART_STYLE_PRESETS: ReadonlyArray<ChartStylePreset> = [
         wickMode: 'match',
         upWick: paint('#22c77e'),
         downWick: paint('#f0567a'),
-        hollowUp: true,
-      },
-    }),
-  },
-
-  /* No hue at all. Kept from the old set — the one preset there that was
-     a real way to work, for when the colour is carrying nothing you
-     need. */
-  {
-    id: 'mono',
-    name: 'Mono',
-    style: base({
-      grid: { mode: 'both', vert: paint('#1e1e22'), horz: paint('#1e1e22'), style: 'solid' },
-      candle: {
-        upBody: paint('#e8e8ea', 100),
-        downBody: paint('#5a5a62', 100),
-        borderMode: 'match',
-        upBorder: paint('#e8e8ea'),
-        downBorder: paint('#5a5a62'),
-        wickMode: 'match',
-        upWick: paint('#e8e8ea'),
-        downWick: paint('#5a5a62'),
         hollowUp: false,
       },
     }),

@@ -128,7 +128,6 @@ export function TweetTrackerDock({ ctx }: { ctx: DockContext }) {
           ...dock.shellStyle,
           zIndex: panelZ,
           borderRadius: floating ? 10 : 0,
-          opacity: dock.dragging ? 0.97 : 1,
           transition: dock.dragging ? 'none' : 'opacity 120ms ease',
           willChange: dock.dragging ? 'transform' : undefined,
           /*
@@ -163,7 +162,9 @@ export function TweetTrackerDock({ ctx }: { ctx: DockContext }) {
           border: floating ? '1px solid var(--hairline)' : 'none',
           borderLeft: dock.side === 'right' ? '1px solid var(--hairline)' : undefined,
           borderRight: dock.side === 'left' ? '1px solid var(--hairline)' : undefined,
-          boxShadow: 'none',
+          boxShadow: floating
+            ? '0 0 0 1px rgba(11, 14, 20, 0.12), 0 20px 52px rgba(11, 14, 20, 0.18)'
+            : 'none',
           fontFamily: 'var(--mono)',
           display: 'flex',
           flexDirection: 'column',

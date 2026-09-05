@@ -1072,6 +1072,10 @@ export function DiscoverPage() {
            leave a band of nothing under the last card. The values are
            inline rather than utilities because the left and right have to
            add the dock inset to the 10; see the note in `style`. */
+        // The board's palette hangs off this element rather than off
+        // `.listen-root`, so everything inside goes to paper and no other
+        // page in the terminal moves. See discover.css, THE BOARD'S PALETTE.
+        data-board-paper=""
         className="mx-auto flex h-[var(--h-app-content)] w-full max-w-[min(2400px,100%)] flex-col overflow-hidden"
         style={{
           // Snapped docks reserve their width via CSS vars (written directly

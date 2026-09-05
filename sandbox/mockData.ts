@@ -74,6 +74,18 @@ export const WALLET_ID = '8f14e45f-ce6a-4f7c-b9a1-2d3e4f5a6b7c';
 export const WALLET_PUBKEY = 'SandboxWa11etPubkey11111111111111111111111111';
 const WALLET_2_ID = 'c9d0e1f2-a3b4-4c5d-8e9f-0a1b2c3d4e5f';
 const WALLET_2_PUBKEY = 'SandboxWa11etSecondary1111111111111111111111';
+/* The rest of the bench. Distinct tails, because `…1111` four times
+   over is the one thing the address column must never be. */
+const WALLET_3_ID = 'd1e2f3a4-b5c6-4d7e-9f80-1a2b3c4d5e6f';
+const WALLET_3_PUBKEY = 'SandboxWa11etSniper1111111111111111117hQd';
+const WALLET_4_ID = 'e2f3a4b5-c6d7-4e8f-a091-2b3c4d5e6f70';
+const WALLET_4_PUBKEY = 'SandboxWa11etRunner111111111111111111k39P';
+const WALLET_5_ID = 'f3a4b5c6-d7e8-4f90-b1a2-3c4d5e6f7081';
+const WALLET_5_PUBKEY = 'SandboxWa11etCo1d11111111111111111111x82M';
+const WALLET_6_ID = 'a4b5c6d7-e8f9-4a01-c2b3-4d5e6f708192';
+const WALLET_6_PUBKEY = 'SandboxWa11etSix111111111111111111111tR5w';
+const WALLET_7_ID = 'b5c6d7e8-f9a0-4b12-d3c4-5e6f70819203';
+const WALLET_7_PUBKEY = 'SandboxWa11etSca1ps1111111111111111119vZn';
 
 /* ── tokens ──────────────────────────────────────────────────────────
    One long name, one missing logo and one null price on purpose: those
@@ -533,10 +545,41 @@ export const notifications = {
 
 /* ── wallets ─────────────────────────────────────────────────────────*/
 
+/*
+ * A WALLET'S HOLDING OF ONE MINT.
+ *
+ * `/v1/trade/token-balance?mint=…&wallet_account_id=…` is what the
+ * trade page's wallet picker reads to fill its TOKENS column, one call
+ * per listed wallet. Nothing served it, so the column was an em dash on
+ * every row — the same failure the SOL figures had before the balances
+ * fixture was wired up.
+ *
+ * Seeded off the two ids so a wallet holds the SAME amount every time
+ * the list opens, and deliberately uneven: two wallets hold nothing,
+ * which is the case the column exists to show.
+ */
+export function tokenBalanceFor(mint: string, walletAccountId: string | null): string {
+  if (walletAccountId === null) return '0';
+  let hash = 0;
+  const key = `${mint}|${walletAccountId}`;
+  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  /* One in three holds none of it. */
+  if (hash % 3 === 0) return '0';
+  /* Six decimal token, so these are base units: between ~1.2K and ~890K
+     tokens, which is the range a real position on a pump mint sits in. */
+  const whole = 1_200 + (hash % 890_000);
+  return `${whole}000000`;
+}
+
 export const walletBalances = {
   balances: [
     { wallet_account_id: WALLET_ID, wallet_pubkey: WALLET_PUBKEY, lamports: lam(29.74), usdc_micro: '1540220000' },
     { wallet_account_id: WALLET_2_ID, wallet_pubkey: WALLET_2_PUBKEY, lamports: lam(11.54), usdc_micro: '600280000' },
+    { wallet_account_id: WALLET_3_ID, wallet_pubkey: WALLET_3_PUBKEY, lamports: lam(6.208), usdc_micro: '241900000' },
+    { wallet_account_id: WALLET_4_ID, wallet_pubkey: WALLET_4_PUBKEY, lamports: lam(3.417), usdc_micro: '88400000' },
+    { wallet_account_id: WALLET_5_ID, wallet_pubkey: WALLET_5_PUBKEY, lamports: lam(74.02), usdc_micro: '0' },
+    { wallet_account_id: WALLET_6_ID, wallet_pubkey: WALLET_6_PUBKEY, lamports: lam(0.812), usdc_micro: '12050000' },
+    { wallet_account_id: WALLET_7_ID, wallet_pubkey: WALLET_7_PUBKEY, lamports: lam(0.094), usdc_micro: '0' },
   ],
 };
 
@@ -586,6 +629,19 @@ const wallet = (id: string, pubkey: string, label: string | null, primary: boole
   trade_ready: true,
 });
 
+/*
+ * A LIST LONG ENOUGH TO BE A LIST.
+ *
+ * The picker is a multi select with a cap of 20 and a scrolling body,
+ * and against three rows none of that is visible: nothing scrolls, the
+ * count never leaves single digits, and two of the three shared the
+ * `…1111` tail so the one thing the address column is for — telling two
+ * wallets apart when neither name helps — was never exercised.
+ *
+ * Every tail here is distinct, one is unlabelled so the fallback name
+ * shows, and the balances descend so the list reads as real accounts
+ * rather than copies.
+ */
 export const wallets = {
   wallets: [
     wallet(WALLET_ID, WALLET_PUBKEY, 'Main', true, 0),
@@ -593,6 +649,11 @@ export const wallets = {
        address, and a fixture where they all have labels never proves it. */
     wallet(WALLET_2_ID, WALLET_2_PUBKEY, null, false, 1),
     wallet('3b2a1c0d-9e8f-4a7b-b6c5-d4e3f2a1b0c9', 'SandboxAgentWa11et1111111111111111111111111', 'Agent', false, 2),
+    wallet(WALLET_3_ID, WALLET_3_PUBKEY, 'Sniper', false, 3),
+    wallet(WALLET_4_ID, WALLET_4_PUBKEY, 'Runner', false, 4),
+    wallet(WALLET_5_ID, WALLET_5_PUBKEY, 'Cold store', false, 5),
+    wallet(WALLET_6_ID, WALLET_6_PUBKEY, null, false, 6),
+    wallet(WALLET_7_ID, WALLET_7_PUBKEY, 'Scalps', false, 7),
   ],
 };
 

@@ -63,14 +63,14 @@
 }
 
 [data-activity-v2] .dock-rows--ledger > a.ledger-row:hover {
-  background-color: rgba(255, 255, 255, 0.045) !important;
+  background-color: rgba(11, 14, 20, 0.045) !important;
 }
 
 /* ── the head ─────────────────────────────────────────────────────── */
 
 [data-activity-v2] .ledger-head {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-  background: rgba(255, 255, 255, 0.015) !important;
+  border-bottom: 1px solid rgba(11, 14, 20, 0.07) !important;
+  background: rgba(11, 14, 20, 0.015) !important;
 }
 
 /* The board's column head, from `.ledger-head > span` in discover.css. */
@@ -79,7 +79,7 @@
   font-size: 9.5px !important;
   font-weight: 500 !important;
   letter-spacing: 0.13em !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
 }
 
 /* ── age, first and dotted ────────────────────────────────────────── */
@@ -88,10 +88,10 @@
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-variant-numeric: tabular-nums;
   font-size: 10.5px !important;
-  color: #6b7180 !important;
+  color: #5b6570 !important;
   text-align: left !important;
   justify-self: start;
-  border-bottom: 1px dotted rgba(255, 255, 255, 0.22);
+  border-bottom: 1px dotted rgba(11, 14, 20, 0.22);
   line-height: 1.5;
 }
 
@@ -112,7 +112,7 @@
 /* The identity colour, handed in per row as `--wa-id`. */
 [data-activity-v2] .ledger-wallet-label {
   font-weight: 500 !important;
-  color: var(--wa-id, rgba(255, 255, 255, 0.92)) !important;
+  color: var(--wa-id, rgba(11, 14, 20, 0.92)) !important;
 }
 
 [data-activity-v2] .ledger-wallet-label:hover {
@@ -132,7 +132,7 @@
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-size: 12px !important;
   font-weight: 500 !important;
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(11, 14, 20, 0.92) !important;
 }
 
 [data-activity-v2] .ledger-amount {
@@ -151,7 +151,7 @@
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-variant-numeric: tabular-nums;
   font-size: 12px !important;
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(11, 14, 20, 0.92) !important;
 }
 
 /* ── the manager tab ──────────────────────────────────────────────── */
@@ -178,7 +178,7 @@
 /* ══ THE PANEL ITSELF ════════════════════════════════════════════════
  *
  * The first pass restyled the ROWS and nothing else, so the panel still
- * opened as the old surface: #101114, a 4px radius, a 0.85px border and a
+ * opened as the old surface: #ffffff, a 4px radius, a 0.85px border and a
  * flat drop shadow, with a 9.5px tab strip. The rows were right and
  * everything around them was not.
  *
@@ -217,7 +217,7 @@
 [data-activity-v2] > div:nth-child(1) {
   height: 40px !important;
   padding: 0 8px 0 14px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(11, 14, 20, 0.07);
 }
 
 /* The title, and the live dot that already sits beside it. */
@@ -232,13 +232,13 @@
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(11, 14, 20, 0.4) !important;
   transition: color 130ms ease, background-color 130ms ease;
 }
 
 [data-activity-v2] > div:nth-child(1) button:hover {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.07);
+  color: #0b0e14 !important;
+  background: rgba(11, 14, 20, 0.07);
 }
 
 /* ── the tab strip ────────────────────────────────────────────────── */
@@ -247,7 +247,7 @@
   height: 24px !important;
   padding: 0 10px !important;
   gap: 14px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-bottom: 1px solid rgba(11, 14, 20, 0.07) !important;
 }
 
 [data-activity-v2] > div:nth-child(2) button {
@@ -255,13 +255,13 @@
   font-size: 10.5px !important;
   font-weight: 600 !important;
   letter-spacing: 0.06em !important;
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: rgba(11, 14, 20, 0.35) !important;
   border-bottom: 1px solid transparent !important;
   transition: color 130ms ease, border-color 130ms ease;
 }
 
 [data-activity-v2] > div:nth-child(2) button:hover {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(11, 14, 20, 0.7) !important;
 }
 
 /*
@@ -272,8 +272,8 @@
 [data-activity-v2] > div:nth-child(2) button[aria-selected='true'],
 [data-activity-v2] > div:nth-child(2) button[data-active='true'],
 [data-activity-v2] > div:nth-child(2) button.is-active {
-  color: #ffffff !important;
-  border-bottom-color: #ffffff !important;
+  color: #0b0e14 !important;
+  border-bottom-color: #0b0e14 !important;
 }
 
 /* ── the empty state ──────────────────────────────────────────────── */
@@ -284,5 +284,94 @@
 
 [data-activity-v2] .ledger-empty-line {
   font-size: 12px !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
+}
+
+
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  THE DOCKED PANELS, ON PAPER
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * The tweet tracker and the wallet activity feed are FIXED elements, and
+ * fixed means they are siblings of the board rather than children of it.
+ * So the board wrapper's palette never reaches them and they need their
+ * own copy of it, which is this.
+ *
+ * The tweet cards inside read `--card-bg`, `--card-shadow` and the
+ * surfaces, so those are here too: a card on paper is paper with an edge
+ * and a drop, not a lighter grey than its ground.
+ */
+.dock-terminal,
+[data-activity-v2] {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --card-bg: #ffffff;
+  --card-shadow: 0 16px 40px rgba(11, 14, 20, 0.12);
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  /*
+   * INK, NOT THE APP'S PALE SKY. Every armed channel toggle in the
+   * manager rows reads `--accent-primary`, which is #BAE6FD — a colour
+   * chosen to glow on black. On paper it is the one washed out cyan
+   * thing on an otherwise ink panel, and it is what made the manager look
+   * like it belonged to a different product.
+   */
+  --accent-primary: #0b0e14;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  --accent-glow: rgba(11, 14, 20, 0.22);
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  background: var(--surface);
+}
+
+
+/*
+ * The OFF state of a manager row's channel toggles. It reads `--ink-4`,
+ * which is the faintest step in the scale — on black that is a dark grey
+ * you can still find, on paper it is #D6DBD9 and it is gone. A channel
+ * you have switched off still has to be visible, because finding it is
+ * how you switch it back on.
+ */
+.dock-terminal .wt-toggle:not(.wt-toggle--on),
+[data-activity-v2] .wt-toggle:not(.wt-toggle--on) {
+  color: #a9b2b0;
+}
+/* And the armed one stays ink. Written at the same weight as the rule
+   above, or that one wins and the two states look identical. */
+.dock-terminal .wt-toggle--on,
+[data-activity-v2] .wt-toggle--on {
+  color: var(--accent-primary);
+}
+/*
+ * ── AND THEY HAVE TO ANSWER THE POINTER ──────────────────────────────
+ *
+ * `discover.css` gives these a hover, but it is written as `.wt-toggle:
+ * hover` — one class and a pseudo class. The rules above are scoped to
+ * the panel, so they carry a class MORE and win even while the pointer is
+ * on the button. The result was three buttons that never reacted.
+ *
+ * So both states get their hover restated here, at the weight the rest of
+ * this block is written at. Off comes up to full ink, on goes to the
+ * plate under it as well, so a press has somewhere left to go.
+ */
+.dock-terminal .wt-toggle:not(.wt-toggle--on):hover,
+[data-activity-v2] .wt-toggle:not(.wt-toggle--on):hover {
+  color: var(--ink-0);
+  background: rgba(11, 14, 20, 0.06);
+  border-radius: 4px;
+}
+.dock-terminal .wt-toggle--on:hover,
+[data-activity-v2] .wt-toggle--on:hover {
+  background: rgba(11, 14, 20, 0.06);
+  border-radius: 4px;
 }

@@ -143,3 +143,11 @@
     display: none;
   }
 }
+
+
+/*
+ * NO PALETTE BLOCK HERE. Every rule in this sheet is written `.tt
+ * .trow--holders`, so the holders table lives INSIDE the tape and takes
+ * the palette the tape declares. A second copy on a root that does not
+ * exist would be a block that never matches and quietly drifts.
+ */

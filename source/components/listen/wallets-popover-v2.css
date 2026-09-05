@@ -48,7 +48,7 @@
   font-feature-settings: 'tnum' 1 !important;
   font-size: 11px !important;
   letter-spacing: 0 !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
 }
 
 [aria-label='Select wallets for trading'] [data-testid='multi-wallet-select-all'],
@@ -63,12 +63,12 @@
    * 11.5px word needs. Same value the sub header cluster and the nav
    * settled on, so the three surfaces agree on what "quiet" is.
    */
-  color: rgba(255, 255, 255, 0.68) !important;
+  color: rgba(11, 14, 20, 0.68) !important;
 }
 
 [aria-label='Select wallets for trading'] [data-testid='multi-wallet-select-all']:hover:not(:disabled),
 [aria-label='Select wallets for trading'] [data-testid='multi-wallet-clear']:hover:not(:disabled) {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }
 
 /* ── the rows ─────────────────────────────────────────────────────── */
@@ -85,7 +85,7 @@
 }
 
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-']:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(11, 14, 20, 0.05) !important;
 }
 
 /*
@@ -94,7 +94,7 @@
  * it is about to lose.
  */
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'][style*='accent-soft'] {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(11, 14, 20, 0.08) !important;
 }
 
 /* A wallet that cannot trade keeps its name legible but quiet. */
@@ -124,7 +124,7 @@
   font-family: var(--font-geist-mono), ui-monospace, monospace !important;
   font-size: 10.5px !important;
   letter-spacing: -0.01em !important;
-  color: #4b4f5b !important;
+  color: #8a9591 !important;
 }
 
 /*
@@ -137,7 +137,7 @@
    * at 35% it was fainter than the rule under the row it sits on — the
    * one thing on the panel that has to be spotted rather than read.
    */
-  color: rgba(255, 255, 255, 0.62) !important;
+  color: rgba(11, 14, 20, 0.62) !important;
 }
 
 /*
@@ -149,11 +149,11 @@
   flex: 0 0 100% !important;
   font-family: var(--font-geist-sans), system-ui, sans-serif !important;
   font-size: 11px !important;
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(11, 14, 20, 0.6) !important;
 }
 
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] [role='button']:hover {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }
 
 /* ── the figures ──────────────────────────────────────────────────── */
@@ -169,7 +169,7 @@
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: 'tnum' 1 !important;
   font-size: 12px !important;
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(11, 14, 20, 0.92) !important;
 }
 
 /*
@@ -200,7 +200,7 @@
  * input that carries the accessibility and the tests.
  */
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] > span:first-child > span {
-  border-color: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(11, 14, 20, 0.22) !important;
   background: transparent !important;
 }
 
@@ -208,14 +208,14 @@
   [data-testid^='multi-wallet-row-'][style*='accent-soft']
   > span:first-child
   > span {
-  border-color: #ffffff !important;
-  background: #ffffff !important;
+  border-color: #0b0e14 !important;
+  background: #0b0e14 !important;
 }
 
 /* The tick strokes in `--surface-1` so it reads against the fill. On a
    white box that has to be black. */
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] svg path {
-  stroke: #000000 !important;
+  stroke: #ffffff !important;
 }
 
 /* ── the type comes down ──────────────────────────────────────────── */
@@ -281,7 +281,7 @@
 /* ── the surface ──────────────────────────────────────────────────── */
 
 /*
- * #111111 — the same surface the Groups dropdown and the Trading
+ * #ffffff — the same surface the Groups dropdown and the Trading
  * Settings panel take.
  *
  * `ChipPopover` paints itself with `--surface-1`, a THEME token that
@@ -290,18 +290,18 @@
  * are the same kind of object and are made of the same thing now.
  */
 [aria-label='Select wallets for trading'] {
-  background: #111111 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #ffffff !important;
+  border-color: rgba(11, 14, 20, 0.12) !important;
   border-radius: 10px !important;
   box-shadow:
-    0 24px 80px #0000008c,
-    0 0 60px #ffffff0a !important;
+    0 24px 80px rgba(11, 14, 20, 0.16),
+    0 0 0 1px rgba(11, 14, 20, 0.06) !important;
 }
 
 /* The head's rule and the list's dividers come down to the one hairline
    weight the rest of the product uses. */
 [aria-label='Select wallets for trading'] > div:first-child {
-  border-bottom-color: rgba(255, 255, 255, 0.07) !important;
+  border-bottom-color: rgba(11, 14, 20, 0.07) !important;
 }
 
 /* ── narrow screens ───────────────────────────────────────────────── */
@@ -355,9 +355,9 @@
  * ══════════════════════════════════════════════════════════════════ */
 
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-'] svg {
-  color: rgba(255, 255, 255, 0.62) !important;
+  color: rgba(11, 14, 20, 0.62) !important;
 }
 
 [aria-label='Select wallets for trading'] [data-testid^='multi-wallet-row-']:hover svg {
-  color: #ffffff !important;
+  color: #0b0e14 !important;
 }

@@ -8,6 +8,7 @@ import { PILL_MARKS } from '@/components/discover/column/Pills';
    bitmap rather than a drawn stand in — and the ring colour beside it is
    the one sampled off that same artwork. */
 import { PADS } from '@/components/discover/column/rowData';
+import { WalletCountButton } from '@/components/trade/WalletCountButton';
 
 /*
  * THE TRADE PANEL — the right rail of a coin's page.
@@ -43,6 +44,16 @@ import { PADS } from '@/components/discover/column/rowData';
  * tested against real lengths — "6mYcNBqiior9gYj…phga" is as long as a
  * real address, and "15.2K / $718K" is as wide as a real pair.
  */
+
+/*
+ * THE COIN THIS PANEL IS ABOUT.
+ *
+ * The rail is drawn from fixtures, and the wallet picker needs a real
+ * mint rather than the elided `6mYcNBqiior9gYj…phga` that is printed in
+ * Token Info: it is what the per wallet token balances are read for. On
+ * the live page this is the route's mint.
+ */
+const PANEL_MINT = '6mYcNBqiior9gYjHiVjNPHnFdhP5Jz1kBqLpVpp2phga';
 
 const S = {
   fill: 'none',
@@ -496,6 +507,33 @@ export function TokenTradePanel() {
               </button>
             </div>
           ) : null}
+
+          {/* ── WHICH WALLETS ARE PAYING ──────────────────────────
+              Directly above the amount, because those are the two halves
+              of one sentence: how much, out of what. Asking for the
+              figure first and leaving the account implicit is how an
+              order goes out of the wrong wallet.
+
+              It is a COUNT, not a name. The list underneath is a
+              multi select — any wallet, as many as you want — so a name
+              in the trigger would be a lie the moment a second one is
+              ticked, and even with one ticked the name is the thing you
+              open the list to check, not the thing you glance at while
+              typing an amount.
+
+              `WalletCountButton` is the control the header chip already
+              uses, so this writes to the same selection the order reads
+              rather than being a second picker that could disagree with
+              it. `field` is its full width form. */}
+          <div className="tp-wal">
+            {/* The mint is what puts the TOKENS column in the list: each
+                wallet's holding of THIS coin, beside its SOL, under a
+                column head that names both. The trigger stays one
+                reading — the wallets and how many — because the holding
+                is per wallet and a single figure on the button cannot
+                say which of them it belongs to. */}
+            <WalletCountButton layout="field" mint={PANEL_MINT} />
+          </div>
 
           {/* ── THE AMOUNT ────────────────────────────────────────
               The field and the four shortcuts are ONE object. Typing

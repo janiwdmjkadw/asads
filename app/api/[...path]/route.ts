@@ -292,6 +292,22 @@ function body(path: string, query: URLSearchParams): Record<string, unknown> {
     return { reauth_required: false, ...mock.walletBalances };
   }
 
+  /*
+   * One wallet's holding of one mint — the TOKENS column in the trade
+   * page's wallet picker, read once per listed wallet. Unserved, every
+   * row in that column showed an em dash.
+   */
+  if (path === 'v1/trade/token-balance') {
+    return {
+      mint: query.get('mint') ?? '',
+      wallet_account_id: query.get('wallet_account_id'),
+      tokens: mock.tokenBalanceFor(
+        query.get('mint') ?? '',
+        query.get('wallet_account_id'),
+      ),
+    };
+  }
+
   if (path === 'v1/wallets/groups') {
     const stamp = '2026-06-01T12:00:00.000Z';
     return {

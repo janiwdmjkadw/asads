@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * of truth — previously inlined inside `CoinCard.tsx`.
  */
 export const TOKEN_IMAGE_PLACEHOLDER =
-  'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2296%22 height=%2296%22 viewBox=%220 0 96 96%22%3E%3Crect width=%2296%22 height=%2296%22 rx=%2214%22 fill=%22%2311161f%22/%3E%3Ccircle cx=%2248%22 cy=%2248%22 r=%2223%22 fill=%22none%22 stroke=%22%2338e1ff%22 stroke-opacity=%22.45%22 stroke-width=%222%22/%3E%3Cpath d=%22M48 27v42M27 48h42%22 stroke=%22%2338e1ff%22 stroke-opacity=%22.55%22 stroke-width=%222%22 stroke-linecap=%22round%22/%3E%3C/svg%3E';
+  'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2296%22 height=%2296%22 viewBox=%220 0 96 96%22%3E%3Crect width=%2296%22 height=%2296%22 rx=%2214%22 fill=%22%23f1f4f3%22/%3E%3Ccircle cx=%2248%22 cy=%2248%22 r=%2223%22 fill=%22none%22 stroke=%22%230b0e14%22 stroke-opacity=%22.22%22 stroke-width=%222%22/%3E%3Cpath d=%22M48 27v42M27 48h42%22 stroke=%22%230b0e14%22 stroke-opacity=%22.28%22 stroke-width=%222%22 stroke-linecap=%22round%22/%3E%3C/svg%3E';
 
 export interface ResolvedTokenImage {
   /** The src to render right now (primary, fallback, or placeholder). */
