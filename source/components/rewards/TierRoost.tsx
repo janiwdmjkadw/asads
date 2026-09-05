@@ -63,12 +63,12 @@ const METALS: ReadonlyArray<string> = [
   'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, #98a1aa 48%, #6c747c 64%, #383d43 100%)',
   'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
   'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #dbe2e8 46%, #a8b0b9 66%, #5f666e 100%)',
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #eccb63 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #dfb646 46%, #c09220 66%, #6b4806 100%)',
   /* Icy blue rather than a brighter silver. The top rung has to be
      unmistakable at 30px beside a metal that is also pale and also
      cool, and a blue platinum is a convention rank ladders already
      taught everybody. */
-  'linear-gradient(145deg, #3d6d96 0%, #8ec6e8 27%, #cbe6f6 45%, #6fa9d2 68%, #315a80 100%)',
+  'linear-gradient(145deg, #3d6d96 0%, #6fb1dc 27%, #a5d0ea 45%, #6fa9d2 68%, #315a80 100%)',
 ];
 
 /** Past the table, the top metal repeats rather than falling to grey. */
@@ -124,9 +124,13 @@ export function TierRoost(props: Props): React.ReactElement {
            * ladder is wanting the next one, and you cannot want gold if
            * gold is drawn as a blank until the day you reach it.
            *
-           * 0.42, not 0.26: a pale metal at a quarter strength still
-           * reads over black, and over white it is gone — which put the
-           * two rungs you are climbing TOWARD closest to invisible.
+           * 0.62, and the pale metals deepened to match. A quarter
+           * strength reads over black and vanishes over white, and
+           * even at 42% gold and platinum — the two palest ramps, and
+           * the two rungs this ladder exists to sell — were the
+           * faintest things on the tab. They are quieter than the rung
+           * you are on, which is at full strength and drawn larger,
+           * and that is the whole distinction they need.
            */}
           <span
             className="trs-owl"
@@ -135,7 +139,7 @@ export function TierRoost(props: Props): React.ReactElement {
               width: i === at ? 60 : 46,
               height: i === at ? 60 : 46,
               background: metalAt(i),
-              opacity: i > at ? 0.42 : 1,
+              opacity: i > at ? 0.62 : 1,
             }}
           />
           <span className="trs-k">{cap(t.key)}</span>

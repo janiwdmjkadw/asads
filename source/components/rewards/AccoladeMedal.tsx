@@ -98,7 +98,11 @@ export function AccoladeMedal({ accolade: a }: { accolade: Accolade }): React.Re
       <span
         className="acm-owl"
         aria-hidden
-        style={{ background: METALS[m], opacity: claimed || claimable ? 1 : 0.24 }}
+        /* 0.55, not 0.24. A quarter strength metal reads as a ghost on
+           a black card and as nothing at all on white — and the locked
+           ones are most of the grid, so most of the grid was empty. It
+           is still clearly quieter than a medal you have earned. */
+        style={{ background: METALS[m], opacity: claimed || claimable ? 1 : 0.55 }}
       />
 
       <span className="acm-n">{a.name}</span>

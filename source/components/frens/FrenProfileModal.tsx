@@ -41,14 +41,14 @@ interface Props {
 
 /** Same fixed confetti as FrensPage (kept local: page imports this file). */
 const CONFETTI = [
-  '#37d67a',
-  '#3b82f6',
-  '#38bdf8',
-  '#f052d2',
-  '#fbbf24',
-  '#22d3ee',
-  '#8b5cf6',
-  '#7ce85e',
+  '#0f8a5f',
+  '#2a5fd0',
+  '#1f8fc4',
+  '#b8339c',
+  '#c08a12',
+  '#0e93ac',
+  '#6b46c8',
+  '#4f9c33',
 ] as const;
 
 /** Deterministic identity color: this fren always signs in this color. */
@@ -148,10 +148,10 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
           maxHeight: 'min(760px, calc(100vh - 48px))',
           display: 'flex',
           flexDirection: 'column',
-          background: 'var(--surface-1, #0e0e12)',
+          background: 'var(--surface-1, #ffffff)',
           border: '1px solid var(--hairline-2)',
           borderRadius: 20,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 90px rgba(0,0,0,0.55)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 90px rgba(11, 14, 20, 0.18)',
         }}
       >
         <DialogTitle className="sr-only">Fren profile</DialogTitle>
@@ -162,7 +162,7 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
           style={{
             height: 3,
             flexShrink: 0,
-            background: 'linear-gradient(90deg, #37d67a, #38bdf8, #8b5cf6, #f052d2, #fbbf24)',
+            background: 'linear-gradient(90deg, #0f8a5f, #1f8fc4, #6b46c8, #b8339c, #c08a12)',
             opacity: 0.85,
           }}
         />
@@ -178,7 +178,7 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
                   height: 2,
                   borderRadius: 2,
                   background:
-                    'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                    'linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.18), transparent)',
                   backgroundSize: '200% 100%',
                 }}
               />
@@ -211,11 +211,11 @@ export function FrenProfileStyles(): React.ReactElement {
       .frenprof-sec-3 { animation: frenprof-rise 420ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
       .frenprof-shimmer { animation: frenprof-shimmer 1.4s linear infinite; }
       .frenprof-row { transition: background 120ms ease; border-radius: 8px; }
-      .frenprof-row:hover { background: rgba(255,255,255,0.03); }
+      .frenprof-row:hover { background: rgba(11, 14, 20, 0.04); }
       .frenprof-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
       @media (max-width: 520px) { .frenprof-stats { grid-template-columns: repeat(2, 1fr); } }
       .frenprof-chip { transition: background 140ms ease; }
-      .frenprof-chip:hover { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015) 60%), var(--surface-1, #0e0e12) !important; }
+      .frenprof-chip:hover { background: linear-gradient(180deg, rgba(11, 14, 20, 0.06), rgba(11, 14, 20, 0.02) 60%), var(--surface-1, #ffffff) !important; }
       .frenprof-tf { transition: color 120ms ease, background 120ms ease; }
       @media (prefers-reduced-motion: reduce) {
         .frenprof-sec, .frenprof-sec-2, .frenprof-sec-3, .frenprof-shimmer { animation: none; }
@@ -226,12 +226,12 @@ export function FrenProfileStyles(): React.ReactElement {
 
 /** Default banner streaks (only when the fren hasn't set a banner). */
 const BANNER_STREAKS: ReadonlyArray<{ top: number; right: number; w: number; c: string }> = [
-  { top: 12, right: -30, w: 150, c: '#37d67a' },
-  { top: 12, right: 130, w: 60, c: '#1fa14f' },
-  { top: 30, right: -14, w: 100, c: '#38bdf8' },
-  { top: 30, right: 96, w: 46, c: '#f052d2' },
-  { top: 48, right: -36, w: 170, c: '#fbbf24' },
-  { top: 66, right: -10, w: 90, c: '#22d3ee' },
+  { top: 12, right: -30, w: 150, c: '#0f8a5f' },
+  { top: 12, right: 130, w: 60, c: '#0d7a45' },
+  { top: 30, right: -14, w: 100, c: '#1f8fc4' },
+  { top: 30, right: 96, w: 46, c: '#b8339c' },
+  { top: 48, right: -36, w: 170, c: '#c08a12' },
+  { top: 66, right: -10, w: 90, c: '#0e93ac' },
 ];
 
 export function FrenProfileBody({
@@ -282,7 +282,13 @@ export function FrenProfileBody({
             overflow: 'hidden',
             background: detail.banner_data_url
               ? `center / cover no-repeat url(${JSON.stringify(detail.banner_data_url)})`
-              : 'linear-gradient(180deg, #14141a 0%, #0e0e12 100%)',
+              /* The default banner, when a fren has set none. It ran
+                 from a near black into the card, which was a fade to
+                 the card's own ground — and the ground moved. It fades
+                 out of a soft ink into paper now, so the streaks still
+                 have something to sit on and the avatar's ring still
+                 has an edge to break. */
+              : 'linear-gradient(180deg, #eef1f0 0%, #ffffff 100%)',
           }}
         >
           {detail.banner_data_url ? null : (
@@ -327,7 +333,7 @@ export function FrenProfileBody({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, var(--surface-1, #0e0e12) 0%, transparent 55%)',
+            background: 'linear-gradient(to top, var(--surface-1, #ffffff) 0%, transparent 55%)',
             pointerEvents: 'none',
           }}
         />
@@ -339,7 +345,7 @@ export function FrenProfileBody({
             width: 72,
             height: 72,
             borderRadius: '50%',
-            border: '3px solid var(--surface-1, #0e0e12)',
+            border: '3px solid var(--surface-1, #ffffff)',
             boxShadow: `0 0 0 2px color-mix(in srgb, ${identity} 70%, transparent), 0 0 18px -4px color-mix(in srgb, ${identity} 55%, transparent)`,
             background: detail.avatar_data_url
               ? `center / cover no-repeat url(${JSON.stringify(detail.avatar_data_url)})`
@@ -527,7 +533,7 @@ export function FrenProfileBody({
             />
             {/* Filler cell keeps the hairline grid rectangular when the
                 5 stats leave an odd slot. */}
-            <span aria-hidden style={{ background: 'var(--surface-1, #0e0e12)' }} />
+            <span aria-hidden style={{ background: 'var(--surface-1, #ffffff)' }} />
           </div>
         </div>
 
@@ -646,7 +652,7 @@ function FrenPerfSection({
             padding: 2,
             borderRadius: 9,
             border: '1px solid var(--hairline)',
-            background: 'rgba(255,255,255,0.02)',
+            background: 'rgba(11, 14, 20, 0.03)',
             flexShrink: 0,
           }}
         >
@@ -807,7 +813,7 @@ const cellStyle: CSSProperties = {
   padding: '13px 16px',
   minWidth: 0,
   background:
-    'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004) 55%), var(--surface-1, #0e0e12)',
+    'linear-gradient(180deg, rgba(11, 14, 20, 0.03), rgba(11, 14, 20, 0.004) 55%), var(--surface-1, #ffffff)',
 };
 
 const miniChipStyle: CSSProperties = {
@@ -819,7 +825,7 @@ const miniChipStyle: CSSProperties = {
   border: '1px solid var(--hairline)',
   borderRadius: 8,
   padding: '4px 9px',
-  background: 'rgba(255,255,255,0.02)',
+  background: 'rgba(11, 14, 20, 0.03)',
   whiteSpace: 'nowrap',
   fontVariantNumeric: 'tabular-nums',
 };
@@ -882,7 +888,7 @@ function StatChip({
         padding: '11px 12px 10px',
         minWidth: 0,
         background:
-          'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004) 60%), var(--surface-1, #0e0e12)',
+          'linear-gradient(180deg, rgba(11, 14, 20, 0.03), rgba(11, 14, 20, 0.004) 60%), var(--surface-1, #ffffff)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7 }}>
@@ -896,7 +902,7 @@ function StatChip({
             alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--ink-1)',
-            background: 'rgba(255,255,255,0.05)',
+            background: 'rgba(11, 14, 20, 0.06)',
             border: '1px solid var(--hairline)',
             flexShrink: 0,
           }}

@@ -66,8 +66,10 @@
 .acm[data-ready] .acm-n { color: var(--ink-0); }
 
 /* Locked steps back, but only the type — the medal keeps its metal so
-   you can see what you are working toward. */
-.acm[data-locked] .acm-n,
+   you can see what you are working toward. The NAME keeps a step more
+   ink than the rest of it: the one thing you read off a locked card is
+   which accolade it is. */
+.acm[data-locked] .acm-n { color: var(--ink-2); }
 .acm[data-locked] .acm-d,
 .acm[data-locked] .acm-p { color: var(--ink-3); }
 
@@ -94,16 +96,24 @@
   display: block;
   position: relative;
   width: 100%;
-  height: 3px;
+  /* 4px, and both parts a step stronger. At 3px with an 8% track and a
+     40% fill, a card at 13% was a hairline with a faint nub in it —
+     the progress you have made toward the accolade was the least
+     visible thing on the card about it. */
+  height: 4px;
   margin-top: 12px;
   border-radius: 2px;
-  background: rgba(11, 14, 20, 0.08);
+  background: rgba(11, 14, 20, 0.1);
 }
 .acm-bar > i {
   display: block;
   height: 100%;
   border-radius: 2px;
-  background: rgba(11, 14, 20, 0.4);
+  /* A real ink, so a short fill still reads as a fill. */
+  background: rgba(11, 14, 20, 0.62);
+  /* And it never disappears entirely: below about 3% the bar would
+     otherwise round to nothing and a card at 1% would look untouched. */
+  min-width: 4px;
   transition: width 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 /* The figure hangs under the bar rather than taking a line of its own,

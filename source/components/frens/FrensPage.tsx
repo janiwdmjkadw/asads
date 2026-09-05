@@ -65,31 +65,42 @@ const TRACK_EMOJIS = ['🐋', '🦍', '🐸', '🔥', '💎', '🚀', '🥷', '�
 
 // ───────── the confetti system ─────────
 
-/** Fixed brand confetti — deliberately NOT theme-reactive, like a print. */
+/*
+ * Fixed brand confetti — deliberately NOT theme-reactive, like a print.
+ *
+ * ── AND MIXED FOR PAPER ──────────────────────────────────────────────
+ *
+ * These eight were picked to glow on black: a mint, a sky, a hot pink,
+ * an amber. Over white the same eight are highlighter, and the two
+ * lightest of them stopped being colours at all — a 5px tile in
+ * #4f9c33 on a white page is a blank tile. Each one is deepened to the
+ * point where it holds at tile size on paper, keeping the spacing that
+ * lets eight frens be told apart at a glance.
+ */
 const CONFETTI = [
-  '#37d67a',
-  '#3b82f6',
-  '#38bdf8',
-  '#f052d2',
-  '#fbbf24',
-  '#22d3ee',
-  '#8b5cf6',
-  '#7ce85e',
+  '#0f8a5f',
+  '#2a5fd0',
+  '#1f8fc4',
+  '#b8339c',
+  '#c08a12',
+  '#0e93ac',
+  '#6b46c8',
+  '#4f9c33',
 ] as const;
 
 /** Each lens owns a color — its tick block, its section, its identity. */
 const LENS_COLOR: Record<SortKey, string> = {
-  pnl: '#37d67a',
-  calls: '#f052d2',
-  winrate: '#38bdf8',
-  volume: '#fbbf24',
+  pnl: '#0f8a5f',
+  calls: '#b8339c',
+  winrate: '#1f8fc4',
+  volume: '#c08a12',
 };
 
 /** Podium identities: main block color + a companion for the collage. */
 const RANK_THEME: Record<number, { main: string; soft: string }> = {
-  1: { main: '#ffd84d', soft: '#37d67a' },
-  2: { main: '#38bdf8', soft: '#8b5cf6' },
-  3: { main: '#f052d2', soft: '#fb923c' },
+  1: { main: '#c99415', soft: '#0f8a5f' },
+  2: { main: '#1f8fc4', soft: '#6b46c8' },
+  3: { main: '#b8339c', soft: '#d9673a' },
 };
 
 function rankTheme(rank: number): { main: string; soft: string } {
@@ -244,7 +255,7 @@ export function FrensPage(): React.ReactElement {
 
   return (
     <div
-      className="scroll-hide"
+      className="scroll-hide frens-page"
       style={{
         height: 'var(--h-app-content, 100%)',
         overflowY: 'auto',
@@ -440,6 +451,46 @@ export function FrensPage(): React.ReactElement {
 export function FrensStyles(): React.ReactElement {
   return (
     <style>{`
+      /*
+       * ── THE PAGE'S PALETTE ──────────────────────────────────────
+       *
+       * Its own root, like every converted surface. It states a GROUND
+       * and a base colour as well as the tokens: a rule that names no
+       * colour inherits, and what it was inheriting is the terminal's
+       * near white ink.
+       *
+       * This becomes the light half of the theme when the toggle is
+       * built; nothing below is a literal that would have to be found
+       * again.
+       */
+      .frens-page {
+        --surface: #ffffff;
+        --surface-1: #ffffff;
+        --surface-2: #f7f9f8;
+        --surface-3: #f4f7f6;
+        --input-bg: rgba(11, 14, 20, 0.035);
+        --input-border: rgba(11, 14, 20, 0.1);
+        --chip-bg: rgba(11, 14, 20, 0.04);
+        --chip-border: rgba(11, 14, 20, 0.1);
+        --hairline: rgba(11, 14, 20, 0.09);
+        --hairline-2: rgba(11, 14, 20, 0.16);
+        --ink-0: #0b0e14;
+        --ink-1: #2b3138;
+        --ink-2: #5b6570;
+        --ink-3: #8a9591;
+        --ink-4: #d6dbd9;
+        --up: #0f6d5f;
+        --down: #b4482e;
+        --hold: #c08a12;
+        --accent-primary: #0b0e14;
+        --accent-soft: rgba(11, 14, 20, 0.06);
+        --accent: #0b0e14;
+        --accent-ink: #ffffff;
+
+        background: var(--surface);
+        color: var(--ink-1);
+      }
+
       @keyframes frens-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
       /* ── PAGE RHYTHM ─────────────────────────────────────────────
@@ -485,8 +536,8 @@ export function FrensStyles(): React.ReactElement {
         position: relative;
         border-radius: 18px;
         overflow: hidden;
-        background: #000;
-        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: #ffffff;
+        border: 1px solid rgba(11, 14, 20, 0.09);
       }
 
       /* One tile per fren, in that fren's own hue. Forty eight of them
@@ -499,20 +550,28 @@ export function FrensStyles(): React.ReactElement {
         grid-auto-rows: 1fr;
         gap: 5px;
         padding: 10px;
-        opacity: 0.5;
+        /* 0.82, from 0.5. Half strength over black still gave a tile
+           its hue, because the tile was the only light in that square.
+           Over white the same half is a pastel, and forty eight pastel
+           squares are a smudge rather than a mosaic of frens. */
+        opacity: 0.82;
       }
       .frm-tiles > span { display: block; border-radius: 4px; }
 
 
 
-      /* The ground the type stands on. Solid to 44%, gone by 76%, so
+      /* The ground the type stands on. Solid to 58%, gone by 84%, so
          the tiles are only ever behind the empty right side. */
       /* The type is capped at the same 1440 the rest of the page uses,
          so nothing runs wider than the board below it. */
       .frm-in {
         position: relative;
         padding: 30px 32px 0;
-        background: linear-gradient(90deg, #000 44%, rgba(0, 0, 0, 0.55) 76%, transparent);
+        /* Solid further right than it was on black: a dark ground hid a
+           dark tile by 55%, and over paper a pale tile still reads
+           through white at 62% — which put the stat labels under the
+           headline on top of the mosaic. */
+        background: linear-gradient(90deg, #ffffff 58%, rgba(255, 255, 255, 0.88) 84%, transparent);
       }
 
       /* Sans, not a 62px serif italic lowercase wordmark under a nav
@@ -538,7 +597,11 @@ export function FrensStyles(): React.ReactElement {
       .frm-tray {
         position: relative;
         padding: 22px 32px 30px;
-        background: linear-gradient(90deg, #000 44%, rgba(0, 0, 0, 0.55) 76%, transparent);
+        /* Solid further right than it was on black: a dark ground hid a
+           dark tile by 55%, and over paper a pale tile still reads
+           through white at 62% — which put the stat labels under the
+           headline on top of the mosaic. */
+        background: linear-gradient(90deg, #ffffff 58%, rgba(255, 255, 255, 0.88) 84%, transparent);
       }
       .frm-figs {
         display: flex;
@@ -561,7 +624,7 @@ export function FrensStyles(): React.ReactElement {
          frb-up applied and doing nothing. */
       .frm-figs b.frb-up { color: var(--up); }
       .frm-figs b.frb-down { color: var(--down); }
-      .frm-load { width: 180px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent); background-size: 200% 100%; }
+      .frm-load { width: 180px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.16), transparent); background-size: 200% 100%; }
 
       /*
        * A light crossing the grid. filter and transform only, so no
@@ -621,8 +684,8 @@ export function FrensStyles(): React.ReactElement {
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.22) 12%,
-          rgba(255, 255, 255, 0.22) 88%,
+          rgba(11, 14, 20, 0.2) 12%,
+          rgba(11, 14, 20, 0.2) 88%,
           transparent
         );
       }
@@ -706,10 +769,10 @@ export function FrensStyles(): React.ReactElement {
 
       .frb-row {
         height: 38px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.026);
+        border-bottom: 1px solid rgba(11, 14, 20, 0.035);
         transition: background-color 120ms var(--ease, ease);
       }
-      .frb-row:hover { background: rgba(255, 255, 255, 0.03); }
+      .frb-row:hover { background: rgba(11, 14, 20, 0.04); }
 
       .frb-n {
         text-align: right;
@@ -800,6 +863,23 @@ export function FrensStyles(): React.ReactElement {
         12% { filter: brightness(1.6); transform: scale(1.12); }
       }
 
+      /*
+       * ── THE GROUND FOLLOWS THE TYPE ─────────────────────────────
+       *
+       * The banner's ground is solid to 58% because that is where the
+       * headline and the figures end on a wide pane. As the pane
+       * narrows, the same sentence takes a larger share of it — at
+       * 768 the subtitle runs to about two thirds — so the fade has
+       * to start later or the tail of it lands on the mosaic. One
+       * step, between the wide setting and the phone's band.
+       */
+      @media (max-width: 1040px) and (min-width: 721px) {
+        .frm-in,
+        .frm-tray {
+          background: linear-gradient(90deg, #ffffff 74%, rgba(255, 255, 255, 0.9) 92%, transparent);
+        }
+      }
+
       @media (max-width: 820px) {
         .frm-in { flex-direction: column; align-items: flex-start; gap: 22px; }
         .frm h1 { font-size: 26px; }
@@ -823,18 +903,37 @@ export function FrensStyles(): React.ReactElement {
         .frb-head { padding-bottom: 12px; }
         .frens-sig { margin-top: 54px; padding-bottom: 8px; }
 
-        /* Fewer, larger tiles, and the black carried nearly all the
-           way across — at this width there is no empty right side for
-           the colour to live in. */
-        .frm-tiles { grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 8px; }
+        /*
+         * ── ON A PHONE THE MOSAIC IS A BAND, NOT A FIELD ───────────
+         *
+         * On a wide banner the tiles live in the empty right side and
+         * the ground fades across to keep the type off them. At 375px
+         * there IS no empty right side: the headline, the sentence and
+         * four figures all run the full width, so the fade left the
+         * last stat sitting on colour — and where the two overlapped,
+         * a 90% white over a tile read as a smudge rather than as
+         * either one.
+         *
+         * So the tiles come out from behind the type and become a band
+         * across the top of the card. Every fren's colour is still
+         * there, the type is on clean paper, and nothing overlaps.
+         */
+        .frm-tiles {
+          inset: 0 0 auto 0;
+          height: 46px;
+          grid-template-columns: repeat(10, 1fr);
+          gap: 4px;
+          padding: 6px;
+          opacity: 0.9;
+        }
         .frm-in {
-          padding: 22px 18px 0;
-          background: linear-gradient(90deg, #000 72%, rgba(0, 0, 0, 0.72) 92%, transparent);
+          padding: 62px 18px 0;
+          background: none;
         }
         .frm h1 { font-size: 30px; }
         .frm-tray {
           padding: 18px 18px 22px;
-          background: linear-gradient(90deg, #000 72%, rgba(0, 0, 0, 0.72) 92%, transparent);
+          background: none;
         }
         .frm-figs { gap: 10px 22px; }
         .frm-figs b { font-size: 15px; }
@@ -891,12 +990,12 @@ export function FrensStyles(): React.ReactElement {
         padding: 14px;
         border: 1px solid var(--hairline);
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.025);
+        background: rgba(11, 14, 20, 0.035);
         text-align: left;
         cursor: pointer;
         transition: background-color 130ms var(--ease, ease);
       }
-      .frens-tk:hover { background: rgba(255, 255, 255, 0.055); }
+      .frens-tk:hover { background: rgba(11, 14, 20, 0.06); }
 
       .frens-tk-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
       .frens-tk-id { min-width: 0; }
@@ -999,7 +1098,7 @@ export function FrensStyles(): React.ReactElement {
         width: min(250px, 42vw);
         height: 30px;
         padding: 0 11px;
-        border: 1px solid var(--hairline-2, rgba(255,255,255,0.11));
+        border: 1px solid var(--hairline-2, rgba(11, 14, 20, 0.12));
         border-radius: 7px;
         background: transparent;
         color: var(--ink-0);
@@ -1008,7 +1107,7 @@ export function FrensStyles(): React.ReactElement {
         transition: border-color 130ms var(--ease, ease);
       }
       .frc-search::placeholder { color: var(--ink-3); }
-      .frc-search:focus { border-color: rgba(255, 255, 255, 0.26); }
+      .frc-search:focus { border-color: rgba(11, 14, 20, 0.24); }
 
       @media (max-width: 820px) {
         /* Tap targets. Bare words are 13px tall, which is fine for a
@@ -1029,7 +1128,7 @@ export function FrensStyles(): React.ReactElement {
       .frens-streak { animation: frens-drift 14s ease-in-out infinite alternate; }
       .frens-shimmerbar { animation: frens-shimmer 1.4s linear infinite; }
       .frens-row { transition: background 120ms ease; }
-      .frens-row:hover { background: rgba(255,255,255,0.028); }
+      .frens-row:hover { background: rgba(11, 14, 20, 0.035); }
 
       /* ── liquid glass system ────────────────────────────────────
          One recipe for every control on the page: a cool translucent
@@ -1040,49 +1139,49 @@ export function FrensStyles(): React.ReactElement {
       .frens-glass {
         background: linear-gradient(
           160deg,
-          rgba(255,255,255,0.085) 0%,
-          rgba(255,255,255,0.028) 46%,
-          rgba(255,255,255,0.015) 100%
+          rgba(11,14,20,0.05) 0%,
+          rgba(11,14,20,0.025) 46%,
+          rgba(11,14,20,0.015) 100%
         );
         -webkit-backdrop-filter: blur(14px) saturate(1.35);
         backdrop-filter: blur(14px) saturate(1.35);
-        border: 1px solid rgba(255,255,255,0.11);
+        border: 1px solid rgba(11,14,20,0.1);
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.14),
-          inset 0 -1px 0 rgba(0,0,0,0.26),
-          0 10px 26px -18px rgba(0,0,0,0.8);
+          inset 0 1px 0 rgba(255,255,255,0.9),
+          inset 0 -1px 0 rgba(11,14,20,0.05),
+          0 10px 26px -18px rgba(11,14,20,0.35);
         transition: background 160ms ease, border-color 160ms ease,
           box-shadow 200ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
       }
       .frens-glass:hover {
-        border-color: rgba(255,255,255,0.18);
+        border-color: rgba(11,14,20,0.16);
         background: linear-gradient(
           160deg,
-          rgba(255,255,255,0.12) 0%,
-          rgba(255,255,255,0.045) 46%,
-          rgba(255,255,255,0.02) 100%
+          rgba(11,14,20,0.075) 0%,
+          rgba(11,14,20,0.04) 46%,
+          rgba(11,14,20,0.02) 100%
         );
       }
       /* Tinted (active) pane: the control's color suffuses the glass. */
       .frens-glass[aria-pressed="true"], .frens-glass--tint {
         background: linear-gradient(
           160deg,
-          color-mix(in srgb, var(--gc, var(--accent-primary)) 30%, rgba(255,255,255,0.06)) 0%,
-          color-mix(in srgb, var(--gc, var(--accent-primary)) 10%, rgba(255,255,255,0.02)) 55%,
+          color-mix(in srgb, var(--gc, var(--accent-primary)) 14%, rgba(11,14,20,0.03)) 0%,
+          color-mix(in srgb, var(--gc, var(--accent-primary)) 6%, rgba(11,14,20,0.015)) 55%,
           color-mix(in srgb, var(--gc, var(--accent-primary)) 4%, transparent) 100%
         );
-        border-color: color-mix(in srgb, var(--gc, var(--accent-primary)) 45%, rgba(255,255,255,0.1));
+        border-color: color-mix(in srgb, var(--gc, var(--accent-primary)) 38%, rgba(11,14,20,0.12));
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.22),
-          inset 0 -1px 0 rgba(0,0,0,0.22),
+          inset 0 1px 0 rgba(255,255,255,0.95),
+          inset 0 -1px 0 rgba(11,14,20,0.05),
           0 0 24px -8px color-mix(in srgb, var(--gc, var(--accent-primary)) 65%, transparent),
-          0 10px 26px -18px rgba(0,0,0,0.8);
+          0 10px 26px -18px rgba(11,14,20,0.35);
       }
       /* No-blur fallback: lean on a slightly more opaque pane instead. */
       @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-        .frens-glass { background: rgba(24,26,32,0.86); }
+        .frens-glass { background: rgba(255, 255, 255, 0.9); }
         .frens-glass[aria-pressed="true"], .frens-glass--tint {
-          background: color-mix(in srgb, var(--gc, var(--accent-primary)) 20%, rgba(24,26,32,0.9));
+          background: color-mix(in srgb, var(--gc, var(--accent-primary)) 12%, rgba(255, 255, 255, 0.94));
         }
       }
 
@@ -1093,7 +1192,7 @@ export function FrensStyles(): React.ReactElement {
         transform: translateY(-3px);
         border-color: color-mix(in srgb, var(--fc, #ffffff) 55%, var(--hairline)) !important;
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.12),
+          inset 0 1px 0 rgba(255,255,255,0.9),
           0 16px 36px -20px color-mix(in srgb, var(--fc, #ffffff) 50%, transparent);
       }
       .frens-lens { border-radius: 999px; cursor: pointer; }
@@ -1102,7 +1201,7 @@ export function FrensStyles(): React.ReactElement {
       .frens-search:focus {
         border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent) !important;
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.14),
+          inset 0 1px 0 rgba(255,255,255,0.9),
           0 0 0 3px color-mix(in srgb, var(--accent-primary) 16%, transparent);
       }
       .frens-track { transition: filter 120ms ease, transform 120ms ease, box-shadow 200ms ease; }
@@ -1110,7 +1209,7 @@ export function FrensStyles(): React.ReactElement {
         filter: brightness(1.12);
         transform: translateY(-1px);
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.24),
+          inset 0 1px 0 rgba(255,255,255,0.95),
           0 0 26px -8px color-mix(in srgb, var(--accent-primary) 70%, transparent);
       }
       .frens-track:active { transform: none; }
@@ -1126,7 +1225,7 @@ export function FrensStyles(): React.ReactElement {
       }
       @keyframes frens-spark {
         0% { box-shadow: 0 0 0 0 transparent; }
-        30% { box-shadow: 0 0 6px 1px rgba(255,255,255,0.9), 0 0 18px 5px currentColor; }
+        30% { box-shadow: 0 0 6px 1px rgba(11,14,20,0.28), 0 0 18px 5px currentColor; }
         100% { box-shadow: 0 0 0 0 transparent; }
       }
       .frens-pixel {
@@ -1164,33 +1263,33 @@ export function FrensStyles(): React.ReactElement {
 
 /** Racing confetti bars, right-anchored, bleeding off the panel edge. */
 const STREAKS: ReadonlyArray<{ top: number; right: number; w: number; c: string }> = [
-  { top: 0, right: -60, w: 240, c: '#1fa14f' },
-  { top: 0, right: 198, w: 120, c: '#37d67a' },
-  { top: 18, right: -28, w: 150, c: '#38bdf8' },
-  { top: 18, right: 138, w: 70, c: '#f052d2' },
-  { top: 36, right: -70, w: 280, c: '#7ce85e' },
-  { top: 36, right: 228, w: 80, c: '#2563eb' },
-  { top: 54, right: -18, w: 130, c: '#fbbf24' },
+  { top: 0, right: -60, w: 240, c: '#0d7a45' },
+  { top: 0, right: 198, w: 120, c: '#0f8a5f' },
+  { top: 18, right: -28, w: 150, c: '#1f8fc4' },
+  { top: 18, right: 138, w: 70, c: '#b8339c' },
+  { top: 36, right: -70, w: 280, c: '#4f9c33' },
+  { top: 36, right: 228, w: 80, c: '#1e4fc0' },
+  { top: 54, right: -18, w: 130, c: '#c08a12' },
   { top: 54, right: 128, w: 90, c: '#1e40af' },
-  { top: 72, right: -48, w: 190, c: '#22d3ee' },
+  { top: 72, right: -48, w: 190, c: '#0e93ac' },
 ];
 
 /** Sparse pixel mosaic — the "crowd", one bright cell per fren. */
 const PIXELS: ReadonlyArray<[number, number, string]> = [
-  [0, 1, '#38bdf8'],
-  [0, 2, '#22d3ee'],
-  [0, 5, '#37d67a'],
-  [0, 6, '#1fa14f'],
-  [1, 0, '#2563eb'],
-  [1, 2, '#0ea5e9'],
-  [1, 4, '#7ce85e'],
-  [1, 6, '#fbbf24'],
-  [2, 1, '#f052d2'],
-  [2, 3, '#c026d3'],
-  [2, 5, '#f59e0b'],
-  [2, 6, '#fbbf24'],
-  [3, 0, '#8b5cf6'],
-  [3, 4, '#eab308'],
+  [0, 1, '#1f8fc4'],
+  [0, 2, '#0e93ac'],
+  [0, 5, '#0f8a5f'],
+  [0, 6, '#0d7a45'],
+  [1, 0, '#1e4fc0'],
+  [1, 2, '#0b7ba8'],
+  [1, 4, '#4f9c33'],
+  [1, 6, '#c08a12'],
+  [2, 1, '#b8339c'],
+  [2, 3, '#9c1fac'],
+  [2, 5, '#b8760a'],
+  [2, 6, '#c08a12'],
+  [3, 0, '#6b46c8'],
+  [3, 4, '#a8921a'],
 ];
 
 /**
@@ -1332,7 +1431,7 @@ function MastChip({ block, children }: { block: string; children: string }): Rea
         border: '1px solid var(--hairline)',
         borderRadius: 8,
         padding: '5px 10px',
-        background: 'rgba(255,255,255,0.02)',
+        background: 'rgba(11, 14, 20, 0.03)',
         whiteSpace: 'nowrap',
       }}
     >
@@ -1426,7 +1525,7 @@ export function EdgeRails(): React.ReactElement {
       <div aria-hidden className="frens-rail" style={{ left: 26 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
           <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {['#37d67a', '#f052d2', '#38bdf8'].map((c, index) => (
+            {['#0f8a5f', '#b8339c', '#1f8fc4'].map((c, index) => (
               <span
                 key={c}
                 className="frens-rail-dot"
@@ -1449,7 +1548,7 @@ export function EdgeRails(): React.ReactElement {
               width: 1,
               height: 120,
               background:
-                'linear-gradient(180deg, var(--hairline-2, rgba(255,255,255,0.12)), transparent)',
+                'linear-gradient(180deg, var(--hairline-2, rgba(11, 14, 20, 0.14)), transparent)',
             }}
           />
         </div>
@@ -1498,10 +1597,10 @@ export function SignatureFooter(): React.ReactElement {
           style={{
             width: 44,
             height: 1,
-            background: 'linear-gradient(90deg, transparent, var(--hairline-2, rgba(255,255,255,0.12)))',
+            background: 'linear-gradient(90deg, transparent, var(--hairline-2, rgba(11, 14, 20, 0.14)))',
           }}
         />
-        {['#37d67a', '#38bdf8', '#f052d2', '#fbbf24'].map((c, index) => (
+        {['#0f8a5f', '#1f8fc4', '#b8339c', '#c08a12'].map((c, index) => (
           <span
             key={c}
             className="frens-sig-dot"
@@ -1519,7 +1618,7 @@ export function SignatureFooter(): React.ReactElement {
           style={{
             width: 44,
             height: 1,
-            background: 'linear-gradient(90deg, var(--hairline-2, rgba(255,255,255,0.12)), transparent)',
+            background: 'linear-gradient(90deg, var(--hairline-2, rgba(11, 14, 20, 0.14)), transparent)',
           }}
         />
       </div>
@@ -1966,15 +2065,15 @@ export function PodiumCard({
           overflow: 'hidden',
           borderRadius: 18,
           border: `1px solid ${
-            first ? `color-mix(in srgb, ${theme.main} 40%, rgba(255,255,255,0.1))` : 'rgba(255,255,255,0.09)'
+            first ? `color-mix(in srgb, ${theme.main} 40%, rgba(11,14,20,0.12))` : 'rgba(11,14,20,0.1)'
           }`,
           background:
             'linear-gradient(165deg, color-mix(in srgb, var(--surface-2) 68%, transparent), color-mix(in srgb, var(--surface-1) 62%, transparent))',
           backdropFilter: 'blur(14px) saturate(1.3)',
           WebkitBackdropFilter: 'blur(14px) saturate(1.3)',
           boxShadow: first
-            ? `inset 0 1px 0 rgba(255,255,255,0.12), 0 0 38px -16px color-mix(in srgb, ${theme.main} 55%, transparent)`
-            : 'inset 0 1px 0 rgba(255,255,255,0.09)',
+            ? `inset 0 1px 0 rgba(255,255,255,0.9), 0 0 38px -16px color-mix(in srgb, ${theme.main} 45%, transparent)`
+            : 'inset 0 1px 0 rgba(255,255,255,0.9)',
           padding: first ? '14px 18px 14px' : '12px 16px 12px',
         } as CSSProperties
       }
@@ -2148,7 +2247,7 @@ export function PodiumCard({
           padding: '8px 10px',
           borderRadius: 12,
           border: '1px solid var(--hairline)',
-          background: 'rgba(0,0,0,0.25)',
+          background: 'rgba(11, 14, 20, 0.16)',
         }}
       >
         <MiniStat label="Positions" value={String(row.positions)} split={[row.wins, row.losses]} />
@@ -2239,7 +2338,7 @@ function LoadingRows(): React.ReactElement {
             height: 30,
             borderRadius: 8,
             background:
-              'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+              'linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.06), transparent)',
             backgroundSize: '200% 100%',
             animationDelay: `${index * 140}ms`,
           }}
@@ -2280,12 +2379,12 @@ function EmptyState({ children }: { children: string }): React.ReactElement {
  * puts the owl ON the rail rather than floating over it.
  */
 const PODIUM_METAL: ReadonlyArray<string> = [
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #f7dd8a 46%, #c09220 66%, #6b4806 100%)',
-  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #f4f7fa 46%, #a8b0b9 66%, #5f666e 100%)',
-  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #e0a066 47%, #96552a 66%, #4d2711 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #eccb63 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, #5f666e 0%, #a2abb5 30%, #cdd5dc 46%, #929ba6 66%, #4f565e 100%)',
+  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
 ];
 /* A flat tone per place, because a gradient cannot be a text colour. */
-const PODIUM_TONE = ['#d3a72c', '#c2c9d1', '#a9642f'] as const;
+const PODIUM_TONE = ['#d3a72c', '#b3bcc6', '#a9642f'] as const;
 const PODIUM_PLACE = ['First', 'Second', 'Third'] as const;
 
 function Perch({
@@ -2473,8 +2572,8 @@ function BestCallChip({
         // table row, and dozens of live blur regions is real paint cost.
         // The gradient + specular edge carry the material instead.
         background:
-          'linear-gradient(165deg, color-mix(in srgb, var(--up) 16%, rgba(255,255,255,0.04)), color-mix(in srgb, var(--up) 6%, transparent))',
-        border: '1px solid color-mix(in srgb, var(--up) 28%, rgba(255,255,255,0.06))',
+          'linear-gradient(165deg, color-mix(in srgb, var(--up) 16%, rgba(11, 14, 20, 0.04)), color-mix(in srgb, var(--up) 6%, transparent))',
+        border: '1px solid color-mix(in srgb, var(--up) 28%, rgba(11, 14, 20, 0.07))',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
         borderRadius: 999,
         padding: '3px 10px 3px 4px',
@@ -2778,10 +2877,10 @@ function TrackButton({
               'linear-gradient(165deg, color-mix(in srgb, var(--surface-2) 82%, transparent), color-mix(in srgb, var(--surface-1) 78%, transparent))',
             backdropFilter: 'blur(22px) saturate(1.35)',
             WebkitBackdropFilter: 'blur(22px) saturate(1.35)',
-            border: '1px solid rgba(255,255,255,0.13)',
+            border: '1px solid rgba(11, 14, 20, 0.13)',
             borderRadius: 16,
             boxShadow:
-              'inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px -16px rgba(0,0,0,0.7)',
+              'inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px -16px rgba(11, 14, 20, 0.16)',
             padding: 12,
             textAlign: 'left',
           }}
