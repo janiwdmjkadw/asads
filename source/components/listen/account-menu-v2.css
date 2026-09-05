@@ -381,3 +381,94 @@
 .acct-row:hover > svg:first-child {
   color: #0b0e14 !important;
 }
+
+
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  THE DARK HALF
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * The block above is this surface's paper palette. This is the same
+ * selectors on the terminal's own tokens, for when the theme is dark.
+ *
+ * It is ADDITIVE on purpose: the light block is not edited and not
+ * gated, so nothing about the paper product depends on this file being
+ * parsed correctly. `:root[data-theme='dark']` outranks it and comes
+ * later in source order, so on dark it wins twice over; on light it
+ * matches nothing at all.
+ *
+ * `data-theme` is written on the document element by `ThemeProvider`,
+ * which is the one signal a PORTALLED surface can read — a dialog or a
+ * menu at the document root is inside no page.
+ */
+:root[data-theme='dark'] [data-acct] {
+  --surface: hsl(220 12% 3%);
+  --surface-1: hsl(220 12% 5%);
+  --surface-2: hsl(220 12% 7%);
+  --surface-3: hsl(220 12% 9%);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --chip-bg: rgba(255, 255, 255, 0.05);
+  --chip-border: rgba(255, 255, 255, 0.1);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-2: rgba(255, 255, 255, 0.12);
+  --ink-0: #ffffff;
+  --ink-1: #e4e7ee;
+  --ink-2: #a8aeba;
+  --ink-3: #6b7180;
+  --ink-4: #2a2d36;
+  --up: #22c77e;
+  --down: #f0567a;
+  --hold: #ffcf5c;
+  --accent-primary: #e4e7ee;
+  --accent-secondary: #5eead4;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent-wash: rgba(255, 255, 255, 0.05);
+  --accent-glow: rgba(255, 255, 255, 0.18);
+  --accent: #e4e7ee;
+  --accent-ink: #0b0e14;
+  --flame: #e4e7ee;
+  --flame-soft: rgba(255, 255, 255, 0.12);
+  --flame-glow: rgba(255, 255, 255, 0.18);
+  --flame-wash: rgba(255, 255, 255, 0.05);
+  --primary: #e4e7ee;
+  --primary-foreground: #0b0e14;
+  --acc-0: #8ab4ff;
+}
+
+/*
+ * ── AND THE LITERALS ─────────────────────────────────────────────────
+ *
+ * The block above hands this menu the terminal's TOKENS, and this
+ * surface reads almost none of them: it was written in literals, on
+ * purpose, so that it and the notifications panel beside it could agree
+ * about their ground without either one asking a theme.
+ *
+ * There is no earlier version of this file to replay — it was authored
+ * white, before the tag the rest of the dark half is restored from — so
+ * these are stated rather than recovered. They are the same six values
+ * the terminal used everywhere else: `--surface-1` for the plate, a
+ * white hairline at 10% for the edge, ink at three weights for the type.
+ *
+ * `!important` where the paper rule has it, and only there.
+ */
+:root[data-theme='dark'] [data-acct] {
+  background: hsl(220 12% 5%) !important;
+  color: #a8aeba;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 80px rgba(0, 0, 0, 0.6) !important;
+}
+
+:root[data-theme='dark'] .acct-mark { background: rgba(255, 255, 255, 0.06); }
+:root[data-theme='dark'] .acct-name { color: #ffffff; }
+:root[data-theme='dark'] .acct-meta { color: #6b7180; }
+:root[data-theme='dark'] .acct-rule { background: rgba(255, 255, 255, 0.08); }
+:root[data-theme='dark'] .acct-row { color: #a8aeba; }
+:root[data-theme='dark'] .acct-row:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+:root[data-theme='dark'] .acct-ico { color: #6b7180; }
+:root[data-theme='dark'] .acct-row:hover .acct-ico { color: #ffffff; }
+:root[data-theme='dark'] .acct-go { color: #a8aeba; }
+:root[data-theme='dark'] .acct-row.is-out { color: #a8aeba; }
+:root[data-theme='dark'] .acct-row > svg:first-child { color: #6b7180 !important; }
+:root[data-theme='dark'] .acct-row:hover > svg:first-child { color: #ffffff !important; }

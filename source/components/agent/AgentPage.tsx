@@ -45,7 +45,7 @@ function ConversationList({ onPick }: { onPick?: () => void }) {
           }}
           data-testid="agent-new-conversation"
           title="Start a new conversation"
-          className="inline-flex h-[26px] shrink-0 items-center gap-1.5 rounded-full bg-[var(--ink-0)] pl-2 pr-2.5 text-[11.5px] font-medium text-white transition-opacity hover:opacity-90"
+          className="inline-flex h-[26px] shrink-0 items-center gap-1.5 rounded-full bg-[var(--ink-0)] pl-2 pr-2.5 text-[11.5px] font-medium text-[var(--surface)] transition-opacity hover:opacity-90"
         >
           <svg
             aria-hidden

@@ -42,13 +42,28 @@ import {
  * sequential on-chain txs are mid-flight.
  */
 
-const INK = '#0B0E14';
-const BODY = '#3E4A47';
-const MUTED = '#6B7674';
-const FAINT = '#8A9591';
-const TEAL = '#134E4A';
-const PANEL = '#E8ECEA';
-const WARN = '#B4482E';
+/*
+ * ── THE PALETTE, AND ITS DARK HALF ───────────────────────────────────
+ *
+ * These were plain literals: this dialog was turned to paper before the
+ * rest of the terminal was, so there is no earlier version of it to
+ * restore under a theme.
+ *
+ * Each one asks for a variable and falls back to the paper value it
+ * already held, so on light nothing has moved. `--fl-*` is answered in
+ * `source/app/dark-prepaper.css`, under `data-theme='dark'` and nowhere
+ * else, with the terminal's own scale.
+ */
+const INK = 'var(--fl-ink, #0B0E14)';
+const BODY = 'var(--fl-body, #3E4A47)';
+const MUTED = 'var(--fl-muted, #6B7674)';
+const FAINT = 'var(--fl-faint, #8A9591)';
+const TEAL = 'var(--fl-teal, #134E4A)';
+const PANEL = 'var(--fl-panel, #E8ECEA)';
+const WARN = 'var(--fl-warn, #B4482E)';
+/** The dialog's ground, and the type that sits ON an ink filled button. */
+const PAPER = 'var(--fl-paper, #FFFFFF)';
+const ON_INK = 'var(--fl-on-ink, #FFFFFF)';
 
 const SANS = 'var(--font-geist-sans), Geist, -apple-system, system-ui, sans-serif';
 const MONO = 'var(--font-geist-mono), Geist Mono, ui-monospace, monospace';
@@ -201,7 +216,7 @@ function FlashDialog({
         style={{
           width: 'min(640px, calc(100vw - 24px))',
           maxWidth: 'min(640px, calc(100vw - 24px))',
-          background: '#FFFFFF',
+          background: PAPER,
           borderRadius: 12,
           color: INK,
           fontFamily: SANS,
@@ -543,7 +558,7 @@ function LaneBars({ active, target }: { active: number; target: number }): React
             height: 8,
             borderRadius: 3,
             flexShrink: 1,
-            background: i < active ? TEAL : '#FFFFFF',
+            background: i < active ? TEAL : PAPER,
           }}
         />
       ))}
@@ -601,7 +616,7 @@ const DIALOG_SHEET = `
 
 const primaryButtonStyle: React.CSSProperties = {
   background: INK,
-  color: '#FFFFFF',
+  color: ON_INK,
   border: 'none',
   borderRadius: 6,
   padding: '9px 18px',

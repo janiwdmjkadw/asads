@@ -518,11 +518,11 @@ function FrensPillMosaic() {
    * against white.
    */
   const cells: ReadonlyArray<{ x: number; y: number; c: string; d: string }> = [
-    { x: 4, y: 0, c: '#c01a9e', d: '0s' },
-    { x: 8, y: 0, c: '#5b34c9', d: '1.4s' },
-    { x: 0, y: 4, c: '#b07500', d: '2.6s' },
-    { x: 4, y: 4, c: '#0f8a4a', d: '0.8s' },
-    { x: 8, y: 4, c: '#0d7fb8', d: '2s' },
+    { x: 4, y: 0, c: 'var(--d-terminaltopnav-1, #c01a9e)', d: '0s' },
+    { x: 8, y: 0, c: 'var(--d-terminaltopnav-2, #5b34c9)', d: '1.4s' },
+    { x: 0, y: 4, c: 'var(--d-terminaltopnav-3, #b07500)', d: '2.6s' },
+    { x: 4, y: 4, c: 'var(--d-terminaltopnav-4, #0f8a4a)', d: '0.8s' },
+    { x: 8, y: 4, c: 'var(--d-terminaltopnav-5, #0d7fb8)', d: '2s' },
   ];
   return (
     <span

@@ -1,0 +1,230 @@
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  THE DARK HALF — THE COLOUR THAT IS NOT IN A STYLESHEET
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * GENERATED, from the same source as `dark.css`: the product at
+ * `black-terminal`, the commit before the paper repaint.
+ *
+ * Those two files restore RULES, which is possible because a rule can be
+ * outranked. The sites below are not rules. They are colour written into
+ * a TSX inline style, an SVG attribute, a chart config, a constants
+ * table — and there is nothing there for a selector to beat.
+ *
+ * So each of those sites was changed to ask for a variable and fall back
+ * to the paper literal it already held:
+ *
+ *     background: 'var(--d-callmodal-3, #ffffff)'
+ *
+ * Every name below is declared HERE and only here, under dark. On light
+ * it does not exist, the fallback is the byte for byte identical string
+ * that was there before, and nothing about the paper product can have
+ * moved. On dark it resolves to the value the site shipped with.
+ *
+ * The names are addresses, not a palette: there is no shared scale in
+ * here, just the individual sites the repaint moved, each one restored
+ * where it stands. The comment on each says where it is used.
+ */
+
+:root[data-theme='dark'] {
+  --d-atoms-1: #E8E8E2;   /* source/components/agent/parts/atoms/atoms.tsx:90 */
+  --d-atoms-2: #E8E8E2;   /* source/components/agent/parts/atoms/atoms.tsx:91 */
+  --d-cardskeleton-1: #4AC99B;   /* source/components/agent/proposal/CardSkeleton.tsx:76 */
+  --d-cardskeleton-2: #EA667D;   /* source/components/agent/proposal/CardSkeleton.tsx:77 */
+  --d-kind-glyphs-1: rgba(255,255,255,0);   /* source/components/agent/proposal/v2/kind-glyphs.tsx:39 */
+  --d-tokenhovercard-1: #E8E8E2;   /* source/components/agent/soren/TokenHoverCard.tsx:219 */
+  --d-tokenhovercard-2: #E8E8E2;   /* source/components/agent/soren/TokenHoverCard.tsx:232 */
+  --d-guidancenotice-1: #e0b341;   /* source/components/conditionals/GuidanceNotice.tsx:16 */
+  --d-guidancenotice-2: #ff5c5c;   /* source/components/conditionals/GuidanceNotice.tsx:17 */
+  --d-calldetailmodal-1: #37d67a;   /* source/components/frens/CallDetailModal.tsx:49 */
+  --d-calldetailmodal-2: #3b82f6;   /* source/components/frens/CallDetailModal.tsx:50 */
+  --d-calldetailmodal-3: #38bdf8;   /* source/components/frens/CallDetailModal.tsx:51 */
+  --d-calldetailmodal-4: #f052d2;   /* source/components/frens/CallDetailModal.tsx:52 */
+  --d-calldetailmodal-5: #fbbf24;   /* source/components/frens/CallDetailModal.tsx:53 */
+  --d-calldetailmodal-6: #22d3ee;   /* source/components/frens/CallDetailModal.tsx:54 */
+  --d-calldetailmodal-7: #8b5cf6;   /* source/components/frens/CallDetailModal.tsx:55 */
+  --d-calldetailmodal-8: #7ce85e;   /* source/components/frens/CallDetailModal.tsx:56 */
+  --d-calldetailmodal-9: #0d0d11;   /* source/components/frens/CallDetailModal.tsx:153 */
+  --d-calldetailmodal-10: rgba(0,0,0,0.5);   /* source/components/frens/CallDetailModal.tsx:160 */
+  --d-calldetailmodal-11: #37d67a;   /* source/components/frens/CallDetailModal.tsx:170 */
+  --d-calldetailmodal-12: #38bdf8;   /* source/components/frens/CallDetailModal.tsx:170 */
+  --d-calldetailmodal-13: #8b5cf6;   /* source/components/frens/CallDetailModal.tsx:170 */
+  --d-calldetailmodal-14: #f052d2;   /* source/components/frens/CallDetailModal.tsx:170 */
+  --d-calldetailmodal-15: #fbbf24;   /* source/components/frens/CallDetailModal.tsx:170 */
+  --d-calldetailmodal-16: rgba(255,255,255,0.18);   /* source/components/frens/CallDetailModal.tsx:259 */
+  --d-calldetailmodal-17: rgba(255,255,255,0.18);   /* source/components/frens/CallDetailModal.tsx:287 */
+  --d-calldetailmodal-18: #0d0d11;   /* source/components/frens/CallDetailModal.tsx:410 */
+  --d-calldetailmodal-19: rgba(255,255,255,0.02);   /* source/components/frens/CallDetailModal.tsx:478 */
+  --d-calldetailmodal-20: rgba(0,0,0,0.35);   /* source/components/frens/CallDetailModal.tsx:493 */
+  --d-calldetailmodal-21: #fbbf24;   /* source/components/frens/CallDetailModal.tsx:620 */
+  --d-calldetailmodal-22: rgba(255,255,255,0.045);   /* source/components/frens/CallDetailModal.tsx:909 */
+  --d-calldetailmodal-23: rgba(0,0,0,0.55);   /* source/components/frens/CallDetailModal.tsx:1008 */
+  --d-calldetailmodal-24: #0d0d11;   /* source/components/frens/CallDetailModal.tsx:1040 */
+  --d-frenprofilemodal-1: #37d67a;   /* source/components/frens/FrenProfileModal.tsx:44 */
+  --d-frenprofilemodal-2: #3b82f6;   /* source/components/frens/FrenProfileModal.tsx:45 */
+  --d-frenprofilemodal-3: #38bdf8;   /* source/components/frens/FrenProfileModal.tsx:46 */
+  --d-frenprofilemodal-4: #f052d2;   /* source/components/frens/FrenProfileModal.tsx:47 */
+  --d-frenprofilemodal-5: #fbbf24;   /* source/components/frens/FrenProfileModal.tsx:48 */
+  --d-frenprofilemodal-6: #22d3ee;   /* source/components/frens/FrenProfileModal.tsx:49 */
+  --d-frenprofilemodal-7: #8b5cf6;   /* source/components/frens/FrenProfileModal.tsx:50 */
+  --d-frenprofilemodal-8: #7ce85e;   /* source/components/frens/FrenProfileModal.tsx:51 */
+  --d-frenprofilemodal-9: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:151 */
+  --d-frenprofilemodal-10: rgba(0,0,0,0.55);   /* source/components/frens/FrenProfileModal.tsx:154 */
+  --d-frenprofilemodal-11: #37d67a;   /* source/components/frens/FrenProfileModal.tsx:165 */
+  --d-frenprofilemodal-12: #38bdf8;   /* source/components/frens/FrenProfileModal.tsx:165 */
+  --d-frenprofilemodal-13: #8b5cf6;   /* source/components/frens/FrenProfileModal.tsx:165 */
+  --d-frenprofilemodal-14: #f052d2;   /* source/components/frens/FrenProfileModal.tsx:165 */
+  --d-frenprofilemodal-15: #fbbf24;   /* source/components/frens/FrenProfileModal.tsx:165 */
+  --d-frenprofilemodal-16: rgba(255,255,255,0.18);   /* source/components/frens/FrenProfileModal.tsx:181 */
+  --d-frenprofilemodal-17: #37d67a;   /* source/components/frens/FrenProfileModal.tsx:229 */
+  --d-frenprofilemodal-18: #1fa14f;   /* source/components/frens/FrenProfileModal.tsx:230 */
+  --d-frenprofilemodal-19: #38bdf8;   /* source/components/frens/FrenProfileModal.tsx:231 */
+  --d-frenprofilemodal-20: #f052d2;   /* source/components/frens/FrenProfileModal.tsx:232 */
+  --d-frenprofilemodal-21: #fbbf24;   /* source/components/frens/FrenProfileModal.tsx:233 */
+  --d-frenprofilemodal-22: #22d3ee;   /* source/components/frens/FrenProfileModal.tsx:234 */
+  --d-frenprofilemodal-23: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:336 */
+  --d-frenprofilemodal-24: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:348 */
+  --d-frenprofilemodal-25: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:539 */
+  --d-frenprofilemodal-26: rgba(255,255,255,0.02);   /* source/components/frens/FrenProfileModal.tsx:658 */
+  --d-frenprofilemodal-27: rgba(255,255,255,0.02);   /* source/components/frens/FrenProfileModal.tsx:818 */
+  --d-frenprofilemodal-28: rgba(255,255,255,0.004);   /* source/components/frens/FrenProfileModal.tsx:818 */
+  --d-frenprofilemodal-29: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:818 */
+  --d-frenprofilemodal-30: rgba(255,255,255,0.02);   /* source/components/frens/FrenProfileModal.tsx:830 */
+  --d-frenprofilemodal-31: rgba(255,255,255,0.02);   /* source/components/frens/FrenProfileModal.tsx:893 */
+  --d-frenprofilemodal-32: rgba(255,255,255,0.004);   /* source/components/frens/FrenProfileModal.tsx:893 */
+  --d-frenprofilemodal-33: #0e0e12;   /* source/components/frens/FrenProfileModal.tsx:893 */
+  --d-frenprofilemodal-34: rgba(255,255,255,0.05);   /* source/components/frens/FrenProfileModal.tsx:907 */
+  --d-frenspage-1: #37d67a;   /* source/components/frens/FrensPage.tsx:81 */
+  --d-frenspage-2: #3b82f6;   /* source/components/frens/FrensPage.tsx:82 */
+  --d-frenspage-3: #38bdf8;   /* source/components/frens/FrensPage.tsx:83 */
+  --d-frenspage-4: #f052d2;   /* source/components/frens/FrensPage.tsx:84 */
+  --d-frenspage-5: #fbbf24;   /* source/components/frens/FrensPage.tsx:85 */
+  --d-frenspage-6: #22d3ee;   /* source/components/frens/FrensPage.tsx:86 */
+  --d-frenspage-7: #8b5cf6;   /* source/components/frens/FrensPage.tsx:87 */
+  --d-frenspage-8: #7ce85e;   /* source/components/frens/FrensPage.tsx:88 */
+  --d-frenspage-9: #37d67a;   /* source/components/frens/FrensPage.tsx:93 */
+  --d-frenspage-10: #f052d2;   /* source/components/frens/FrensPage.tsx:94 */
+  --d-frenspage-11: #38bdf8;   /* source/components/frens/FrensPage.tsx:95 */
+  --d-frenspage-12: #fbbf24;   /* source/components/frens/FrensPage.tsx:96 */
+  --d-frenspage-13: #ffd84d;   /* source/components/frens/FrensPage.tsx:101 */
+  --d-frenspage-14: #37d67a;   /* source/components/frens/FrensPage.tsx:101 */
+  --d-frenspage-15: #38bdf8;   /* source/components/frens/FrensPage.tsx:102 */
+  --d-frenspage-16: #8b5cf6;   /* source/components/frens/FrensPage.tsx:102 */
+  --d-frenspage-17: #f052d2;   /* source/components/frens/FrensPage.tsx:103 */
+  --d-frenspage-18: #fb923c;   /* source/components/frens/FrensPage.tsx:103 */
+  --d-frenspage-19: #1fa14f;   /* source/components/frens/FrensPage.tsx:1302 */
+  --d-frenspage-20: #37d67a;   /* source/components/frens/FrensPage.tsx:1303 */
+  --d-frenspage-21: #38bdf8;   /* source/components/frens/FrensPage.tsx:1304 */
+  --d-frenspage-22: #f052d2;   /* source/components/frens/FrensPage.tsx:1305 */
+  --d-frenspage-23: #7ce85e;   /* source/components/frens/FrensPage.tsx:1306 */
+  --d-frenspage-24: #2563eb;   /* source/components/frens/FrensPage.tsx:1307 */
+  --d-frenspage-25: #fbbf24;   /* source/components/frens/FrensPage.tsx:1308 */
+  --d-frenspage-26: #22d3ee;   /* source/components/frens/FrensPage.tsx:1310 */
+  --d-frenspage-27: #38bdf8;   /* source/components/frens/FrensPage.tsx:1315 */
+  --d-frenspage-28: #22d3ee;   /* source/components/frens/FrensPage.tsx:1316 */
+  --d-frenspage-29: #37d67a;   /* source/components/frens/FrensPage.tsx:1317 */
+  --d-frenspage-30: #1fa14f;   /* source/components/frens/FrensPage.tsx:1318 */
+  --d-frenspage-31: #2563eb;   /* source/components/frens/FrensPage.tsx:1319 */
+  --d-frenspage-32: #0ea5e9;   /* source/components/frens/FrensPage.tsx:1320 */
+  --d-frenspage-33: #7ce85e;   /* source/components/frens/FrensPage.tsx:1321 */
+  --d-frenspage-34: #fbbf24;   /* source/components/frens/FrensPage.tsx:1322 */
+  --d-frenspage-35: #f052d2;   /* source/components/frens/FrensPage.tsx:1323 */
+  --d-frenspage-36: #c026d3;   /* source/components/frens/FrensPage.tsx:1324 */
+  --d-frenspage-37: #f59e0b;   /* source/components/frens/FrensPage.tsx:1325 */
+  --d-frenspage-38: #fbbf24;   /* source/components/frens/FrensPage.tsx:1326 */
+  --d-frenspage-39: #8b5cf6;   /* source/components/frens/FrensPage.tsx:1327 */
+  --d-frenspage-40: #eab308;   /* source/components/frens/FrensPage.tsx:1328 */
+  --d-frenspage-41: rgba(255,255,255,0.02);   /* source/components/frens/FrensPage.tsx:1470 */
+  --d-frenspage-42: #37d67a;   /* source/components/frens/FrensPage.tsx:1564 */
+  --d-frenspage-43: #f052d2;   /* source/components/frens/FrensPage.tsx:1564 */
+  --d-frenspage-44: #38bdf8;   /* source/components/frens/FrensPage.tsx:1564 */
+  --d-frenspage-45: rgba(255,255,255,0.12);   /* source/components/frens/FrensPage.tsx:1587 */
+  --d-frenspage-46: rgba(255,255,255,0.12);   /* source/components/frens/FrensPage.tsx:1636 */
+  --d-frenspage-47: #37d67a;   /* source/components/frens/FrensPage.tsx:1639 */
+  --d-frenspage-48: #38bdf8;   /* source/components/frens/FrensPage.tsx:1639 */
+  --d-frenspage-49: #f052d2;   /* source/components/frens/FrensPage.tsx:1639 */
+  --d-frenspage-50: #fbbf24;   /* source/components/frens/FrensPage.tsx:1639 */
+  --d-frenspage-51: rgba(255,255,255,0.12);   /* source/components/frens/FrensPage.tsx:1657 */
+  --d-frenspage-52: rgba(255,255,255,0.09);   /* source/components/frens/FrensPage.tsx:2112 */
+  --d-frenspage-53: rgba(0,0,0,0.25);   /* source/components/frens/FrensPage.tsx:2286 */
+  --d-frenspage-54: rgba(255,255,255,0.05);   /* source/components/frens/FrensPage.tsx:2377 */
+  --d-frenspage-55: #f7dd8a;   /* source/components/frens/FrensPage.tsx:2418 */
+  --d-frenspage-56: #6c737c;   /* source/components/frens/FrensPage.tsx:2419 */
+  --d-frenspage-57: #c2c9d1;   /* source/components/frens/FrensPage.tsx:2419 */
+  --d-frenspage-58: #f4f7fa;   /* source/components/frens/FrensPage.tsx:2419 */
+  --d-frenspage-59: #a8b0b9;   /* source/components/frens/FrensPage.tsx:2419 */
+  --d-frenspage-60: #5f666e;   /* source/components/frens/FrensPage.tsx:2419 */
+  --d-frenspage-61: #e0a066;   /* source/components/frens/FrensPage.tsx:2420 */
+  --d-frenspage-62: #c2c9d1;   /* source/components/frens/FrensPage.tsx:2423 */
+  --d-frenspage-63: rgba(255,255,255,0.04);   /* source/components/frens/FrensPage.tsx:2611 */
+  --d-frenspage-64: rgba(255,255,255,0.06);   /* source/components/frens/FrensPage.tsx:2612 */
+  --d-frenspage-65: rgba(255,255,255,0.13);   /* source/components/frens/FrensPage.tsx:2916 */
+  --d-frenspage-66: rgba(0,0,0,0.7);   /* source/components/frens/FrensPage.tsx:2919 */
+  --d-terminaltopnav-1: #f052d2;   /* source/components/listen/TerminalTopNav.tsx:521 */
+  --d-terminaltopnav-2: #8b5cf6;   /* source/components/listen/TerminalTopNav.tsx:522 */
+  --d-terminaltopnav-3: #fbbf24;   /* source/components/listen/TerminalTopNav.tsx:523 */
+  --d-terminaltopnav-4: #37d67a;   /* source/components/listen/TerminalTopNav.tsx:524 */
+  --d-terminaltopnav-5: #38bdf8;   /* source/components/listen/TerminalTopNav.tsx:525 */
+  --d-walletrow-1: rgba(255, 255, 255, 0.07);   /* source/components/portfolio/WalletRow.tsx:237 */
+  --d-walletrow-2: rgba(255, 255, 255, 0.04);   /* source/components/portfolio/WalletRow.tsx:239 */
+  --d-performancechart-1: #ffffff;   /* source/components/portfolio/spot/PerformanceChart.tsx:312 */
+  --d-performancechart-2: rgba(255, 255, 255, 0.04);   /* source/components/portfolio/spot/PerformanceChart.tsx:386 */
+  --d-performancechart-3: #04070a;   /* source/components/portfolio/spot/PerformanceChart.tsx:532 */
+  --d-performancechart-4: rgba(255, 255, 255, 0.03);   /* source/components/portfolio/spot/PerformanceChart.tsx:779 */
+  --d-performancechart-5: rgba(255, 255, 255, 0.75);   /* source/components/portfolio/spot/PerformanceChart.tsx:836 */
+  --d-spotempty-1: rgba(255,255,255,0.04);   /* source/components/portfolio/spot/SpotEmpty.tsx:53 */
+  --d-tokentreemap-1: rgba(0, 0, 0, 0.32);   /* source/components/portfolio/spot/TokenTreemap.tsx:323 */
+  --d-tokentreemap-2: rgba(255,255,255,0.07);   /* source/components/portfolio/spot/TokenTreemap.tsx:323 */
+  --d-tokentreemap-3: rgba(255,255,255,0.045);   /* source/components/portfolio/spot/TokenTreemap.tsx:324 */
+  --d-tokentreemap-4: rgba(255,255,255,0.06);   /* source/components/portfolio/spot/TokenTreemap.tsx:609 */
+  --d-tokentreemap-5: rgba(255,255,255,0.08);   /* source/components/portfolio/spot/TokenTreemap.tsx:631 */
+  --d-tokentreemap-6: rgba(0, 0, 0, 0.36);   /* source/components/portfolio/spot/TokenTreemap.tsx:683 */
+  --d-tokentreemap-7: rgba(0, 0, 0, 0.36);   /* source/components/portfolio/spot/TokenTreemap.tsx:867 */
+  --d-tokentreemap-8: rgba(255,255,255,0.025);   /* source/components/portfolio/spot/TokenTreemap.tsx:913 */
+  --d-tokentreemap-9: rgba(255, 255, 255, 0.06);   /* source/components/portfolio/spot/TokenTreemap.tsx:938 */
+  --d-tokentreemap-10: rgba(255,255,255,0.02);   /* source/components/portfolio/spot/TokenTreemap.tsx:981 */
+  --d-transactionsrail-1: rgba(255,255,255,0.08);   /* source/components/portfolio/spot/TransactionsRail.tsx:535 */
+  --d-transactionsrail-2: rgba(0,0,0,0.5);   /* source/components/portfolio/spot/TransactionsRail.tsx:542 */
+  --d-cutcolors-1: #6f8cff;   /* source/components/portfolio/spot/cutColors.ts:24 */
+  --d-cutcolors-2: #27d3c0;   /* source/components/portfolio/spot/cutColors.ts:24 */
+  --d-cutcolors-3: #ffab4a;   /* source/components/portfolio/spot/cutColors.ts:24 */
+  --d-cutcolors-4: #6f8cff;   /* source/components/portfolio/spot/cutColors.ts:32 */
+  --d-cutcolors-5: #27d3c0;   /* source/components/portfolio/spot/cutColors.ts:33 */
+  --d-cutcolors-6: #ffab4a;   /* source/components/portfolio/spot/cutColors.ts:34 */
+  --d-cutcolors-7: #c084fc;   /* source/components/portfolio/spot/cutColors.ts:35 */
+  --d-cutcolors-8: #38bdf8;   /* source/components/portfolio/spot/cutColors.ts:36 */
+  --d-cutcolors-9: #e3d84a;   /* source/components/portfolio/spot/cutColors.ts:37 */
+  --d-cutcolors-10: #ff8f5e;   /* source/components/portfolio/spot/cutColors.ts:38 */
+  --d-format-1: rgba(140, 145, 170, 0.20);   /* source/components/portfolio/spot/format.ts:126 */
+  --d-accolademedal-1: #aab2ba;   /* source/components/rewards/AccoladeMedal.tsx:47 */
+  --d-accolademedal-2: #e0a066;   /* source/components/rewards/AccoladeMedal.tsx:48 */
+  --d-accolademedal-3: #f4f7fa;   /* source/components/rewards/AccoladeMedal.tsx:49 */
+  --d-accolademedal-4: #f7dd8a;   /* source/components/rewards/AccoladeMedal.tsx:50 */
+  --d-accolademedal-5: #e8f7ff;   /* source/components/rewards/AccoladeMedal.tsx:51 */
+  --d-frenboard-1: #aab2ba;   /* source/components/rewards/FrenBoard.tsx:89 */
+  --d-frenboard-2: #e0a066;   /* source/components/rewards/FrenBoard.tsx:90 */
+  --d-frenboard-3: #f4f7fa;   /* source/components/rewards/FrenBoard.tsx:91 */
+  --d-frenboard-4: #f7dd8a;   /* source/components/rewards/FrenBoard.tsx:92 */
+  --d-frenboard-5: #e8f7ff;   /* source/components/rewards/FrenBoard.tsx:93 */
+  --d-tierroost-1: #aab2ba;   /* source/components/rewards/TierRoost.tsx:63 */
+  --d-tierroost-2: #e0a066;   /* source/components/rewards/TierRoost.tsx:64 */
+  --d-tierroost-3: #f4f7fa;   /* source/components/rewards/TierRoost.tsx:65 */
+  --d-tierroost-4: #f7dd8a;   /* source/components/rewards/TierRoost.tsx:66 */
+  --d-tierroost-5: #8ec6e8;   /* source/components/rewards/TierRoost.tsx:71 */
+  --d-tierroost-6: #e8f7ff;   /* source/components/rewards/TierRoost.tsx:71 */
+  --d-primitives-1: rgba(0,0,0,0.2);   /* source/components/rewards/primitives.tsx:706 */
+  --d-primitives-2: rgba(255,255,255,0.04);   /* source/components/rewards/primitives.tsx:745 */
+  --d-primitives-3: rgba(255,255,255,0.3);   /* source/components/rewards/primitives.tsx:812 */
+  --d-primitives-4: rgba(255,255,255,0.4);   /* source/components/rewards/primitives.tsx:1035 */
+  --d-chartsettingsmodal-1: rgba(255,255,255,0.82);   /* source/components/trade/ChartSettingsModal.tsx:479 */
+  --d-chartsettingsmodal-2: #868d97;   /* source/components/trade/ChartSettingsModal.tsx:635 */
+  --d-chartsettingsmodal-3: rgba(255,255,255,0.35);   /* source/components/trade/ChartSettingsModal.tsx:641 */
+  --d-chartsettingsmodal-4: #272729;   /* source/components/trade/ChartSettingsModal.tsx:648 */
+  --d-chartsettingsmodal-5: #ffffff;   /* source/components/trade/ChartSettingsModal.tsx:657 */
+  --d-chartsettingsmodal-6: rgba(255,255,255,0.4);   /* source/components/trade/ChartSettingsModal.tsx:676 */
+  --d-chartsettingsmodal-7: #1d1d20;   /* source/components/trade/ChartSettingsModal.tsx:687 */
+  --d-chartsettingsmodal-8: #1d1d20;   /* source/components/trade/ChartSettingsModal.tsx:697 */
+  --d-chartsettingsmodal-9: rgba(255,255,255,0.62);   /* source/components/trade/ChartSettingsModal.tsx:714 */
+  --d-chartsettingsmodal-10: #272729;   /* source/components/trade/ChartSettingsModal.tsx:719 */
+  --d-chartsettingsmodal-11: rgba(255,255,255,0.78);   /* source/components/trade/ChartSettingsModal.tsx:724 */
+}

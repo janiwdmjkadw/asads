@@ -2008,6 +2008,33 @@
   background-color: rgba(11, 14, 20, 0.06);
 }
 
+/*
+ * ── AND ULTRA IS STILL A PANEL ON THE DARK HALF ──────────────────────
+ *
+ * `dark.css` restores `.arc-row .arc-buy`'s fill from before the
+ * repaint. That selector plus the theme attribute is one class MORE
+ * specific than the `[data-buy='ultra']` rule above, so the panel took
+ * the chip's green back — and then the label, white on the terminal,
+ * sat on pale green at about 1.4 to 1. It also painted over the market
+ * cap, which is the one thing this arrangement exists to keep readable.
+ *
+ * Neither half ever looked like that: on paper the panel is transparent
+ * and on black it was too. Stated here, at a specificity that answers
+ * the restore.
+ *
+ * The label stays white rather than reading `--buy-fg`: with no fill
+ * under it, it is sitting on the ROW, and the row is black. The chosen
+ * label colour still dresses the small and medium chips, which are the
+ * two arrangements where the label sits on the button's own ground.
+ */
+:root[data-theme='dark'] [data-buy='ultra'] .arc-row .arc-buy {
+  background-color: transparent;
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-buy='ultra'] .arc-row .arc-buy:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
 /* The blur layer only belongs to ultra. */
 [data-buy='small'] .arc-row::after,
 [data-buy='medium'] .arc-row::after {

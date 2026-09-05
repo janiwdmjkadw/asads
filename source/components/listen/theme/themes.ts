@@ -49,6 +49,16 @@ export interface Theme {
   accentSoft?: string;
   /** Optional override for `--accent-wash`. Same rationale as `accentSoft`. */
   accentWash?: string;
+  /**
+   * Which half of the product this is. Written to `data-theme` on the
+   * document element, because that is the only signal a PORTALLED
+   * surface can read: a dialog or a menu mounted at the document root
+   * is inside no page, and every palette block the repaint added keys
+   * off it.
+   */
+  mode: 'light' | 'dark';
+  /** The page ground. Painted inline on `.listen-root`. */
+  ground: string;
 }
 
 const hex2rgb = (hex: string): [number, number, number] => {
@@ -100,7 +110,7 @@ const t = (
   name: string,
   primary: string,
   secondary: string,
-  extras?: Partial<Theme>,
+  extras: Partial<Theme> & Pick<Theme, 'mode' | 'ground'>,
 ): Theme => ({
   id,
   group,
@@ -113,56 +123,43 @@ const t = (
 });
 
 /**
- * All available themes, indexed by id. Order here drives swatch ordering.
+ * The two themes.
  *
- * ── FIVE, DOWN FROM THIRTY ONE ───────────────────────────────────────
+ * ── FIVE ACCENT PAIRS BECAME TWO GROUNDS ─────────────────────────────
  *
- * Thirty one themes in six groups was six swatch rows and a sub heading
- * per row, which was most of the vertical height of the Tweaks panel and
- * the reason everything below Theme scrolled off the bottom. Thirty one
- * choices of the same thing is not thirty one times the value of six —
- * past about six, picking stops being a choice and becomes a search.
+ * The catalog used to be five `(primary, secondary)` pairs over one
+ * fixed dark surface: a choice about the colour of a glow, on a product
+ * that has since dropped the glow. Nobody picks a terminal by its
+ * accent, and the one axis anybody actually wants was missing.
  *
- * These five span the range rather than sampling one family: two cool
- * (one soft, one vivid), one green, one warm, one pink. Anything a cut
- * theme did, one of these does within a hue step or two.
+ * So: light and dark, and a theme now carries the GROUND. Everything
+ * else on the surface follows from it.
  *
- * ── THERE IS NO LIGHT THEME ANY MORE ─────────────────────────────────
+ * ── THE ACCENT IS THE INK ────────────────────────────────────────────
  *
- * `zen` was the parchment one and it is gone, so the product is dark
- * only. Three things were built for it and are now unreachable rather
- * than broken, left in place because each is load bearing the moment a
- * light theme comes back:
- *
- *   `ThemeProvider` paints a paper texture page background for
- *   `theme.id === 'zen'`; `components/ui/sonner.tsx` keys the toaster's
- *   light mode off the same check; and `Theme` still carries `bgImage`,
- *   `accentSoft` and `accentWash`, which only zen used.
- *
- * None of those fire now. Deleting them is a separate decision from
- * dropping one swatch, and doing it here would make bringing a light
- * theme back a rewrite rather than a row in this table.
- *
- * ── NOTHING BREAKS FOR SOMEBODY ON A CUT THEME ───────────────────────
- *
- * `resolveTheme` already falls back to the default for an unknown id, so
- * a persisted `oilSlick` resolves to `arctic` on next load with no
- * migration. `hotpink` is kept deliberately: `ThemeProvider` migrates the
- * legacy `zen` default to it, and removing it would point that migration
- * at an id that no longer exists.
- *
- * A persisted `zen` resolves to `arctic` on next load through the same
- * fallback, so nobody sitting on it wakes up to a broken surface.
+ * On both themes the accent is the strongest ink of that ground — near
+ * black on paper, near white on the terminal. A control that is "the
+ * live one" says so by being the darkest or lightest thing in its row,
+ * not by being cyan. The one place a hue still means something is the
+ * pair (up green, down red) and the quick buy button, which the Tweaks
+ * panel still colours by hand.
  */
 export const THEMES: Record<string, Theme> = {
-  arctic:  t('All', 'arctic',  'Arctic → Mint',     '#bae6fd', '#5eead4'),
-  cyan:    t('All', 'cyan',    'Cyan → Violet',     '#38e1ff', '#9d5cff'),
-  emerald: t('All', 'emerald', 'Emerald → Lime',    '#34d399', '#a3e635'),
-  sunset:  t('All', 'sunset',  'Sunset',            '#fb923c', '#f472b6'),
-  hotpink: t('All', 'hotpink', 'Hot Pink → Purple', '#ec4899', '#7c3aed'),
+  light: t('All', 'light', 'Light', '#0b0e14', '#0f6d5f', {
+    mode: 'light',
+    ground: '#ffffff',
+    accentSoft: 'rgba(11, 14, 20, 0.06)',
+    accentWash: 'rgba(11, 14, 20, 0.04)',
+  }),
+  dark: t('All', 'dark', 'Dark', '#e4e7ee', '#5eead4', {
+    mode: 'dark',
+    ground: '#000000',
+    accentSoft: 'rgba(255, 255, 255, 0.08)',
+    accentWash: 'rgba(255, 255, 255, 0.05)',
+  }),
 };
 
-export const DEFAULT_THEME_ID = 'arctic';
+export const DEFAULT_THEME_ID = 'light';
 
 /*
  * ONE GROUP NOW.

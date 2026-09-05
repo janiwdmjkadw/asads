@@ -8,7 +8,6 @@ import {
   useWalletToastStyle,
 } from '@/lib/state/wallet-toast-style';
 import { THEMES, THEME_GROUP_ORDER, type Theme, type ThemeGroup } from './theme/themes';
-import { SANS_FONTS, MONO_FONTS, DISPLAY_FONTS } from './theme/fonts';
 import './tweaks-v2.css';
 import { getTradeSuccessVolume, setTradeSuccessVolume } from '@/components/trade/tradeSound';
 import { getQuickbuyAlways, setQuickbuyAlways } from '@/lib/state/coincard-prefs';
@@ -74,9 +73,6 @@ export function ThemeSwitcher({ onClose, anchorStyle, anchorRef }: Props) {
     mono,
     display,
     setThemeId,
-    setFontSans,
-    setFontMono,
-    setFontDisplay,
     reset,
   } = useTheme();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -118,16 +114,6 @@ export function ThemeSwitcher({ onClose, anchorStyle, anchorRef }: Props) {
     };
   }, [anchorRef, onClose]);
 
-  const groups = useMemo(() => {
-    const buckets = new Map<ThemeGroup, Theme[]>();
-    for (const id of Object.keys(THEMES)) {
-      const t = THEMES[id]!;
-      const list = buckets.get(t.group) ?? [];
-      list.push(t);
-      buckets.set(t.group, list);
-    }
-    return THEME_GROUP_ORDER.map((g) => ({ group: g, items: buckets.get(g) ?? [] }));
-  }, []);
 
   return (
     <div
@@ -202,63 +188,19 @@ export function ThemeSwitcher({ onClose, anchorStyle, anchorRef }: Props) {
         <div className="ts-label">Label</div>
         <SwatchRow value={buy.fg} onChange={(fg) => setBuy({ fg })} options={BUY_FOREGROUNDS} />
 
-        <div className="ts-section">Typography</div>
-        <FontSelect
-          label="Sans (UI)"
-          value={sans.name}
-          options={SANS_FONTS.map((f) => f.name)}
-          onChange={setFontSans}
-        />
-        <FontSelect
-          label="Mono (numbers)"
-          value={mono.name}
-          options={MONO_FONTS.map((f) => f.name)}
-          onChange={setFontMono}
-        />
-        <FontSelect
-          label="Display (flourish)"
-          value={display.name}
-          options={DISPLAY_FONTS.map((f) => f.name)}
-          onChange={setFontDisplay}
-        />
-
-        {/* Live preview — applies the active fonts + accent inline so the
-            user sees changes before committing. */}
-        <div className="ts-preview">
-          <span
-            style={{
-              fontFamily: display.stack,
-              fontStyle: 'italic',
-              fontSize: 18,
-              color: theme.primary,
-              lineHeight: 1,
-            }}
-          >
-            listen to the dolphin
-          </span>
-          <span
-            style={{
-              fontFamily: sans.stack,
-              fontSize: 13,
-              color: 'rgba(255,255,255,0.85)',
-              fontWeight: 500,
-            }}
-          >
-            DOLPHIN · PumpSwap · 1h ago
-          </span>
-          <span
-            style={{
-              fontFamily: mono.stack,
-              fontSize: 14,
-              color: '#fff',
-              fontVariantNumeric: 'tabular-nums',
-              fontWeight: 600,
-            }}
-          >
-            $0.000204 → +35.1%
-          </span>
-        </div>
-
+        {/*
+          * ── NO TYPOGRAPHY PICKER ───────────────────────────────────
+          *
+          * Thirty five faces across three axes used to live here, and a
+          * live preview of them. The product sets its type in one face
+          * on purpose — this week's work was taking the mono OUT of the
+          * surfaces that still had it — so a picker that can put it
+          * back is not a setting, it is a way to break the type system
+          * by accident.
+          *
+          * `useFontLoader` and the font tables stay where they are,
+          * unreferenced from here, the same way the cut themes did.
+          */}
         <div className="ts-section">Layout</div>
         <SegRow<LayoutMode>
           value={layoutMode}
@@ -315,24 +257,24 @@ export function ThemeSwitcher({ onClose, anchorStyle, anchorRef }: Props) {
           </button>
         </div>
 
+        {/*
+          * ── ONE CHOICE, TWO ANSWERS ────────────────────────────────
+          *
+          * This was five accent pairs in a swatch grid under a group
+          * heading that only ever read "All" — a decision about the
+          * colour of a glow, on a product that dropped the glow, while
+          * the axis anybody actually wants was missing.
+          *
+          * Light or dark, named. No swatch and no preview: the whole
+          * product is the preview and it turns over the moment you
+          * press one.
+          */}
         <div className="ts-section">Theme</div>
-        {groups.map(({ group, items }) => (
-          <div key={group}>
-            <div className="ts-section" style={{ fontSize: 9, paddingTop: 8 }}>
-              {group}
-            </div>
-            <div className="ts-swatch-grid">
-              {items.map((t) => (
-                <Swatch
-                  key={t.id}
-                  theme={t}
-                  active={theme.id === t.id}
-                  onClick={() => setThemeId(t.id)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+        <SegRow<string>
+          value={theme.id}
+          onChange={setThemeId}
+          options={THEME_OPTIONS}
+        />
 
         <UiScaleControls />
 
@@ -388,6 +330,12 @@ export function ThemeSwitcher({ onClose, anchorStyle, anchorRef }: Props) {
     </div>
   );
 }
+
+/* The two halves of the product, in the order a light default implies. */
+const THEME_OPTIONS: { id: string; label: string }[] = [
+  { id: 'light', label: 'Light' },
+  { id: 'dark', label: 'Dark' },
+];
 
 const CARD_SIZE_OPTIONS: { id: CardSize; label: string }[] = [
   { id: 'compact', label: 'Compact' },
@@ -576,63 +524,7 @@ function VolumeSlider({
   );
 }
 
-function FontSelect({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (next: string) => void;
-}) {
-  return (
-    <div className="ts-row">
-      <div className="ts-label">{label}</div>
-      <select className="ts-select" value={value} onChange={(e) => onChange(e.target.value)}>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
-function Swatch({
-  theme,
-  active,
-  onClick,
-}: {
-  theme: Theme;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={theme.name}
-      aria-pressed={active}
-      className={`ts-swatch${active ? ' active' : ''}`}
-      style={{
-        borderColor: active ? theme.primary : 'rgba(255,255,255,0.08)',
-        boxShadow: active ? `0 0 10px -3px ${theme.glow}` : 'none',
-      }}
-    >
-      <div
-        className="ts-swatch-fill"
-        style={{
-          background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
-          boxShadow: `0 0 8px -2px ${theme.glow}`,
-        }}
-      />
-      <span className="ts-swatch-name">{theme.name}</span>
-    </button>
-  );
-}
 
 /** How long the slider must sit still before the zoom actually applies.
  *  Re-zooming on every tick moves the popover (and the slider itself)

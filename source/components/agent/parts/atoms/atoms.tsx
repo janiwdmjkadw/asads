@@ -87,8 +87,8 @@ export function ProseWalletTag({ href, address }: { href: string; address: strin
   return (
     <a href={href} className="ag-wtag" data-testid="agent-mention-wallet">
       <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden className="ag-wtag-glyph">
-        <rect x="1.5" y="3.5" width="13" height="9" rx="2" fill="none" stroke="#0B0E14" strokeWidth="1.3" />
-        <rect x="9.5" y="6.5" width="4" height="3" rx="1" fill="#0B0E14" />
+        <rect x="1.5" y="3.5" width="13" height="9" rx="2" fill="none" stroke="var(--d-atoms-1, #0B0E14)" strokeWidth="1.3" />
+        <rect x="9.5" y="6.5" width="4" height="3" rx="1" fill="var(--d-atoms-2, #0B0E14)" />
       </svg>
       <span className="ag-wtag-addr">{shortAddress(address)}</span>
     </a>

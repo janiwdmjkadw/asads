@@ -123,7 +123,7 @@ export function relativeTime(ms: number): string {
  */
 export function pnlColor(pct: number | null): string {
   if (pct == null || !Number.isFinite(pct)) {
-    return 'rgba(138, 149, 145, 0.22)';
+    return 'var(--d-format-1, rgba(138, 149, 145, 0.22))';
   }
   const clamped = Math.max(-25, Math.min(25, pct));
   if (clamped === 0) return 'rgba(138, 149, 145, 0.24)';

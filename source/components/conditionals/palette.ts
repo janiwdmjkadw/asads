@@ -51,4 +51,42 @@ export const CONDITIONALS_PALETTE = `
   min-height:var(--h-app-content,100%);
 }
 
+
+/*
+ * ── THE DARK HALF ────────────────────────────────────────────────────
+ *
+ * The same selectors on the terminal's own tokens. Additive: the paper
+ * block above is not edited and not gated, and this outranks it and
+ * comes later, so on dark it wins twice over and on light it matches
+ * nothing.
+ */
+:root[data-theme='dark'] [data-conditionals-page],
+:root[data-theme='dark'] .cdl-page,
+:root[data-theme='dark'] [data-conditional-modal] {
+  --surface: hsl(220 12% 3%);
+  --surface-1: hsl(220 12% 5%);
+  --surface-2: hsl(220 12% 7%);
+  --surface-3: hsl(220 12% 9%);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --chip-bg: rgba(255, 255, 255, 0.05);
+  --chip-border: rgba(255, 255, 255, 0.1);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-2: rgba(255, 255, 255, 0.12);
+  --ink-0: #ffffff;
+  --ink-1: #e4e7ee;
+  --ink-2: #a8aeba;
+  --ink-3: #6b7180;
+  --ink-4: #2a2d36;
+  --up: #22c77e;
+  --down: #f0567a;
+  --hold: #ffcf5c;
+  --acc-0: #8ab4ff;
+  --accent-primary: #e4e7ee;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent: #e4e7ee;
+  --accent-ink: #0b0e14;
+}
+
+:root[data-theme='dark'] [data-conditionals-page]{background:var(--surface);color:var(--ink-1)}
 `;

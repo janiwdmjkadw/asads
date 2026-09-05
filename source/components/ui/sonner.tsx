@@ -34,7 +34,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
              * — the black terminal's value — no matter which converted page
              * raised it.
              */
-            "group toast group-[.toaster]:bg-white group-[.toaster]:text-[#0b0e14] group-[.toaster]:border-[rgba(11,14,20,0.1)] group-[.toaster]:shadow-[0_16px_40px_rgba(11,14,20,0.16)]",
+            "group toast group-[.toaster]:bg-[var(--ui-paper)] group-[.toaster]:text-[var(--ui-ink)] group-[.toaster]:border-[var(--ui-line)] group-[.toaster]:shadow-[var(--ui-shadow)]",
           description: "group-[.toast]:text-muted-foreground",
           actionButton:
             "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",

@@ -24,7 +24,7 @@ export const primaryActionClass = (enabled: boolean): string =>
   }`;
 
 export const primaryActionStyle = (enabled: boolean): CSSProperties => ({
-  background: '#ffffff',
+  background: 'var(--ui-paper)',
   border: 0,
   color: '#000000',
   opacity: enabled ? 1 : 0.45,

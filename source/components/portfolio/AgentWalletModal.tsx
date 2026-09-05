@@ -60,8 +60,10 @@ export function AgentWalletModal(props: Props): React.ReactElement {
         data-testid="agent-wallet-modal"
         className="max-w-lg gap-0 max-h-[85vh] overflow-y-auto"
         style={{
-          background: '#FFFFFF',
-          color: '#0B0E14',
+          /* The shared portal tokens: paper on light, the terminal's
+             own plate on dark. Declared in `globals.css`. */
+          background: 'var(--ui-paper)',
+          color: 'var(--ui-ink)',
           borderColor: 'transparent',
           borderRadius: 12,
           padding: '34px 32px 28px',

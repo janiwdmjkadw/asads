@@ -21,7 +21,7 @@
  */
 
 /** The split, in order: SOL, stablecoins, everything else. */
-export const CUT_INK = ['#4f6ae0', '#0e9e90', '#d98518'] as const;
+export const CUT_INK = ['var(--d-cutcolors-1, #4f6ae0)', 'var(--d-cutcolors-2, #0e9e90)', 'var(--d-cutcolors-3, #d98518)'] as const;
 
 /**
  * The holdings. The split's three first — so the biggest positions
@@ -29,13 +29,13 @@ export const CUT_INK = ['#4f6ae0', '#0e9e90', '#d98518'] as const;
  * apart in hue to be told apart at 3px.
  */
 const HOLDING_INK = [
-  '#4f6ae0',
-  '#0e9e90',
-  '#d98518',
-  '#9450e0',
-  '#1f8fc4',
-  '#a8921a',
-  '#d9673a',
+  'var(--d-cutcolors-4, #4f6ae0)',
+  'var(--d-cutcolors-5, #0e9e90)',
+  'var(--d-cutcolors-6, #d98518)',
+  'var(--d-cutcolors-7, #9450e0)',
+  'var(--d-cutcolors-8, #1f8fc4)',
+  'var(--d-cutcolors-9, #a8921a)',
+  'var(--d-cutcolors-10, #d9673a)',
 ] as const;
 
 /**

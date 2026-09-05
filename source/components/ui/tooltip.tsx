@@ -55,7 +55,7 @@ const TooltipContent = React.forwardRef<
              `border` for definition. This matches the conventional
              "subtle floating chip on dark surface" look that user-research
              expects from icon tooltips. */
-          "z-50 overflow-hidden rounded-md border border-[rgba(11,14,20,0.14)] bg-white px-3 py-1.5 text-xs text-[#0b0e14] shadow-[0_10px_26px_rgba(11,14,20,0.18)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]",
+          "z-50 overflow-hidden rounded-md border border-[var(--ui-line-2)] bg-[var(--ui-paper)] px-3 py-1.5 text-xs text-[var(--ui-ink)] shadow-[var(--ui-shadow-tip)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]",
           className
         )}
         {...props}

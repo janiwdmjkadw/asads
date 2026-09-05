@@ -17,6 +17,7 @@ import { useChartPrefsStore } from '@/lib/state/chart-prefs-store';
 import {
   backdropCss,
   paintToRgba,
+  themedChartStyle,
   type CandleStyle,
   type ChartLineStyle,
 } from '@/lib/state/chart-style';
@@ -32,6 +33,7 @@ import { findMarkerCandleTime } from './markerAnchoring';
 import { StatusBadge } from '@/components/listen/primitives';
 import { Bolt } from '@/components/listen/icons/Icons';
 import { useTheme } from '@/components/listen/theme/useTheme';
+import { getThemeMode, useThemeMode, type ThemeMode } from '@/lib/theme-mode';
 import { compactAge } from '@/lib/format';
 import { pageZoom } from '@/lib/page-zoom';
 import { ThesisText } from '@/components/discover/ThesisText';
@@ -463,8 +465,65 @@ function dataPriceRange(data: CandlestickData<Time>[] | undefined): PriceRange |
   return { from: min - pad, to: max + pad };
 }
 
-/* White, with black type — see MAX_BUBBLES_PER_BUCKET. */
-const AGGREGATE_BUBBLE_FILL = '#0b0e14';
+/*
+ * ── THE CHART'S TWO PALETTES ─────────────────────────────────────────
+ *
+ * Every other surface answers the theme in CSS. This one cannot: the
+ * chart is a CANVAS, and lightweight-charts takes its colours as plain
+ * strings and paints them into a bitmap. A `var()` never reaches a
+ * style engine, so the values have to be picked in code.
+ *
+ * LIGHT is exactly what the repaint left here, value for value. DARK is
+ * what stood at `black-terminal`, the commit before it. Nothing is
+ * invented in either column.
+ */
+const CHART_INK = {
+  light: {
+    text: '#5b6570',
+    grid: 'rgba(11,14,20,0.09)',
+    border: 'rgba(11,14,20,0.14)',
+    borderQuiet: 'rgba(11,14,20,0.08)',
+    crosshair: 'rgba(11,14,20,0.45)',
+    crosshairLabel: '#0b0e14',
+    up: '#0f6d5f',
+    down: '#b4482e',
+    /* The type ON a marker's face, which is filled with `up` or
+       `down` — so it is the opposite of the ground, not of the theme. */
+    onMarker: '#ffffff',
+    /* A bucket of trades too dense to draw one by one. Ink here, white
+       on the dark half: see MAX_BUBBLES_PER_BUCKET. */
+    aggregate: '#0b0e14',
+  },
+  dark: {
+    text: '#a8aeba',
+    grid: 'rgba(255,255,255,0.09)',
+    border: 'rgba(255,255,255,0.14)',
+    borderQuiet: 'rgba(255,255,255,0.06)',
+    crosshair: 'rgba(255,255,255,0.55)',
+    crosshairLabel: '#101318',
+    up: '#22c77e',
+    down: '#f0567a',
+    onMarker: '#0b0d11',
+    aggregate: '#ffffff',
+  },
+} as const satisfies Record<ThemeMode, Record<string, string>>;
+
+/** The options a theme owns, in the shape lightweight-charts wants. */
+function chartThemeOptions(mode: ThemeMode) {
+  const c = CHART_INK[mode];
+  return {
+    layout: { textColor: c.text },
+    grid: {
+      vertLines: { color: c.grid },
+      horzLines: { color: c.grid },
+    },
+    timeScale: { borderColor: c.border },
+    crosshair: {
+      vertLine: { color: c.crosshair, labelBackgroundColor: c.crosshairLabel },
+      horzLine: { color: c.crosshair, labelBackgroundColor: c.crosshairLabel },
+    },
+  };
+}
 
 /*
  * The two fills that are not a side.
@@ -711,7 +770,7 @@ export function buildWalletTradeMarkerModel(
         walletEmoji: emoji,
         wallet: event.wallet,
         signature: event.signature,
-        color: event.isBuy ? '#0f6d5f' : '#b4482e',
+        color: event.isBuy ? CHART_INK[getThemeMode()].up : CHART_INK[getThemeMode()].down,
         amountSol: Number(event.solLamports) / 1e9,
         stats: statsByWallet.get(event.wallet) ?? null,
       },
@@ -905,7 +964,7 @@ export function buildWalletTradeMarkerModel(
         isBuy: true,
         label: `${bucketCount}+`,
         isEmoji: false,
-        fillColor: AGGREGATE_BUBBLE_FILL,
+        fillColor: CHART_INK[getThemeMode()].aggregate,
       });
     }
     start = end;
@@ -1155,6 +1214,11 @@ export const PriceChart = memo(function PriceChart({
   const [openBucketSec, setOpenBucketSec] = useState<number | null>(null);
   /* Pulled from theme so chart axis labels track the active mono font. */
   const { mono } = useTheme();
+  /*
+   * The chart is the one surface that has to ask which half of the theme
+   * it is on, because a canvas cannot read CSS. See `theme-mode.ts`.
+   */
+  const mode = useThemeMode();
   // Markers depend on the *set of bucket times*, never on OHLCV. A pure last-bar mutation
   // (the dominant live-trade event) leaves the time-set unchanged, so key `candleTimes` off
   // the cheap endpoints+length signature and reuse the array — avoiding a ~5k-element
@@ -1475,10 +1539,18 @@ export const PriceChart = memo(function PriceChart({
   useEffect(() => {
     if (!containerRef.current) return;
 
+    /*
+     * Read once, here, rather than through the hook: this effect builds
+     * the chart and runs exactly once. A switch afterwards is answered
+     * by the effect below, which re-applies the options in place instead
+     * of tearing the canvas down and losing the visible range.
+     */
+    const ink = CHART_INK[getThemeMode()];
+
     const chart = createChart(containerRef.current, {
       layout: {
         background: { color: 'transparent' },
-        textColor: '#5b6570',
+        textColor: ink.text,
         fontFamily: mono.stack,
         fontSize: 11,
         attributionLogo: false,
@@ -1488,11 +1560,11 @@ export const PriceChart = memo(function PriceChart({
          where the ruling is doing real work — it is how a candle's
          height is read at all. */
       grid: {
-        vertLines: { color: 'rgba(11,14,20,0.09)' },
-        horzLines: { color: 'rgba(11,14,20,0.09)' },
+        vertLines: { color: ink.grid },
+        horzLines: { color: ink.grid },
       },
       timeScale: {
-        borderColor: 'rgba(11,14,20,0.14)',
+        borderColor: ink.border,
         timeVisible: true,
         secondsVisible: true,
         // 7E: fixed candle width + right padding so a sparse fresh
@@ -1511,7 +1583,7 @@ export const PriceChart = memo(function PriceChart({
         // Default `shiftVisibleRangeOnNewBar: true` keeps the
         // latest bar in view as new buckets arrive.
       },
-      rightPriceScale: { borderColor: 'rgba(11,14,20,0.14)', mode: 0 },
+      rightPriceScale: { borderColor: ink.border, mode: 0 },
       handleScroll: {
         mouseWheel: false,
         pressedMouseMove: true,
@@ -1530,26 +1602,26 @@ export const PriceChart = memo(function PriceChart({
       crosshair: {
         mode: 0,
         vertLine: {
-          color: 'rgba(11,14,20,0.45)',
+          color: ink.crosshair,
           width: 1,
           style: 2,
-          labelBackgroundColor: '#0b0e14',
+          labelBackgroundColor: ink.crosshairLabel,
         },
         horzLine: {
-          color: 'rgba(11,14,20,0.45)',
+          color: ink.crosshair,
           width: 1,
           style: 2,
-          labelBackgroundColor: '#0b0e14',
+          labelBackgroundColor: ink.crosshairLabel,
         },
       },
       autoSize: true,
     });
 
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: '#0f6d5f',
-      downColor: '#b4482e',
-      wickUpColor: '#0f6d5f',
-      wickDownColor: '#b4482e',
+      upColor: ink.up,
+      downColor: ink.down,
+      wickUpColor: ink.up,
+      wickDownColor: ink.down,
       borderVisible: false,
       priceFormat: {
         type: 'custom',
@@ -2110,10 +2182,13 @@ export const PriceChart = memo(function PriceChart({
     chartRef.current.applyOptions({
       rightPriceScale: {
         mode: logScale ? 1 : 0,
-        borderColor: 'rgba(11,14,20,0.08)',
+        borderColor: CHART_INK[mode].borderQuiet,
       },
     });
-  }, [logScale]);
+    /* `mode` is here as well as `logScale`: this rule owns the price
+       scale's border, so a theme switch has to re-run it or the right
+       edge keeps the half the chart was on when the scale last moved. */
+  }, [logScale, mode]);
 
   /* Re-apply font on theme change. Cheap operation — no chart rebuild. */
   useEffect(() => {
@@ -2121,10 +2196,34 @@ export const PriceChart = memo(function PriceChart({
     chartRef.current.applyOptions({ layout: { fontFamily: mono.stack } });
   }, [mono.stack]);
 
+  /*
+   * And the same for light/dark. The grid, the axis, the borders and the
+   * crosshair are set once at creation and would otherwise keep whatever
+   * half the chart was born on until a reload.
+   *
+   * The candle colours are not here: they come from the studio style,
+   * which the effect below applies and `themedChartStyle` has already
+   * turned over.
+   */
+  useEffect(() => {
+    if (!chartRef.current) return;
+    chartRef.current.applyOptions(chartThemeOptions(mode));
+  }, [mode]);
+
   /* ── Canvas customization (chart settings dialog) ────────────────
      Every knob maps to a lightweight-charts applyOptions call, so
      edits preview live behind the dialog. */
-  const chartStyle = useChartPrefsStore((s) => s.style);
+  /*
+   * The studio's own style, on the half of the theme we are on. The
+   * store keeps ONE style — the trader's — and this swaps the values
+   * that are still the shipped default for the dark ones. Anything
+   * chosen in the studio comes through untouched; see `themedChartStyle`.
+   */
+  const storedChartStyle = useChartPrefsStore((s) => s.style);
+  const chartStyle = useMemo(
+    () => themedChartStyle(storedChartStyle, mode),
+    [storedChartStyle, mode],
+  );
   useEffect(() => {
     const chart = chartRef.current;
     const series = seriesRef.current;
@@ -2251,8 +2350,8 @@ export const PriceChart = memo(function PriceChart({
       if (!Number.isFinite(price) || price <= 0) return;
       wanted.set(key, { price, color, title });
     };
-    if (avgEntryUsdMc != null) want('avg-entry', avgEntryUsdMc, '#0f6d5f', 'avg entry');
-    if (avgExitUsdMc != null) want('avg-exit', avgExitUsdMc, '#b4482e', 'avg exit');
+    if (avgEntryUsdMc != null) want('avg-entry', avgEntryUsdMc, CHART_INK[mode].up, 'avg entry');
+    if (avgExitUsdMc != null) want('avg-exit', avgExitUsdMc, CHART_INK[mode].down, 'avg exit');
     // Pre-bond: the pending migration level (amber, same family as the
     // graduation M bubble that replaces it). Null once graduated.
     if (migrationUsdMc != null) want('migration', migrationUsdMc, '#f5a524', 'migration');
@@ -2427,7 +2526,7 @@ export const PriceChart = memo(function PriceChart({
             <div className="mk-head">
               <span
                 className="mk-face"
-                style={{ background: markerCard.entry.color, color: '#ffffff' }}
+                style={{ background: markerCard.entry.color, color: CHART_INK[mode].onMarker }}
               >
                 <MarkerArt entry={markerCard.entry} />
               </span>

@@ -41,14 +41,14 @@ interface Props {
 
 /** Same fixed confetti as FrensPage (kept local: page imports this file). */
 const CONFETTI = [
-  '#0f8a5f',
-  '#2a5fd0',
-  '#1f8fc4',
-  '#b8339c',
-  '#c08a12',
-  '#0e93ac',
-  '#6b46c8',
-  '#4f9c33',
+  'var(--d-frenprofilemodal-1, #0f8a5f)',
+  'var(--d-frenprofilemodal-2, #2a5fd0)',
+  'var(--d-frenprofilemodal-3, #1f8fc4)',
+  'var(--d-frenprofilemodal-4, #b8339c)',
+  'var(--d-frenprofilemodal-5, #c08a12)',
+  'var(--d-frenprofilemodal-6, #0e93ac)',
+  'var(--d-frenprofilemodal-7, #6b46c8)',
+  'var(--d-frenprofilemodal-8, #4f9c33)',
 ] as const;
 
 /** Deterministic identity color: this fren always signs in this color. */
@@ -148,10 +148,10 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
           maxHeight: 'min(760px, calc(100vh - 48px))',
           display: 'flex',
           flexDirection: 'column',
-          background: 'var(--surface-1, #ffffff)',
+          background: 'var(--surface-1, var(--d-frenprofilemodal-9, #ffffff))',
           border: '1px solid var(--hairline-2)',
           borderRadius: 20,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 90px rgba(11, 14, 20, 0.18)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 90px var(--d-frenprofilemodal-10, rgba(11, 14, 20, 0.18))',
         }}
       >
         <DialogTitle className="sr-only">Fren profile</DialogTitle>
@@ -162,7 +162,7 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
           style={{
             height: 3,
             flexShrink: 0,
-            background: 'linear-gradient(90deg, #0f8a5f, #1f8fc4, #6b46c8, #b8339c, #c08a12)',
+            background: 'linear-gradient(90deg, var(--d-frenprofilemodal-11, #0f8a5f), var(--d-frenprofilemodal-12, #1f8fc4), var(--d-frenprofilemodal-13, #6b46c8), var(--d-frenprofilemodal-14, #b8339c), var(--d-frenprofilemodal-15, #c08a12))',
             opacity: 0.85,
           }}
         />
@@ -178,7 +178,7 @@ export function FrenProfileModal({ userId, onClose, renderTrack, onOpenCall }: P
                   height: 2,
                   borderRadius: 2,
                   background:
-                    'linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.18), transparent)',
+                    'linear-gradient(90deg, transparent, var(--d-frenprofilemodal-16, rgba(11, 14, 20, 0.18)), transparent)',
                   backgroundSize: '200% 100%',
                 }}
               />
@@ -226,12 +226,12 @@ export function FrenProfileStyles(): React.ReactElement {
 
 /** Default banner streaks (only when the fren hasn't set a banner). */
 const BANNER_STREAKS: ReadonlyArray<{ top: number; right: number; w: number; c: string }> = [
-  { top: 12, right: -30, w: 150, c: '#0f8a5f' },
-  { top: 12, right: 130, w: 60, c: '#0d7a45' },
-  { top: 30, right: -14, w: 100, c: '#1f8fc4' },
-  { top: 30, right: 96, w: 46, c: '#b8339c' },
-  { top: 48, right: -36, w: 170, c: '#c08a12' },
-  { top: 66, right: -10, w: 90, c: '#0e93ac' },
+  { top: 12, right: -30, w: 150, c: 'var(--d-frenprofilemodal-17, #0f8a5f)' },
+  { top: 12, right: 130, w: 60, c: 'var(--d-frenprofilemodal-18, #0d7a45)' },
+  { top: 30, right: -14, w: 100, c: 'var(--d-frenprofilemodal-19, #1f8fc4)' },
+  { top: 30, right: 96, w: 46, c: 'var(--d-frenprofilemodal-20, #b8339c)' },
+  { top: 48, right: -36, w: 170, c: 'var(--d-frenprofilemodal-21, #c08a12)' },
+  { top: 66, right: -10, w: 90, c: 'var(--d-frenprofilemodal-22, #0e93ac)' },
 ];
 
 export function FrenProfileBody({
@@ -333,7 +333,7 @@ export function FrenProfileBody({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, var(--surface-1, #ffffff) 0%, transparent 55%)',
+            background: 'linear-gradient(to top, var(--surface-1, var(--d-frenprofilemodal-23, #ffffff)) 0%, transparent 55%)',
             pointerEvents: 'none',
           }}
         />
@@ -345,7 +345,7 @@ export function FrenProfileBody({
             width: 72,
             height: 72,
             borderRadius: '50%',
-            border: '3px solid var(--surface-1, #ffffff)',
+            border: '3px solid var(--surface-1, var(--d-frenprofilemodal-24, #ffffff))',
             boxShadow: `0 0 0 2px color-mix(in srgb, ${identity} 70%, transparent), 0 0 18px -4px color-mix(in srgb, ${identity} 55%, transparent)`,
             background: detail.avatar_data_url
               ? `center / cover no-repeat url(${JSON.stringify(detail.avatar_data_url)})`
@@ -536,7 +536,7 @@ export function FrenProfileBody({
             />
             {/* Filler cell keeps the hairline grid rectangular when the
                 5 stats leave an odd slot. */}
-            <span aria-hidden style={{ background: 'var(--surface-1, #ffffff)' }} />
+            <span aria-hidden style={{ background: 'var(--surface-1, var(--d-frenprofilemodal-25, #ffffff))' }} />
           </div>
         </div>
 
@@ -655,7 +655,7 @@ function FrenPerfSection({
             padding: 2,
             borderRadius: 9,
             border: '1px solid var(--hairline)',
-            background: 'rgba(11, 14, 20, 0.03)',
+            background: 'var(--d-frenprofilemodal-26, rgba(11, 14, 20, 0.03))',
             flexShrink: 0,
           }}
         >
@@ -815,7 +815,7 @@ const cellStyle: CSSProperties = {
   padding: '13px 16px',
   minWidth: 0,
   background:
-    'linear-gradient(180deg, rgba(11, 14, 20, 0.03), rgba(11, 14, 20, 0.004) 55%), var(--surface-1, #ffffff)',
+    'linear-gradient(180deg, var(--d-frenprofilemodal-27, rgba(11, 14, 20, 0.03)), var(--d-frenprofilemodal-28, rgba(11, 14, 20, 0.004)) 55%), var(--surface-1, var(--d-frenprofilemodal-29, #ffffff))',
 };
 
 const miniChipStyle: CSSProperties = {
@@ -827,7 +827,7 @@ const miniChipStyle: CSSProperties = {
   border: '1px solid var(--hairline)',
   borderRadius: 8,
   padding: '4px 9px',
-  background: 'rgba(11, 14, 20, 0.03)',
+  background: 'var(--d-frenprofilemodal-30, rgba(11, 14, 20, 0.03))',
   whiteSpace: 'nowrap',
   fontVariantNumeric: 'tabular-nums',
 };
@@ -890,7 +890,7 @@ function StatChip({
         padding: '11px 12px 10px',
         minWidth: 0,
         background:
-          'linear-gradient(180deg, rgba(11, 14, 20, 0.03), rgba(11, 14, 20, 0.004) 60%), var(--surface-1, #ffffff)',
+          'linear-gradient(180deg, var(--d-frenprofilemodal-31, rgba(11, 14, 20, 0.03)), var(--d-frenprofilemodal-32, rgba(11, 14, 20, 0.004)) 60%), var(--surface-1, var(--d-frenprofilemodal-33, #ffffff))',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7 }}>
@@ -904,7 +904,7 @@ function StatChip({
             alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--ink-1)',
-            background: 'rgba(11, 14, 20, 0.06)',
+            background: 'var(--d-frenprofilemodal-34, rgba(11, 14, 20, 0.06))',
             border: '1px solid var(--hairline)',
             flexShrink: 0,
           }}

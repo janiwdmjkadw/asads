@@ -5,9 +5,11 @@ import { useTradePaneHidden } from './tradePaneVisibility';
 import type { CSSProperties } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useChartPrefsStore } from '@/lib/state/chart-prefs-store';
+import { useThemeMode } from '@/lib/theme-mode';
 import {
   CHART_STYLE_PRESETS,
   paintToRgba,
+  themedChartStyle,
   type BackdropPattern,
   type BackgroundMode,
   type CandlePartMode,
@@ -76,6 +78,7 @@ export function ChartSettingsModal(): React.ReactElement | null {
   const style = useChartPrefsStore((s) => s.style);
   const setStyle = useChartPrefsStore((s) => s.setStyle);
   const replaceStyle = useChartPrefsStore((s) => s.replaceStyle);
+  const mode = useThemeMode();
   const resetStyle = useChartPrefsStore((s) => s.resetStyle);
   const setSettingsOpen = useChartPrefsStore((s) => s.setSettingsOpen);
   useEffect(() => {
@@ -98,11 +101,17 @@ export function ChartSettingsModal(): React.ReactElement | null {
             deliberately do NOT track a "selected" preset. */}
         <Section title="Presets">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {/*
+              * The presets are written on paper, like everything else in
+              * the studio, and turned over for the dark half here — so a
+              * chip shows the chart it will actually produce, and
+              * applying it produces that chart. See `themedChartStyle`.
+              */}
             {CHART_STYLE_PRESETS.map((preset) => (
               <PresetChip
                 key={preset.id}
-                preset={preset}
-                onApply={() => replaceStyle(preset.style)}
+                preset={{ ...preset, style: themedChartStyle(preset.style, mode) }}
+                onApply={() => replaceStyle(themedChartStyle(preset.style, mode))}
               />
             ))}
           </div>
@@ -476,7 +485,7 @@ function Row(props: {
         marginBottom: 8,
       }}
     >
-      <span style={{ fontSize: 11.5, color: 'rgba(11,14,20,0.82)' }}>{props.label}</span>
+      <span style={{ fontSize: 11.5, color: 'var(--d-chartsettingsmodal-1, rgba(11,14,20,0.82))' }}>{props.label}</span>
       <div
         style={{
           display: 'flex',
@@ -632,20 +641,20 @@ const sectionHeaderStyle: CSSProperties = {
   fontWeight: 600,
   letterSpacing: '0.06em',
   textTransform: 'uppercase',
-  color: '#8a9591',
+  color: 'var(--d-chartsettingsmodal-2, #8a9591)',
   marginBottom: 8,
 };
 
 const hintStyle: CSSProperties = {
   fontSize: 10,
-  color: 'rgba(11,14,20,0.35)',
+  color: 'var(--d-chartsettingsmodal-3, rgba(11,14,20,0.35))',
 };
 
 const swatchStyle: CSSProperties = {
   width: 24,
   height: 20,
   padding: 0,
-  border: '1px solid rgba(11,14,20,0.14)',
+  border: '1px solid var(--d-chartsettingsmodal-4, rgba(11,14,20,0.14))',
   borderRadius: 4,
   background: 'transparent',
   cursor: 'pointer',
@@ -654,7 +663,7 @@ const swatchStyle: CSSProperties = {
 const rangeStyle: CSSProperties = {
   width: 64,
   height: 12,
-  accentColor: '#0b0e14',
+  accentColor: 'var(--d-chartsettingsmodal-5, #0b0e14)',
   cursor: 'pointer',
 };
 
@@ -673,7 +682,7 @@ const tagStyle: CSSProperties = {
   fontWeight: 500,
   letterSpacing: '0.05em',
   textTransform: 'uppercase',
-  color: 'rgba(11,14,20,0.4)',
+  color: 'var(--d-chartsettingsmodal-6, rgba(11,14,20,0.4))',
 };
 
 
@@ -684,7 +693,7 @@ const chipStyle: CSSProperties = {
   gap: 5,
   padding: 5,
   background: 'transparent',
-  border: '1px solid rgba(11,14,20,0.12)',
+  border: '1px solid var(--d-chartsettingsmodal-7, rgba(11,14,20,0.12))',
   borderRadius: 7,
   cursor: 'pointer',
   transition: 'border-color 160ms ease',
@@ -694,7 +703,7 @@ const chipCanvasStyle: CSSProperties = {
   width: 58,
   height: 34,
   borderRadius: 4,
-  border: '1px solid rgba(11,14,20,0.12)',
+  border: '1px solid var(--d-chartsettingsmodal-8, rgba(11,14,20,0.12))',
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -711,17 +720,17 @@ const chipNameStyle: CSSProperties = {
   fontSize: 10,
   fontFamily: 'var(--sans)',
   fontWeight: 500,
-  color: 'rgba(11,14,20,0.62)',
+  color: 'var(--d-chartsettingsmodal-9, rgba(11,14,20,0.62))',
 };
 
 const footerButtonStyle: CSSProperties = {
   background: 'transparent',
-  border: '1px solid rgba(11,14,20,0.14)',
+  border: '1px solid var(--d-chartsettingsmodal-10, rgba(11,14,20,0.14))',
   borderRadius: 5,
   fontFamily: 'var(--sans)',
   fontSize: 11,
   fontWeight: 500,
-  color: 'rgba(11,14,20,0.78)',
+  color: 'var(--d-chartsettingsmodal-11, rgba(11,14,20,0.78))',
   padding: '5px 11px',
   cursor: 'pointer',
 };

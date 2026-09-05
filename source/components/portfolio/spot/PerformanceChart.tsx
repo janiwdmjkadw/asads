@@ -309,7 +309,7 @@ export function PerformanceChart(props: Props): React.ReactElement {
     return 'flat';
   })();
 
-  const ink = tone === 'up' ? 'var(--up)' : tone === 'down' ? 'var(--down)' : '#0b0e14';
+  const ink = tone === 'up' ? 'var(--up)' : tone === 'down' ? 'var(--down)' : 'var(--d-performancechart-1, #0b0e14)';
 
   /* The wash is a floor for the line, not a colour for the page — and
      over paper it takes far less to be one. At 12% into 3.5% the green
@@ -383,7 +383,7 @@ export function PerformanceChart(props: Props): React.ReactElement {
                   x2={layout.w - layout.padRight}
                   y1={tick.y}
                   y2={tick.y}
-                  stroke="rgba(11, 14, 20, 0.07)"
+                  stroke="var(--d-performancechart-2, rgba(11, 14, 20, 0.07))"
                   strokeWidth={1}
                   strokeDasharray="2 4"
                 />
@@ -529,7 +529,7 @@ export function PerformanceChart(props: Props): React.ReactElement {
                  of the dot. On a coloured line a translucent ring just
                  makes the dot look blurred; one in the page's own paper
                  cuts it out of the stroke it is sitting on. */
-              stroke="#ffffff"
+              stroke="var(--d-performancechart-3, #ffffff)"
               strokeWidth={1.5}
             />
           </g>
@@ -776,7 +776,7 @@ const backdropGlowStyle: CSSProperties = {
      scale. Ink at 3.5%, which still gives the line something to sit
      against without tinting it. */
   background:
-    'radial-gradient(120% 60% at 50% 110%, rgba(11, 14, 20, 0.022) 0%, transparent 70%)',
+    'radial-gradient(120% 60% at 50% 110%, var(--d-performancechart-4, rgba(11, 14, 20, 0.022)) 0%, transparent 70%)',
   opacity: 1,
 };
 
@@ -833,7 +833,7 @@ const pulseDotStyle: CSSProperties = {
   width: 6,
   height: 6,
   borderRadius: 999,
-  background: 'rgba(11, 14, 20, 0.7)',
+  background: 'var(--d-performancechart-5, rgba(11, 14, 20, 0.7))',
 };
 
 const emptyStateStyle: CSSProperties = {

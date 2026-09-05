@@ -1,0 +1,313 @@
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  THE DARK HALF — THE SURFACES THAT WERE ALREADY WHITE
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * GENERATED. The other three dark sheets replay the product as it stood
+ * at `black-terminal`. These surfaces cannot be replayed: they were
+ * turned to paper in an earlier pass, BEFORE that tag was cut, so the
+ * tag holds no dark version of them to restore.
+ *
+ * The account menu, the notifications panel, the token search rows, the
+ * profile editor and the agent wallet gate. All of them written in
+ * literals on purpose — the account menu says why in its own comment:
+ * the cluster hanging off the top bar had to agree about its ground
+ * without any of them asking a theme.
+ *
+ * So this is stated rather than recovered, from the one thing those
+ * files do share: a paper scale of about a dozen values, mapped onto the
+ * terminal's own. Ink becomes white, the plate becomes `--surface-1`,
+ * and the three greys between them become white at 6, 8 and 10 percent.
+ *
+ * The landing page is deliberately not here. It is white because it is
+ * white, and there is no theme switch on it.
+ */
+
+
+/* ── source/components/listen/notis-v2.css ─────────────────────────────────────── */
+:root[data-theme='dark'] [data-notis] {
+  --ink-0: #ffffff;
+  --ink-1: #e4e7ee;
+  --ink-2: #a8aeba;
+  --ink-3: #6b7180;
+  --ink-4: #2a2d36;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-2: rgba(255, 255, 255, 0.10);
+  --surface: hsl(220 12% 5%);
+  --surface-1: hsl(220 12% 5%);
+  --surface-2: hsl(220 12% 7%);
+  background: hsl(220 12% 5%) !important;
+  color: #a8aeba !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 24px 80px #00000066 !important;
+}
+:root[data-theme='dark'] [data-notis] > div:first-child:not(.nps) > div:first-child {
+  color: #ffffff !important;
+}
+:root[data-theme='dark'] [data-notis] > div:first-child:not(.nps) button {
+  color: #a8aeba !important;
+}
+:root[data-theme='dark'] [data-notis] > div:first-child:not(.nps) button:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+:root[data-theme='dark'] [data-notis] .group:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+:root[data-theme='dark'] [data-notis] .group[data-unread='true'] .noti-title {
+  color: #ffffff !important;
+}
+:root[data-theme='dark'] [data-notis] .noti-meta {
+  color: #a8aeba;
+}
+:root[data-theme='dark'] [data-notis] .noti-segs > span {
+  background: rgba(255, 255, 255, 0.10);
+}
+:root[data-theme='dark'] [data-notis] .noti-go {
+  color: #a8aeba;
+}
+:root[data-theme='dark'] [data-notis] .noti-row > svg:first-child,
+:root[data-theme='dark'] [data-notis] .noti-icon svg {
+  color: #6b7180 !important;
+}
+:root[data-theme='dark'] [data-notis] .noti-row:hover > svg:first-child,
+:root[data-theme='dark'] [data-notis] .noti-row:hover .noti-icon svg {
+  color: #ffffff !important;
+}
+:root[data-theme='dark'] [data-notis] .nps-back:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-head h3 {
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-name {
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-seg {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] [data-notis] .nps-seg button:hover {
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-seg button[data-on='true'] {
+  background: hsl(220 12% 5%);
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-sound {
+  color: #ffffff;
+}
+:root[data-theme='dark'] [data-notis] .nps-switch {
+  background: rgba(255, 255, 255, 0.10);
+}
+:root[data-theme='dark'] [data-notis] .nps-switch::after {
+  background: hsl(220 12% 5%);
+}
+
+/* ── source/components/search/token-search-rows.css ─────────────────────────────────────── */
+:root[data-theme='dark'] .token-search-modal {
+  --ink-0: #ffffff;
+  --ink-1: #e4e7ee;
+  --ink-2: #a8aeba;
+  --ink-3: #6b7180;
+  --ink-4: #2a2d36;
+  --hairline: rgba(255, 255, 255, 0.06);
+  --hairline-2: rgba(255, 255, 255, 0.10);
+  --surface: hsl(220 12% 5%);
+  background: hsl(220 12% 5%) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 28px 90px #00000059 !important;
+}
+:root[data-theme='dark'] .token-search-modal .tsm-sort {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] .token-search-modal .tsm-sortbtn[data-on='true'] {
+  background: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] .token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar-thumb {
+  border: 3px solid hsl(220 12% 5%);
+}
+:root[data-theme='dark'] .token-search-modal [class*='overflow-y-auto']::-webkit-scrollbar-thumb:hover {
+  background: #2a2d36;
+}
+
+/* ── source/components/listen/profile-editor.css ─────────────────────────────────────── */
+:root[data-theme='dark'] [data-profile-editor] {
+  --pe-ink: #ffffff;
+  --pe-body: #a8aeba;
+  --pe-faint: #6b7180;
+  --pe-panel: rgba(255, 255, 255, 0.06);
+  --pe-line: rgba(255, 255, 255, 0.08);
+  --pe-rim: rgba(255, 255, 255, 0.10);
+  background: hsl(220 12% 5%) !important;
+}
+:root[data-theme='dark'] [data-profile-editor] > button[type='button']:last-child {
+  color: hsl(220 12% 5%) !important;
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-chip {
+  color: hsl(220 12% 5%);
+  background: rgba(255, 255, 255, 0.62);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-chip:hover {
+  background: rgba(255, 255, 255, 0.82);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-avatar {
+  border: 3px solid hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-avatar-hint {
+  color: hsl(220 12% 5%);
+  background: rgba(255, 255, 255, 0.5);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-input:focus,
+:root[data-theme='dark'] [data-profile-editor] .pe-area:focus {
+  background: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-switch > span {
+  background: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-btn.is-primary {
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-profile-editor] .pe-copy:hover {
+  background: hsl(220 12% 5%);
+}
+
+/* ── source/components/wallet/wallet-popover-v2.css ─────────────────────────────────────── */
+:root[data-theme='dark'] [data-wallet-popover] {
+  --wp-line: rgba(255, 255, 255, 0.08);
+  --wp-hair: rgba(255, 255, 255, 0.06);
+  --wp-ink: #ffffff;
+  --wp-rest: #a8aeba;
+  --wp-plate: rgba(255, 255, 255, 0.06);
+  --ink-0: #ffffff;
+  --ink-1: #e4e7ee;
+  --ink-2: #a8aeba;
+  --ink-3: #6b7180;
+  --ink-4: #2a2d36;
+  background: hsl(220 12% 5%) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 24px 80px #00000099 !important;
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-pulse {
+  background: rgba(255, 255, 255, 0.08);
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-coin {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-rule {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-btn.is-primary {
+  background: #ffffff;
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-btn.is-ghost {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] [data-wallet-popover] .wp-btn.is-ghost:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+/* ── source/components/agent-wallet/agent-setup-gate.css ─────────────────────────────────────── */
+:root[data-theme='dark'] [data-agent-gate] {
+  --ag-ink: #ffffff;
+  --ag-body: #a8aeba;
+  --ag-faint: #6b7180;
+  --ag-held: #2a2d36;
+  --ag-line: rgba(255, 255, 255, 0.08);
+  --ag-rim: rgba(255, 255, 255, 0.10);
+  --ag-panel: rgba(255, 255, 255, 0.06);
+  background: hsl(220 12% 5%) !important;
+}
+:root[data-theme='dark'] [data-agent-gate] .agx-btn {
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] [data-agent-gate] .agx-preview-btn.is-on {
+  color: hsl(220 12% 5%);
+}
+
+/* ── source/components/agent-wallet/AgentWalletSurface.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .aw {
+  color: #ffffff;
+}
+:root[data-theme='dark'] .aw-title {
+  color: #ffffff;
+}
+:root[data-theme='dark'] .aw-body {
+  color: #a8aeba;
+}
+:root[data-theme='dark'] .aw-small {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-panel {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] .aw-k {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-val {
+  color: #ffffff;
+}
+:root[data-theme='dark'] .aw-val em {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-panel-note {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-addr {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme='dark'] .aw-addr code {
+  color: #ffffff;
+}
+:root[data-theme='dark'] .aw-addr button {
+  background: #ffffff;
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] .aw-cta {
+  background: #ffffff;
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] .aw-cta:disabled {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-ghost {
+  color: #a8aeba;
+}
+:root[data-theme='dark'] .aw-link {
+  color: #a8aeba;
+}
+:root[data-theme='dark'] .aw-link:disabled {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-lead {
+  color: #ffffff;
+}
+:root[data-theme='dark'] .aw-note {
+  color: #6b7180;
+}
+:root[data-theme='dark'] .aw-go {
+  background: #ffffff;
+  color: hsl(220 12% 5%);
+}
+:root[data-theme='dark'] .aw-go:disabled {
+  color: #6b7180;
+}
+
+/* ── source/components/flash/FlashModal.tsx ─────────────────────────────────────── */
+/*
+ * The Flash dialog paints in inline styles off seven named constants, so
+ * there are no rules here to outrank — the constants ask for these and
+ * fall back to the paper values they already held.
+ */
+:root[data-theme='dark'] {
+  --fl-ink: #ffffff;
+  --fl-body: #a8aeba;
+  --fl-muted: #8b929e;
+  --fl-faint: #6b7180;
+  --fl-teal: #5eead4;
+  --fl-panel: rgba(255, 255, 255, 0.06);
+  --fl-warn: #f0567a;
+  --fl-paper: hsl(220 12% 5%);
+  --fl-on-ink: #0b0e14;
+}

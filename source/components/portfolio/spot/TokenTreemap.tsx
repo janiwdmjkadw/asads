@@ -320,8 +320,8 @@ function TreemapTile({ tile, rect, popDelayMs, pnlMode, onClick }: TileProps): R
             ? 'translateY(-2px) scale(1.012)'
             : undefined,
         boxShadow: hover
-          ? `0 10px 26px rgba(11, 14, 20, 0.16), 0 0 0 1px ${borderColor}, 0 0 18px -6px ${borderColor}, inset 0 1px 0 rgba(11, 14, 20, 0.08)`
-          : 'inset 0 1px 0 rgba(11, 14, 20, 0.05)',
+          ? `0 10px 26px var(--d-tokentreemap-1, rgba(11, 14, 20, 0.16)), 0 0 0 1px ${borderColor}, 0 0 18px -6px ${borderColor}, inset 0 1px 0 var(--d-tokentreemap-2, rgba(11, 14, 20, 0.08))`
+          : 'inset 0 1px 0 var(--d-tokentreemap-3, rgba(11, 14, 20, 0.05))',
         zIndex: hover ? 3 : 1,
       }}
     >
@@ -606,7 +606,7 @@ function TokenAvatar({
           borderRadius: '50%',
           objectFit: 'cover',
           flexShrink: 0,
-          boxShadow: '0 0 0 1px rgba(11, 14, 20, 0.07)',
+          boxShadow: '0 0 0 1px var(--d-tokentreemap-4, rgba(11, 14, 20, 0.07))',
         }}
       />
     );
@@ -628,7 +628,7 @@ function TokenAvatar({
         fontWeight: 700,
         flexShrink: 0,
         letterSpacing: '-0.02em',
-        boxShadow: '0 0 0 1px rgba(11, 14, 20, 0.09)',
+        boxShadow: '0 0 0 1px var(--d-tokentreemap-5, rgba(11, 14, 20, 0.09))',
       }}
     >
       {initials}
@@ -680,7 +680,7 @@ function TilePopover({
         }`,
         borderRadius: 10,
         padding: '10px 12px',
-        boxShadow: '0 12px 30px rgba(11, 14, 20, 0.16)',
+        boxShadow: '0 12px 30px var(--d-tokentreemap-6, rgba(11, 14, 20, 0.16))',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         pointerEvents: 'none',
@@ -864,7 +864,7 @@ function RollupPopover({
         border: '1px solid var(--hairline)',
         borderRadius: 10,
         padding: '10px 12px',
-        boxShadow: '0 12px 30px rgba(11, 14, 20, 0.16)',
+        boxShadow: '0 12px 30px var(--d-tokentreemap-7, rgba(11, 14, 20, 0.16))',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         pointerEvents: 'none',
@@ -910,7 +910,7 @@ function backgroundFor(tile: Tile, pnlMode: 'unrealized' | 'day'): string {
     return 'linear-gradient(135deg, color-mix(in srgb, var(--ink-2) 8%, transparent), color-mix(in srgb, var(--ink-2) 14%, transparent))';
   }
   if (tile.kind === 'dust') {
-    return 'repeating-linear-gradient(45deg, rgba(11, 14, 20, 0.035) 0 6px, transparent 6px 12px), color-mix(in srgb, var(--ink-3) 8%, transparent)';
+    return 'repeating-linear-gradient(45deg, var(--d-tokentreemap-8, rgba(11, 14, 20, 0.035)) 0 6px, transparent 6px 12px), color-mix(in srgb, var(--ink-3) 8%, transparent)';
   }
   if (tile.kind === 'unknown') {
     return 'linear-gradient(160deg, color-mix(in srgb, var(--down) 22%, transparent), color-mix(in srgb, var(--down) 8%, transparent))';
@@ -935,7 +935,7 @@ function borderFor(tile: Tile, hover: boolean): string {
   if (hover) {
     return 'color-mix(in srgb, var(--accent-primary) 50%, transparent)';
   }
-  return 'rgba(11, 14, 20, 0.07)';
+  return 'var(--d-tokentreemap-9, rgba(11, 14, 20, 0.07))';
 }
 
 function pricedAreaShare(tiles: ReadonlyArray<Tile>): number {
@@ -978,7 +978,7 @@ const containerStyle: CSSProperties = {
   borderRadius: 12,
   overflow: 'hidden',
   background:
-    'radial-gradient(110% 60% at 50% -10%, color-mix(in srgb, var(--accent-primary) 6%, transparent), transparent 70%), var(--surface-1, rgba(11, 14, 20, 0.03))',
+    'radial-gradient(110% 60% at 50% -10%, color-mix(in srgb, var(--accent-primary) 6%, transparent), transparent 70%), var(--surface-1, var(--d-tokentreemap-10, rgba(11, 14, 20, 0.03)))',
 };
 
 const emptyStateStyle: CSSProperties = {

@@ -78,29 +78,29 @@ const TRACK_EMOJIS = ['🐋', '🦍', '🐸', '🔥', '💎', '🚀', '🥷', '�
  * lets eight frens be told apart at a glance.
  */
 const CONFETTI = [
-  '#0f8a5f',
-  '#2a5fd0',
-  '#1f8fc4',
-  '#b8339c',
-  '#c08a12',
-  '#0e93ac',
-  '#6b46c8',
-  '#4f9c33',
+  'var(--d-frenspage-1, #0f8a5f)',
+  'var(--d-frenspage-2, #2a5fd0)',
+  'var(--d-frenspage-3, #1f8fc4)',
+  'var(--d-frenspage-4, #b8339c)',
+  'var(--d-frenspage-5, #c08a12)',
+  'var(--d-frenspage-6, #0e93ac)',
+  'var(--d-frenspage-7, #6b46c8)',
+  'var(--d-frenspage-8, #4f9c33)',
 ] as const;
 
 /** Each lens owns a color — its tick block, its section, its identity. */
 const LENS_COLOR: Record<SortKey, string> = {
-  pnl: '#0f8a5f',
-  calls: '#b8339c',
-  winrate: '#1f8fc4',
-  volume: '#c08a12',
+  pnl: 'var(--d-frenspage-9, #0f8a5f)',
+  calls: 'var(--d-frenspage-10, #b8339c)',
+  winrate: 'var(--d-frenspage-11, #1f8fc4)',
+  volume: 'var(--d-frenspage-12, #c08a12)',
 };
 
 /** Podium identities: main block color + a companion for the collage. */
 const RANK_THEME: Record<number, { main: string; soft: string }> = {
-  1: { main: '#c99415', soft: '#0f8a5f' },
-  2: { main: '#1f8fc4', soft: '#6b46c8' },
-  3: { main: '#b8339c', soft: '#d9673a' },
+  1: { main: 'var(--d-frenspage-13, #c99415)', soft: 'var(--d-frenspage-14, #0f8a5f)' },
+  2: { main: 'var(--d-frenspage-15, #1f8fc4)', soft: 'var(--d-frenspage-16, #6b46c8)' },
+  3: { main: 'var(--d-frenspage-17, #b8339c)', soft: 'var(--d-frenspage-18, #d9673a)' },
 };
 
 function rankTheme(rank: number): { main: string; soft: string } {
@@ -463,7 +463,43 @@ export function FrensStyles(): React.ReactElement {
        * built; nothing below is a literal that would have to be found
        * again.
        */
-      .frens-page {
+
+      /*
+       * ── THE DARK HALF ────────────────────────────────────────────────────
+       *
+       * The same selectors on the terminal's own tokens. Additive: the paper
+       * block above is not edited and not gated, and this outranks it and
+       * comes later, so on dark it wins twice over and on light it matches
+       * nothing.
+       */
+      :root[data-theme='dark'] .frens-page {
+        --surface: hsl(220 12% 3%);
+        --surface-1: hsl(220 12% 5%);
+        --surface-2: hsl(220 12% 7%);
+        --surface-3: hsl(220 12% 9%);
+        --input-bg: rgba(255, 255, 255, 0.05);
+        --input-border: rgba(255, 255, 255, 0.1);
+        --chip-bg: rgba(255, 255, 255, 0.05);
+        --chip-border: rgba(255, 255, 255, 0.1);
+        --hairline: rgba(255, 255, 255, 0.07);
+        --hairline-2: rgba(255, 255, 255, 0.12);
+        --ink-0: #ffffff;
+        --ink-1: #e4e7ee;
+        --ink-2: #a8aeba;
+        --ink-3: #6b7180;
+        --ink-4: #2a2d36;
+        --up: #22c77e;
+        --down: #f0567a;
+        --hold: #ffcf5c;
+        --acc-0: #8ab4ff;
+        --accent-primary: #e4e7ee;
+        --accent-soft: rgba(255, 255, 255, 0.08);
+        --accent: #e4e7ee;
+        --accent-ink: #0b0e14;
+      }
+      
+      :root[data-theme='dark'] .frens-page{background:var(--surface);color:var(--ink-1)}
+            .frens-page {
         --surface: #ffffff;
         --surface-1: #ffffff;
         --surface-2: #f7f9f8;
@@ -1263,33 +1299,33 @@ export function FrensStyles(): React.ReactElement {
 
 /** Racing confetti bars, right-anchored, bleeding off the panel edge. */
 const STREAKS: ReadonlyArray<{ top: number; right: number; w: number; c: string }> = [
-  { top: 0, right: -60, w: 240, c: '#0d7a45' },
-  { top: 0, right: 198, w: 120, c: '#0f8a5f' },
-  { top: 18, right: -28, w: 150, c: '#1f8fc4' },
-  { top: 18, right: 138, w: 70, c: '#b8339c' },
-  { top: 36, right: -70, w: 280, c: '#4f9c33' },
-  { top: 36, right: 228, w: 80, c: '#1e4fc0' },
-  { top: 54, right: -18, w: 130, c: '#c08a12' },
+  { top: 0, right: -60, w: 240, c: 'var(--d-frenspage-19, #0d7a45)' },
+  { top: 0, right: 198, w: 120, c: 'var(--d-frenspage-20, #0f8a5f)' },
+  { top: 18, right: -28, w: 150, c: 'var(--d-frenspage-21, #1f8fc4)' },
+  { top: 18, right: 138, w: 70, c: 'var(--d-frenspage-22, #b8339c)' },
+  { top: 36, right: -70, w: 280, c: 'var(--d-frenspage-23, #4f9c33)' },
+  { top: 36, right: 228, w: 80, c: 'var(--d-frenspage-24, #1e4fc0)' },
+  { top: 54, right: -18, w: 130, c: 'var(--d-frenspage-25, #c08a12)' },
   { top: 54, right: 128, w: 90, c: '#1e40af' },
-  { top: 72, right: -48, w: 190, c: '#0e93ac' },
+  { top: 72, right: -48, w: 190, c: 'var(--d-frenspage-26, #0e93ac)' },
 ];
 
 /** Sparse pixel mosaic — the "crowd", one bright cell per fren. */
 const PIXELS: ReadonlyArray<[number, number, string]> = [
-  [0, 1, '#1f8fc4'],
-  [0, 2, '#0e93ac'],
-  [0, 5, '#0f8a5f'],
-  [0, 6, '#0d7a45'],
-  [1, 0, '#1e4fc0'],
-  [1, 2, '#0b7ba8'],
-  [1, 4, '#4f9c33'],
-  [1, 6, '#c08a12'],
-  [2, 1, '#b8339c'],
-  [2, 3, '#9c1fac'],
-  [2, 5, '#b8760a'],
-  [2, 6, '#c08a12'],
-  [3, 0, '#6b46c8'],
-  [3, 4, '#a8921a'],
+  [0, 1, 'var(--d-frenspage-27, #1f8fc4)'],
+  [0, 2, 'var(--d-frenspage-28, #0e93ac)'],
+  [0, 5, 'var(--d-frenspage-29, #0f8a5f)'],
+  [0, 6, 'var(--d-frenspage-30, #0d7a45)'],
+  [1, 0, 'var(--d-frenspage-31, #1e4fc0)'],
+  [1, 2, 'var(--d-frenspage-32, #0b7ba8)'],
+  [1, 4, 'var(--d-frenspage-33, #4f9c33)'],
+  [1, 6, 'var(--d-frenspage-34, #c08a12)'],
+  [2, 1, 'var(--d-frenspage-35, #b8339c)'],
+  [2, 3, 'var(--d-frenspage-36, #9c1fac)'],
+  [2, 5, 'var(--d-frenspage-37, #b8760a)'],
+  [2, 6, 'var(--d-frenspage-38, #c08a12)'],
+  [3, 0, 'var(--d-frenspage-39, #6b46c8)'],
+  [3, 4, 'var(--d-frenspage-40, #a8921a)'],
 ];
 
 /**
@@ -1431,7 +1467,7 @@ function MastChip({ block, children }: { block: string; children: string }): Rea
         border: '1px solid var(--hairline)',
         borderRadius: 8,
         padding: '5px 10px',
-        background: 'rgba(11, 14, 20, 0.03)',
+        background: 'var(--d-frenspage-41, rgba(11, 14, 20, 0.03))',
         whiteSpace: 'nowrap',
       }}
     >
@@ -1525,7 +1561,7 @@ export function EdgeRails(): React.ReactElement {
       <div aria-hidden className="frens-rail" style={{ left: 26 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
           <span style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {['#0f8a5f', '#b8339c', '#1f8fc4'].map((c, index) => (
+            {['var(--d-frenspage-42, #0f8a5f)', 'var(--d-frenspage-43, #b8339c)', 'var(--d-frenspage-44, #1f8fc4)'].map((c, index) => (
               <span
                 key={c}
                 className="frens-rail-dot"
@@ -1548,7 +1584,7 @@ export function EdgeRails(): React.ReactElement {
               width: 1,
               height: 120,
               background:
-                'linear-gradient(180deg, var(--hairline-2, rgba(11, 14, 20, 0.14)), transparent)',
+                'linear-gradient(180deg, var(--hairline-2, var(--d-frenspage-45, rgba(11, 14, 20, 0.14))), transparent)',
             }}
           />
         </div>
@@ -1597,10 +1633,10 @@ export function SignatureFooter(): React.ReactElement {
           style={{
             width: 44,
             height: 1,
-            background: 'linear-gradient(90deg, transparent, var(--hairline-2, rgba(11, 14, 20, 0.14)))',
+            background: 'linear-gradient(90deg, transparent, var(--hairline-2, var(--d-frenspage-46, rgba(11, 14, 20, 0.14))))',
           }}
         />
-        {['#0f8a5f', '#1f8fc4', '#b8339c', '#c08a12'].map((c, index) => (
+        {['var(--d-frenspage-47, #0f8a5f)', 'var(--d-frenspage-48, #1f8fc4)', 'var(--d-frenspage-49, #b8339c)', 'var(--d-frenspage-50, #c08a12)'].map((c, index) => (
           <span
             key={c}
             className="frens-sig-dot"
@@ -1618,7 +1654,7 @@ export function SignatureFooter(): React.ReactElement {
           style={{
             width: 44,
             height: 1,
-            background: 'linear-gradient(90deg, var(--hairline-2, rgba(11, 14, 20, 0.14)), transparent)',
+            background: 'linear-gradient(90deg, var(--hairline-2, var(--d-frenspage-51, rgba(11, 14, 20, 0.14))), transparent)',
           }}
         />
       </div>
@@ -2073,7 +2109,7 @@ export function PodiumCard({
           WebkitBackdropFilter: 'blur(14px) saturate(1.3)',
           boxShadow: first
             ? `inset 0 1px 0 rgba(255,255,255,0.9), 0 0 38px -16px color-mix(in srgb, ${theme.main} 45%, transparent)`
-            : 'inset 0 1px 0 rgba(255,255,255,0.9)',
+            : 'inset 0 1px 0 var(--d-frenspage-52, rgba(255,255,255,0.9))',
           padding: first ? '14px 18px 14px' : '12px 16px 12px',
         } as CSSProperties
       }
@@ -2247,7 +2283,7 @@ export function PodiumCard({
           padding: '8px 10px',
           borderRadius: 12,
           border: '1px solid var(--hairline)',
-          background: 'rgba(11, 14, 20, 0.16)',
+          background: 'var(--d-frenspage-53, rgba(11, 14, 20, 0.16))',
         }}
       >
         <MiniStat label="Positions" value={String(row.positions)} split={[row.wins, row.losses]} />
@@ -2338,7 +2374,7 @@ function LoadingRows(): React.ReactElement {
             height: 30,
             borderRadius: 8,
             background:
-              'linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.06), transparent)',
+              'linear-gradient(90deg, transparent, var(--d-frenspage-54, rgba(11, 14, 20, 0.06)), transparent)',
             backgroundSize: '200% 100%',
             animationDelay: `${index * 140}ms`,
           }}
@@ -2379,12 +2415,12 @@ function EmptyState({ children }: { children: string }): React.ReactElement {
  * puts the owl ON the rail rather than floating over it.
  */
 const PODIUM_METAL: ReadonlyArray<string> = [
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #eccb63 46%, #c09220 66%, #6b4806 100%)',
-  'linear-gradient(145deg, #5f666e 0%, #a2abb5 30%, #cdd5dc 46%, #929ba6 66%, #4f565e 100%)',
-  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, var(--d-frenspage-55, #eccb63) 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, var(--d-frenspage-56, #5f666e) 0%, var(--d-frenspage-57, #a2abb5) 30%, var(--d-frenspage-58, #cdd5dc) 46%, var(--d-frenspage-59, #929ba6) 66%, var(--d-frenspage-60, #4f565e) 100%)',
+  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, var(--d-frenspage-61, #d29155) 47%, #96552a 66%, #4d2711 100%)',
 ];
 /* A flat tone per place, because a gradient cannot be a text colour. */
-const PODIUM_TONE = ['#d3a72c', '#b3bcc6', '#a9642f'] as const;
+const PODIUM_TONE = ['#d3a72c', 'var(--d-frenspage-62, #b3bcc6)', '#a9642f'] as const;
 const PODIUM_PLACE = ['First', 'Second', 'Third'] as const;
 
 function Perch({
@@ -2572,8 +2608,8 @@ function BestCallChip({
         // table row, and dozens of live blur regions is real paint cost.
         // The gradient + specular edge carry the material instead.
         background:
-          'linear-gradient(165deg, color-mix(in srgb, var(--up) 16%, rgba(11, 14, 20, 0.04)), color-mix(in srgb, var(--up) 6%, transparent))',
-        border: '1px solid color-mix(in srgb, var(--up) 28%, rgba(11, 14, 20, 0.07))',
+          'linear-gradient(165deg, color-mix(in srgb, var(--up) 16%, var(--d-frenspage-63, rgba(11, 14, 20, 0.04))), color-mix(in srgb, var(--up) 6%, transparent))',
+        border: '1px solid color-mix(in srgb, var(--up) 28%, var(--d-frenspage-64, rgba(11, 14, 20, 0.07)))',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
         borderRadius: 999,
         padding: '3px 10px 3px 4px',
@@ -2877,10 +2913,10 @@ function TrackButton({
               'linear-gradient(165deg, color-mix(in srgb, var(--surface-2) 82%, transparent), color-mix(in srgb, var(--surface-1) 78%, transparent))',
             backdropFilter: 'blur(22px) saturate(1.35)',
             WebkitBackdropFilter: 'blur(22px) saturate(1.35)',
-            border: '1px solid rgba(11, 14, 20, 0.13)',
+            border: '1px solid var(--d-frenspage-65, rgba(11, 14, 20, 0.13))',
             borderRadius: 16,
             boxShadow:
-              'inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px -16px rgba(11, 14, 20, 0.16)',
+              'inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px -16px var(--d-frenspage-66, rgba(11, 14, 20, 0.16))',
             padding: 12,
             textAlign: 'left',
           }}

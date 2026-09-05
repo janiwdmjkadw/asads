@@ -3,6 +3,62 @@
 @import "../components/agent/agent-chat.css";
 @import "../components/agent/soren/soren-hover.css";
 @import "../components/agent/soren/soren-panes.css";
+/* The dark half: every rule the paper repaint changed, restored under
+   `:root[data-theme='dark']`. Generated — see the file's own header. */
+@import "./dark.css";
+/* And the same for the sheets that live inside components rather than in
+   a `.css` file at all. */
+@import "./dark-inline.css";
+/* And the colour that is in no sheet at all: an inline style, an SVG
+   attribute, a constants table. Those sites ask for a variable and fall
+   back to the paper literal; this is where the variable is answered. */
+@import "./dark-tokens.css";
+/* And the handful of surfaces that were already paper before the tag,
+   so there is no dark version of them to replay. */
+@import "./dark-prepaper.css";
+
+/*
+ * ── THE SURFACES THAT ARE INSIDE NO PAGE ─────────────────────────────
+ *
+ * A dialog, a popover, a hover card, a tooltip and a toast all portal to
+ * the document root, so every palette the pages declare on themselves is
+ * out of reach: `bg-popover` resolved through `.listen-root`, found
+ * nothing, and fell back to the dark default, which is how a modal on a
+ * white page came up black.
+ *
+ * The repaint answered that by writing paper straight into the
+ * primitives, which fixed the light half and froze it there. These four
+ * are the same fix with a name: declared on the ROOT, where a portal can
+ * read them, and answered again under `data-theme='dark'`.
+ *
+ * The dark values are the terminal's own `--surface-1` and `--ink-0`,
+ * which is what `bg-popover` was resolving to before any of this.
+ */
+:root {
+  --ui-paper: #ffffff;
+  --ui-ink: #0b0e14;
+  --ui-line: rgba(11, 14, 20, 0.1);
+  --ui-line-2: rgba(11, 14, 20, 0.14);
+  --ui-quiet: #8a9591;
+  --ui-wash: rgba(11, 14, 20, 0.06);
+  --ui-wash-2: rgba(11, 14, 20, 0.07);
+  --ui-shadow: 0 16px 40px rgba(11, 14, 20, 0.14);
+  --ui-shadow-modal: 0 24px 60px rgba(11, 14, 20, 0.2);
+  --ui-shadow-tip: 0 10px 26px rgba(11, 14, 20, 0.18);
+}
+
+:root[data-theme='dark'] {
+  --ui-paper: hsl(220 12% 5%);
+  --ui-ink: #ffffff;
+  --ui-line: rgba(255, 255, 255, 0.1);
+  --ui-line-2: rgba(255, 255, 255, 0.14);
+  --ui-quiet: #6b7180;
+  --ui-wash: rgba(255, 255, 255, 0.06);
+  --ui-wash-2: rgba(255, 255, 255, 0.08);
+  --ui-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --ui-shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --ui-shadow-tip: 0 10px 26px rgba(0, 0, 0, 0.5);
+}
 
 .meta-hover-shell {
   background: rgba(255,255,255,0.025);
@@ -109,9 +165,16 @@
   html, body {
     margin: 0; padding: 0;
     min-height: 100vh;
-    /* Black, not `--surface`: the document is what shows through on
-       over-scroll and on any route that does not mount `.listen-root`. */
-    background: #000;
+    /*
+     * ── THE DOCUMENT'S OWN GROUND ────────────────────────────────────
+     *
+     * Not `--surface`, which is scoped to `.listen-root` and resolves to
+     * nothing out here. This is what shows through on over-scroll and on
+     * any route that does not mount the shell, so it has to be a real
+     * colour — and it has to be the colour of the theme, or the rubber
+     * band at the end of a scroll is a black band under a white product.
+     */
+    background: #ffffff;
     color: var(--ink-1);
     font-family: var(--sans);
     font-size: 14px;
@@ -207,6 +270,28 @@
   html .max-h-screen {
     max-height: calc(100dvh / var(--ui-scale));
   }
+  /*
+   * And the terminal's, which is what it was before the repaint.
+   *
+   * NO `:has(.listen-root)` here, though it is the obvious way to say
+   * "only where the shell is". `data-theme` is stamped in the head by
+   * `public/theme-boot.js`, BEFORE the first paint, and `.listen-root`
+   * does not exist until React has rendered — so a `:has()` on it is
+   * false for exactly the window this rule exists to cover, and a
+   * reader on dark gets a white page and then the terminal.
+   *
+   * It does not need the guard: this file is imported by the terminal,
+   * design and public layouts and NOT by the landing group, which loads
+   * `sandbox/landing.css` and states its own ground there.
+   *
+   * In the same layer as the rule above, so the marketing page's own
+   * `html:has(.lh-home)` still outranks both.
+   */
+  :root[data-theme='dark'],
+  :root[data-theme='dark'] body {
+    background: #000;
+  }
+
   body {
     position: relative;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';

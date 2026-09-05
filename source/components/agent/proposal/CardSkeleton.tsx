@@ -73,8 +73,8 @@ const VERB_GHOST =
 
 /** The verbs' locked values (spec §3.5): `#0F6D5F` buy · `#B4482E` sell. */
 const VERB_INK: Readonly<Record<'buy' | 'sell', string>> = {
-  buy: 'var(--pcv2-buy, #0F6D5F)',
-  sell: 'var(--pcv2-sell, #B4482E)',
+  buy: 'var(--pcv2-buy, var(--d-cardskeleton-1, #0F6D5F))',
+  sell: 'var(--pcv2-sell, var(--d-cardskeleton-2, #B4482E))',
 };
 
 /**

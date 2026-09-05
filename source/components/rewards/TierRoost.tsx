@@ -60,15 +60,15 @@ const METALS: ReadonlyArray<string> = [
   /* Steel. The plainest working metal, so the ladder starts somewhere
      honest and every rung above it is warmer or brighter. Iron went
      darker than the page's own hairline and read as absent. */
-  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, #98a1aa 48%, #6c747c 64%, #383d43 100%)',
-  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
-  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #dbe2e8 46%, #a8b0b9 66%, #5f666e 100%)',
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #dfb646 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, var(--d-tierroost-1, #98a1aa) 48%, #6c747c 64%, #383d43 100%)',
+  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, var(--d-tierroost-2, #d29155) 47%, #96552a 66%, #4d2711 100%)',
+  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, var(--d-tierroost-3, #dbe2e8) 46%, #a8b0b9 66%, #5f666e 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, var(--d-tierroost-4, #dfb646) 46%, #c09220 66%, #6b4806 100%)',
   /* Icy blue rather than a brighter silver. The top rung has to be
      unmistakable at 30px beside a metal that is also pale and also
      cool, and a blue platinum is a convention rank ladders already
      taught everybody. */
-  'linear-gradient(145deg, #3d6d96 0%, #6fb1dc 27%, #a5d0ea 45%, #6fa9d2 68%, #315a80 100%)',
+  'linear-gradient(145deg, #3d6d96 0%, var(--d-tierroost-5, #6fb1dc) 27%, var(--d-tierroost-6, #a5d0ea) 45%, #6fa9d2 68%, #315a80 100%)',
 ];
 
 /** Past the table, the top metal repeats rather than falling to grey. */

@@ -1,0 +1,243 @@
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ *  THE DARK HALF — THE SHEETS THAT LIVE INSIDE COMPONENTS
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * GENERATED, the same way and from the same source as `dark.css`: the
+ * product at `black-terminal`, replayed under one attribute.
+ *
+ * That file covers `source/**\/*.css`. A dozen surfaces keep their
+ * styles somewhere else entirely — a template literal a component
+ * prints into a `<style>` tag — and the repaint changed those in place
+ * too, which is why the Frens masthead and the call modals stayed white
+ * while the pages around them turned over.
+ *
+ * Interpolated selectors and values are not here: a string with a
+ * `${}` in it is not the same text at run time, so nothing generated
+ * from it could be trusted to match.
+ */
+
+
+/* ── source/components/agent/proposal/v2/ProposalCardV2.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .pcv2 .pcv2-box-b > .pcv2-row + .pcv2-row,
+:root[data-theme='dark'] .pcv2 .pcv2-box-b > .pcv2-box + .pcv2-row,
+:root[data-theme='dark'] .pcv2 .pcv2-bare > .pcv2-row + .pcv2-row {
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+:root[data-theme='dark'] .pcv2 .pcv2-box-b > * + .pcv2-box::before {
+  background: rgba(255,255,255,.06);
+}
+
+/* ── source/components/agent/proposal/v2/soren-skin.ts ─────────────────────────────────────── */
+:root[data-theme='dark'] .pcv2.pcv2--soren {
+  --mono: var(--font-geist-mono,ui-monospace),ui-monospace,monospace;
+  --pcv2-card-fill: rgba(19,21,25,.88);
+  --pcv2-card-rim: rgba(255,255,255,.043);
+  --pcv2-leg-fill: rgba(255,255,255,.016);
+  --pcv2-leg-rim: #14151A;
+  --pcv2-l0-fill: rgba(255,255,255,.012);
+  --pcv2-l0-rim: #16181D;
+  --pcv2-l1-fill: rgba(255,255,255,.020);
+  --pcv2-l1-rim: #181B20;
+  --pcv2-l2-fill: rgba(255,255,255,.024);
+  --pcv2-l2-rim: #1B1E23;
+  --pcv2-bar-0: #17191E;
+  --pcv2-bar-1: #191C22;
+  --pcv2-bar-2: #1B1F25;
+  --pcv2-cut: rgba(0,0,0,.45) 0 1px 0 inset;
+  --pcv2-lift: rgba(255,255,255,.04) 0 2px 0 inset;
+  --pcv2-sheen: linear-gradient(70deg,transparent 22%,rgba(255,255,255,.015) 40%,rgba(255,255,255,.03) 52%,rgba(255,255,255,.02) 64%,transparent 80%),
+    linear-gradient(180deg,rgba(255,255,255,.019),rgba(255,255,255,.004));
+  --pcv2-card-sheen: linear-gradient(70deg,transparent 22%,rgba(255,255,255,.015) 40%,rgba(255,255,255,.03) 52%,rgba(255,255,255,.02) 64%,transparent 80%),
+    linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,.008));
+  --pcv2-violet: #A78BFA;
+  --pcv2-buy: #4AC99B;
+  --pcv2-sell: #EA667D;
+  --pcv2-approve: linear-gradient(in oklab 118deg,oklab(61.2% -0.026 -0.025),oklab(59.1% -0.048 -0.020) 48%,oklab(59.5% -0.083 -0.0006));
+  --pcv2-approve-ink: #0A1113;
+  --pcv2-ivory: #E8E8E2;
+  --pcv2-glass-fill: rgba(255,255,255,.06);
+  --pcv2-glass-rim: rgba(255,255,255,.10);
+  --pcv2-tag-rim: rgba(232,232,226,.30);
+  --pcv2-tag-square: rgba(255,255,255,.10);
+  --pcv2-status-leg: #8A8A85;
+  --pcv2-status-plan: #C9CDD6;
+}
+:root[data-theme='dark'] .pcv2--soren .pcv2-live-dot {
+  --accent-secondary: #7ED6A6;
+  --hold: #E8C07E;
+}
+:root[data-theme='dark'] .pcv2--soren .pcv2-leg-live {
+  color: #8A8A85;
+}
+
+/* ── source/components/conditionals/ConditionalsLedger.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .cdl-row {
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+:root[data-theme='dark'] .cdl-row:hover .cdl-track,
+:root[data-theme='dark'] .cdl-row:focus-visible .cdl-track {
+  background: rgba(255,255,255,.13);
+}
+:root[data-theme='dark'] .cdl-track {
+  background: rgba(255,255,255,.07);
+}
+:root[data-theme='dark'] .cdl-now {
+  outline: 3px solid #000;
+}
+:root[data-theme='dark'] .cdl-row[data-hold="true"] .cdl-now {
+  background: #000;
+}
+
+/* ── source/components/frens/FrenProfileModal.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .frenprof-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+:root[data-theme='dark'] .frenprof-chip:hover {
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015) 60%), var(--surface-1, #0e0e12) !important;
+}
+
+/* ── source/components/frens/FrensPage.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .frm {
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+:root[data-theme='dark'] .frm-in {
+  background: linear-gradient(90deg, #000 44%, rgba(0, 0, 0, 0.55) 76%, transparent);
+}
+:root[data-theme='dark'] .frm-tray {
+  background: linear-gradient(90deg, #000 44%, rgba(0, 0, 0, 0.55) 76%, transparent);
+}
+:root[data-theme='dark'] .frm-load {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+}
+:root[data-theme='dark'] .frp-rail {
+  background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.22) 12%,
+          rgba(255, 255, 255, 0.22) 88%,
+          transparent
+        );
+}
+:root[data-theme='dark'] .frb-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.026);
+}
+:root[data-theme='dark'] .frb-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+@media (max-width: 720px) {
+  :root[data-theme='dark'] .frm-in {
+    background: linear-gradient(90deg, #000 72%, rgba(0, 0, 0, 0.72) 92%, transparent);
+  }
+}
+@media (max-width: 720px) {
+  :root[data-theme='dark'] .frm-tray {
+    background: linear-gradient(90deg, #000 72%, rgba(0, 0, 0, 0.72) 92%, transparent);
+  }
+}
+:root[data-theme='dark'] .frens-tk {
+  background: rgba(255, 255, 255, 0.025);
+}
+:root[data-theme='dark'] .frens-tk:hover {
+  background: rgba(255, 255, 255, 0.055);
+}
+:root[data-theme='dark'] .frc-search {
+  border: 1px solid var(--hairline-2, rgba(255,255,255,0.11));
+}
+:root[data-theme='dark'] .frc-search:focus {
+  border-color: rgba(255, 255, 255, 0.26);
+}
+:root[data-theme='dark'] .frens-row:hover {
+  background: rgba(255,255,255,0.028);
+}
+:root[data-theme='dark'] .frens-glass {
+  background: linear-gradient(
+          160deg,
+          rgba(255,255,255,0.085) 0%,
+          rgba(255,255,255,0.028) 46%,
+          rgba(255,255,255,0.015) 100%
+        );
+  border: 1px solid rgba(255,255,255,0.11);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14),
+          inset 0 -1px 0 rgba(0,0,0,0.26),
+          0 10px 26px -18px rgba(0,0,0,0.8);
+}
+:root[data-theme='dark'] .frens-glass:hover {
+  border-color: rgba(255,255,255,0.18);
+  background: linear-gradient(
+          160deg,
+          rgba(255,255,255,0.12) 0%,
+          rgba(255,255,255,0.045) 46%,
+          rgba(255,255,255,0.02) 100%
+        );
+}
+:root[data-theme='dark'] .frens-glass[aria-pressed="true"],
+:root[data-theme='dark'] .frens-glass--tint {
+  background: linear-gradient(
+          160deg,
+          color-mix(in srgb, var(--gc, var(--accent-primary)) 30%, rgba(255,255,255,0.06)) 0%,
+          color-mix(in srgb, var(--gc, var(--accent-primary)) 10%, rgba(255,255,255,0.02)) 55%,
+          color-mix(in srgb, var(--gc, var(--accent-primary)) 4%, transparent) 100%
+        );
+  border-color: color-mix(in srgb, var(--gc, var(--accent-primary)) 45%, rgba(255,255,255,0.1));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22),
+          inset 0 -1px 0 rgba(0,0,0,0.22),
+          0 0 24px -8px color-mix(in srgb, var(--gc, var(--accent-primary)) 65%, transparent),
+          0 10px 26px -18px rgba(0,0,0,0.8);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-theme='dark'] .frens-glass {
+    background: rgba(24,26,32,0.86);
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-theme='dark'] .frens-glass[aria-pressed="true"],
+  :root[data-theme='dark'] .frens-glass--tint {
+    background: color-mix(in srgb, var(--gc, var(--accent-primary)) 20%, rgba(24,26,32,0.9));
+  }
+}
+:root[data-theme='dark'] .frens-card:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12),
+          0 16px 36px -20px color-mix(in srgb, var(--fc, #ffffff) 50%, transparent);
+}
+:root[data-theme='dark'] .frens-search:focus {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14),
+          0 0 0 3px color-mix(in srgb, var(--accent-primary) 16%, transparent);
+}
+:root[data-theme='dark'] .frens-track:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24),
+          0 0 26px -8px color-mix(in srgb, var(--accent-primary) 70%, transparent);
+}
+
+/* ── source/components/portfolio/WalletsTab.header.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .wt-search {
+  border: 1px solid rgba(255,255,255,.1);
+  background: #000;
+}
+:root[data-theme='dark'] .wt-search:hover {
+  background: rgba(255,255,255,.045);
+}
+
+/* ── source/components/portfolio/spot/PerformanceChart.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .spot-readout-float {
+  box-shadow: 0 10px 26px -14px rgba(0, 0, 0, 0.65);
+}
+
+/* ── source/components/portfolio/spot/SpotTab.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .spot-bucket-tile:hover {
+  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.65);
+}
+
+/* ── source/components/portfolio/wallet-modal-fields.tsx ─────────────────────────────────────── */
+:root[data-theme='dark'] .wm-field:hover:not(:disabled) {
+  border-color: rgba(255,255,255,.14);
+}
+:root[data-theme='dark'] .wm-field:focus {
+  background: rgba(255,255,255,.07);
+}
+:root[data-theme='dark'] .wm-ghost:focus-visible,
+:root[data-theme='dark'] .wm-plain:focus-visible,
+:root[data-theme='dark'] .wm-field:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255,255,255,.22);
+}

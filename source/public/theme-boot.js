@@ -1,23 +1,44 @@
 (() => {
   try {
-    // Mirrors ThemeProvider: v3 is authoritative; v2 falls back with the
-    // zen→default migration. Marks the document while a NON-default
-    // theme/font will hydrate, so the default paint never flashes first.
-    const DEFAULT_THEME = 'arctic';
-    const v3 = window.localStorage.getItem('listen.trade.theme.v3');
-    const v2 = window.localStorage.getItem('listen.trade.theme.v2');
-    const raw = v3 || v2;
-    if (!raw) return;
-    const state = JSON.parse(raw);
-    let themeId = state && typeof state.themeId === 'string' ? state.themeId : DEFAULT_THEME;
-    // v2 data: a stored 'zen' was the auto-persisted old default — it
-    // migrates to the new default on hydration, so it is NOT "changed".
-    if (!v3 && themeId === 'zen') themeId = DEFAULT_THEME;
-    const changed =
-      themeId !== DEFAULT_THEME ||
-      (state && typeof state.fontSans === 'string' && state.fontSans !== 'Geist') ||
-      (state && typeof state.fontMono === 'string' && state.fontMono !== 'Geist Mono') ||
-      (state && typeof state.fontDisplay === 'string' && state.fontDisplay !== 'Instrument Serif');
-    if (changed) document.documentElement.setAttribute('data-listen-theme-loading', '1');
+    /*
+     * ── THE HALF, BEFORE THE FIRST PAINT ─────────────────────────────
+     *
+     * `ThemeProvider` writes `data-theme` in a layout effect, which is
+     * after hydration — so a reader on dark got a white document for as
+     * long as the bundle took to arrive, and then the terminal. This
+     * runs in the head, from `localStorage`, before anything is drawn.
+     *
+     * It only writes the ATTRIBUTE. Every colour still comes from
+     * `source/app/dark*.css`, which is where the theme actually lives;
+     * this is the one bit of it that cannot wait for React.
+     *
+     * Two themes now, `light` and `dark`. Anything else in storage is an
+     * id from the thirty theme era and resolves to the default, exactly
+     * as `resolveTheme` does.
+     */
+    const DEFAULT_THEME = 'light';
+    const raw =
+      window.localStorage.getItem('listen.trade.theme.v3') ||
+      window.localStorage.getItem('listen.trade.theme.v2');
+    const state = raw ? JSON.parse(raw) : null;
+    const stored = state && typeof state.themeId === 'string' ? state.themeId : null;
+    const themeId = stored === 'dark' || stored === 'light' ? stored : DEFAULT_THEME;
+    document.documentElement.setAttribute('data-theme', themeId);
+
+    /*
+     * The FONTS still cannot be answered here — they load through
+     * `useFontLoader` after hydration — so the shell stays hidden until
+     * then when a non default face is stored, and only then. The theme
+     * no longer needs that gate: it is already correct above.
+     */
+    const face = (k, d) =>
+      state && typeof state[k] === 'string' && state[k] !== d;
+    if (
+      face('fontSans', 'Geist') ||
+      face('fontMono', 'Geist Mono') ||
+      face('fontDisplay', 'Instrument Serif')
+    ) {
+      document.documentElement.setAttribute('data-listen-theme-loading', '1');
+    }
   } catch (_) {}
 })();

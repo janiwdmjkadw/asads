@@ -13,8 +13,8 @@ import type { Guidance, GuidanceActionKind, GuidanceSeverity } from './guidance'
 
 const SEVERITY_COLOR: Readonly<Record<GuidanceSeverity, string>> = {
   info: 'var(--hairline)',
-  warn: 'var(--warn, #c08a12)',
-  blocked: 'var(--neg, #b4482e)',
+  warn: 'var(--warn, var(--d-guidancenotice-1, #c08a12))',
+  blocked: 'var(--neg, var(--d-guidancenotice-2, #b4482e))',
 };
 
 export function GuidanceNotice({

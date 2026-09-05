@@ -44,11 +44,11 @@ import './accolade-medal.css';
  * you already collected changing metal is a lie about what you earned.
  */
 const METALS: ReadonlyArray<string> = [
-  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, #98a1aa 48%, #6c747c 64%, #383d43 100%)',
-  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, #d29155 47%, #96552a 66%, #4d2711 100%)',
-  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, #dbe2e8 46%, #a8b0b9 66%, #5f666e 100%)',
-  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, #eccb63 46%, #c09220 66%, #6b4806 100%)',
-  'linear-gradient(145deg, #3d6d96 0%, #8ec6e8 27%, #cbe6f6 45%, #6fa9d2 68%, #315a80 100%)',
+  'linear-gradient(145deg, #3f454b 0%, #7d858d 34%, var(--d-accolademedal-1, #98a1aa) 48%, #6c747c 64%, #383d43 100%)',
+  'linear-gradient(145deg, #5e3115 0%, #a9642f 32%, var(--d-accolademedal-2, #d29155) 47%, #96552a 66%, #4d2711 100%)',
+  'linear-gradient(145deg, #6c737c 0%, #c2c9d1 30%, var(--d-accolademedal-3, #dbe2e8) 46%, #a8b0b9 66%, #5f666e 100%)',
+  'linear-gradient(145deg, #7a5408 0%, #d3a72c 30%, var(--d-accolademedal-4, #eccb63) 46%, #c09220 66%, #6b4806 100%)',
+  'linear-gradient(145deg, #3d6d96 0%, #8ec6e8 27%, var(--d-accolademedal-5, #cbe6f6) 45%, #6fa9d2 68%, #315a80 100%)',
 ];
 
 /*

@@ -46,14 +46,14 @@ const BADGE_COPY: Record<CallBadge, { label: string; color: string }> = {
 
 /** Same fixed confetti as the frens page (kept local: no import cycle). */
 const CONFETTI = [
-  '#0f8a5f',
-  '#2a5fd0',
-  '#1f8fc4',
-  '#b8339c',
-  '#c08a12',
-  '#0e93ac',
-  '#6b46c8',
-  '#4f9c33',
+  'var(--d-calldetailmodal-1, #0f8a5f)',
+  'var(--d-calldetailmodal-2, #2a5fd0)',
+  'var(--d-calldetailmodal-3, #1f8fc4)',
+  'var(--d-calldetailmodal-4, #b8339c)',
+  'var(--d-calldetailmodal-5, #c08a12)',
+  'var(--d-calldetailmodal-6, #0e93ac)',
+  'var(--d-calldetailmodal-7, #6b46c8)',
+  'var(--d-calldetailmodal-8, #4f9c33)',
 ] as const;
 
 /**
@@ -150,14 +150,14 @@ export function CallDetailModal({ callId, hint, onClose }: Props): React.ReactEl
         style={{
           width: 'min(440px, calc(100vw - 32px))',
           maxWidth: 'none',
-          background: 'var(--panel-bg, #ffffff)',
+          background: 'var(--panel-bg, var(--d-calldetailmodal-9, #ffffff))',
           // The frame: slim accent hairlines top/left/right; the bottom
           // edge is carried by the wordmark band below (thicker).
           border: '1px solid color-mix(in srgb, var(--accent-primary) 55%, var(--hairline))',
           borderBottom: 'none',
           borderRadius: 22,
           boxShadow:
-            'inset 0 1px 0 rgba(255,255,255,0.06), 0 0 44px -18px color-mix(in srgb, var(--accent-primary) 65%, transparent), 0 24px 60px rgba(11, 14, 20, 0.18)',
+            'inset 0 1px 0 rgba(255,255,255,0.06), 0 0 44px -18px color-mix(in srgb, var(--accent-primary) 65%, transparent), 0 24px 60px var(--d-calldetailmodal-10, rgba(11, 14, 20, 0.18))',
         }}
       >
         <DialogTitle className="sr-only">Call card</DialogTitle>
@@ -167,7 +167,7 @@ export function CallDetailModal({ callId, hint, onClose }: Props): React.ReactEl
           aria-hidden
           style={{
             height: 3,
-            background: 'linear-gradient(90deg, #0f8a5f, #1f8fc4, #6b46c8, #b8339c, #c08a12)',
+            background: 'linear-gradient(90deg, var(--d-calldetailmodal-11, #0f8a5f), var(--d-calldetailmodal-12, #1f8fc4), var(--d-calldetailmodal-13, #6b46c8), var(--d-calldetailmodal-14, #b8339c), var(--d-calldetailmodal-15, #c08a12))',
             opacity: 0.85,
           }}
         />
@@ -256,7 +256,7 @@ export function ListenBand(): React.ReactElement {
           width: 64,
           height: 96,
           transform: 'rotate(20deg)',
-          background: 'linear-gradient(90deg, transparent, rgba(11, 14, 20, 0.18), transparent)',
+          background: 'linear-gradient(90deg, transparent, var(--d-calldetailmodal-16, rgba(11, 14, 20, 0.18)), transparent)',
           pointerEvents: 'none',
         }}
       />
@@ -284,7 +284,7 @@ export function ListenBand(): React.ReactElement {
           letterSpacing: '-0.03em',
           color: 'var(--accent-ink)',
           lineHeight: 1,
-          textShadow: '0 1px 0 rgba(11, 14, 20, 0.18)',
+          textShadow: '0 1px 0 var(--d-calldetailmodal-17, rgba(11, 14, 20, 0.18))',
         }}
       >
         listen
@@ -407,7 +407,7 @@ export function CallCardBody({
               fontSize: 14,
               fontWeight: 700,
               color: 'var(--ink-0)',
-              border: '2px solid var(--panel-bg, #ffffff)',
+              border: '2px solid var(--panel-bg, var(--d-calldetailmodal-18, #ffffff))',
               background: call.caller_avatar_data_url
                 ? `center / cover no-repeat url(${JSON.stringify(call.caller_avatar_data_url)})`
                 : 'linear-gradient(135deg, color-mix(in srgb, var(--accent-primary) 55%, #333), color-mix(in srgb, var(--accent-secondary, var(--accent-primary)) 55%, #133))',
@@ -475,7 +475,7 @@ export function CallCardBody({
             border: '1px solid var(--hairline)',
             borderRadius: 999,
             padding: '3px 9px',
-            background: 'rgba(11, 14, 20, 0.03)',
+            background: 'var(--d-calldetailmodal-19, rgba(11, 14, 20, 0.03))',
             whiteSpace: 'nowrap',
           }}
         >
@@ -490,7 +490,7 @@ export function CallCardBody({
           marginTop: 14,
           borderRadius: 14,
           border: `1px solid color-mix(in srgb, ${identity.main} 20%, var(--hairline))`,
-          background: `radial-gradient(140% 70% at 50% 0%, color-mix(in srgb, ${identity.main} 4%, transparent) 0%, transparent 48%), rgba(11, 14, 20, 0.18)`,
+          background: `radial-gradient(140% 70% at 50% 0%, color-mix(in srgb, ${identity.main} 4%, transparent) 0%, transparent 48%), var(--d-calldetailmodal-20, rgba(11, 14, 20, 0.18))`,
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
           overflow: 'hidden',
         }}
@@ -617,7 +617,7 @@ export function CallCardBody({
           tone={call.sold_mc_usd !== null ? BADGE_COPY[call.badge].color : undefined}
         />
         <McStat
-          tick="#c08a12"
+          tick="var(--d-calldetailmodal-21, #c08a12)"
           label="Current MC"
           value={call.current_mc_usd !== null ? compactUsd(call.current_mc_usd, '·') : '·'}
         />
@@ -906,7 +906,7 @@ function CallChart({
           x2={W}
           y1={PAD_Y + (H - 2 * PAD_Y) * f}
           y2={PAD_Y + (H - 2 * PAD_Y) * f}
-          stroke="rgba(11, 14, 20, 0.05)"
+          stroke="var(--d-calldetailmodal-22, rgba(11, 14, 20, 0.05))"
           strokeWidth={1}
         />
       ))}
@@ -1005,7 +1005,7 @@ function CallChart({
         return (
           <g key={`${index}:${side}`}>
             <circle cx={cx} cy={cy} r={10} fill={`color-mix(in srgb, ${fill} 22%, transparent)`} />
-            <circle cx={cx} cy={cy} r={7} fill={fill} stroke="rgba(11, 14, 20, 0.18)" strokeWidth={1.5} />
+            <circle cx={cx} cy={cy} r={7} fill={fill} stroke="var(--d-calldetailmodal-23, rgba(11, 14, 20, 0.18))" strokeWidth={1.5} />
             <text
               x={cx}
               y={cy + 3.2}
@@ -1037,7 +1037,7 @@ function McStat({
   tick?: string;
 }): React.ReactElement {
   return (
-    <div style={{ background: 'var(--panel-bg, #ffffff)', padding: '11px 10px', textAlign: 'center' }}>
+    <div style={{ background: 'var(--panel-bg, var(--d-calldetailmodal-24, #ffffff))', padding: '11px 10px', textAlign: 'center' }}>
       <div
         style={{
           display: 'inline-flex',

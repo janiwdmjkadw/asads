@@ -525,3 +525,62 @@ function migrateLegacy(o: Record<string, unknown>): ChartStyleSettings {
     axisText: paint(strOr(o['axisTextColor'], d.axisText.color), 100),
   };
 }
+
+/*
+ * ── THE STUDIO'S DEFAULTS FOLLOW THE THEME ───────────────────────────
+ *
+ * Everything above is the PAPER default, which is what a canvas wants
+ * when the product is white. On dark it wants what it wanted before the
+ * repaint, and none of it can come from CSS: a `Paint` is parsed here as
+ * `#rrggbb` and handed to lightweight-charts as a string.
+ *
+ * The rule is per value rather than per style: a colour that is still
+ * the shipped default is swapped for the dark one, and a colour the
+ * trader chose in the studio is left exactly as they set it. So the
+ * chart turns over with the theme, and a customised chart does not lose
+ * the customisation when it does.
+ *
+ * Opacities are not touched. The crosshair shipped at 55 on black and 45
+ * on paper, and the smaller of the two reads correctly on both.
+ */
+const DARK_FOR_PAPER: Record<string, string> = {
+  '#ffffff': '#000000',      /* the canvas, when it is painted at all */
+  '#f7f9f8': '#0c0c0d',      /* the top of the gradient */
+  '#0b0e14': '#ffffff',      /* the backdrop pattern, and the crosshair */
+  '#e2e6e8': '#24242a',      /* the ruling */
+  '#0f6d5f': '#22c77e',      /* up */
+  '#b4482e': '#f0567a',      /* down */
+};
+
+function darkPaint(p: Paint): Paint {
+  const swap = DARK_FOR_PAPER[p.color.toLowerCase()];
+  return swap ? { color: swap, opacity: p.opacity } : p;
+}
+
+/** The style as the given half of the theme wants it. */
+export function themedChartStyle(style: ChartStyleSettings, mode: 'light' | 'dark'): ChartStyleSettings {
+  if (mode === 'light') return style;
+  return {
+    ...style,
+    background: {
+      ...style.background,
+      solid: darkPaint(style.background.solid),
+      gradientTop: darkPaint(style.background.gradientTop),
+      gradientBottom: darkPaint(style.background.gradientBottom),
+    },
+    backdrop: { ...style.backdrop, paint: darkPaint(style.backdrop.paint) },
+    grid: { ...style.grid, vert: darkPaint(style.grid.vert), horz: darkPaint(style.grid.horz) },
+    crosshair: { ...style.crosshair, paint: darkPaint(style.crosshair.paint) },
+    candle: {
+      ...style.candle,
+      upBody: darkPaint(style.candle.upBody),
+      downBody: darkPaint(style.candle.downBody),
+      upBorder: darkPaint(style.candle.upBorder),
+      downBorder: darkPaint(style.candle.downBorder),
+      upWick: darkPaint(style.candle.upWick),
+      downWick: darkPaint(style.candle.downWick),
+    },
+    watermark: { ...style.watermark, paint: darkPaint(style.watermark.paint) },
+    axisText: darkPaint(style.axisText),
+  };
+}

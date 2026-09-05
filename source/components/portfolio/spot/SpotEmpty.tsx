@@ -50,7 +50,7 @@ export function SpotEmpty(props: Props): React.ReactElement {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'var(--surface-1, rgba(11, 14, 20, 0.05))',
+          background: 'var(--surface-1, var(--d-spotempty-1, rgba(11, 14, 20, 0.05)))',
           border: '1px solid var(--hairline)',
           color: 'var(--ink-2)',
         }}

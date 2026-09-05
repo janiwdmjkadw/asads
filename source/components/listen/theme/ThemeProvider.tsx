@@ -31,9 +31,13 @@ const STORAGE_KEY = 'listen.trade.theme.v3';
 /**
  * v2 era: the provider auto-persisted the then-default 'zen' for every
  * visitor, so "still on the default" and "explicitly chose zen" are
- * indistinguishable in v2 data. The v3 migration therefore maps a stored
- * 'zen' to the new default (hotpink) and carries everything else over —
- * users who loved parchment re-pick it once from the switcher.
+ * indistinguishable in v2 data. The migration maps it to the current
+ * default and carries everything else over.
+ *
+ * Every id from the five accent era — arctic, cyan, emerald, sunset,
+ * hotpink — resolves the same way: `resolveTheme` falls back to the
+ * default for an unknown id, so a persisted accent lands on light with
+ * no migration table and nothing breaks for somebody who had one.
  */
 const LEGACY_STORAGE_KEY = 'listen.trade.theme.v2';
 const LEGACY_DEFAULT_THEME_ID = 'zen';
@@ -111,6 +115,25 @@ export function ThemeProvider({ children }: Props) {
     persistState(state);
   }, [hydrated, state]);
 
+  /*
+   * THE HALF, PUBLISHED WHERE EVERYTHING CAN READ IT.
+   *
+   * `data-theme` on the document element, not on the shell: a dialog, a
+   * menu or a tooltip renders at the DOCUMENT ROOT, outside every page
+   * and outside `.listen-root` itself, and still has to know whether it
+   * is on paper or on the terminal. Every palette block the repaint
+   * added is scoped `:root[data-theme='light'] …` for exactly that
+   * reason — on dark none of them match and the surfaces fall back to
+   * the tokens they always had.
+   */
+  const mode = resolveTheme(state.themeId).mode;
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = mode;
+    return () => {
+      delete document.documentElement.dataset.theme;
+    };
+  }, [mode]);
+
   const theme = resolveTheme(state.themeId);
   const sans = resolveFont('sans', state.fontSans);
   const mono = resolveFont('mono', state.fontMono);
@@ -157,19 +180,17 @@ export function ThemeProvider({ children }: Props) {
      index doesn't know about. Static class-based tokens still come from
      trade.css; this layer just swaps the user-pickable axes. */
   /*
-   * ── THE PAGE GROUND IS PAPER ──────────────────────────────────────
+   * ── THE PAGE GROUND COMES FROM THE THEME ──────────────────────────
    *
    * This is the style that actually paints the page: it is set INLINE on
    * `.listen-root`, so it beats the rule for the same element in
-   * listen.css no matter what that rule says — which is why every gap
-   * between converted surfaces was still showing black. Each page could
-   * paint itself white and the sheet underneath stayed dark, so any
-   * pixel a page did not cover (a short page's tail, the gutters beside
-   * a centred column, the strip under a footer) came up black.
+   * listen.css no matter what that rule says. That is why it has to be
+   * the thing that switches — every gap between surfaces (a short
+   * page's tail, the gutters beside a centred column, the strip under a
+   * footer) is this pixel, and a page painting itself cannot reach it.
    *
-   * One literal, and the whole product is on paper. Everything ON the
-   * page still themes; the sheet under it does not — which is the same
-   * arrangement it had, with the sheet turned over.
+   * It was a literal black, then a literal white; now it is the theme's
+   * own ground, which is the only version of it that can be swapped.
    */
   const rootStyle: CSSProperties = {
     '--accent-primary': theme.primary,
@@ -182,7 +203,7 @@ export function ThemeProvider({ children }: Props) {
     '--mono': mono.stack,
     '--display': display.stack,
     color: 'var(--ink-1)',
-    background: '#ffffff',
+    background: theme.ground,
   } as CSSProperties;
 
   return (

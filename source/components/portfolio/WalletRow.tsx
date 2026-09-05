@@ -234,9 +234,9 @@ export function WalletRow(props: WalletRowProps): React.ReactElement {
            be, so a selected row and the plate under it were the same
            value and the selection stopped reading. */
         background: props.selected
-          ? 'rgba(11, 14, 20, 0.08)'
+          ? 'var(--d-walletrow-1, rgba(11, 14, 20, 0.08))'
           : hovered
-            ? 'rgba(11, 14, 20, 0.05)'
+            ? 'var(--d-walletrow-2, rgba(11, 14, 20, 0.05))'
             : 'transparent',
         boxShadow: props.selected ? 'inset 2px 0 0 var(--ink-0)' : 'none',
       }}
