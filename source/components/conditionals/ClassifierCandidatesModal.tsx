@@ -51,7 +51,7 @@ export function ClassifierCandidatesModal({
   return (
     <Dialog open={open} onOpenChange={(next) => (!next ? onClose() : undefined)}>
       <DialogContent
-        className="max-h-[min(86vh,760px)] overflow-y-auto rounded-[var(--r-card)] border border-[var(--hairline)] bg-[var(--surface)] p-[22px] text-[var(--ink-1)] shadow-[0_24px_60px_rgba(0,0,0,.5)]"
+        className="max-h-[min(86vh,760px)] overflow-y-auto rounded-[var(--r-card)] border border-[var(--hairline)] bg-[var(--surface)] p-[22px] text-[var(--ink-1)] shadow-[0_24px_60px_rgba(11,14,20,.16)]"
         style={{ width: 'min(640px, calc(100vw - 32px))', maxWidth: 'none' }}
         data-testid="cdl-judge-modal"
       >

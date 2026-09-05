@@ -69,12 +69,12 @@ const LEG_RAIL =
  * literal, so the two agree wherever both exist.
  */
 const VERB_GHOST =
-  'inline-flex h-[20px] flex-none items-center justify-center rounded-[4px] border border-[var(--pcv2-glass-rim,rgba(255,255,255,.10))] bg-[var(--pcv2-glass-fill,rgba(255,255,255,.06))] px-[7px] font-[family-name:var(--font-geist-mono)] text-[11px] font-medium leading-[14px] tracking-[.06em]';
+  'inline-flex h-[20px] flex-none items-center justify-center rounded-[4px] border border-[var(--pcv2-glass-rim,rgba(11, 14, 20, .10))] bg-[var(--pcv2-glass-fill,rgba(11, 14, 20, .06))] px-[7px] font-[family-name:var(--font-geist-sans)] tabular-nums text-[11px] font-medium leading-[14px] tracking-[.06em]';
 
-/** The verbs' locked values (spec §3.5): `#4AC99B` buy · `#EA667D` sell. */
+/** The verbs' locked values (spec §3.5): `#0F6D5F` buy · `#B4482E` sell. */
 const VERB_INK: Readonly<Record<'buy' | 'sell', string>> = {
-  buy: 'var(--pcv2-buy, #4AC99B)',
-  sell: 'var(--pcv2-sell, #EA667D)',
+  buy: 'var(--pcv2-buy, #0F6D5F)',
+  sell: 'var(--pcv2-sell, #B4482E)',
 };
 
 /**

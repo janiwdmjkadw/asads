@@ -161,10 +161,12 @@ export function FeedGroupHeader({
 }): ReactElement {
   return (
     <div
-      // The ground is BLACK, which is what the page is. It took
-      // --surface, hsl(220 12% 3%), and every run band read as a grey
-      // stripe laid across a black page.
-      className="sticky top-0 z-[1] flex items-baseline gap-[12px] bg-black px-[2px] pb-[11px] pt-[10px]"
+      // The ground is the PAGE's, because this band is sticky: rows
+      // scroll under it, so it has to be opaque in whatever the page is.
+      // It was a literal black — the token then was hsl(220 12% 3%), a
+      // blue near black that read as a grey stripe across a true black
+      // page. On paper the token IS the ground, so it names it.
+      className="sticky top-0 z-[1] flex items-baseline gap-[12px] bg-[color:var(--surface,#ffffff)] px-[2px] pb-[11px] pt-[10px]"
       data-testid="cd-feed-head"
     >
       {title === '' ? null : (

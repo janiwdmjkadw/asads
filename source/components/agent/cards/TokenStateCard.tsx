@@ -36,7 +36,12 @@ import type { ChartView, TokenStateView } from '@/lib/agent/view';
 /** Past this, the quote is stale: amber beat + the refresh hint (mock E). */
 export const STALE_AFTER_MS = 60_000;
 
-const MONO = { fontFamily: 'var(--mono)' } as const;
+/* The app's own face, not the mono. Every figure in the chat used
+   to be set in the printout voice the rest of the terminal has
+   dropped — the zero gives it away beside any other number on
+   screen. `tabular-nums` rides along wherever a figure needs its
+   columns to line up, which is what the mono was really for. */
+const MONO = { fontFamily: 'var(--sans)', fontVariantNumeric: 'tabular-nums' } as const;
 
 /** A translucent tint of a token colour — pill washes. */
 function tint(color: string, pct: number): string {

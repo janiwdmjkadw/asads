@@ -60,7 +60,12 @@ const plugins = { cjk, code };
  * or endpoint question, not a rendering one.
  * ------------------------------------------------------------------ */
 
-const MONO = { fontFamily: 'var(--mono)' } as const;
+/* The app's own face, not the mono. Every figure in the chat used
+   to be set in the printout voice the rest of the terminal has
+   dropped — the zero gives it away beside any other number on
+   screen. `tabular-nums` rides along wherever a figure needs its
+   columns to line up, which is what the mono was really for. */
+const MONO = { fontFamily: 'var(--sans)', fontVariantNumeric: 'tabular-nums' } as const;
 const CHIP = 'inline-flex items-center align-baseline whitespace-nowrap rounded-full no-underline';
 const ART = 'h-3.5 w-3.5 shrink-0 rounded-[4px] object-cover';
 /** `$SYMBOL`, exactly what `linkifyAgentText` links (TICKER_RE). */

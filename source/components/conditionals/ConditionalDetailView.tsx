@@ -74,6 +74,7 @@ import type { ProofLine } from './proofs-model';
 import { TransactionsTab } from './TransactionsTab';
 import { hasEnded, stateTone, stateWord } from './views';
 import { SolMark } from '@/components/agent/proposal/v2/marks';
+import { CONDITIONALS_PALETTE } from './palette';
 
 // ───────────────────────── the tabs ─────────────────────────
 
@@ -138,7 +139,7 @@ function TabBar({
   }, [tab]);
 
   return (
-    <div className="mt-[26px] border-b border-[rgba(255,255,255,.07)]" data-testid="cd-tabwrap">
+    <div className="mt-[26px] border-b border-[rgba(11,14,20,.08)]" data-testid="cd-tabwrap">
       <div
         ref={list}
         className="relative flex items-center gap-[18px] @[430.02px]:gap-[30px]"
@@ -475,6 +476,11 @@ export function ConditionalDetailView({
 
   return (
     <article className="@container flex min-w-0 flex-col" data-testid="conditional-detail">
+      {/* The page's palette. It lives in `palette.ts` because this
+          surface renders in three places and only one of them mounts
+          the ledger's sheet — the detail page is its own route, and
+          without this it read the terminal's black tokens. */}
+      <style>{CONDITIONALS_PALETTE}</style>
       <header className="flex min-w-0 flex-col" data-testid="cd-header">
         {/* Narrow first: the actions sit UNDER the title on a phone. Beside
             it they took a fixed 200px out of a 375px screen and the play
@@ -531,7 +537,7 @@ export function ConditionalDetailView({
             // trade page, same as every per-firing chip below.
             <Link
               href={tradeHref(mint)}
-              className="inline-flex flex-none items-center whitespace-nowrap text-[14.5px] font-semibold tracking-[-.008em] text-[var(--ink-0)] transition-colors hover:text-[var(--acc-0,#8ab4ff)]"
+              className="inline-flex flex-none items-center whitespace-nowrap text-[14.5px] font-semibold tracking-[-.008em] text-[var(--ink-0)] transition-colors hover:text-[var(--acc-0,#2a5fd0)]"
               data-testid="cd-token"
               title={mint}
               prefetch={false}
@@ -630,7 +636,7 @@ export function ConditionalDetailView({
        */}
       {life === null ? null : (
         <div className="mt-[20px]" data-testid="cd-track">
-          <div className="relative h-[3px] rounded-[2px] bg-[rgba(255,255,255,.07)]">
+          <div className="relative h-[3px] rounded-[2px] bg-[rgba(11,14,20,.08)]">
             <span
               className={`absolute inset-y-0 left-0 rounded-[2px] ${ended ? 'bg-[var(--ink-3)]' : 'bg-[var(--ink-2)]'}`}
               style={{ width: `${(life * 100).toFixed(2)}%` }}

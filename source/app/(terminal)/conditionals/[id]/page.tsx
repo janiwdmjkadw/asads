@@ -19,8 +19,10 @@ import { ConditionalDetailGate } from '@/components/conditionals/ConditionalDeta
  */
 export default function ConditionalDetailRoute() {
   return (
-    <main className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 py-4">
+    <main data-conditionals-page="" className="w-full">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 py-4">
       <ConditionalDetailGate />
+    </div>
     </main>
   );
 }

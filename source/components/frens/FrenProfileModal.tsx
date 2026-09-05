@@ -424,13 +424,12 @@ export function FrenProfileBody({
               <Eyebrow color={identity}>ALL-TIME PNL</Eyebrow>
               <div
                 style={{
-                  fontFamily: 'var(--mono)',
+                  fontFamily: 'var(--sans)',
                   fontSize: 30,
                   fontWeight: 700,
                   letterSpacing: '-0.02em',
                   fontVariantNumeric: 'tabular-nums',
                   color: pnlAll >= 0 ? 'var(--up)' : 'var(--down)',
-                  textShadow: `0 0 26px color-mix(in srgb, ${pnlAll >= 0 ? 'var(--up)' : 'var(--down)'} 40%, transparent)`,
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
@@ -438,7 +437,11 @@ export function FrenProfileBody({
                   whiteSpace: 'nowrap',
                 }}
               >
-                <Solana style={{ width: 19, height: 19, flexShrink: 0 }} />
+                {/* No token mark. The figure is this fren's all time
+                    PnL and the whole card is denominated in SOL — a
+                    logo in front of it is a second thing to read
+                    before the number, saying what the number already
+                    says. */}
                 {pnlAll >= 0 ? '+' : ''}
                 {sol1(pnlAll)}
               </div>
@@ -468,7 +471,7 @@ export function FrenProfileBody({
               <Eyebrow color={identity}>TOTAL BALANCE</Eyebrow>
               <div
                 style={{
-                  fontFamily: 'var(--mono)',
+                  fontFamily: 'var(--sans)',
                   fontSize: 24,
                   fontWeight: 700,
                   letterSpacing: '-0.02em',
@@ -544,7 +547,7 @@ export function FrenProfileBody({
             {detail.best_call_pct !== null ? (
               <span
                 style={{
-                  fontFamily: 'var(--mono)',
+                  fontFamily: 'var(--sans)',
                   fontSize: 9,
                   fontWeight: 700,
                   color: 'var(--up)',
@@ -631,7 +634,7 @@ function FrenPerfSection({
           {slice ? (
             <span
               style={{
-                fontFamily: 'var(--mono)',
+                fontFamily: 'var(--sans)',
                 fontSize: 12,
                 fontWeight: 700,
                 fontVariantNumeric: 'tabular-nums',
@@ -666,7 +669,7 @@ function FrenPerfSection({
                 aria-pressed={active}
                 className="frenprof-tf"
                 style={{
-                  fontFamily: 'var(--mono)',
+                  fontFamily: 'var(--sans)',
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: '0.08em',
@@ -760,7 +763,7 @@ function FrenPerfChart({ slice }: { slice: SeriesSlice }): React.ReactElement {
     >
       <defs>
         <linearGradient id="frenprof-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={tone} stopOpacity="0.3" />
+          <stop offset="0%" stopColor={tone} stopOpacity="0.08" />
           <stop offset="100%" stopColor={tone} stopOpacity="0" />
         </linearGradient>
       </defs>
@@ -799,7 +802,6 @@ function FrenPerfChart({ slice }: { slice: SeriesSlice }): React.ReactElement {
         style={{
           opacity: drawn ? 1 : 0,
           transition: 'opacity 300ms var(--ease-out, ease-out) 500ms',
-          filter: `drop-shadow(0 0 6px ${tone})`,
         }}
       />
     </svg>
@@ -819,7 +821,7 @@ const cellStyle: CSSProperties = {
 const miniChipStyle: CSSProperties = {
   fontSize: 10,
   color: 'var(--ink-3)',
-  fontFamily: 'var(--mono)',
+  fontFamily: 'var(--sans)',
   fontWeight: 600,
   letterSpacing: '0.05em',
   border: '1px solid var(--hairline)',
@@ -844,7 +846,7 @@ function BalanceLine({ label, value }: { label: string; value: string }): React.
       <span style={{ color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>{label}</span>
       <span
         style={{
-          fontFamily: 'var(--mono)',
+          fontFamily: 'var(--sans)',
           fontVariantNumeric: 'tabular-nums',
           color: 'var(--ink-1)',
           fontWeight: 600,
@@ -924,7 +926,7 @@ function StatChip({
       </div>
       <div
         style={{
-          fontFamily: 'var(--mono)',
+          fontFamily: 'var(--sans)',
           fontSize: 16,
           fontWeight: 700,
           fontVariantNumeric: 'tabular-nums',
@@ -1036,7 +1038,7 @@ function CallLine({
             flexShrink: 0,
           }}
         />
-        <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-3)' }}>{rank}</span>
+        <span style={{ fontFamily: 'var(--sans)', fontSize: 11, color: 'var(--ink-3)' }}>{rank}</span>
       </span>
       <span
         aria-hidden
@@ -1076,10 +1078,10 @@ function CallLine({
       >
         {call.thesis}
       </span>
-      <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)' }}>
+      <span style={{ fontFamily: 'var(--sans)', fontSize: 10, color: 'var(--ink-3)' }}>
         {compactAge(Date.now() - Date.parse(call.created_at))}
       </span>
-      <span style={{ fontFamily: 'var(--mono)', fontSize: 13, fontWeight: 700, color: 'var(--up)', textAlign: 'right', minWidth: 52 }}>
+      <span style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 700, color: 'var(--up)', textAlign: 'right', minWidth: 52 }}>
         {formatCallPct(call.pct)}
       </span>
     </button>
@@ -1090,6 +1092,6 @@ const eyebrowStyle: CSSProperties = {
   fontSize: 9,
   letterSpacing: '0.16em',
   color: 'var(--ink-3)',
-  fontFamily: 'var(--mono)',
+  fontFamily: 'var(--sans)',
   fontWeight: 600,
 };

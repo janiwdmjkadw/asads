@@ -26,11 +26,11 @@ function TriggerLabel({ note, elapsed }: { note: string | null; elapsed: string 
   return (
     <span className="flex min-h-[19px] w-full items-center gap-[7px] text-[11px] leading-tight">
       {isStreaming ? (
-        <Shimmer as="span" className="shrink-0 text-[11px] [font-family:var(--mono)]" duration={1.4}>
+        <Shimmer as="span" className="shrink-0 text-[11px] [font-family:var(--sans)] tabular-nums" duration={1.4}>
           reasoned
         </Shimmer>
       ) : (
-        <span className="shrink-0 text-[var(--ink-2)] [font-family:var(--mono)]">reasoned</span>
+        <span className="shrink-0 text-[var(--ink-2)] [font-family:var(--sans)] tabular-nums">reasoned</span>
       )}
       {note !== null ? (
         <span className="min-w-0 flex-1 truncate text-left text-[11px] text-[var(--ink-3)]">
@@ -40,7 +40,7 @@ function TriggerLabel({ note, elapsed }: { note: string | null; elapsed: string 
         <span className="min-w-0 flex-1" />
       )}
       {elapsed !== null ? (
-        <span className="shrink-0 text-[10px] tabular-nums text-[var(--ink-4)] [font-family:var(--mono)]">
+        <span className="shrink-0 text-[10px] tabular-nums text-[var(--ink-4)] [font-family:var(--sans)] tabular-nums">
           {elapsed}
         </span>
       ) : null}

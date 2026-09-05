@@ -36,7 +36,7 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E"),
     radial-gradient(
       130% 70% at 50% -12%,
-      color-mix(in srgb, var(--accent-primary) 13%, transparent),
+      color-mix(in srgb, var(--accent-primary) 5%, transparent),
       transparent 62%
     ),
     linear-gradient(
@@ -49,11 +49,11 @@
   background-blend-mode: soft-light, normal, normal;
   -webkit-backdrop-filter: blur(26px) saturate(1.45);
   backdrop-filter: blur(26px) saturate(1.45);
-  border-color: rgba(255, 255, 255, 0.11);
+  border-color: rgba(11, 14, 20, 0.12);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.13),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-    0 28px 70px -20px rgba(0, 0, 0, 0.72);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(11, 14, 20, 0.05),
+    0 28px 70px -20px rgba(11, 14, 20, 0.3);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .ag-glass { background: var(--surface-1); }
@@ -69,11 +69,11 @@
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in srgb, var(--accent-primary) 55%, transparent) 22%,
-    color-mix(in srgb, var(--accent-secondary) 45%, transparent) 58%,
+    color-mix(in srgb, var(--accent-primary) 30%, transparent) 22%,
+    color-mix(in srgb, var(--accent-secondary) 24%, transparent) 58%,
     transparent
   );
-  opacity: 0.55;
+  opacity: 0.5;
   z-index: 1;
 }
 
@@ -83,10 +83,10 @@
   position: relative;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.055),
-    rgba(255, 255, 255, 0.012)
+    rgba(11, 14, 20, 0.06),
+    rgba(11, 14, 20, 0.02)
   );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(11, 14, 20, 0.08);
 }
 
 /* The scroll edge: content fades out as it passes beneath the header
@@ -117,10 +117,10 @@
     transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ag-iconbtn:hover {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  background: linear-gradient(160deg, rgba(11, 14, 20, 0.12), rgba(11, 14, 20, 0.04));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 4px 12px -6px rgba(0, 0, 0, 0.7);
+    0 4px 12px -6px rgba(11, 14, 20, 0.18);
 }
 .ag-iconbtn:active { transform: scale(0.94); }
 
@@ -141,13 +141,13 @@
   );
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
   backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(11, 14, 20, 0.14);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.13),
-    0 20px 44px -14px rgba(0, 0, 0, 0.75);
+    0 20px 44px -14px rgba(11, 14, 20, 0.18);
 }
 .ag-pop-row { transition: background 130ms ease; }
-.ag-pop-row:hover { background: rgba(255, 255, 255, 0.04); }
+.ag-pop-row:hover { background: rgba(11, 14, 20, 0.05); }
 /* Keyboard selection is the LOUDER state: it is the row Enter will
    take, so it gets the accent wash and a spine, not just a grey fill. */
 .ag-pop-row[data-active='true'] {
@@ -176,7 +176,7 @@
   transition: background 150ms ease, color 150ms ease, transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ag-action:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 14, 20, 0.07);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .ag-action:active { transform: scale(0.92); }
@@ -189,14 +189,14 @@
   border-radius: 14px 14px 5px 14px;
   background: linear-gradient(
     158deg,
-    color-mix(in srgb, var(--accent-primary) 16%, rgba(255, 255, 255, 0.05)) 0%,
-    color-mix(in srgb, var(--accent-primary) 7%, rgba(255, 255, 255, 0.02)) 52%,
+    color-mix(in srgb, var(--accent-primary) 16%, rgba(11, 14, 20, 0.06)) 0%,
+    color-mix(in srgb, var(--accent-primary) 7%, rgba(11, 14, 20, 0.03)) 52%,
     color-mix(in srgb, var(--accent-secondary) 5%, transparent) 100%
   );
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, rgba(255, 255, 255, 0.07));
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, rgba(11, 14, 20, 0.08));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 8px 20px -14px rgba(0, 0, 0, 0.8);
+    0 8px 20px -14px rgba(11, 14, 20, 0.18);
 }
 
 /* ── the working orb (streaming / posting indicator) ────────────── */
@@ -237,23 +237,23 @@
   position: relative;
   background: linear-gradient(
     165deg,
-    rgba(255, 255, 255, 0.055) 0%,
-    rgba(255, 255, 255, 0.018) 55%,
-    rgba(255, 255, 255, 0.008) 100%
+    rgba(11, 14, 20, 0.06) 0%,
+    rgba(11, 14, 20, 0.018) 55%,
+    rgba(11, 14, 20, 0.008) 100%
   );
-  border-color: rgba(255, 255, 255, 0.085);
+  border-color: rgba(11, 14, 20, 0.085);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 10px 26px -20px rgba(0, 0, 0, 0.8);
+    0 10px 26px -20px rgba(11, 14, 20, 0.18);
   transition: border-color 220ms ease, box-shadow 260ms ease;
 }
 /* While the turn works the card itself is faintly lit from within. */
 .ag-activity[data-running='true'] {
-  border-color: color-mix(in srgb, var(--accent-primary) 26%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--accent-primary) 26%, rgba(11, 14, 20, 0.09));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.13),
     0 0 24px -10px color-mix(in srgb, var(--accent-primary) 55%, transparent),
-    0 10px 26px -20px rgba(0, 0, 0, 0.8);
+    0 10px 26px -20px rgba(11, 14, 20, 0.18);
 }
 
 /* Node rows fade up as the trace grows. */
@@ -298,29 +298,29 @@
 
 /* Key/value payload panel inside a node. */
 .ag-kv {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(165deg, rgba(11, 14, 20, 0.06), rgba(11, 14, 20, 0.02));
+  border: 1px solid rgba(11, 14, 20, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ── composer ───────────────────────────────────────────────────── */
 
 .ag-composer {
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(165deg, rgba(11, 14, 20, 0.07), rgba(11, 14, 20, 0.02));
+  border: 1px solid rgba(11, 14, 20, 0.12);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 8px 22px -18px rgba(0, 0, 0, 0.9);
+    0 8px 22px -18px rgba(11, 14, 20, 0.18);
   transition: border-color 200ms ease, box-shadow 260ms ease;
   /* Positioned: the streaming light rides this box's base edge. */
   position: relative;
 }
 .ag-composer:focus-within {
-  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(255, 255, 255, 0.1));
+  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(11, 14, 20, 0.12));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
     0 0 0 3px color-mix(in srgb, var(--accent-primary) 12%, transparent),
-    0 8px 22px -18px rgba(0, 0, 0, 0.9);
+    0 8px 22px -18px rgba(11, 14, 20, 0.18);
 }
 
 /* Send: liquid accent key. Specular top edge + accent bloom beneath. */
@@ -347,14 +347,14 @@
 }
 .ag-send:active:not(:disabled) { transform: scale(0.93); }
 .ag-send:disabled {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(11, 14, 20, 0.06);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Stop button: the one control that should read "interruptible". */
 .ag-stop {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(160deg, rgba(11, 14, 20, 0.1), rgba(11, 14, 20, 0.03));
+  border: 1px solid rgba(11, 14, 20, 0.16);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   transition: border-color 160ms ease, color 160ms ease, transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -369,8 +369,8 @@
 /* ── suggestion chips ───────────────────────────────────────────── */
 
 .ag-chip {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(160deg, rgba(11, 14, 20, 0.08), rgba(11, 14, 20, 0.03)) !important;
+  border: 1px solid rgba(11, 14, 20, 0.12) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition:
     background 180ms ease,
@@ -384,7 +384,7 @@
 .ag-chip:nth-child(3) { animation-delay: 120ms; }
 .ag-chip:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(255, 255, 255, 0.1)) !important;
+  border-color: color-mix(in srgb, var(--accent-primary) 38%, rgba(11, 14, 20, 0.12)) !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 0 20px -8px color-mix(in srgb, var(--accent-primary) 70%, transparent);
@@ -406,7 +406,7 @@
   gap: var(--ag-gap);
   padding: calc(var(--ag-gap) * 1.5);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.022);
+  background: rgba(11, 14, 20, 0.03);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 .ag-cell {
@@ -529,13 +529,13 @@
 /* ── jump-to-latest ─────────────────────────────────────────────── */
 
 .ag-jump {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+  background: linear-gradient(160deg, rgba(11, 14, 20, 0.14), rgba(11, 14, 20, 0.05)) !important;
   -webkit-backdrop-filter: blur(12px) saturate(1.3);
   backdrop-filter: blur(12px) saturate(1.3);
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(11, 14, 20, 0.16) !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 8px 20px -10px rgba(0, 0, 0, 0.8);
+    0 8px 20px -10px rgba(11, 14, 20, 0.18);
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
 }
 .ag-jump:hover {
@@ -576,8 +576,8 @@
   border-radius: 11px;
   text-align: left;
   cursor: pointer;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.014));
-  border: 1px solid rgba(255, 255, 255, 0.075);
+  background: linear-gradient(160deg, rgba(11, 14, 20, 0.06), rgba(11, 14, 20, 0.014));
+  border: 1px solid rgba(11, 14, 20, 0.075);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
   transition:
     background 200ms ease,
@@ -590,11 +590,11 @@
 .ag-opener:nth-child(3) { animation-delay: 140ms; }
 .ag-opener:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent-primary) 32%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--accent-primary) 32%, rgba(11, 14, 20, 0.09));
   background: linear-gradient(
     160deg,
-    color-mix(in srgb, var(--accent-primary) 11%, rgba(255, 255, 255, 0.05)),
-    rgba(255, 255, 255, 0.02)
+    color-mix(in srgb, var(--accent-primary) 11%, rgba(11, 14, 20, 0.06)),
+    rgba(11, 14, 20, 0.03)
   );
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
@@ -720,30 +720,30 @@
 .ag-soren-window {
   font-family: var(--font-geist-sans);
   border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(11, 14, 20, 0.1);
+  box-shadow: 0 30px 80px rgba(11, 14, 20, 0.22);
   /* The measured backdrop: base + the two farthest-corner radials +
      the 198deg linear (spec 30-creature §3.3). */
-  background-color: #07070a;
+  background-color: #ffffff;
   background-image:
     radial-gradient(
       circle farthest-corner at 74% 50% in oklab,
-      oklab(80% -0.003 -0.03 / 7%) 0%,
-      oklab(80% -0.003 -0.03 / 2%) 22%,
-      oklab(80% -0.003 -0.03 / 0%) 46%
+      oklab(30% -0.003 -0.03 / 4%) 0%,
+      oklab(30% -0.003 -0.03 / 1.5%) 22%,
+      oklab(30% -0.003 -0.03 / 0%) 46%
     ),
     radial-gradient(
       circle farthest-corner at 38% 64% in oklab,
-      oklab(80% -0.003 -0.03 / 9%) 0%,
-      oklab(80% -0.003 -0.03 / 3%) 40%,
-      oklab(80% -0.003 -0.03 / 0%) 70%
+      oklab(30% -0.003 -0.03 / 5%) 0%,
+      oklab(30% -0.003 -0.03 / 2%) 40%,
+      oklab(30% -0.003 -0.03 / 0%) 70%
     ),
     linear-gradient(
       in oklab 198deg,
-      oklab(12% 0.0005 -0.009) 0%,
-      oklab(12.6% 0.001 -0.011) 42%,
-      oklab(15.6% 0.002 -0.014) 56%,
-      oklab(16.4% 0.002 -0.014) 100%
+      oklab(100% 0.0005 -0.001) 0%,
+      oklab(99.2% 0.001 -0.002) 42%,
+      oklab(98.2% 0.002 -0.003) 56%,
+      oklab(97.6% 0.002 -0.003) 100%
     );
 }
 /* Below the floating floor the window is a full-height right sheet;
@@ -772,15 +772,18 @@
   width: 30px;
   height: 30px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(232, 232, 226, 0.72);
+  background: rgba(11, 14, 20, 0.05);
+  border: 1px solid rgba(11, 14, 20, 0.14);
+  /* Full ink. It is the ONLY control in this window's chrome — there is
+     no header, no menu, nothing else to find — so it does not get to be
+     a hint. */
+  color: #0b0e14;
 }
 /* The only control in the chrome answers the pointer — a state swap, not
    a transition, so the window still paints once. */
 .ag-soren-close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e8e8e2;
+  background: rgba(11, 14, 20, 0.12);
+  color: #0b0e14;
 }
 
 /* ── the thread ─────────────────────────────────────────────────── */
@@ -796,30 +799,59 @@
    by piling arbitrary-value utilities onto the JSX. */
 .ag-soren-thread[data-soren] {
   gap: 22px;
-  padding: 0 20px 4px;
+  /* 14px of air at the top. Without it the first turn sits hard against
+     the drag row, and the moment you scroll it sits against the pane's
+     own edge — a bubble with a rule cutting across the top of it. */
+  padding: 14px 20px 4px;
   font-family: var(--font-geist-sans);
 }
 
-/* The user's line — the locked pill. The container marks what YOU
-   said; Soren's side stays bare. */
+/* The user's line — the locked pill, and the ONLY container in the
+   thread: Soren's side is bare, so this is what says which turns are
+   yours. Tightened at the corner nearest the composer, so it points
+   back at where it was typed. */
 .ag-soren-pill {
   max-width: 300px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 9px 15px;
+  border-radius: 16px 16px 5px 16px;
+  background: rgba(11, 14, 20, 0.05);
+  border: 1px solid rgba(11, 14, 20, 0.11);
   font-size: 14px;
   line-height: 20px;
-  color: rgba(232, 232, 226, 0.85);
+  color: #0b0e14;
 }
 
-/* Soren's turn: no bubble, no rim, no fill — prose at the full column
-   width, and the type the parts inherit. */
+/*
+ * ── SOREN'S TURN IS A BUBBLE TOO ─────────────────────────────────────
+ *
+ * It used to be bare on purpose — no bubble, no rim, no fill, prose at
+ * the full column width. That works when the reply is the only lit
+ * thing on a dark pane: the light IS the container. On paper the prose
+ * and the page are the same material, so an answer has no edges, and
+ * two turns running lose the seam between them.
+ *
+ * So it takes a bubble of its own, and a different one: yours is the
+ * tinted pill tightened toward the composer, Soren's is paper with a
+ * rim, tightened at the corner nearest its own side. The reply keeps
+ * the wider measure, because a reply is prose and a question is a line.
+ */
 .ag-soren-reply {
   font-size: 15px;
   line-height: 22px;
-  color: #e8e8e2;
+  color: #0b0e14;
 }
+
+/*
+ * SOREN'S SIDE STAYS BARE — no bubble, no rim, no fill, prose at the
+ * full column width. The container is what marks a turn as YOURS: one
+ * side of the thread is held and the other is simply the window's
+ * content, which is what makes them tellable apart without a name on
+ * either one.
+ *
+ * What it needed on paper was not a container, it was INK: the type was
+ * the ivory this sheet used on charcoal, so the reply was white on
+ * white. That is the whole fix, and the bare side survives it.
+ */
 
 /* ── the composer ───────────────────────────────────────────────── */
 
@@ -828,59 +860,57 @@
   font-family: var(--font-geist-sans);
 }
 
-/* Field-only: no inner dark box, the composer IS the field. Pearl —
-   the 70deg foil band marks a surface you ACT on. Height re-cut
-   2026-08-24 (owner: "the bottom section is way too big"): 60→48 min,
-   act 44→36 — the TYPE is untouched. */
+/* Field-only: no inner box, the composer IS the field. The 70deg foil
+   band still marks a surface you ACT on — over paper it is a whisper of
+   ink rather than of light, because a pale film on white is nothing.
+   Height re-cut 2026-08-24 (owner: "the bottom section is way too
+   big"): 60→48 min, act 44→36 — the TYPE is untouched. */
 .ag-soren-composer {
   min-height: 48px;
   border-radius: 14px;
   padding: 0 7px 0 16px;
-  background-color: #0e0d14c7;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(11, 14, 20, 0.035);
+  border: 1px solid rgba(11, 14, 20, 0.14);
   background-image: linear-gradient(
     70deg,
     transparent 22%,
-    oklab(79.6% 0.105 -0.021 / 12.8%) 40%,
-    oklab(87.4% -0.075 -0.021 / 14.4%) 52%,
-    oklab(92.4% -0.048 0.08 / 11.2%) 64%,
+    oklab(52% 0.105 -0.021 / 5%) 40%,
+    oklab(52% -0.075 -0.021 / 6%) 52%,
+    oklab(52% -0.048 0.08 / 4.5%) 64%,
     transparent 80%
   );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* The field carries no focus ring of its own (`outline-none`), so the
    pearl's rim is what says "you are typing here". */
 .ag-soren-composer:focus-within {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(11, 14, 20, 0.2);
 }
 
 .ag-soren-field {
   font-family: var(--font-geist-sans);
   font-size: 14px;
   line-height: 20px;
-  color: #e8e8e2;
+  color: #0b0e14;
 }
 .ag-soren-field::placeholder {
-  color: rgba(232, 232, 226, 0.62);
+  color: #8a9591;
 }
 
 /* The act material — the submit, and the Stop it becomes mid-run. The
-   SHAPE is the decision; on this charcoal the tint reads holographic. */
+   SHAPE is the decision. The iridescent tint was for a charcoal pill;
+   on paper the key is the product's own ink, which is what every other
+   act in the terminal wears. */
 .ag-soren-act {
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  color: #0a0a0b;
-  background-image: linear-gradient(
-    135deg,
-    oklab(84.7% 0.079 -0.019),
-    oklab(90% -0.035 -0.025) 50%,
-    oklab(92.4% -0.046 0.063)
-  );
+  color: #ffffff;
+  background-image: linear-gradient(135deg, #2b3138, #0b0e14 60%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 5px 14px rgba(205, 227, 165, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 5px 14px rgba(11, 14, 20, 0.22);
 }
 .ag-soren-act:disabled {
   opacity: 0.42;
@@ -888,7 +918,7 @@
 
 .ag-soren-act:focus-visible,
 .ag-soren-close:focus-visible {
-  outline: 2px solid rgba(232, 232, 226, 0.55);
+  outline: 2px solid rgba(11, 14, 20, 0.4);
   outline-offset: 2px;
 }
 
@@ -935,7 +965,12 @@
 .ag-soren-whisper {
   position: relative;
   display: inline-block;
-  font-family: var(--font-geist-mono);
+  /* The app sans with tabular figures, which is what every other
+     number in the terminal is set in. The mono was the printout voice
+     this product dropped, and its zero gives it away beside any other
+     figure on screen. */
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
   line-height: 14px;
   letter-spacing: 0.02em;
@@ -1076,7 +1111,7 @@
   height: 3px;
   margin-top: -1.5px;
   border-radius: 999px;
-  background: var(--pcv2-ivory, #e8e8e2);
+  background: var(--pcv2-ivory, #0b0e14);
   animation: ag-soren-pellet-fly 220ms ease-out both;
 }
 
@@ -1150,18 +1185,23 @@
   height: 20px;
   padding: 0 5px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: var(--font-geist-mono);
+  background: rgba(11, 14, 20, 0.07);
+  border: 1px solid rgba(11, 14, 20, 0.12);
+  /* The app sans with tabular figures, which is what every other
+     number in the terminal is set in. The mono was the printout voice
+     this product dropped, and its zero gives it away beside any other
+     figure on screen. */
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 13px;
   line-height: 18px;
   font-variant-numeric: tabular-nums;
-  color: #e8e8e2;
+  color: #0b0e14;
   vertical-align: middle;
   white-space: pre;
 }
-.ag-atom-box[data-tone='green'] { color: #7ed6a6; }
-.ag-atom-box[data-tone='red'] { color: #f08a9a; }
+.ag-atom-box[data-tone='green'] { color: #0f6d5f; }
+.ag-atom-box[data-tone='red'] { color: #b4482e; }
 .ag-atom-u { font-size: 0.8em; color: var(--ink-2); }
 .ag-atom-u[data-u='$'] { margin-right: 0.05em; }
 .ag-atom-u[data-u='%'] { margin-left: 0.035em; }
@@ -1179,16 +1219,16 @@
   height: 20px;
   padding: 0 6px 0 3px;
   border-radius: 3px;
-  border: 1.5px solid rgba(232, 232, 226, 0.3);
+  border: 1.5px solid rgba(11, 14, 20, 0.3);
   background: none;
   text-decoration: none;
   vertical-align: middle;
   transition: border-color 0.14s ease;
 }
-.ag-ttag:hover { border-color: rgba(232, 232, 226, 0.6); }
+.ag-ttag:hover { border-color: rgba(11, 14, 20, 0.6); }
 .ag-ttag:focus-visible,
 .ag-wtag:focus-visible {
-  outline: 1.5px solid rgba(232, 232, 226, 0.6);
+  outline: 1.5px solid rgba(11, 14, 20, 0.6);
   outline-offset: 1px;
 }
 .ag-ttag-art {
@@ -1202,18 +1242,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  font-family: var(--font-geist-mono);
+  background: rgba(11, 14, 20, 0.12);
+  /* The app sans with tabular figures, which is what every other
+     number in the terminal is set in. The mono was the printout voice
+     this product dropped, and its zero gives it away beside any other
+     figure on screen. */
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 8px;
   line-height: 1;
-  color: #e8e8e2;
+  color: #0b0e14;
 }
 .ag-ttag-sym {
   font-family: var(--font-geist-sans);
   font-size: 13px;
   line-height: 16px;
   font-weight: 600;
-  color: #e8e8e2;
+  color: #0b0e14;
 }
 
 /* W04 — identity for a person; same rim, mono short address. */
@@ -1224,17 +1269,136 @@
   height: 20px;
   padding: 0 6px 0 4px;
   border-radius: 3px;
-  border: 1.5px solid rgba(232, 232, 226, 0.3);
+  border: 1.5px solid rgba(11, 14, 20, 0.3);
   text-decoration: none;
   vertical-align: middle;
   transition: border-color 0.14s ease;
 }
-.ag-wtag:hover { border-color: rgba(232, 232, 226, 0.6); }
+.ag-wtag:hover { border-color: rgba(11, 14, 20, 0.6); }
 .ag-wtag-glyph { flex: none; }
 .ag-wtag-addr {
-  font-family: var(--font-geist-mono);
+  /* The app sans with tabular figures, which is what every other
+     number in the terminal is set in. The mono was the printout voice
+     this product dropped, and its zero gives it away beside any other
+     figure on screen. */
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 12.5px;
   line-height: 16px;
-  color: #e8e8e2;
+  color: #0b0e14;
   white-space: pre;
+}
+
+
+/*
+ * ── THE CHAT'S PALETTE ───────────────────────────────────────────────
+ *
+ * The window is a pane that FLOATS: it renders over whatever page you
+ * opened it from and it portals out of that page's tree, so no palette
+ * declared on a page can reach it. It carries its own.
+ *
+ * And it states a base `color` as well as the tokens. Without that the
+ * pane came up paper with the terminal's near white type on it — every
+ * rule that names `var(--ink-1)` was already correct, and every rule
+ * that names nothing kept inheriting the shell.
+ *
+ * This becomes the light half of the theme when the toggle is built.
+ */
+.ag-glass,
+.ag-soren-window,
+.ag-pop,
+.ag-pane,
+[data-agent-chat='page'],
+[data-agent-surface] {
+  --surface: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f7f9f8;
+  --surface-3: #f4f7f6;
+  --input-bg: rgba(11, 14, 20, 0.035);
+  --input-border: rgba(11, 14, 20, 0.1);
+  --chip-bg: rgba(11, 14, 20, 0.04);
+  --chip-border: rgba(11, 14, 20, 0.1);
+  --hairline: rgba(11, 14, 20, 0.09);
+  --hairline-2: rgba(11, 14, 20, 0.16);
+  --ink-0: #0b0e14;
+  --ink-1: #2b3138;
+  --ink-2: #5b6570;
+  --ink-3: #8a9591;
+  --ink-4: #d6dbd9;
+  --up: #0f6d5f;
+  --down: #b4482e;
+  --hold: #c08a12;
+  --accent-primary: #0b0e14;
+  --accent-secondary: #0f6d5f;
+  --accent-soft: rgba(11, 14, 20, 0.06);
+  --accent-wash: rgba(11, 14, 20, 0.05);
+  --accent-glow: rgba(11, 14, 20, 0.18);
+  --accent: #0b0e14;
+  --accent-ink: #ffffff;
+
+  /*
+   * THE FLAME ALIASES TOO. They are declared as `var(--accent-primary)`
+   * in the base stylesheet, which is evaluated where that variable is
+   * still the product's old pale sky — so re-pointing the accent here
+   * does not move them, and every control that reads a flame token kept
+   * pulling #bae6fd onto a white pane. The token letter square was the
+   * visible one: a cyan B where the artwork failed to load.
+   */
+  --flame: #0b0e14;
+  --flame-soft: rgba(11, 14, 20, 0.1);
+  --flame-glow: rgba(11, 14, 20, 0.18);
+  --flame-wash: rgba(11, 14, 20, 0.05);
+
+  color: var(--ink-1);
+}
+
+/* The full page chat is a page, so it also paints — the window is a
+   pane that floats over something, and this is the something. */
+[data-agent-chat='page'] {
+  background: var(--surface);
+}
+
+
+/*
+ * ── THE CHAT ON A PHONE ──────────────────────────────────────────────
+ *
+ * Below 560 the sheet is the whole width, so the two things that make it
+ * a floating panel come off: the left border (there is nothing beside it
+ * to be separated from) and the corner radius (it is already square from
+ * `data-mode='sheet'`).
+ *
+ * The drag row goes with them. It is 66px of deliberately empty space so
+ * the headerless window can be picked up and moved — and a sheet cannot
+ * be moved, so on a phone it is 66px of conversation pushed off the top.
+ * It keeps enough height to clear the ×.
+ */
+@media (max-width: 560px) {
+  .ag-soren-window[data-mode='sheet'] {
+    border-left: 0;
+    box-shadow: none;
+  }
+
+  .ag-soren-window[data-mode='sheet'] .ag-soren-drag {
+    flex-basis: 46px;
+  }
+
+  .ag-soren-window[data-mode='sheet'] .ag-soren-close {
+    top: 10px;
+    right: 12px;
+  }
+
+  /* The measure comes in with the screen: 20px of side padding on a
+     375px phone leaves a bubble 40px narrower than it needs to be. */
+  .ag-soren-thread[data-soren] {
+    gap: 18px;
+    padding: 10px 14px 4px;
+  }
+
+  .ag-soren-pill {
+    max-width: 84%;
+  }
+
+  .ag-soren-composer-wrap {
+    padding: 0 14px 12px;
+  }
 }

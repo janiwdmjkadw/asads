@@ -1,36 +1,88 @@
 'use client';
 
 /*
- * `/whatever` — the design route.
+ * `/whatever` — the design route. MOCKUPS ONLY.
  *
- * The shipped `TerminalTopNav` and `AppSubHeader` on paper, and the
- * burger the bar opens. Both
- * are the real components with no override from this file: the glass
- * drawer you are looking at is `nav-drawer.css` itself, so what is here
- * is what the app has.
+ * Currently showing: the two cards themselves, the SHIPPED components
+ * with nothing overridden from this file — `FrenProfileModal` and
+ * `CallDetailModal`, opened on the sandbox fixtures. What you are
+ * looking at is what the app renders.
  *
- * The burger only exists below 800px, so open this narrow to reach it.
+ * They are both `Dialog`s, so they centre themselves on the viewport
+ * and cannot sit side by side. The two words at the top swap between
+ * them.
  */
-import { DiscoverFeedProvider } from '@/components/discover/DiscoverFeedProvider';
-import { WalletBalanceProvider } from '@/components/listen/WalletBalanceProvider';
-import { AppSubHeader } from '@/components/listen/AppSubHeader';
-import { TerminalTopNav } from '@/components/listen/TerminalTopNav';
-import { AgentWalletSetupProvider } from '@/lib/agent-wallet-setup-context';
-import { OnboardingProvider } from '@/lib/onboarding-context';
+
+import { useState } from 'react';
+
+import { CallDetailModal } from '@/components/frens/CallDetailModal';
+import { FrenProfileModal } from '@/components/frens/FrenProfileModal';
+
+/* The board's first fren and their best call, from `sandbox/mockData`. */
+const FREN_ID = 'fren_1000';
+const CALL_ID = 'call_2000';
+
+type Which = 'fren' | 'call';
 
 export function ArtSheets() {
+  const [which, setWhich] = useState<Which>('fren');
+
   return (
-    <DiscoverFeedProvider>
-      <WalletBalanceProvider>
-        <OnboardingProvider>
-          <AgentWalletSetupProvider>
-            <div className="flex min-h-screen flex-col bg-white">
-              <TerminalTopNav />
-              <AppSubHeader />
-            </div>
-          </AgentWalletSetupProvider>
-        </OnboardingProvider>
-      </WalletBalanceProvider>
-    </DiscoverFeedProvider>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#f4f7f6',
+        fontFamily: 'var(--sans)',
+        color: '#2b3138',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 18,
+          padding: '16px clamp(16px, 4vw, 44px)',
+          borderBottom: '1px solid rgba(11, 14, 20, 0.09)',
+          background: '#ffffff',
+        }}
+      >
+        {(
+          [
+            ['fren', 'Fren card'],
+            ['call', 'Callout card'],
+          ] as ReadonlyArray<readonly [Which, string]>
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setWhich(id)}
+            style={{
+              padding: 0,
+              border: 0,
+              background: 'none',
+              cursor: 'pointer',
+              fontFamily: 'var(--sans)',
+              fontSize: 15,
+              fontWeight: which === id ? 600 : 500,
+              letterSpacing: '-0.005em',
+              color: which === id ? '#0b0e14' : '#8a9591',
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {which === 'fren' ? (
+        <FrenProfileModal
+          key="fren"
+          userId={FREN_ID}
+          onClose={() => undefined}
+          onOpenCall={() => undefined}
+        />
+      ) : (
+        <CallDetailModal key="call" callId={CALL_ID} hint={null} onClose={() => undefined} />
+      )}
+    </div>
   );
 }

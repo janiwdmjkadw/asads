@@ -18,7 +18,7 @@ import type { ProofLine } from './proofs-model';
 const CLAIM = 'text-[11.5px] leading-[1.4] text-[var(--ink-2)]';
 const FACT = 'text-[12.5px] leading-[1.45] text-[var(--ink-1)]';
 const LINK =
-  'text-[var(--acc-0,#8ab4ff)] underline decoration-[rgba(138,180,255,.35)] underline-offset-[3px] ' +
+  'text-[var(--acc-0,#2a5fd0)] underline decoration-[rgba(42,95,208,.35)] underline-offset-[3px] ' +
   'transition-colors hover:text-[var(--ink-0)]';
 
 export function ProofList({ lines, testid }: { readonly lines: readonly ProofLine[]; readonly testid?: string }): ReactElement | null {

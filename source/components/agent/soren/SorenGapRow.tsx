@@ -101,7 +101,11 @@ export function SorenGapRow({
         ref={creature}
         size={GAP_OWL_SIZE}
         state="thinking"
-        bodyColor="#DCD7E6"
+        /* #C2BCD2, not #DCD7E6. The pale lilac was a light FORM on a
+           near black pane; over paper it is a grey smudge that reads as
+           a spinner rather than as him. One step deeper is the same
+           creature with an edge against white. */
+        bodyColor="#C2BCD2"
         eyeColor="#0B0B0D"
         className="ag-soren-gap-owl"
         onFormSettled={onFormSettled}

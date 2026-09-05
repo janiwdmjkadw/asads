@@ -90,7 +90,7 @@ export function CancelConfirm({
         <span
           role="dialog"
           aria-label={CANCEL_ASK}
-          className={`absolute top-full z-[20] mt-[6px] flex w-[268px] flex-col gap-[10px] rounded-[12px] border border-[var(--hairline-2)] bg-[var(--surface-2)] p-[12px] text-left shadow-[0_18px_40px_rgba(0,0,0,.45)] ${
+          className={`absolute top-full z-[20] mt-[6px] flex w-[268px] flex-col gap-[10px] rounded-[12px] border border-[var(--hairline-2)] bg-[var(--surface-2)] p-[12px] text-left shadow-[0_18px_40px_rgba(11,14,20,.16)] ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
           data-testid="cd-cancel-ask"

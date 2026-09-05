@@ -286,7 +286,7 @@ const RESIDUAL_CSS = `
    The three step-downs under it are descendant overrides: what the <b>
    should be GIVEN WHERE IT SITS, which the <b> itself cannot state. */
 .pcv2 b{
-  font-family:var(--mono);font-weight:500;font-size:.98em;
+  font-family:var(--sans);font-variant-numeric:tabular-nums;font-weight:500;font-size:.98em;
   font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
   color:var(--ink-0);letter-spacing:-.014em;
 }
@@ -304,10 +304,10 @@ const RESIDUAL_CSS = `
    say — and the margins are the same rhythm, so they stay together. */
 .pcv2 .pcv2-box-b > .pcv2-row + .pcv2-row,
 .pcv2 .pcv2-box-b > .pcv2-box + .pcv2-row,
-.pcv2 .pcv2-bare > .pcv2-row + .pcv2-row{border-top:1px solid rgba(255,255,255,.06)}
+.pcv2 .pcv2-bare > .pcv2-row + .pcv2-row{border-top:1px solid rgba(11, 14, 20, .06)}
 .pcv2 .pcv2-box-b > * + .pcv2-box{position:relative}
 .pcv2 .pcv2-box-b > * + .pcv2-box::before{
-  content:"";position:absolute;left:-1px;right:-1px;top:-7px;height:1px;background:rgba(255,255,255,.06);
+  content:"";position:absolute;left:-1px;right:-1px;top:-7px;height:1px;background:rgba(11, 14, 20, .06);
 }
 .pcv2 .pcv2-box-b > .pcv2-box{margin:7px 0 6px}
 .pcv2 .pcv2-box-b > .pcv2-box + .pcv2-box{margin-top:13px}
@@ -375,7 +375,7 @@ const TITLE =
  *  Its colour and its measure are NOT in here: the two differ, and two base
  *  utilities for one property have no defined order between them. */
 const CHIP =
-  'inline-flex flex-none items-center whitespace-nowrap rounded-[6px] border font-[family-name:var(--mono)] uppercase leading-none';
+  'inline-flex flex-none items-center whitespace-nowrap rounded-[6px] border font-[family-name:var(--sans)] tabular-nums uppercase leading-none';
 
 const STATE =
   `pcv2-state ${CHIP} ml-auto self-center border-[var(--hairline-2)] text-[var(--ink-1)] ` +
@@ -409,7 +409,7 @@ const PANEL =
   '@[344.02px]:pt-[13px] @[344.02px]:pr-[16px] @[344.02px]:pb-[15px] @[344.02px]:pl-[18px]';
 const PANEL_H = 'pcv2-panel-h mb-[11px] flex items-center justify-between gap-[12px]';
 const LEG_TAG =
-  'pcv2-leg-tag font-[family-name:var(--mono)] text-[11px] uppercase leading-none tracking-[.13em] text-[var(--pcv2-rail)]';
+  'pcv2-leg-tag font-[family-name:var(--sans)] tabular-nums text-[11px] uppercase leading-none tracking-[.13em] text-[var(--pcv2-rail)]';
 
 /**
  * 50px hanging label column · 14px gutter · the value track — until 420px,
@@ -474,7 +474,7 @@ const VERB_SELL = 'pcv2-verb--sell bg-[var(--down)]';
 const LOCKUP_TYPE = 'text-[14px] @[344.02px]:text-[15px]';
 
 const AMT =
-  `pcv2-amt ${DIM} flex-none whitespace-nowrap font-[family-name:var(--mono)] tabular-nums ` +
+  `pcv2-amt ${DIM} flex-none whitespace-nowrap font-[family-name:var(--sans)] tabular-nums ` +
   `[font-feature-settings:'tnum'_1] tracking-[-.014em] text-[var(--ink-0)] ${LOCKUP_TYPE}`;
 /**
  * ONE TEXT SIZE (design-28 §1 Actions, owner amendment 2026-08-12). The
@@ -501,7 +501,7 @@ const CHAIN_CAP = 'pcv2-chain-cap py-[6px] text-[10px] uppercase leading-none tr
 
 // ── details ──
 
-const DET = 'pcv2-det group/det border-t border-[var(--hairline)] bg-[rgba(255,255,255,.012)]';
+const DET = 'pcv2-det group/det border-t border-[var(--hairline)] bg-[rgba(11, 14, 20, .012)]';
 /** A summary is not a row: below 420px its chips are allowed a second line. */
 const DET_SUM =
   `pcv2-det-sum group/sum ${PAD} flex cursor-pointer list-none items-center gap-[10px] py-[13px] ` +
@@ -524,16 +524,16 @@ const DET_K = 'pcv2-det-k mt-[5px] text-[var(--ink-3)] @[344.02px]:mt-0';
 const DET_V = 'pcv2-det-v break-words text-[var(--ink-1)]';
 const FLAG =
   'pcv2-flag ml-[7px] rounded-[4px] border border-[color-mix(in_srgb,var(--hold)_40%,transparent)] px-[5px] py-[2px] ' +
-  'align-[.08em] font-[family-name:var(--mono)] text-[9px] uppercase leading-none tracking-[.11em] text-[var(--hold)]';
+  'align-[.08em] font-[family-name:var(--sans)] tabular-nums text-[9px] uppercase leading-none tracking-[.11em] text-[var(--hold)]';
 const DET_NOTE = 'pcv2-det-note mt-[2px] block text-[11px] text-[var(--ink-3)]';
 
 // ── decision footer ──
 
-const FT = `pcv2-ft ${PAD} border-t border-[var(--hairline)] bg-[rgba(255,255,255,.012)] pt-[13px] pb-[14px]`;
+const FT = `pcv2-ft ${PAD} border-t border-[var(--hairline)] bg-[rgba(11, 14, 20, .012)] pt-[13px] pb-[14px]`;
 const FT_ROW = 'pcv2-ft-row flex flex-wrap items-center justify-between gap-x-[16px] gap-y-[10px]';
 const CD = 'pcv2-cd flex min-w-0 flex-initial items-baseline gap-[9px] whitespace-nowrap';
 const CD_V =
-  "pcv2-cd-v font-[family-name:var(--mono)] tabular-nums [font-feature-settings:'tnum'_1] text-[15px] " +
+  "pcv2-cd-v font-[family-name:var(--sans)] tabular-nums [font-feature-settings:'tnum'_1] text-[15px] " +
   'leading-[1.1] tracking-[-.014em] text-[var(--ink-0)]';
 const BTNS = 'pcv2-btns flex min-w-0 flex-[1_0_auto] items-center justify-end gap-[8px] @[420.02px]:gap-[10px]';
 /** Step-up's own padding: it carries a lock glyph, so it is a flex row and

@@ -137,7 +137,7 @@ export function PlanActions({
 
       {open ? (
         <div
-          className="absolute right-0 top-full z-[20] mt-[6px] w-[268px] rounded-[12px] border border-[var(--hairline-2)] bg-[var(--surface-2)] p-[8px] shadow-[0_18px_40px_rgba(0,0,0,.45)]"
+          className="absolute right-0 top-full z-[20] mt-[6px] w-[268px] rounded-[12px] border border-[var(--hairline-2)] bg-[var(--surface-2)] p-[8px] shadow-[0_18px_40px_rgba(11,14,20,.16)]"
           data-testid="cd-menu"
           role="menu"
         >

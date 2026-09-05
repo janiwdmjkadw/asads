@@ -157,18 +157,19 @@ export function ThemeProvider({ children }: Props) {
      index doesn't know about. Static class-based tokens still come from
      trade.css; this layer just swaps the user-pickable axes. */
   /*
-   * ── THE PAGE GROUND IS BLACK ──────────────────────────────────────
+   * ── THE PAGE GROUND IS PAPER ──────────────────────────────────────
    *
    * This is the style that actually paints the page: it is set INLINE on
    * `.listen-root`, so it beats the rule for the same element in
-   * listen.css no matter what that rule says. It used to resolve to
-   * `var(--surface)` — hsl(220 12% 3%), a blue-cast near black that each
-   * theme re-tinted — with two branches above it for themes that carried
-   * a background image.
+   * listen.css no matter what that rule says — which is why every gap
+   * between converted surfaces was still showing black. Each page could
+   * paint itself white and the sheet underneath stayed dark, so any
+   * pixel a page did not cover (a short page's tail, the gutters beside
+   * a centred column, the strip under a footer) came up black.
    *
-   * No theme ships an image any more and the ground does not follow the
-   * accent, so it is one literal. Everything ON the page still themes;
-   * the sheet under it does not.
+   * One literal, and the whole product is on paper. Everything ON the
+   * page still themes; the sheet under it does not — which is the same
+   * arrangement it had, with the sheet turned over.
    */
   const rootStyle: CSSProperties = {
     '--accent-primary': theme.primary,
@@ -181,7 +182,7 @@ export function ThemeProvider({ children }: Props) {
     '--mono': mono.stack,
     '--display': display.stack,
     color: 'var(--ink-1)',
-    background: '#000',
+    background: '#ffffff',
   } as CSSProperties;
 
   return (

@@ -121,7 +121,7 @@ function useTimings(nodes: readonly ActivityNode[], running: boolean) {
  * rows
  * ---------------------------------------------------------------- */
 
-const duration = 'shrink-0 text-[10px] tabular-nums text-[var(--ink-4)] [font-family:var(--mono)]';
+const duration = 'shrink-0 text-[10px] tabular-nums text-[var(--ink-4)] [font-family:var(--sans)] tabular-nums';
 
 /* Every variant sets its own background: two arbitrary `bg-[…]` classes
    on one element resolve by stylesheet order, not class order. */
@@ -166,7 +166,7 @@ function KeyValueGrid({ node }: { node: ActivityNode }) {
               <span className="block text-[9px] uppercase tracking-[0.08em] text-[var(--ink-3)]">
                 {field.label}
               </span>
-              <span className="block truncate text-[12px] tabular-nums text-[var(--ink-0)] [font-family:var(--mono)]">
+              <span className="block truncate text-[12px] tabular-nums text-[var(--ink-0)] [font-family:var(--sans)] tabular-nums">
                 {field.value}
               </span>
             </span>
@@ -180,7 +180,7 @@ function KeyValueGrid({ node }: { node: ActivityNode }) {
           </summary>
           <pre
             className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-all rounded border border-[var(--hairline)] bg-[var(--surface-1)] p-2 text-[10.5px] leading-relaxed text-[var(--ink-2)]"
-            style={{ fontFamily: 'var(--mono)' }}
+            style={{ fontFamily: 'var(--sans)' }}
           >
             {node.raw}
           </pre>
@@ -208,12 +208,12 @@ function ToolNode({
       <NodeDot node={node} />
       <div className="flex min-h-[19px] items-center gap-[7px] text-[11px] leading-tight">
         {node.streaming ? (
-          <Shimmer as="span" className="shrink-0 text-[11px] [font-family:var(--mono)]" duration={1.4}>
+          <Shimmer as="span" className="shrink-0 text-[11px] [font-family:var(--sans)] tabular-nums" duration={1.4}>
             {node.name}
           </Shimmer>
         ) : (
           <span
-            className={`shrink-0 [font-family:var(--mono)] ${failed ? 'text-[var(--down)]' : 'text-[var(--ink-2)]'}`}
+            className={`shrink-0 [font-family:var(--sans)] tabular-nums ${failed ? 'text-[var(--down)]' : 'text-[var(--ink-2)]'}`}
           >
             {node.name}
           </span>
@@ -235,7 +235,7 @@ function ToolNode({
         {elapsed !== null ? <span className={duration}>{elapsed}</span> : null}
       </div>
       {node.digest !== null ? (
-        <div className="truncate pb-[3px] text-[11px] tabular-nums text-[var(--ink-1)] [font-family:var(--mono)]">
+        <div className="truncate pb-[3px] text-[11px] tabular-nums text-[var(--ink-1)] [font-family:var(--sans)] tabular-nums">
           {node.digest}
         </div>
       ) : null}
@@ -289,7 +289,7 @@ export function AgentActivityGroup({
         aria-expanded={open}
         aria-controls={railId}
         onClick={() => setManual(!open)}
-        className="flex w-full items-center gap-2 px-[11px] py-2 text-left text-[11px] leading-tight transition-colors hover:bg-[rgba(255,255,255,0.02)]"
+        className="flex w-full items-center gap-2 px-[11px] py-2 text-left text-[11px] leading-tight transition-colors hover:bg-[rgba(11, 14, 20, 0.03)]"
       >
         {group.running ? (
           <AgentSnake />

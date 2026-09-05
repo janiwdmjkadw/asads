@@ -40,7 +40,7 @@ const TONE_INK: Readonly<Record<PositionRow['tone'], string>> = {
   watch: 'text-[var(--flame)]',
   hold: 'text-[var(--hold)]',
   past: 'text-[var(--ink-2)]',
-  fail: 'text-[var(--down,#f87171)]',
+  fail: 'text-[var(--down,#b4482e)]',
 };
 
 function Chevron({ open }: { readonly open: boolean }): ReactElement {
@@ -75,7 +75,7 @@ function PositionItem({ row, proofs }: { readonly row: PositionRow; readonly pro
           {row.statusWord}
         </span>
         <span
-          className={`${FIGURE} ${row.pnlUp === null ? 'text-[var(--ink-2)]' : row.pnlUp ? 'text-[var(--up,#4ade80)]' : 'text-[var(--down,#f87171)]'}`}
+          className={`${FIGURE} ${row.pnlUp === null ? 'text-[var(--ink-2)]' : row.pnlUp ? 'text-[var(--up,#0f6d5f)]' : 'text-[var(--down,#b4482e)]'}`}
           data-testid="cd-position-pnl"
         >
           {row.pnlText ?? '—'}
@@ -131,7 +131,7 @@ function PositionItem({ row, proofs }: { readonly row: PositionRow; readonly pro
                           href={`https://solscan.io/tx/${row.signature}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[var(--acc-0,#8ab4ff)] underline decoration-[rgba(138,180,255,.35)] underline-offset-[3px]"
+                          className="text-[var(--acc-0,#2a5fd0)] underline decoration-[rgba(42,95,208,.35)] underline-offset-[3px]"
                         >
                           tx
                         </a>

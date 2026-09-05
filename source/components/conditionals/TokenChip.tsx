@@ -25,7 +25,7 @@ export function TokenChip({ mint, symbol, testid }: { readonly mint: string; rea
   return (
     <Link
       href={tradeHref(mint)}
-      className="inline-block whitespace-nowrap rounded-[4px] bg-[rgba(255,255,255,.05)] px-[5.5px] py-[2px] align-[.05em] text-[10px] leading-[1.1] text-[var(--ink-1)] transition-colors hover:bg-[rgba(255,255,255,.12)] hover:text-[var(--ink-0)]"
+      className="inline-block whitespace-nowrap rounded-[4px] bg-[rgba(11,14,20,.06)] px-[5.5px] py-[2px] align-[.05em] text-[10px] leading-[1.1] text-[var(--ink-1)] transition-colors hover:bg-[rgba(11,14,20,.14)] hover:text-[var(--ink-0)]"
       title={mint}
       data-testid={testid ?? 'token-chip'}
       prefetch={false}

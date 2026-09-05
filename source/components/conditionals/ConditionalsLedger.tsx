@@ -36,8 +36,11 @@ import {
   routeConditionals,
   type LedgerView,
 } from './views';
+import { CONDITIONALS_PALETTE } from './palette';
 
 const SHEET = `
+${CONDITIONALS_PALETTE}
+
 /*
  * A row is a link, and it has to LOOK like one under the cursor. The
  * hover is drawn in the page's own materials rather than a fill: the row
@@ -47,7 +50,7 @@ const SHEET = `
  */
 .cdl-row{
   display:block;position:relative;padding:19px 14px 21px;margin:0 -14px;
-  border-top:1px solid rgba(255,255,255,.05);
+  border-top:1px solid rgba(11,14,20,.06);
 }
 .cdl-row:first-of-type{border-top:0;padding-top:4px}
 .cdl-row::before{
@@ -59,7 +62,7 @@ const SHEET = `
 .cdl-say,.cdl-track,.cdl-sub{transition:color .14s var(--ease),background-color .14s var(--ease)}
 .cdl-row:hover .cdl-say,.cdl-row:focus-visible .cdl-say{color:var(--ink-0)}
 .cdl-row:hover .cdl-sub,.cdl-row:focus-visible .cdl-sub{color:var(--ink-2)}
-.cdl-row:hover .cdl-track,.cdl-row:focus-visible .cdl-track{background:rgba(255,255,255,.13)}
+.cdl-row:hover .cdl-track,.cdl-row:focus-visible .cdl-track{background:rgba(11,14,20,.14)}
 .cdl-row:hover .cdl-run,.cdl-row:focus-visible .cdl-run{background:var(--ink-1)}
 /* The chevron rides the END OF THE HEAD LINE and keeps its 11px whether
    or not it is showing: an element that appears on hover and takes width
@@ -116,19 +119,22 @@ const SHEET = `
    sits UNDER ITS OWN VALUE inside the readings column. Full width across
    the sentence, which is where it used to be, is how an underline is
    drawn, and it read as one. */
-.cdl-track{display:block;position:relative;height:3px;margin-top:2px;border-radius:2px;background:rgba(255,255,255,.07)}
+.cdl-track{display:block;position:relative;height:3px;margin-top:2px;border-radius:2px;background:rgba(11,14,20,.08)}
 .cdl-run{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:var(--ink-2)}
 .cdl-row--past .cdl-run,.cdl-row[data-hold="true"] .cdl-run{background:var(--ink-3)}
 /* Now: the head of the run, and the only thing on the track with a size.
-   The outline is the black behind it, so the dot sits ON the track
+   The outline is the ground behind it, so the dot sits ON the track
    rather than in it. */
 .cdl-now{
   position:absolute;top:-2.5px;width:8px;height:8px;margin-left:-4px;border-radius:50%;
-  /* The halo is the page's own ground, which is black. --surface is
-     hsl(220 12% 3%), a blue near-black, and drew a faint ring on it. */
-  background:var(--ink-0);outline:3px solid #000;
+  /* The halo is the page's own ground. It was a literal black because
+     the page was, and the surface token could not be used for it: it
+     is a blue near black that drew a faint ring against a true black
+     page. On paper the ground IS that token, so it names it. */
+  background:var(--ink-0);outline:3px solid var(--surface,#ffffff);
 }
-.cdl-row[data-hold="true"] .cdl-now{background:#000;box-shadow:inset 0 0 0 1.5px var(--ink-2)}
+/* Holding: a hollow head, the ground showing through a ring. */
+.cdl-row[data-hold="true"] .cdl-now{background:var(--surface,#ffffff);box-shadow:inset 0 0 0 1.5px var(--ink-2)}
 .cdl-row[data-state="cancel_requested"] .cdl-now{background:var(--ink-3)}
 
 .cdl-sub{

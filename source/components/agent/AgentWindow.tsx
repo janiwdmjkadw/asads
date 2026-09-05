@@ -427,7 +427,15 @@ export function AgentWindow({ mint, onClose }: { mint: string | null; onClose: (
     ? {
         top: 'calc(var(--h-topnav, 56px) + var(--h-subnav, 0px) + var(--h-pagebar, 0px))',
         bottom: 'var(--h-footer, 30px)',
-        width: `min(${WINDOW_DEFAULT_W}px, 92vw)`,
+        /*
+         * 100vw, not 92. The 8% gutter is a tablet idea: it says "there
+         * is a page behind this". On a phone that ribbon is 30px of
+         * unusable board down one edge while the conversation is
+         * squeezed, and the composer's send key ends up under the pane's
+         * own border. Under 560 the chat IS the screen; above it the
+         * sheet keeps its 420 and the page shows beside it.
+         */
+        width: `min(${WINDOW_DEFAULT_W}px, 100vw)`,
       }
     : geometry !== null
       ? { left: geometry.x, top: geometry.y, width: geometry.w, height: geometry.h }
@@ -550,7 +558,7 @@ export function AgentWindow({ mint, onClose }: { mint: string | null; onClose: (
                       className="block h-[12px] w-[12px] shrink-0 rounded-[4px] object-cover"
                     />
                   ) : null}
-                  <span className="truncate font-mono text-[10px] leading-none text-[var(--ink-2)]">
+                  <span className="truncate font-[family-name:var(--sans)] tabular-nums text-[10px] leading-none text-[var(--ink-2)]">
                     {chipLabel}
                   </span>
                 </span>

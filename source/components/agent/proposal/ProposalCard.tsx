@@ -66,7 +66,12 @@ const LAMPORTS_PER_SOL = 1_000_000_000;
  */
 const ON_ACCENT = 'var(--accent-ink)';
 
-const MONO = { fontFamily: 'var(--mono)' } as const;
+/* The app's own face, not the mono. Every figure in the chat used
+   to be set in the printout voice the rest of the terminal has
+   dropped — the zero gives it away beside any other number on
+   screen. `tabular-nums` rides along wherever a figure needs its
+   columns to line up, which is what the mono was really for. */
+const MONO = { fontFamily: 'var(--sans)', fontVariantNumeric: 'tabular-nums' } as const;
 
 /*
  * Chat vocabulary (`--surface-*` / `--ink-*` / `--hairline*`), the same

@@ -41,7 +41,7 @@ const META = 'whitespace-nowrap text-[12px] leading-[1.4] text-[var(--ink-2)]';
 const MONO_META = 'whitespace-nowrap font-[family-name:var(--mono)] text-[12px] tabular-nums leading-[1.4] text-[var(--ink-2)]';
 
 const TONE_INK: Readonly<Record<OutcomeTone, string>> = {
-  up: 'text-[var(--up,#4ade80)]',
+  up: 'text-[var(--up,#0f6d5f)]',
   neutral: 'text-[var(--ink-3)]',
   hold: 'text-[var(--hold)]',
   pending: 'text-[var(--ink-3)] animate-pulse',

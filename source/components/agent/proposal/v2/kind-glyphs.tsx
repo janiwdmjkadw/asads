@@ -36,7 +36,7 @@ export const GROUP_TINT: Readonly<Record<GlyphGroup, string>> = {
   wallet: 'hsla(16,55%,64%,.12)',
   clock: 'hsla(220,12%,62%,.12)',
   link: 'hsla(220,12%,62%,.12)',
-  unknown: 'rgba(255,255,255,0)',
+  unknown: 'rgba(11, 14, 20, 0)',
 };
 
 /** The lab's `aria-label` per mark — the only place kind is ever named. */

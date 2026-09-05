@@ -23,8 +23,10 @@ export default function ConditionalsRoute() {
    * as the head of a page.
    */
   return (
-    <main className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 pb-4 pt-[34px]">
+    <main data-conditionals-page="" className="w-full">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-4 pb-4 pt-[34px]">
       <ConditionalsPageGate />
+    </div>
     </main>
   );
 }

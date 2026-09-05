@@ -1185,7 +1185,12 @@ html:has(.lh-home) {
   border: 1px solid var(--hairline);
   border-radius: 3px;
   background: var(--surface-2);
-  font-family: var(--mono);
+  /* The app's own face. Every figure the agent writes — a table of
+     wallet balances, a price in an inline code span — used to be set in
+     the mono, which is a different face from the one the terminal sets
+     its numbers in everywhere else. Tabular figures keep the column. */
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
   font-size: 11.5px;
   color: var(--ink-0);
 }
@@ -1217,7 +1222,8 @@ html:has(.lh-home) {
 .agent-md [data-streamdown='table-cell'] {
   padding: 4px 8px;
   font-size: 11.5px;
-  font-family: var(--mono);
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
   font-variant-numeric: tabular-nums;
 }
 .agent-md [data-streamdown='table-body'],

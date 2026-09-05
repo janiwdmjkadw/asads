@@ -19,8 +19,8 @@
   width: 370px;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background-color: #0e0d14c7;
+  border: 1px solid rgba(11, 14, 20, 0.14);
+  background-color: #ffffffee;
   background-image:
     linear-gradient(
       70deg,
@@ -30,10 +30,10 @@
       oklab(92.4% -0.048 0.08 / 11.2%) 64%,
       transparent 80%
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    linear-gradient(180deg, rgba(11, 14, 20, 0.08), rgba(11, 14, 20, 0.03));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 14px 36px rgba(0, 0, 0, 0.5);
+    0 14px 36px rgba(11, 14, 20, 0.18);
 }
 .ag-glimpse-id {
   display: flex;
@@ -52,26 +52,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  font-family: var(--font-geist-mono);
+  background: rgba(11, 14, 20, 0.12);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
-  color: #e8e8e2;
+  color: #0b0e14;
 }
 .ag-glimpse-name {
   font-family: var(--font-geist-sans);
   font-size: 14px;
   line-height: 18px;
   font-weight: 600;
-  color: #e8e8e2;
+  color: #0b0e14;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .ag-glimpse-sym {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
-  color: #8a8a85;
+  color: #5b6570;
   flex: none;
 }
 .ag-glimpse-price-row {
@@ -84,18 +86,19 @@
   font-size: 22px;
   line-height: 26px;
   font-weight: 600;
-  color: #e8e8e2;
+  color: #0b0e14;
   font-variant-numeric: tabular-nums;
 }
 .ag-glimpse-chg {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   padding: 1px 6px;
   border-radius: 3px;
-  border: 1.5px solid rgba(232, 232, 226, 0.3);
+  border: 1.5px solid rgba(11, 14, 20, 0.3);
 }
-.ag-glimpse-chg[data-tone='green'] { color: #7ed6a6; }
-.ag-glimpse-chg[data-tone='red'] { color: #f08a9a; }
+.ag-glimpse-chg[data-tone='green'] { color: #0f6d5f; }
+.ag-glimpse-chg[data-tone='red'] { color: #b4482e; }
 .ag-glimpse-chart-slot {
   position: relative;
   width: 336px;
@@ -106,16 +109,17 @@
   width: 336px;
   height: 64px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(11, 14, 20, 0.04);
 }
 .ag-glimpse-time {
   position: absolute;
   top: -16px;
   transform: translateX(-50%);
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
   line-height: 14px;
-  color: #e8e8e2;
+  color: #0b0e14;
   white-space: pre;
   pointer-events: none;
 }
@@ -131,16 +135,18 @@
   gap: 2px;
 }
 .ag-glimpse-stat-k {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   line-height: 12px;
   letter-spacing: 0.06em;
-  color: #8a8a85;
+  color: #5b6570;
 }
 .ag-glimpse-stat-v {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 14px;
   line-height: 18px;
-  color: #e8e8e2;
+  color: #0b0e14;
   font-variant-numeric: tabular-nums;
 }

@@ -251,7 +251,7 @@ export const BTN_PAD = 'px-[13px] py-[9px] @[420.02px]:px-[18px] @[420.02px]:py-
 
 export const BTN_GHOST =
   'pcv2-btn--ghost bg-transparent font-medium border-[var(--hairline-2)] text-[var(--ink-1)] ' +
-  'enabled:hover:border-[rgba(255,255,255,.26)] enabled:hover:text-[var(--ink-0)]';
+  'enabled:hover:border-[rgba(11, 14, 20, .26)] enabled:hover:text-[var(--ink-0)]';
 
 /** The site's own accent gradient, ice → mint at 135°, with accent ink —
  *  the ONE affirmative in whatever view it appears in, which is what makes

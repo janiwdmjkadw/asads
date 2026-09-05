@@ -56,7 +56,7 @@ const SOL_MARK = '◎';
 /** A comparator rides slightly ABOVE the baseline of the figure it frames —
  *  the .134em lift is what stops `≥` from reading as part of the numeral. */
 const OP =
-  'pcv2-op relative top-[-.134em] mr-[.26em] font-[family-name:var(--mono)] text-[.83em] font-medium text-[var(--ink-2)]';
+  'pcv2-op relative top-[-.134em] mr-[.26em] font-[family-name:var(--sans)] tabular-nums text-[.83em] font-medium text-[var(--ink-2)]';
 
 /**
  * The other half of the grammar layer — `in`, `from`, `of`. It carries a
@@ -71,7 +71,7 @@ const CX = 'pcv2-cx';
 /** Scope: a plate at symbol length. Silence is the default, so it appears
  *  only where silence would be a lie — and it tightens at the narrow step. */
 const SCOPE =
-  'pcv2-scope inline-block whitespace-nowrap rounded-[4px] bg-[rgba(255,255,255,.05)] py-[2px] align-[.05em] ' +
+  'pcv2-scope inline-block whitespace-nowrap rounded-[4px] bg-[rgba(11, 14, 20, .05)] py-[2px] align-[.05em] ' +
   'text-[10px] leading-[1.1] text-[var(--ink-1)] ' +
   'mx-[.24em] px-[4.5px] @[344.02px]:mx-[.34em] @[344.02px]:px-[5.5px]';
 
@@ -81,12 +81,12 @@ const MEAS =
 
 /** The step number, in the ordinal gutter or on a box header. */
 const ORD =
-  'pcv2-ord text-right font-[family-name:var(--mono)] text-[10.5px] leading-none tabular-nums text-[var(--ink-2)]';
+  'pcv2-ord text-right font-[family-name:var(--sans)] tabular-nums text-[10.5px] leading-none tabular-nums text-[var(--ink-2)]';
 
 const BOX_H = 'pcv2-box-h flex min-w-0 items-center gap-[9px] border-b border-[var(--hairline)]';
 const BOX_T = 'pcv2-box-t min-w-0 truncate text-[12.5px] leading-[1.3] tracking-[.004em] text-[var(--ink-1)]';
 const BOX_A =
-  'pcv2-box-a ml-auto flex-none whitespace-nowrap font-[family-name:var(--mono)] text-[10px] leading-[1.3] tracking-[.02em] tabular-nums text-[var(--ink-2)]';
+  'pcv2-box-a ml-auto flex-none whitespace-nowrap font-[family-name:var(--sans)] tabular-nums text-[10px] leading-[1.3] tracking-[.02em] tabular-nums text-[var(--ink-2)]';
 
 function unitClass(text: string): string {
   if (text === '%') return UNIT_PCT;
@@ -264,7 +264,7 @@ function boxSkin(depth: number): BoxSkin {
   if (depth === 0) {
     return {
       box: BOX_ROOT,
-      head: `${BOX_H} pcv2-box-h--d0 bg-[rgba(255,255,255,.05)] pt-[7px] px-[12px] pb-[6px]`,
+      head: `${BOX_H} pcv2-box-h--d0 bg-[rgba(11, 14, 20, .05)] pt-[7px] px-[12px] pb-[6px]`,
       body: `${BOX_B_ROOT} pcv2-box-b--d0`,
     };
   }

@@ -216,7 +216,7 @@ function GlimpsePane({ request }: { request: HoverRequest }) {
                   x2={geometry.xs[scrub]}
                   y1="0"
                   y2={CHART_H}
-                  stroke="#E8E8E2"
+                  stroke="#0B0E14"
                   strokeOpacity="0.35"
                   strokeWidth="1"
                 />
@@ -229,7 +229,7 @@ function GlimpsePane({ request }: { request: HoverRequest }) {
         )}
       </div>
       <svg className="ag-glimpse-rule" width="100%" height="1" aria-hidden>
-        <line x1="0" x2="100%" y1="0.5" y2="0.5" stroke="#E8E8E2" strokeOpacity="0.18" strokeDasharray="2 4" />
+        <line x1="0" x2="100%" y1="0.5" y2="0.5" stroke="#0B0E14" strokeOpacity="0.18" strokeDasharray="2 4" />
       </svg>
       <div className="ag-glimpse-stats">
         <Stat label="MCAP" value={compactUsd(data?.mcapUsd, '—')} />

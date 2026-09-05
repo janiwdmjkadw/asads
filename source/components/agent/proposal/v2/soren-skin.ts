@@ -46,57 +46,70 @@ const TOKENS = `
      user-picked mono would reflow every number box and break the measured
      lanes, and these are measured surfaces. */
   --sans:var(--font-geist-sans,system-ui),-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  --mono:var(--font-geist-mono,ui-monospace),ui-monospace,monospace;
+  /* The card measures its lanes off THIS, so it is pinned to a
+     physical family rather than a theme alias — and the family
+     is the sans now, like every other figure in the product. */
+  --mono:var(--font-geist-sans,system-ui),system-ui,sans-serif;
   --display:var(--font-instrument-serif,ui-serif),ui-serif,Georgia,serif;
 
-  /* the ground */
-  --pcv2-card-fill:rgba(19,21,25,.88);
-  --pcv2-card-rim:rgba(255,255,255,.043);
-  --pcv2-leg-fill:rgba(255,255,255,.016);
-  --pcv2-leg-rim:#14151A;
-  --pcv2-l0-fill:rgba(255,255,255,.012);
-  --pcv2-l0-rim:#16181D;
-  --pcv2-l1-fill:rgba(255,255,255,.020);
-  --pcv2-l1-rim:#181B20;
-  --pcv2-l2-fill:rgba(255,255,255,.024);
-  --pcv2-l2-rim:#1B1E23;
-  --pcv2-bar-0:#17191E;
-  --pcv2-bar-1:#191C22;
-  --pcv2-bar-2:#1B1F25;
+  /* the ground
+     ── ON PAPER THE NESTING RUNS THE OTHER WAY ──────────────────────
+     These four fills used to separate by LIGHTENING: on black, closer
+     means more white. Over white, closer means more INK, so the ramp is
+     the same ramp read backwards, at the alphas that hold at this size
+     without any of the four reading as a grey box. */
+  --pcv2-card-fill:rgba(255,255,255,.96);
+  --pcv2-card-rim:rgba(11,14,20,.1);
+  --pcv2-leg-fill:rgba(11,14,20,.018);
+  --pcv2-leg-rim:rgba(11,14,20,.07);
+  --pcv2-l0-fill:rgba(11,14,20,.014);
+  --pcv2-l0-rim:rgba(11,14,20,.06);
+  --pcv2-l1-fill:rgba(11,14,20,.024);
+  --pcv2-l1-rim:rgba(11,14,20,.07);
+  --pcv2-l2-fill:rgba(11,14,20,.032);
+  --pcv2-l2-rim:rgba(11,14,20,.08);
+  --pcv2-bar-0:#eef1f0;
+  --pcv2-bar-1:#e7ebea;
+  --pcv2-bar-2:#e0e5e3;
 
   /* r6 — the cut carries the boundary the fills are too close to carry;
-     the lift sits UNDER it, which is why they are ordered this way. */
-  --pcv2-cut:rgba(0,0,0,.45) 0 1px 0 inset;
-  --pcv2-lift:rgba(255,255,255,.04) 0 2px 0 inset;
+     the lift sits UNDER it. On black the cut was a shadow line and the
+     lift a light one; over paper the cut is the ink and the lift is the
+     paper, which is the same relationship with the page turned over. */
+  --pcv2-cut:rgba(11,14,20,.07) 0 1px 0 inset;
+  --pcv2-lift:rgba(255,255,255,.9) 0 2px 0 inset;
   --pcv2-indent:12px;
 
-  /* glass, layer one only: light and depth, colourless. The 70° band is
-     white here, not chromatic — iridescence is spent on Approve alone. */
+  /* glass, layer one only: light and depth, colourless. The 70° band
+     was white on black; on paper the band that catches is the one that
+     SHADES, so the sheen is a whisper of ink rather than of light. */
   --pcv2-sheen:
-    linear-gradient(70deg,transparent 22%,rgba(255,255,255,.015) 40%,rgba(255,255,255,.03) 52%,rgba(255,255,255,.02) 64%,transparent 80%),
-    linear-gradient(180deg,rgba(255,255,255,.019),rgba(255,255,255,.004));
+    linear-gradient(70deg,transparent 22%,rgba(11,14,20,.012) 40%,rgba(11,14,20,.022) 52%,rgba(11,14,20,.015) 64%,transparent 80%),
+    linear-gradient(180deg,rgba(11,14,20,.014),rgba(11,14,20,.003));
   --pcv2-card-sheen:
-    linear-gradient(70deg,transparent 22%,rgba(255,255,255,.015) 40%,rgba(255,255,255,.03) 52%,rgba(255,255,255,.02) 64%,transparent 80%),
-    linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,.008));
+    linear-gradient(70deg,transparent 22%,rgba(11,14,20,.012) 40%,rgba(11,14,20,.022) 52%,rgba(11,14,20,.015) 64%,transparent 80%),
+    linear-gradient(180deg,rgba(11,14,20,.016),rgba(11,14,20,.006));
 
   /* the colour budget — five meanings, and nothing else earns a hue */
-  --pcv2-violet:#A78BFA;
-  --pcv2-buy:#4AC99B;
-  --pcv2-sell:#EA667D;
-  --pcv2-approve:linear-gradient(in oklab 118deg,oklab(61.2% -0.026 -0.025),oklab(59.1% -0.048 -0.020) 48%,oklab(59.5% -0.083 -0.0006));
-  --pcv2-approve-ink:#0A1113;
+  --pcv2-violet:#6B46C8;
+  --pcv2-buy:#0F6D5F;
+  --pcv2-sell:#B4482E;
+  --pcv2-approve:linear-gradient(in oklab 118deg,oklab(46% -0.03 -0.02),oklab(43% -0.05 -0.015) 48%,oklab(43% -0.08 -0.001));
+  --pcv2-approve-ink:#FFFFFF;
 
   /* neutral objects: the number box, the verb box and the tag are ONE
-     material — meaning lives in the word inside them, never in the box. */
-  --pcv2-ivory:#E8E8E2;
-  --pcv2-glass-fill:rgba(255,255,255,.06);
-  --pcv2-glass-rim:rgba(255,255,255,.10);
-  --pcv2-tag-rim:rgba(232,232,226,.30);
-  --pcv2-tag-square:rgba(255,255,255,.10);
+     material — meaning lives in the word inside them, never in the box.
+     ivory was the card's type colour on black; on paper it is ink. */
+  --pcv2-ivory:#0B0E14;
+  --pcv2-glass-fill:rgba(11,14,20,.04);
+  --pcv2-glass-rim:rgba(11,14,20,.1);
+  --pcv2-tag-rim:rgba(11,14,20,.16);
+  --pcv2-tag-square:rgba(11,14,20,.1);
 
-  /* statuses: brightness alone carries the rank, plan over leg */
-  --pcv2-status-leg:#8A8A85;
-  --pcv2-status-plan:#C9CDD6;
+  /* statuses: on black the rank was carried by brightness, plan over
+     leg. On paper it is carried by DEPTH, the same way round. */
+  --pcv2-status-leg:#8A9591;
+  --pcv2-status-plan:#2B3138;
 }`;
 
 /** The card, the leg pane and the three box depths — d4 plus the r6 cut. */
@@ -163,7 +176,7 @@ const GROUND = `
 const GRAMMAR = `
 .pcv2--soren .pcv2-op{color:var(--pcv2-violet);top:0}
 .pcv2--soren .pcv2-cx{
-  font-family:var(--mono);
+  font-family:var(--sans);font-variant-numeric:tabular-nums;
   font-size:.87em;
   color:var(--pcv2-violet);
 }`;
@@ -212,7 +225,7 @@ const THEN_ROW = `
   border-radius:4px;
   border:1px solid var(--pcv2-glass-rim);
   background:var(--pcv2-glass-fill);
-  font-family:var(--mono);
+  font-family:var(--sans);font-variant-numeric:tabular-nums;
   font-size:11px;
   font-weight:500;
   line-height:14px;
@@ -255,7 +268,7 @@ const THEN_ROW = `
   padding:0 8px 0 4px;
   border:1.5px solid var(--pcv2-tag-rim);
   border-radius:3px;
-  font-family:var(--mono);
+  font-family:var(--sans);font-variant-numeric:tabular-nums;
   font-size:13px;
   font-weight:400;
   line-height:18px;
@@ -345,17 +358,21 @@ const FOOTER = `
  */
 const LIVE = `
 .pcv2--soren .pcv2-live-dot{
-  --accent-secondary:#7ED6A6;
-  --hold:#E8C07E;
+  /* The live dot's two tones, deepened with the rest of the product:
+     a mint and a pale amber read as lights on black and as pastels on
+     paper, and this dot is the one thing on the card that has to be
+     unmistakable at 6px. */
+  --accent-secondary:#0F6D5F;
+  --hold:#C08A12;
 }
 .pcv2--soren .pcv2-leg-live{
   margin:-7px 0 9px;
   text-align:right;
-  font-family:var(--font-geist-mono);
+  font-family:var(--font-geist-sans);
   font-size:10px;
   line-height:12px;
   letter-spacing:.02em;
-  color:#8A8A85;
+  color:#8A9591;
   font-variant-numeric:tabular-nums;
 }`;
 
